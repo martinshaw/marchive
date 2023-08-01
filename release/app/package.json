@@ -1,7 +1,7 @@
 {
-  "name": "marfile",
+  "name": "marchive",
   "version": "0.0.1",
-  "description": "The file manager",
+  "description": "The Ultimate Information, News and Media Archiver and Aggregator",
   "private": true,
   "author": {
     "name": "Martin Shaw",

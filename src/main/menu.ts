@@ -54,17 +54,17 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'marfile',
+      label: 'marchive',
       submenu: [
         {
-          label: 'About marfile',
+          label: 'About marchive',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         // { label: 'Services', submenu: [] },
         // { type: 'separator' },
         {
-          label: 'Hide marfile',
+          label: 'Hide marchive',
           accelerator: 'Command+H',
           selector: 'hide:',
         },

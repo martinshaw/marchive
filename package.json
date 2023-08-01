@@ -1,23 +1,21 @@
 {
-  "name": "marfile",
+  "name": "marchive",
   "version": "0.0.1",
-  "description": "The file manager",
+  "description": "The Ultimate Information, News and Media Archiver and Aggregator",
   "keywords": [
     "electron",
-    "file-manager",
-    "file-browser",
-    "finder",
-    "explorer",
-    "files",
-    "folders"
+    "marchive",
+    "archiver",
+    "downloader",
+    "archive"
   ],
-  "homepage": "https://github.com/martinshaw/marfile#readme",
+  "homepage": "https://github.com/martinshaw/marchive#readme",
   "bugs": {
-    "url": "https://github.com/martinshaw/marfile/issues"
+    "url": "https://github.com/martinshaw/marchive/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martinshaw/marfile.git"
+    "url": "git+https://github.com/martinshaw/marchive.git"
   },
   "private": true,
   "author": {
@@ -163,8 +161,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "marfile",
-    "appId": "co.martinshaw.marfile",
+    "productName": "marchive",
+    "appId": "co.martinshaw.marchive",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -223,7 +221,7 @@
     "publish": {
       "provider": "github",
       "owner": "martinshaw",
-      "repo": "marfile"
+      "repo": "marchive"
     }
   },
   "collective": {
