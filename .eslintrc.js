@@ -13,6 +13,11 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'error',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
+    'react/function-component-definition': [
+      2,
+      { namedComponents: 'arrow-function' },
+    ],
+    'class-methods-use-this': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
