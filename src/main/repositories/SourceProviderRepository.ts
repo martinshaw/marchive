@@ -29,3 +29,24 @@ export const getSourceProviderByIdentifier: (
     return sourceProvider.getIdentifier() === identifier;
   });
 };
+
+export const validateUrlWithSourceProviders: (
+  url: string
+) => Promise<string[]> = async (url: string) => {
+  const sourceProviders = await getSourceProviders();
+
+  const validSourceProviderIdentifiers: string[] = [];
+
+  for (let index = 0; index < sourceProviders.length; index += 1) {
+    const currentSourceProvider: SourceProvider = sourceProviders[index];
+
+    // eslint-disable-next-line no-await-in-loop
+    if (await currentSourceProvider.validateUrlPrompt(url)) {
+      validSourceProviderIdentifiers.push(
+        currentSourceProvider.getIdentifier()
+      );
+    }
+  }
+
+  return validSourceProviderIdentifiers;
+};

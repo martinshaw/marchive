@@ -10,15 +10,61 @@ Description: description
 */
 
 import { ipcMain } from 'electron';
-import { getSourceProviders } from '../repositories/SourceProviderRepository';
+import {
+  getSourceProviderByIdentifier,
+  getSourceProviders,
+  validateUrlWithSourceProviders
+} from '../repositories/SourceProviderRepository';
+import { createSource } from '../repositories/SourceRepository';
+import { Source } from '../database';
 
 ipcMain.on('sources.get-source-providers', async (event) => {
   const sourceProviders = await getSourceProviders();
 
   event.reply(
     'sources.get-source-providers',
-    JSON.stringify(
-      sourceProviders.map((sourceProvider) => sourceProvider.toObject())
-    )
+    sourceProviders.map((sourceProvider) => sourceProvider.toObject())
   );
+});
+
+ipcMain.on('sources.validate-url-with-source-providers', async (event, url) => {
+  event.reply(
+    'sources.validate-url-with-source-providers',
+    await validateUrlWithSourceProviders(url)
+  );
+});
+
+ipcMain.on('sources.submit-new-source', async (event, url) => {
+  const validSourceProvidersForUrl = await validateUrlWithSourceProviders(url);
+
+  if (validSourceProvidersForUrl.length === 0) {
+    event.reply(
+      'sources.submit-new-source',
+      null,
+      'No valid source providers for URL'
+    );
+    return;
+  }
+
+  const sourceProvider = await getSourceProviderByIdentifier(
+    validSourceProvidersForUrl[validSourceProvidersForUrl.length - 1]
+  );
+
+  if (sourceProvider == null) {
+    event.reply(
+      'sources.submit-new-source',
+      null,
+      'No valid source provider found'
+    );
+    return;
+  }
+
+  const newSource = await createSource(sourceProvider.getIdentifier(), url);
+
+  event.reply('sources.submit-new-source', newSource.id, null);
+});
+
+ipcMain.on('sources.get-sources', async (event) => {
+  const sources = await Source.findAll();
+  event.reply('sources.get-sources', sources);
 });

@@ -42,4 +42,12 @@
   padding: 1rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
+
+  &.source-providers__grid__item--valid {
+    opacity: 1;
+  }
+
+  &.source-providers__grid__item--invalid {
+    opacity: 0.5;
+  }
 }

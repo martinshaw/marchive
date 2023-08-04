@@ -4,7 +4,8 @@ import DefaultLayout from './layouts/DefaultLayout';
 
 import YesterdayPage from './pages/YesterdayPage';
 import TodayPage from './pages/TodayPage';
-import SourcesPage from './pages/SourcesPage';
+import SourcesIndexPage from './pages/SourcesIndexPage';
+import SourcesCreatePage from './pages/SourcesCreatePage';
 
 const App = () => {
   return (
@@ -30,7 +31,15 @@ const App = () => {
           path="/sources"
           element={
             <DefaultLayout>
-              <SourcesPage />
+              <SourcesIndexPage />
+            </DefaultLayout>
+          }
+        />
+        <Route
+          path="/sources/create"
+          element={
+            <DefaultLayout>
+              <SourcesCreatePage />
             </DefaultLayout>
           }
         />

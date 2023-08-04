@@ -23,9 +23,8 @@ const useGetSourceProviders = () => {
       (sourceProvidersSerializedValue) => {
         if (sourceProvidersSerializedValue == null) return;
 
-        const sourceProvidersValue = JSON.parse(
-          sourceProvidersSerializedValue as string
-        ) as typeof sourceProviders;
+        const sourceProvidersValue =
+          sourceProvidersSerializedValue as typeof sourceProviders;
 
         setSourceProviders(sourceProvidersValue);
       }

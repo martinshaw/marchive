@@ -28,16 +28,25 @@ class RssFeedSourceProvider extends SimpleWebpageSourceProvider {
 
   async validateUrlPrompt(url: string): Promise<boolean> {
     if ((url.startsWith('http://') || url.startsWith('https://')) === false) {
-      return false;
+      // eslint-disable-next-line no-param-reassign
+      url = `https://${url}`;
     }
 
-    const request = await fetch(url);
-    if (request.status !== 200) return false;
+    let request: Response | null = null;
+    try {
+      request = await fetch(url);
 
-    const contents = await request.text();
+      if (request == null) return false;
 
-    if (!contents) return false;
-    if (contents.indexOf('<rss ') < 0) return false;
+      if (request.status !== 200) return false;
+
+      const contents = await request.text();
+
+      if (!contents) return false;
+      if (contents.indexOf('<rss ') < 0) return false;
+    } catch (error) {
+      return false;
+    }
 
     return true;
   }

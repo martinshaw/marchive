@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: StoredSetting.js
+File Name: Source.js
 Created:  2023-06-21T16:32:11.327Z
 Modified: 2023-06-21T16:32:11.327Z
 
@@ -12,17 +12,17 @@ Description: description
 import { Table, Model, Column } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'stored_settings',
-  modelName: 'StoredSetting',
+  tableName: 'sources',
+  modelName: 'Source',
   timestamps: true,
   paranoid: true,
 })
-class StoredSetting extends Model {
+class Source extends Model {
   @Column
-  key!: string;
+  source_provider_identifier!: string;
 
   @Column
-  value!: string;
+  url!: string;
 }
 
-export default StoredSetting;
+export default Source;

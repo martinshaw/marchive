@@ -10,9 +10,12 @@ Description: description
 */
 
 import sequelize from './connection';
+import Source from './models/Source';
 import StoredSetting from './models/StoredSetting';
 
-sequelize.addModels([StoredSetting]);
-StoredSetting.sync();
+sequelize.addModels([StoredSetting, Source]);
 
-export { sequelize, StoredSetting };
+StoredSetting.sync();
+Source.sync();
+
+export { sequelize, StoredSetting, Source };

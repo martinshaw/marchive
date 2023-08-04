@@ -4,6 +4,9 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channels =
   | 'sources.get-source-providers'
+  | 'sources.validate-url-with-source-providers'
+  | 'sources.submit-new-source'
+  | 'sources.get-sources'
   | 'utilities.ipc-example'
   | 'utilities.is-dark-mode';
 
