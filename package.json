@@ -88,6 +88,7 @@
   "dependencies": {
     "@blueprintjs/core": "^5.2.0",
     "@blueprintjs/icons": "^5.1.5",
+    "@martinshaw/marchive-cli": "github:martinshaw/marchive-cli#52ff9e6",
     "@uidotdev/usehooks": "^2.0.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
