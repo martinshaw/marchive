@@ -10,10 +10,11 @@ Description: description
 */
 
 import { useCallback, useState } from 'react';
+import { Source } from '../../../../main/database';
 
 const useSubmitNewSource = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [createdSourceId, setCreatedSourceId] = useState<number | null>(null);
+  const [createdSource, setCreatedSource] = useState<Source | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const submitNewSource = useCallback((urlValue: string) => {
@@ -21,8 +22,8 @@ const useSubmitNewSource = () => {
 
     window.electron.ipcRenderer.on(
       'sources.submit-new-source',
-      (createdSourceIdValue, errorMessageValue) => {
-        if (createdSourceIdValue == null && errorMessageValue == null) return;
+      (createdSourceValue, errorMessageValue) => {
+        if (createdSourceValue == null && errorMessageValue == null) return;
 
         setIsSubmitting(false);
 
@@ -31,7 +32,7 @@ const useSubmitNewSource = () => {
           return;
         }
 
-        setCreatedSourceId(Number(createdSourceIdValue) as number);
+        setCreatedSource(createdSourceValue as Source);
       }
     );
 
@@ -39,11 +40,17 @@ const useSubmitNewSource = () => {
       'sources.submit-new-source',
       urlValue
     );
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(
+        'sources.submit-new-source'
+      );
+    };
   }, []);
 
   return {
     isSubmitting,
-    createdSourceId,
+    createdSource,
     errorMessage,
     submitNewSource,
   };

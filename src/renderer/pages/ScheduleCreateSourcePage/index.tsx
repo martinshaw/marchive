@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: SourcesCreatePage.tsx
+File Name: SchedulesCreateSourcePage.tsx
 Created:  2023-08-01T19:43:12.647Z
 Modified: 2023-08-01T19:43:12.647Z
 
@@ -13,11 +13,12 @@ import { Button, Card, Icon, InputGroup, Text } from '@blueprintjs/core';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 import useGetSourceProviders from './hooks/useGetSourceProviders';
-import './index.scss';
 import useValidateUrlWithSourceProviders from './hooks/useValidateUrlWithSourceProviders';
 import useSubmitNewSource from './hooks/useSubmitNewSource';
 
-const SourcesCreatePage = () => {
+import './index.scss';
+
+const SchedulesCreateSourcePage = () => {
   const [urlValue, setUrlValue] = useState('');
 
   const sourceProviders = useGetSourceProviders();
@@ -25,24 +26,28 @@ const SourcesCreatePage = () => {
   const validSourceProviderIdentifiers =
     useValidateUrlWithSourceProviders(urlValue);
 
-  const { isSubmitting, createdSourceId, errorMessage, submitNewSource } =
-    useSubmitNewSource();
+  const {
+    isSubmitting,
+    createdSource,
+    errorMessage: sourceErrorMessage,
+    submitNewSource,
+  } = useSubmitNewSource();
+
+  const availableSourceActions = useGetAvailableSourceActions(createdSource);
+
+  const assignedActions = null;
+
+  const createdSchedule = null;
+
+  // const navigate = useNavigate();
 
   useEffect(() => {
-    if (errorMessage != null) {
-      alert(errorMessage);
-      return;
+    if (sourceErrorMessage != null) {
+      alert(sourceErrorMessage);
     }
+  }, [sourceErrorMessage]);
 
-    if (createdSourceId == null) return;
-    if (Number.isNaN(Number(createdSourceId))) return;
-
-    setUrlValue('');
-
-    alert(`Created a new source with id: ${createdSourceId}`);
-  }, [createdSourceId, errorMessage]);
-
-  return (
+  const createSourceFragment = (
     <>
       <div className="source-providers__input">
         <InputGroup
@@ -95,6 +100,22 @@ const SourcesCreatePage = () => {
       </div>
     </>
   );
+
+  const assignActionsFragment = <Text>Assign actions</Text>;
+
+  const createScheduleFragment = <Text>Create schedule</Text>;
+
+  if (
+    createdSource != null &&
+    assignedActions != null &&
+    createdSchedule == null
+  )
+    return createScheduleFragment;
+
+  if (createdSource != null && assignedActions == null)
+    return assignActionsFragment;
+
+  return createSourceFragment;
 };
 
-export default SourcesCreatePage;
+export default SchedulesCreateSourcePage;

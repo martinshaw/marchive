@@ -31,6 +31,12 @@ const useGetSourceProviders = () => {
     );
 
     window.electron.ipcRenderer.sendMessage('sources.get-source-providers');
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(
+        'sources.get-source-providers'
+      );
+    };
   }, []);
 
   return sourceProviders;

@@ -7,6 +7,7 @@ export type Channels =
   | 'sources.validate-url-with-source-providers'
   | 'sources.submit-new-source'
   | 'sources.get-sources'
+  | 'sources.get-available-source-actions'
   | 'utilities.ipc-example'
   | 'utilities.is-dark-mode';
 
@@ -26,6 +27,9 @@ const electronHandler = {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    removeAllListeners(channel: Channels) {
+      ipcRenderer.removeAllListeners(channel);
     },
   },
 };

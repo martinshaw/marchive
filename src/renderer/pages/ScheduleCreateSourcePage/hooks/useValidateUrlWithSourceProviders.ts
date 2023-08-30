@@ -34,6 +34,12 @@ const useValidateUrlWithSourceProviders = (urlValue: string) => {
       'sources.validate-url-with-source-providers',
       debouncedUrlValue
     );
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners(
+        'sources.validate-url-with-source-providers'
+      );
+    };
   }, [debouncedUrlValue]);
 
   return validSourceProviderIdentifiers;

@@ -23,6 +23,10 @@ const useGetSources = () => {
     });
 
     window.electron.ipcRenderer.sendMessage('sources.get-sources');
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('sources.get-sources');
+    };
   }, []);
 
   return sources;

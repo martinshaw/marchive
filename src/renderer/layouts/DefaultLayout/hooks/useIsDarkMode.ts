@@ -25,6 +25,10 @@ const useIsDarkMode = () => {
     );
 
     window.electron.ipcRenderer.sendMessage('utilities.is-dark-mode');
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('utilities.is-dark-mode');
+    };
   }, []);
 
   return isDarkMode;
