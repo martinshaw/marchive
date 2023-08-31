@@ -15,6 +15,9 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+import './ipc/captures';
+import './ipc/providers';
+import './ipc/schedules';
 import './ipc/sources';
 import './ipc/utilities';
 

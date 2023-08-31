@@ -4,10 +4,9 @@ import DefaultLayout from './layouts/DefaultLayout';
 
 import YesterdayPage from './pages/YesterdayPage';
 import TodayPage from './pages/TodayPage';
-import SourcesIndexPage from './pages/ScheduleIndexPage';
-import SourcesCreatePage from './pages/ScheduleCreateSourcePage';
-import ScheduleIndexPage from './pages/ScheduleIndexPage';
-import SchedulesCreateSourcePage from './pages/ScheduleCreateSourcePage';
+import SourceIndexPage from './pages/SourceIndexPage';
+import SchedulesCreateSourcePage from './pages/SourceCreatePage';
+import SourceCreatePage from './pages/SourceCreatePage';
 
 const App = () => {
   return (
@@ -30,18 +29,18 @@ const App = () => {
           }
         />
         <Route
-          path="/schedules"
+          path="/sources"
           element={
             <DefaultLayout>
-              <ScheduleIndexPage />
+              <SourceIndexPage />
             </DefaultLayout>
           }
         />
         <Route
-          path="/schedules/create/source"
+          path="/sources/create"
           element={
             <DefaultLayout>
-              <SchedulesCreateSourcePage />
+              <SourceCreatePage />
             </DefaultLayout>
           }
         />

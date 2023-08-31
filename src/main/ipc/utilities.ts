@@ -11,9 +11,12 @@ Description: description
 
 import { ipcMain, nativeTheme } from 'electron';
 
-ipcMain.on('utilities.ipc-example', async (event /* , arg */) => {
-  event.reply('utilities.ipc-example', 'pong');
-});
+export type UtilitiesChannels =
+  | 'utilities.is-dark-mode'
+
+// ipcMain.on('utilities.ipc-example', async (event /* , arg */) => {
+//   event.reply('utilities.ipc-example', 'pong');
+// });
 
 ipcMain.on('utilities.is-dark-mode', async (event) => {
   event.reply('utilities.is-dark-mode', nativeTheme.shouldUseDarkColors);

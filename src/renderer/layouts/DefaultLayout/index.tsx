@@ -37,9 +37,9 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
               <Button active={isActive} icon="calendar" text="Today" />
             )}
           </NavLink>
-          <NavLink to="/schedules">
+          <NavLink to="/sources">
             {({ isActive }) => (
-              <Button active={isActive} icon="database" text="Schedules" />
+              <Button active={isActive} icon="database" text="Sources" />
             )}
           </NavLink>
         </Navbar.Group>

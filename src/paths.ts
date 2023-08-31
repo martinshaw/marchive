@@ -12,3 +12,7 @@ Description: description
 import path from 'node:path'
 
 export const rootPath = path.join(__dirname, '..')
+
+export const resourcesPath = path.join(rootPath, 'resources')
+
+export const downloadsPath = path.join(rootPath, 'downloads')
