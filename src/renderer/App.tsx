@@ -1,51 +1,51 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route, RouterProvider, createMemoryRouter } from 'react-router-dom';
 
 import DefaultLayout from './layouts/DefaultLayout';
 
 import YesterdayPage from './pages/YesterdayPage';
 import TodayPage from './pages/TodayPage';
 import SourceIndexPage from './pages/SourceIndexPage';
-import SchedulesCreateSourcePage from './pages/SourceCreatePage';
 import SourceCreatePage from './pages/SourceCreatePage';
+import OnboardingIndexPage from './pages/OnboardingIndexPage';
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/yesterday"
-          element={
-            <DefaultLayout>
-              <YesterdayPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <DefaultLayout>
-              <TodayPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/sources"
-          element={
-            <DefaultLayout>
-              <SourceIndexPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/sources/create"
-          element={
-            <DefaultLayout>
-              <SourceCreatePage />
-            </DefaultLayout>
-          }
-        />
-      </Routes>
-    </Router>
+    <RouterProvider
+      router={createMemoryRouter([
+        {
+          path: '/',
+          element: <DefaultLayout />,
+          children: [
+            {
+              path: '/onboarding',
+              element: <OnboardingIndexPage />
+            },
+            {
+              path: '/yesterday',
+              element: <YesterdayPage />
+            },
+            {
+              path: '/today',
+              element: <TodayPage />
+            },
+            {
+              path: '/sources',
+              // TODO: See TODO comment in SourceIndexPage
+              // loader: SourceIndexPageLoader,
+              element: <SourceIndexPage />
+            },
+            {
+              path: '/sources/create',
+              element: <SourceCreatePage />
+            },
+            {
+              path: '/sources/:sourceId',
+              element: <SourceCreatePage />
+            },
+          ]
+        }
+      ])}
+    />
   );
 };
 

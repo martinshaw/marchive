@@ -19,7 +19,7 @@ import {CapturePartStatus} from '../../../database/models/CapturePart'
 // @ts-ignore
 import standardSlugify from 'standard-slugify'
 import {v4 as uuidV4} from 'uuid'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType} from '../BaseDataProvider'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../../log'
 
 export type BlogArticleDataProviderLinkType = {
@@ -47,11 +47,18 @@ class BlogArticleDataProvider extends BaseDataProvider {
   }
 
   getName(): string {
-    return 'Blog Article'
+    return 'Blog / News Articles'
   }
 
-  getIconFilePath(): string {
-    return 'list-columns.svg'
+  getDescription(): string {
+    return 'Screenshots and snapshots this blog or news article and each of its related articles.'
+  }
+
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
+    return {
+      filePath: path.join(__dirname, 'list-columns.svg'),
+      shouldInvertOnDarkMode: true,
+    }
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {

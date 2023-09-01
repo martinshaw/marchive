@@ -10,11 +10,10 @@ Description: description
 */
 
 import { useEffect, useState } from 'react';
-import { Source } from '../../../../main/database';
-import { Attributes } from 'sequelize';
+import { SourceAttributes } from 'main/database/models/Source';
 
 const useGetSources = () => {
-  const [sources, setSources] = useState<Attributes<Source>[]>([]);
+  const [sources, setSources] = useState<SourceAttributes[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | false>(false);
 
   useEffect(() => {
@@ -25,7 +24,7 @@ const useGetSources = () => {
         return;
       }
 
-      setSources(sources as Attributes<Source>[]);
+      setSources(sources as SourceAttributes[]);
       setErrorMessage(false);
     });
 

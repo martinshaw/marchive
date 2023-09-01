@@ -9,9 +9,21 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes} from 'sequelize'
+import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, ForeignKey, BelongsTo} from 'sequelize-typescript'
 import {Schedule} from '..'
+
+export type CaptureAttributes = {
+  id: number
+  downloadLocation: string
+  allowedRetriesCount: number
+  deletedFromDownloads: boolean
+  scheduleId: number | undefined
+  schedule: Schedule | undefined
+  createdAt?: Date
+  updatedAt?: Date
+  deletedAt?: Date
+}
 
 @Table({
   tableName: 'captures',
@@ -19,7 +31,15 @@ import {Schedule} from '..'
   timestamps: true,
   paranoid: true,
   })
-class Capture extends Model {
+class Capture extends Model<
+  CaptureAttributes,
+  Optional<
+    CaptureAttributes,
+    'id' | 'schedule' | 'allowedRetriesCount' | 'deletedFromDownloads'
+  >
+> implements CaptureAttributes {
+  id!: number
+
   @Column({
     type: DataTypes.STRING,
     allowNull: false,

@@ -14,14 +14,15 @@ import {Attributes} from 'sequelize'
 import logger from '../../../log'
 import { getDataProviderByIdentifier } from '../../../app/repositories/DataProviderRepository'
 import { AllowedScheduleIntervalReturnType } from '../../../app/providers/BaseDataProvider'
+import { ScheduleAttributes } from 'main/database/models/Schedule'
 
 /**
  * @throws {Error}
  */
 const ScheduleUpdateAction = async (
   scheduleId: number,
-  requestedChanges: Attributes<Schedule>
-): Promise<Attributes<Schedule>> => {
+  requestedChanges: ScheduleAttributes
+): Promise<ScheduleAttributes> => {
   const schedule = await Schedule.findByPk(scheduleId, {include: [Source]})
   if (schedule == null) {
     const errorMessage = `No schedule found with id: ${scheduleId}`
@@ -44,7 +45,7 @@ const ScheduleUpdateAction = async (
 
   const dataProviderAllowedIntervalInformation: AllowedScheduleIntervalReturnType = await dataProvider.allowedScheduleInterval()
 
-  const scheduleChanges: Attributes<Schedule> = {}
+  const scheduleChanges: Partial<ScheduleAttributes> = {}
 
   if (typeof requestedChanges.interval !== 'undefined') {
     if (dataProviderAllowedIntervalInformation.onlyRunOnce === true && requestedChanges.interval === null && typeof requestedChanges.interval !== 'undefined') {

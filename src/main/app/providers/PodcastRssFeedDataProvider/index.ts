@@ -18,7 +18,7 @@ import {CapturePartStatus} from '../../../database/models/CapturePart'
 import standardSlugify from 'standard-slugify'
 import {v4 as uuidV4, v4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType} from '../BaseDataProvider'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../../log'
 
 type RssParserFeedType = {
@@ -47,8 +47,15 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     return 'Podcast RSS Feed'
   }
 
-  getIconFilePath(): string {
-    return 'microphone.svg'
+  getDescription(): string {
+    return 'Download each media file in this podcast feed and capture metadata'
+  }
+
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
+    return {
+      filePath: path.join(__dirname, 'microphone.svg'),
+      shouldInvertOnDarkMode: true,
+    }
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {

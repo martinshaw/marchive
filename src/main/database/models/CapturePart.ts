@@ -9,12 +9,27 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes} from 'sequelize'
+import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, ForeignKey, BelongsTo} from 'sequelize-typescript'
 import {Capture, Schedule} from '..'
 
 const capturePartStatuses = ['pending', 'processing', 'completed', 'failed'] as const
 export type CapturePartStatus = typeof capturePartStatuses[number]
+
+export type CapturePartAttributes = {
+  id: number
+  status: CapturePartStatus
+  url: string
+  dataProviderPartIdentifier: string
+  payload: string
+  currentRetryCount: number
+  deletedFromDownloads: boolean
+  captureId: number | undefined
+  capture: Capture | undefined
+  createdAt?: Date
+  updatedAt?: Date
+  deletedAt?: Date
+}
 
 @Table({
   tableName: 'capture_parts',
@@ -22,14 +37,22 @@ export type CapturePartStatus = typeof capturePartStatuses[number]
   timestamps: true,
   paranoid: true,
   })
-class CapturePart extends Model {
+class CapturePart extends Model<
+  CapturePartAttributes,
+  Optional<
+    CapturePartAttributes,
+    'id' | 'capture' | 'status' | 'payload' | 'currentRetryCount' | 'deletedFromDownloads'
+  >
+> implements CapturePartAttributes {
+  id!: number
+
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'pending' as CapturePartStatus,
     validate: {isIn: [capturePartStatuses]},
   })
-  status!: string
+  status!: CapturePartStatus
 
   @Column({
     type: DataTypes.STRING,

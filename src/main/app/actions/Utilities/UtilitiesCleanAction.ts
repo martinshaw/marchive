@@ -11,7 +11,7 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import {sequelize} from '../../../database'
-import { rootPath } from 'paths'
+import { rootPath } from '../../../../paths'
 
 const UtilitiesCleanAction = async (
   database: boolean = false,

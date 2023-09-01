@@ -8,16 +8,24 @@ Modified: 2023-08-02T02:29:08.035Z
 
 Description: description
 */
-
+import fs from 'node:fs'
 import {Capture, CapturePart, Schedule, Source} from '../../database'
+import imageType, { ImageTypeResult } from 'image-type'
 
 export type DataProviderSerializedType = {
   identifier: string
   name: string
+  description: string
+  iconInformation: BaseDataProviderIconInformationReturnType
 }
 
 export type AllowedScheduleIntervalReturnType = {
   onlyRunOnce?: boolean
+}
+
+export type BaseDataProviderIconInformationReturnType = {
+  filePath: string
+  shouldInvertOnDarkMode: boolean
 }
 
 abstract class BaseDataProvider {
@@ -32,9 +40,14 @@ abstract class BaseDataProvider {
   abstract getName(): string
 
   /**
+   * A short description of what information is archived, analysed, searchable and visualised by this Data Provider
+   */
+  abstract getDescription(): string
+
+  /**
    * Relative path to the visual icon file for this Data Provider
    */
-  abstract getIconFilePath(): string
+  abstract getIconInformation(): BaseDataProviderIconInformationReturnType
 
   /**
    * Determine whether this Data Provider is suitable to capture useful information from the provided URL
@@ -111,10 +124,35 @@ abstract class BaseDataProvider {
    *
    * @returns {DataProviderSerializedType}
    */
-  toJSON(): DataProviderSerializedType {
+  async toJSON(): Promise<DataProviderSerializedType> {
+    const {filePath: iconFilePath, shouldInvertOnDarkMode} = this.getIconInformation()
+
+    let iconDataUrl: string = ''
+    if (iconFilePath !== '' && iconFilePath != null) {
+      const iconImage = fs.readFileSync(iconFilePath)
+      const iconBase64Content = iconImage.toString('base64')
+      const iconDataType = imageType(iconImage)
+
+      if (iconDataType?.mime != null) {
+        iconDataUrl = `data:${iconDataType.mime};base64,${iconBase64Content}`
+      } else {
+        if (iconFilePath.endsWith('.svg')) iconDataUrl = `data:image/svg+xml;base64,${iconBase64Content}`
+        else if (iconFilePath.endsWith('.png')) iconDataUrl = `data:image/png;base64,${iconBase64Content}`
+        else if (iconFilePath.endsWith('.jpg') || iconFilePath.endsWith('.jpeg')) iconDataUrl = `data:image/jpeg;base64,${iconBase64Content}`
+        else if (iconFilePath.endsWith('.gif')) iconDataUrl = `data:image/gif;base64,${iconBase64Content}`
+        else if (iconFilePath.endsWith('.bmp')) iconDataUrl = `data:image/bmp;base64,${iconBase64Content}`
+        else if (iconFilePath.endsWith('.ico')) iconDataUrl = `data:image/x-icon;base64,${iconBase64Content}`
+      }
+    }
+
     return {
       identifier: this.getIdentifier(),
       name: this.getName(),
+      description: this.getDescription(),
+      iconInformation: {
+        filePath: iconDataUrl,
+        shouldInvertOnDarkMode,
+      },
     }
   }
 }

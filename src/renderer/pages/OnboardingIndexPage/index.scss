@@ -1,0 +1,35 @@
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.onboarding__heading {
+  padding: 30px 0;
+  font-weight: 400;
+}
+
+.onboarding__subheading {
+  padding: 30px 0;
+  font-weight: 200;
+}
+
+.onboarding__features {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.onboarding__buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}

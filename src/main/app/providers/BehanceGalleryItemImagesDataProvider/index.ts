@@ -14,7 +14,7 @@ import {Capture, CapturePart, Schedule, Source} from '../../../database'
 import path from 'node:path'
 import fs from 'node:fs'
 import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType} from '../BaseDataProvider'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {v4 as uuidV4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
@@ -38,11 +38,18 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   }
 
   getName(): string {
-    return 'Images from a Behance Gallery Item'
+    return 'Images from a Behance gallery project page'
   }
 
-  getIconFilePath(): string {
-    return 'icon.png'
+  getDescription(): string {
+    return 'Captures all images, tags, comments and metadata from a Behance gallery project page'
+  }
+
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
+    return {
+      filePath: path.join(__dirname, 'icon.png'),
+      shouldInvertOnDarkMode: false,
+    }
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {

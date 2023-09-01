@@ -24,6 +24,8 @@ ipcMain.on('providers.list', async (event) => {
 })
 
 ipcMain.on('providers.validate', async (event, url: string) => {
+  console.log('providers.validate', url)
+
   return ProviderValidateAction(url)
     .then(providers => { event.reply('providers.validate', providers, null) })
     .catch(error => { event.reply('providers.validate', null, error) })

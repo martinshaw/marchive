@@ -13,10 +13,12 @@ import { Button, Card, Icon, InputGroup, Text } from '@blueprintjs/core'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 
 import useValidateUrlWithDataProviders from './hooks/useValidateUrlWithDataProviders'
-import useSubmitNewSource from './hooks/useSubmitNewSource'
+import useCreateNewSource from './hooks/useCreateNewSource'
 
 import './index.scss'
 import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider'
+import useCreateNewSchedule from './hooks/useCreateNewSchedule'
+import { useNavigate } from 'react-router-dom'
 
 const SourceCreatePage = () => {
   const [urlValue, setUrlValue] = useState('')
@@ -27,27 +29,49 @@ const SourceCreatePage = () => {
   } = useValidateUrlWithDataProviders(urlValue)
 
   const {
-    isSubmitting,
+    isCreating: isCreatingSource,
     createdSource,
     errorMessage: sourceErrorMessage,
-    submitNewSource,
-  } = useSubmitNewSource()
+    createNewSource,
+  } = useCreateNewSource()
 
-  // const navigate = useNavigate()
+  const {
+    isCreating: isCreatingSchedule,
+    createdSchedule,
+    errorMessage: scheduleErrorMessage,
+    createNewSchedule,
+  } = useCreateNewSchedule()
+
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (sourceErrorMessage === false) return
-
-    alert(sourceErrorMessage)
-  }, [sourceErrorMessage])
+    if (sourceErrorMessage !== false) alert(sourceErrorMessage)
+    if (scheduleErrorMessage !== false) alert(scheduleErrorMessage)
+  }, [sourceErrorMessage, scheduleErrorMessage])
 
   const handleDataProviderGridItemClick = useCallback(
     (dataProvider: DataProviderSerializedType) => {
+      if (isCreatingSource !== false || createdSource != null) return
       if (validDataProviders.includes(dataProvider) === false) return
-      submitNewSource(urlValue, dataProvider.identifier)
+
+      createNewSource(urlValue, dataProvider.identifier)
     },
     [urlValue, validDataProviders]
   )
+
+  useEffect(() => {
+    if (createdSource == null) return
+
+    createNewSchedule(createdSource.id, null, null)
+  }, [createdSource])
+
+  useEffect(() => {
+    if (createdSchedule == null) return
+
+    navigate(`/sources/${createdSource.id}`)
+  }, [createdSchedule, createdSource, navigate])
+
+  const [hoveredProviderGridItem, setHoveredProviderGridItem] = useState<DataProviderSerializedType | null>(null)
 
   const createSourceFragment = (
     <>
@@ -70,20 +94,30 @@ const SourceCreatePage = () => {
         {validDataProviders.map((dataProvider) => {
           if (dataProvider == null) return null
 
-          console.log(dataProvider)
+          const hoverClassName = 'data-providers__grid__item' + (hoveredProviderGridItem?.identifier === dataProvider.identifier ? '--hover' : (hoveredProviderGridItem != null ? '--not-hover' : ''))
 
           return (
             <Card
               key={dataProvider.identifier}
-              className={`data-providers__grid__item`}
+              interactive={isCreatingSource === false && createdSource == null && isCreatingSchedule === false}
+              className={"data-providers__grid__item " + hoverClassName}
               onClick={() => handleDataProviderGridItemClick(dataProvider)}
+              onMouseEnter={() => setHoveredProviderGridItem(dataProvider)}
+              onMouseLeave={() => setHoveredProviderGridItem(null)}
             >
-              {/* <Icon icon={dataProvider.icon} /> */}
+              <img src={dataProvider.iconInformation.filePath} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'data-providers__grid__item__image--invert' : ''} />
               <Text>{dataProvider.name}</Text>
             </Card>
           )
         })}
       </div>
+
+      <div className="data-providers__description">
+        <Text>
+          {hoveredProviderGridItem != null ? hoveredProviderGridItem.description : ''}
+        </Text>
+      </div>
+
     </>
   )
 

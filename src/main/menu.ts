@@ -1,10 +1,12 @@
 import {
   app,
   Menu,
-  // shell,
+  shell,
   BrowserWindow,
   MenuItemConstructorOptions,
+  dialog,
 } from 'electron';
+import UtilitiesCleanAction from './app/actions/Utilities/UtilitiesCleanAction';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -100,8 +102,49 @@ export default class MenuBuilder {
         },
       ],
     };
-    const subMenuViewDev: MenuItemConstructorOptions = {
-      label: 'View',
+    const subMenuMarchiveUtilities: MenuItemConstructorOptions = {
+      label: 'Utilities',
+      submenu: [
+        {
+          label: 'Clear Database',
+          click: async () => {
+            dialog.showMessageBox(this.mainWindow, {
+              type: 'warning',
+              message: "Are you sure you want to clear the database?",
+              detail: "All of your captured files will remain but information about them will be permanently lost.",
+              buttons: ['Cancel', 'Clear Database'],
+              defaultId: 0,
+              cancelId: 0,
+            })
+              .then(async (result) => {
+                if (result.response === 1) {
+                  await UtilitiesCleanAction(true, false)
+                }
+              })
+          },
+        },
+        {
+          label: 'Clear Database && Delete Downloads Folder',
+          click: async () => {
+            dialog.showMessageBox(this.mainWindow, {
+              type: 'warning',
+              message: "Are you sure you want to clear the database and delete the default downloads folder?",
+              detail: "All of your captured files will be deleted and information about them will be permanently lost.",
+              buttons: ['Cancel', 'Delete Everything'],
+              defaultId: 0,
+              cancelId: 0,
+            })
+              .then(async (result) => {
+                if (result.response === 1) {
+                  await UtilitiesCleanAction(true, true)
+                }
+              })
+          }
+        }
+      ],
+    };
+    const subMenuWindowDev: DarwinMenuItemConstructorOptions = {
+      label: 'Window',
       submenu: [
         {
           label: 'Reload',
@@ -111,23 +154,31 @@ export default class MenuBuilder {
           },
         },
         {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          },
-        },
-        {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
             this.mainWindow.webContents.toggleDevTools();
           },
         },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: 'Ctrl+Command+F',
+          click: () => {
+            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+          },
+        },
+        {
+          label: 'Minimize',
+          accelerator: 'Command+M',
+          selector: 'performMiniaturize:',
+        },
+        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
+        { type: 'separator' },
+        { label: 'Bring All to Front', selector: 'arrangeInFront:' },
       ],
     };
-    const subMenuViewProd: MenuItemConstructorOptions = {
-      label: 'View',
+    const subMenuWindowProd: DarwinMenuItemConstructorOptions = {
+      label: 'Window',
       submenu: [
         {
           label: 'Toggle Full Screen',
@@ -136,11 +187,6 @@ export default class MenuBuilder {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
           },
         },
-      ],
-    };
-    const subMenuWindow: DarwinMenuItemConstructorOptions = {
-      label: 'Window',
-      submenu: [
         {
           label: 'Minimize',
           accelerator: 'Command+M',
@@ -183,14 +229,10 @@ export default class MenuBuilder {
     //   ],
     // };
 
-    const subMenuView =
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-        ? subMenuViewDev
-        : subMenuViewProd;
+    const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
+    const subMenuWindow = isDebug ? subMenuWindowDev : subMenuWindowProd;
 
-    // , subMenuHelp
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow];
+    return [subMenuAbout, subMenuEdit, subMenuMarchiveUtilities, subMenuWindow];
   }
 
   buildDefaultTemplate() {

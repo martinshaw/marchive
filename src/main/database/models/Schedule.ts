@@ -9,12 +9,29 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes} from 'sequelize'
+import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, ForeignKey, BelongsTo, HasMany} from 'sequelize-typescript'
 import {Source, Capture} from '..'
 
 const scheduleStatuses = ['pending', 'processing'] as const
 export type ScheduleStatus = typeof scheduleStatuses[number]
+
+export type ScheduleAttributes = {
+  id: number
+  status: ScheduleStatus
+  interval: number | null
+  lastRunAt: Date | null
+  nextRunAt: Date | null
+  downloadLocation: string
+  enabled: boolean
+  deletedFromDownloads: boolean
+  sourceId: number | undefined
+  source: Source | undefined
+  captures: Array<Capture>
+  createdAt?: Date
+  updatedAt?: Date
+  deletedAt?: Date
+}
 
 @Table({
   tableName: 'schedules',
@@ -22,7 +39,15 @@ export type ScheduleStatus = typeof scheduleStatuses[number]
   timestamps: true,
   paranoid: true,
   })
-class Schedule extends Model {
+class Schedule extends Model<
+  ScheduleAttributes,
+  Optional<
+    ScheduleAttributes,
+    'id' | 'source' | 'captures' | 'status' | 'interval' | 'lastRunAt' | 'nextRunAt' | 'enabled' | 'deletedFromDownloads'
+  >
+> implements ScheduleAttributes {
+  id!: number
+
   @Column({
     type: DataTypes.STRING,
     allowNull: false,

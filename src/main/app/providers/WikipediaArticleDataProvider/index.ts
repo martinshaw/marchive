@@ -13,6 +13,8 @@ import puppeteer, {Browser, Page} from 'puppeteer'
 import BlogArticleDataProvider, {BlogArticleDataProviderLinkType, CountMapOfCommonParentDirectoriesType} from '../BlogArticleDataProvider'
 import {parse as parseHtml} from 'node-html-parser'
 import {sentenceCase} from 'change-case'
+import path from 'node:path'
+import { BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
 
 class WikipediaArticleDataProvider extends BlogArticleDataProvider {
   getIdentifier(): string {
@@ -23,8 +25,15 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
     return 'Wikipedia Article & Related Articles'
   }
 
-  getIconFilePath(): string {
-    return 'wikipedia.png'
+  getDescription(): string {
+    return 'Screenshots and snapshots this Wikipedia article and each of its related articles.'
+  }
+
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
+    return {
+      filePath: path.join(__dirname, 'wikipedia.png'),
+      shouldInvertOnDarkMode: true,
+    }
   }
 
   async determineUrlIsAValidWikipediaUrl(

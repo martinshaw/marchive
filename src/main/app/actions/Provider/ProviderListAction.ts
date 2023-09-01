@@ -11,8 +11,11 @@ Description: description
 import BaseDataProvider, { DataProviderSerializedType } from '../../../app/providers/BaseDataProvider'
 import {getDataProviders} from '../../repositories/DataProviderRepository'
 
-const ProviderListAction = async (): Promise<DataProviderSerializedType[]> => {
-  return getDataProviders().then(providers => providers.map(provider => provider.toJSON()))
-}
+const ProviderListAction = async (): Promise<DataProviderSerializedType[]> =>
+  getDataProviders()
+    .then(providers =>
+      Promise.all(providers.map(provider => provider.toJSON()))
+    )
+
 
 export default ProviderListAction

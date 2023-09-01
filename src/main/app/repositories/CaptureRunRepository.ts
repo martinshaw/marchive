@@ -13,7 +13,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import {Attributes} from 'sequelize'
 import {Capture, Schedule, Source} from '../../database'
-import {ScheduleStatus} from '../../database/models/Schedule'
+import {ScheduleAttributes, ScheduleStatus} from '../../database/models/Schedule'
 import {getDataProviderByIdentifier} from './DataProviderRepository'
 import {downloadsPath} from '../../../paths'
 import logger from '../../log'
@@ -149,14 +149,14 @@ const generateCaptureDownloadDirectory = (schedule: Schedule): string | false =>
 const cleanup = async (schedule: Schedule | null | undefined): Promise<boolean> => {
   if (schedule == null) return true
 
-  const changes: Attributes<Schedule> = {
+  const changes: Partial<ScheduleAttributes> = {
     status: 'pending' as ScheduleStatus,
     lastRunAt: schedule.nextRunAt,
   }
 
   if (schedule.interval != null && Number.isNaN(Number(schedule.interval)) === false && Number(schedule.interval) > 0) {
     const nextRunAt = new Date((new Date()).getTime() + (schedule.interval * 1000))
-    changes.nextRunAt = nextRunAt.toISOString()
+    changes.nextRunAt = nextRunAt
   }
 
   if (schedule.interval == null) changes.nextRunAt = null

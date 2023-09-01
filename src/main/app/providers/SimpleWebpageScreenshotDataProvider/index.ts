@@ -14,7 +14,7 @@ import {Capture, CapturePart, Schedule, Source} from '../../../database'
 import path from 'node:path'
 import fs from 'node:fs'
 import {createPuppeteerBrowser, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import BaseDataProvider, { AllowedScheduleIntervalReturnType } from '../BaseDataProvider'
+import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -25,8 +25,15 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     return 'Simple Webpage Screenshot'
   }
 
-  getIconFilePath(): string {
-    return 'page-layout.svg'
+  getDescription(): string {
+    return 'Captures a simple screenshot of a webpage'
+  }
+
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
+    return {
+      filePath: path.join(__dirname, 'page-layout.svg'),
+      shouldInvertOnDarkMode: true,
+    }
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {

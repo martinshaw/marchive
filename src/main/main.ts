@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import contextMenu from 'electron-context-menu'
 
 import './ipc/captures';
 import './ipc/providers';
@@ -34,8 +35,7 @@ class AppUpdater {
 //   sourceMapSupport.install();
 // }
 
-// const isDebug =
-//   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 // if (isDebug) {
 //   require('electron-debug')();
@@ -94,9 +94,8 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
+      spellcheck: true,
     },
   });
 
@@ -136,6 +135,18 @@ const createWindow = async () => {
   // eslint-disable-next-line
   new AppUpdater();
 };
+
+/**
+ * Electron doesn't offer a usual context menu for input boxes, link etc...
+ * This package adds a context menu to all input boxes, textareas and editable
+ * I will use Blueprint JS's ContextMenu component to create a context menu for custom non-native elements
+ */
+contextMenu({
+	showSaveImageAs: true,
+  showCopyLink: false,
+  showSaveLinkAs: false,
+  showInspectElement: isDebug,
+});
 
 /**
  * Add event listeners...

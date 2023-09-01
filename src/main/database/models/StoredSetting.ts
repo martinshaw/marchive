@@ -9,11 +9,30 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes} from 'sequelize'
+import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column} from 'sequelize-typescript'
 
-const storedSettingTypes = ['string', 'number', 'boolean'] as const
+const storedSettingKeys = [
+  'MARCHIVE_IS_SETUP',
+] as const
+export type StoredSettingKeyType = typeof storedSettingKeys[number]
+
+const storedSettingTypes = [
+  'string',
+  'number',
+  'boolean'
+] as const
 export type StoredSettingTypeType = typeof storedSettingTypes[number]
+
+export type StoredSettingAttributes = {
+  id: number
+  key: StoredSettingKeyType
+  value: string
+  type: StoredSettingTypeType
+  createdAt?: Date
+  updatedAt?: Date
+  deletedAt?: Date
+}
 
 @Table({
   tableName: 'stored_settings',
@@ -21,12 +40,16 @@ export type StoredSettingTypeType = typeof storedSettingTypes[number]
   timestamps: true,
   paranoid: true,
   })
-class StoredSetting extends Model {
+class StoredSetting extends Model<StoredSettingAttributes, Optional<StoredSettingAttributes, 'id'>> implements StoredSettingAttributes {
+  id!: number
+
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
+    validate: {isIn: [storedSettingKeys]},
   })
-  key!: string
+  key!: StoredSettingKeyType
 
   @Column({
     type: DataTypes.STRING,

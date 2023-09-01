@@ -8,16 +8,14 @@ Modified: 2023-08-29T21:25:45.800Z
 
 Description: description
 */
-
-import { Attributes } from 'sequelize'
-import {StoredSetting} from '../../../../database'
 import logger from '../../../../log'
 import { getOrSetStoredSetting } from '../../../../app/repositories/StoredSettingRepository'
+import { StoredSettingAttributes } from 'main/database/models/StoredSetting'
 
 /**
  * @throws {Error}
  */
-const UtilitiesSettingGetAction = async (key: string): Promise<Attributes<StoredSetting> | never> => {
+const UtilitiesSettingGetAction = async (key: string): Promise<StoredSettingAttributes | never> => {
     if (key == null) {
       const errorMessage = 'You must provide a key when getting a setting'
       logger.error(errorMessage)

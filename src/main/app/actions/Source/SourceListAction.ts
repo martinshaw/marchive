@@ -8,10 +8,10 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
+import { SourceAttributes } from 'main/database/models/Source'
 import {Schedule, Source} from '../../../database'
-import { Attributes } from 'sequelize'
 
-const SourceListAction = async (): Promise<Attributes<Source>[]> => {
+const SourceListAction = async (): Promise<SourceAttributes[]> => {
   return Source
     .findAll({
       include: [Schedule],

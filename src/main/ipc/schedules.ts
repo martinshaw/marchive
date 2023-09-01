@@ -14,8 +14,7 @@ import ScheduleCreateAction from '../app/actions/Schedule/ScheduleCreateAction'
 import ScheduleDeleteAction from '../app/actions/Schedule/ScheduleDeleteAction'
 import ScheduleListAction from '../app/actions/Schedule/ScheduleListAction'
 import ScheduleUpdateAction from '../app/actions/Schedule/ScheduleUpdateAction'
-import { Schedule } from '../database'
-import { Attributes } from 'sequelize'
+import { ScheduleAttributes } from 'main/database/models/Schedule'
 
 export type SchedulesChannels =
   | 'schedules.list'
@@ -35,7 +34,7 @@ ipcMain.on('schedules.create', async (event, sourceId: number, intervalInSeconds
     .catch(error => { event.reply('schedules.create', null, error) })
 })
 
-ipcMain.on('schedules.update', async (event, scheduleId: number, requestedChanges: Attributes<Schedule>) => {
+ipcMain.on('schedules.update', async (event, scheduleId: number, requestedChanges: ScheduleAttributes) => {
   return ScheduleUpdateAction(scheduleId, requestedChanges)
     .then(schedule => { event.reply('schedules.update', schedule, null) })
     .catch(error => { event.reply('schedules.update', null, error) })

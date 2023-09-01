@@ -15,13 +15,15 @@ import { validateUrlWithDataProviders } from "../../../app/repositories/DataProv
 /**
  * @throws {Error}
  */
-const ProviderValidateAction = async (url: string): Promise<DataProviderSerializedType[]> => {
-  return validateUrlWithDataProviders(url)
+const ProviderValidateAction = async (url: string): Promise<DataProviderSerializedType[]> =>
+  validateUrlWithDataProviders(url)
     .then(validDataProvidersForUrl =>
-      validDataProvidersForUrl.map(
-        dataProvider => dataProvider.toJSON()
+      Promise.all(
+        validDataProvidersForUrl.map(
+          (dataProvider) => dataProvider.toJSON()
+        )
       )
     )
-}
+    .then(dataProviders => dataProviders.reverse())
 
 export default ProviderValidateAction

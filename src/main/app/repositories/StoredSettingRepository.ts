@@ -10,7 +10,7 @@ Description: description
 */
 
 import {StoredSetting} from '../../database'
-import {StoredSettingTypeType} from '../../database/models/StoredSetting'
+import {StoredSettingKeyType, StoredSettingTypeType} from '../../database/models/StoredSetting'
 
 const determineStoredSettingValueType = (value: string | number | boolean): StoredSettingTypeType => {
   if (value === true || value === false || value === 'true' || value === 'false') return 'boolean'
@@ -19,7 +19,7 @@ const determineStoredSettingValueType = (value: string | number | boolean): Stor
 }
 
 export const getOrSetStoredSetting = async <T = string | number | boolean>(
-  key: string,
+  key: StoredSettingKeyType,
   newValue: T | null = null,
 ): Promise<StoredSetting | null> => {
   const existingStoredSetting = await StoredSetting.findOne({where: {key}})
@@ -44,7 +44,7 @@ export const getOrSetStoredSetting = async <T = string | number | boolean>(
   return null
 }
 
-export const unsetStoredSetting = async (key: string): Promise<boolean> => {
+export const unsetStoredSetting = async (key: StoredSettingKeyType): Promise<boolean> => {
   const existingStoredSetting = await StoredSetting.findOne({where: {key}})
   if (existingStoredSetting == null) return false
   await existingStoredSetting.destroy()
@@ -52,7 +52,7 @@ export const unsetStoredSetting = async (key: string): Promise<boolean> => {
 }
 
 export const getStoredSettingValue = async (
-  key: string,
+  key: StoredSettingKeyType,
 ): Promise<string | number | boolean | null> => {
   const storedSetting = await getOrSetStoredSetting(key)
   if (storedSetting == null) return null
@@ -68,7 +68,7 @@ export const getStoredSettingValue = async (
 }
 
 export const setStoredSettingValue = async (
-  key: string,
+  key: StoredSettingKeyType,
   value: string | number | boolean,
 ): Promise<string | number | boolean | null> => {
   const storedSetting = await getOrSetStoredSetting(key, value)

@@ -9,12 +9,25 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes} from 'sequelize'
+import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, HasMany} from 'sequelize-typescript'
 import Schedule from './Schedule'
 
 const sourceUseStartOrEndCursorValues = ['start', 'end', null] as const
 export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCursorValues[number] | null
+
+export type SourceAttributes = {
+  id: number
+  dataProviderIdentifier: string
+  url: string
+  currentStartCursorUrl: string | null
+  currentEndCursorUrl: string | null
+  useStartOrEndCursor: SourceUseStartOrEndCursorValueType
+  schedules: Array<Schedule>
+  createdAt?: Date
+  updatedAt?: Date
+  deletedAt?: Date
+}
 
 @Table({
   tableName: 'sources',
@@ -22,7 +35,15 @@ export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCurso
   timestamps: true,
   paranoid: true,
   })
-class Source extends Model {
+class Source extends Model<
+  SourceAttributes,
+  Optional<
+    SourceAttributes,
+    'id' | 'schedules' | 'useStartOrEndCursor'
+  >
+> implements SourceAttributes {
+  id!: number
+
   @Column({
     type: DataTypes.STRING,
     allowNull: false,

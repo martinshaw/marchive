@@ -13,8 +13,9 @@ import {Source} from '../../../database'
 import logger from '../../../log'
 import BaseDataProvider from '../../../app/providers/BaseDataProvider'
 import { Attributes } from 'sequelize'
+import { SourceAttributes, SourceUseStartOrEndCursorValueType } from 'main/database/models/Source'
 
-const SourceCreateAction = async (url: string, dataProviderIdentifier: string): Promise<Attributes<Source>> => {
+const SourceCreateAction = async (url: string, dataProviderIdentifier: string): Promise<SourceAttributes> => {
   let validDataProvidersForUrl = await validateUrlWithDataProviders(url)
   if (validDataProvidersForUrl.length === 0) {
     const errorMessage = `No Data Providers available for ${url}`
@@ -37,7 +38,7 @@ const SourceCreateAction = async (url: string, dataProviderIdentifier: string): 
     url: url.toString(),
     currentStartCursorUrl: null,
     currentEndCursorUrl: null,
-    useStartOrEndCursor: null,
+    useStartOrEndCursor: null as SourceUseStartOrEndCursorValueType,
   })
 
   logger.info(`Created new Source with ID ${source.id}`)

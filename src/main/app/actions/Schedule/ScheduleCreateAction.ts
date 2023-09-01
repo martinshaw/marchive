@@ -16,7 +16,7 @@ import {downloadsPath as defaultDownloadsPath} from '../../../../paths'
 import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
 import {AllowedScheduleIntervalReturnType} from '../../providers/BaseDataProvider'
 import logger from '../../../log'
-import { Attributes } from 'sequelize'
+import { ScheduleAttributes } from 'main/database/models/Schedule'
 
 /**
  * @throws {Error}
@@ -25,7 +25,7 @@ const ScheduleCreateAction = async (
   sourceId: number,
   intervalInSeconds: number | null,
   downloadLocation: string | null = null,
-): Promise<Attributes<Schedule> | never> => {
+): Promise<ScheduleAttributes | never> => {
   const source = await Source.findByPk(sourceId)
   if (source == null) {
     const errorMessage = `No source found with id: ${sourceId}`
