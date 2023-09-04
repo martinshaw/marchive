@@ -29,25 +29,27 @@ sequelize.addModels([
   CapturePart,
 ])
 
-StoredSetting.sync()
-Source.sync()
-SourceDomain.sync()
-Schedule.sync()
-Capture.sync()
-CapturePart.sync()
+/**
+ * Before implementing migrations with umzug, we were using the following code to create
+ *   the tables using the implicit schema from the model files
+ */
+// StoredSetting.sync()
+// Source.sync()
+// SourceDomain.sync()
+// Schedule.sync()
+// Capture.sync()
+// CapturePart.sync()
 
-// console.log('umzug migrations path glob ', path.join(__dirname, 'migrations', '*'))
+const umzug = new Umzug({
+  migrations: { glob: path.join(__dirname, 'migrations', '*') },
+  context: sequelize.getQueryInterface(),
+  storage: new SequelizeStorage({ sequelize }),
+  logger: console,
+});
 
-// const umzug = new Umzug({
-//   migrations: { glob: path.join(__dirname, 'migrations', '*') },
-//   context: sequelize.getQueryInterface(),
-//   storage: new SequelizeStorage({ sequelize }),
-//   logger: console,
-// });
+(async () => { await umzug.up() })();
 
-// (async () => { await umzug.up() })();
-
-// export type Migration = typeof umzug._types.migration;
+export type Migration = typeof umzug._types.migration;
 export {
   sequelize,
   StoredSetting,
