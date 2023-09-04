@@ -1,0 +1,40 @@
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.onboarding__heading {
+  padding: 30px 15px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.onboarding__subheading {
+  padding: 30px 15px;
+  font-weight: 200;
+  text-align: center;
+  line-height: 1.6 !important;
+}
+
+.onboarding__features {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.onboarding__buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}

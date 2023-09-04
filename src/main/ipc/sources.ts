@@ -9,55 +9,30 @@ Modified: 2023-08-01T21:00:20.815Z
 Description: description
 */
 
-import { ipcMain } from 'electron';
+import { ipcMain } from 'electron'
+import SourceListAction from '../app/actions/Source/SourceListAction'
+import SourceCreateAction from '../app/actions/Source/SourceCreateAction'
+import SourceDeleteAction from '../app/actions/Source/SourceDeleteAction'
 
-// ipcMain.on('sources.get-source-providers', async (event) => {
-//   const sourceProviders = await getSourceProviders();
+export type SourcesChannels =
+  | 'sources.list'
+  | 'sources.create'
+  | 'sources.delete'
 
-//   event.reply(
-//     'sources.get-source-providers',
-//     sourceProviders.map((sourceProvider) => sourceProvider.toObject())
-//   );
-// });
+ipcMain.on('sources.list', async (event) => {
+  return SourceListAction()
+    .then(sources => { event.reply('sources.list', sources, null) })
+    .catch(error => { event.reply('sources.list', null, error) })
+})
 
-// ipcMain.on('sources.validate-url-with-source-providers', async (event, url) => {
-//   event.reply(
-//     'sources.validate-url-with-source-providers',
-//     await validateUrlWithSourceProviders(url)
-//   );
-// });
+ipcMain.on('sources.create', async (event, url: string, dataProviderIdentifier: string) => {
+  return SourceCreateAction(url, dataProviderIdentifier)
+    .then(source => { event.reply('sources.create', source, null) })
+    .catch(error => { event.reply('sources.create', null, error) })
+})
 
-// ipcMain.on('sources.submit-new-source', async (event, url) => {
-//   const validSourceProvidersForUrl = await validateUrlWithSourceProviders(url);
-
-//   if (validSourceProvidersForUrl.length === 0) {
-//     event.reply(
-//       'sources.submit-new-source',
-//       null,
-//       'No valid source providers for URL'
-//     );
-//     return;
-//   }
-
-//   const sourceProvider = await getSourceProviderByIdentifier(
-//     validSourceProvidersForUrl[validSourceProvidersForUrl.length - 1]
-//   );
-
-//   if (sourceProvider == null) {
-//     event.reply(
-//       'sources.submit-new-source',
-//       null,
-//       'No valid source provider found'
-//     );
-//     return;
-//   }
-
-//   const newSource = await createSource(sourceProvider.getIdentifier(), url);
-
-//   event.reply('sources.submit-new-source', newSource, null);
-// });
-
-// ipcMain.on('sources.get-sources', async (event) => {
-//   const sources = await Source.findAll();
-//   event.reply('sources.get-sources', sources);
-// });
+ipcMain.on('sources.delete', async (event, sourceId: number) => {
+  return SourceDeleteAction(sourceId)
+    .then(source => { event.reply('sources.delete', source, null) })
+    .catch(error => { event.reply('sources.delete', null, error) })
+})

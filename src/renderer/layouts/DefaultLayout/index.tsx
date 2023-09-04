@@ -9,43 +9,66 @@ Modified: 2023-08-01T19:56:36.606Z
 Description: description
 */
 
-import { ReactNode } from 'react';
 import { Button, Navbar } from '@blueprintjs/core';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import isDarkMode from './functions/isDarkMode';
+import marchiveIsSetup from './functions/marchiveIsSetup';
+import { useAsyncMemo } from "use-async-memo"
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 
-import useIsDarkMode from './hooks/useIsDarkMode';
+const DefaultLayout = () => {
 
-const DefaultLayout = ({ children }: { children: ReactNode }) => {
-  const isDarkMode = useIsDarkMode();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const loaderData: {
+    isDarkMode: boolean,
+    marchiveIsSetup: boolean | null
+  } = useAsyncMemo(
+    async () => ({
+      isDarkMode: await isDarkMode(),
+      marchiveIsSetup: await marchiveIsSetup(),
+    }),
+    [location]
+  ) ?? {
+    isDarkMode: false,
+    marchiveIsSetup: null,
+  }
+
+  useEffect(() => {
+    if (loaderData.marchiveIsSetup === false) navigate('/onboarding');
+  }, [loaderData.marchiveIsSetup, navigate]);
 
   return (
-    <div id="layout" className={isDarkMode ? 'bp5-dark' : ''}>
-      <Navbar id="navbar">
-        <Navbar.Group>
-          <NavLink to="/yesterday">
-            {({ isActive }) => (
-              <Button active={isActive} icon="history" text="Yesterday" />
-            )}
-          </NavLink>
-          <NavLink to="/">
-            {({ isActive }) => (
-              <Button active={isActive} icon="calendar" text="Today" />
-            )}
-          </NavLink>
-          <NavLink to="/schedules">
-            {({ isActive }) => (
-              <Button active={isActive} icon="database" text="Schedules" />
-            )}
-          </NavLink>
-        </Navbar.Group>
-      </Navbar>
+    <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
+      {loaderData.marchiveIsSetup === true &&
+        <Navbar id="navbar">
+          <Navbar.Group>
+            <NavLink to="/yesterday">
+              {({ isActive }) => (
+                <Button active={isActive} icon="history" text="Yesterday" />
+              )}
+            </NavLink>
+            <NavLink to="/today">
+              {({ isActive }) => (
+                <Button active={isActive} icon="calendar" text="Today" />
+              )}
+            </NavLink>
+            <NavLink to="/sources">
+              {({ isActive }) => (
+                <Button active={isActive} icon="plus" text="Add" />
+              )}
+            </NavLink>
+          </Navbar.Group>
+        </Navbar>
+      }
 
-      <div id="page">{children}</div>
+      <div id="page"><Outlet /></div>
     </div>
   );
 };
