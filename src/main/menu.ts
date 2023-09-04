@@ -119,6 +119,7 @@ export default class MenuBuilder {
               .then(async (result) => {
                 if (result.response === 1) {
                   await UtilitiesCleanAction(true, false)
+                  this.mainWindow.reload()
                 }
               })
           },
@@ -137,6 +138,7 @@ export default class MenuBuilder {
               .then(async (result) => {
                 if (result.response === 1) {
                   await UtilitiesCleanAction(true, true)
+                  this.mainWindow.reload()
                 }
               })
           }

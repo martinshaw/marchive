@@ -10,10 +10,10 @@ Description: description
 */
 
 import path from 'node:path'
-import {Sequelize} from 'sequelize-typescript'
-import {rootPath} from '../../paths'
+import { userAppDataPath } from '../../paths';
+import { Sequelize } from 'sequelize-typescript'
 
-const databasePath = path.join(rootPath, 'database.db')
+const databasePath = path.join(userAppDataPath, 'database.db')
 
 const sequelize = new Sequelize(
   {

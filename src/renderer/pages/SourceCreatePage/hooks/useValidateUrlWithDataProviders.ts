@@ -17,20 +17,24 @@ const useValidateUrlWithDataProviders = (url: string) => {
   const debouncedUrlValue = useDebounce(url, 700)
 
   const [validDataProviders, setValidDataProviders] = useState<DataProviderSerializedType[]>([])
+  const [loadingValidDataProviders, setLoadingValidDataProviders] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | false>(false)
 
   useEffect(() => {
     setValidDataProviders([])
+    setLoadingValidDataProviders(true)
     setErrorMessage(false)
 
     window.electron.ipcRenderer.once('providers.validate', (validDataProvidersValue, errors) => {
       if (errors != null) {
         setValidDataProviders([])
+        setLoadingValidDataProviders(false)
         setErrorMessage((errors as Error).message)
         return
       }
 
       setValidDataProviders(validDataProvidersValue as DataProviderSerializedType[])
+      setLoadingValidDataProviders(false)
       setErrorMessage(false)
     })
 
@@ -41,6 +45,7 @@ const useValidateUrlWithDataProviders = (url: string) => {
 
   return {
     validDataProviders,
+    loadingValidDataProviders,
     errorMessage
   }
 }

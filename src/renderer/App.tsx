@@ -1,12 +1,11 @@
-import { MemoryRouter as Router, Routes, Route, RouterProvider, createMemoryRouter } from 'react-router-dom';
-
-import DefaultLayout from './layouts/DefaultLayout';
+import { MemoryRouter as Router, Routes, Route, RouterProvider, createMemoryRouter, createBrowserRouter, createHashRouter } from 'react-router-dom';
 
 import YesterdayPage from './pages/YesterdayPage';
 import TodayPage from './pages/TodayPage';
-import SourceIndexPage from './pages/SourceIndexPage';
-import SourceCreatePage from './pages/SourceCreatePage';
+import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
+import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
 import OnboardingIndexPage from './pages/OnboardingIndexPage';
+import DefaultLayout from './layouts/DefaultLayout';
 
 const App = () => {
   return (
@@ -30,12 +29,12 @@ const App = () => {
             },
             {
               path: '/sources',
-              // TODO: See TODO comment in SourceIndexPage
-              // loader: SourceIndexPageLoader,
+              loader: SourceIndexPageLoader,
               element: <SourceIndexPage />
             },
             {
               path: '/sources/create',
+              loader: sourceCreatePageDataLoader,
               element: <SourceCreatePage />
             },
             {

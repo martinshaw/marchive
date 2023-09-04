@@ -9,9 +9,8 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import fs from 'node:fs'
-import path from 'node:path'
 import {sequelize} from '../../../database'
-import { rootPath } from '../../../../paths'
+import { downloadCapturesPath } from '../../../../paths'
 
 const UtilitiesCleanAction = async (
   database: boolean = false,
@@ -33,36 +32,17 @@ const cleanDatabase = async (): Promise<unknown[]> => {
 }
 
 const cleanDownloads = async (): Promise<void> => {
-  await deleteFilesAndDirectories(['downloads'])
-  await createFilesAndDirectories(['downloads'], ['downloads/.gitkeep'])
-}
+  fs.rmSync(downloadCapturesPath, {recursive: true})
+  if (fs.existsSync(downloadCapturesPath)) {
+    console.error('Failed to delete capture downloads directory')
+    return
+  }
 
-const deleteFilesAndDirectories = async (filesAndDirectories: string[]): Promise<void> => {
-  filesAndDirectories.forEach(file => {
-    const absolutePath = path.join(rootPath, file)
-
-    if (fs.existsSync(absolutePath)) fs.rmSync(absolutePath, {recursive: true})
-    if (fs.existsSync(absolutePath)) console.error(`Failed to delete ${file}`)
-  })
-}
-
-const createFilesAndDirectories = async (directories: string[], files: string[]): Promise<void> => {
-  directories.forEach(directory => {
-    const absolutePath = path.join(rootPath, directory)
-
-    if (fs.existsSync(absolutePath) === false) fs.mkdirSync(absolutePath, {recursive: true})
-    if (fs.existsSync(absolutePath) === false) console.error(`Failed to create ${directory}`)
-    if (fs.lstatSync(absolutePath).isDirectory() === false) console.error(`${directory} is not a directory`)
-  })
-
-  files.forEach(file => {
-    const absolutePath = path.join(rootPath, file)
-
-    if (fs.existsSync(absolutePath)) fs.utimesSync(absolutePath, new Date(), new Date())
-    else fs.writeFileSync(absolutePath, '')
-
-    if (fs.existsSync(absolutePath) === false) console.error(`Failed to touch ${file}`)
-  })
+  fs.mkdirSync(downloadCapturesPath, {recursive: true})
+  if (fs.existsSync(downloadCapturesPath) === false) {
+    console.error('Failed to recreate capture downloads directory')
+    return
+  }
 }
 
 export default UtilitiesCleanAction

@@ -11,11 +11,10 @@ Description: description
 
 import path from 'node:path'
 import fs from 'node:fs'
-import {Attributes} from 'sequelize'
 import {Capture, Schedule, Source} from '../../database'
 import {ScheduleAttributes, ScheduleStatus} from '../../database/models/Schedule'
 import {getDataProviderByIdentifier} from './DataProviderRepository'
-import {downloadsPath} from '../../../paths'
+import {downloadCapturesPath} from '../../../paths'
 import logger from '../../log'
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
@@ -121,11 +120,11 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
 }
 
 const ensureDownloadsDirectoryExists = (): boolean => {
-  if (fs.existsSync(downloadsPath) === false) {
-    fs.mkdirSync(downloadsPath, {recursive: true})
+  if (fs.existsSync(downloadCapturesPath) === false) {
+    fs.mkdirSync(downloadCapturesPath, {recursive: true})
   }
 
-  return fs.lstatSync(downloadsPath).isDirectory()
+  return fs.lstatSync(downloadCapturesPath).isDirectory()
 }
 
 const ensureScheduleDownloadLocationExists = (schedule: Schedule): boolean => {

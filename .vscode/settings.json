@@ -26,5 +26,39 @@
     "test/**/__snapshots__": true,
     "package-lock.json": true,
     "*.{css,sass,scss}.d.ts": true
-  }
+  },
+
+  // From martinshaw/.vscode
+  "[php]": {
+    "powerHeader.template": "<?php\\n/**\\n * All Rights Reserved, (c) $CURRENT_YEAR CodeAtlas LTD.\\n * \\n * Author: <author> (<email>)\\n * File Name: $TM_FILENAME\\n * Created:  !created_date!\\n * Modified: !modified_date!\\n * \\n * Description: ${1:description}\\n */\\n",
+    "powerHeader.commentMode": "raw",
+    "powerHeader.update.enable": "save",
+  },
+  "powerHeader.autoInsert.enable": true,
+  "powerHeader.autoInsert.allow": "none",
+  "powerHeader.autoInsert.languages": [
+      "plaintext",
+      "Log",
+      "php",
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+  ],
+  "powerHeader.commentMode": "block",
+  "powerHeader.newLines": 1,
+  "powerHeader.template": "\\nAll Rights Reserved, (c) $CURRENT_YEAR CodeAtlas LTD.\\n\\nAuthor: <author> (<email>)\\nFile Name: $TM_FILENAME\\nCreated:  !created_date!\\nModified: !modified_date!\\n\\nDescription: ${1:description}\\n",
+  "powerHeader.variables": [
+      "<author>='Martin Shaw'",
+      "<email>=\"developer@martinshaw.co\"",
+      "!created_date!=new Date().toISOString()",
+      "!modified_date!=new Date().toISOString()"
+  ],
+  "powerHeader.update.enable": "manual",
+  "powerHeader.update.content": [
+      "Modified:\\s+(.+)=!modified_date!"
+  ],
+  "editor.stickyScroll.enabled": true,
+  "git.autofetch": true,
+  "extensions.ignoreRecommendations": false,
 }

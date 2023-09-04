@@ -14,6 +14,9 @@ import { Source } from '../../../../main/database';
 import { Attributes } from 'sequelize';
 import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider';
 
+/**
+ * @deprecated Use `getDataProviders` async method instead
+ */
 const useGetDataProviders = () => {
   const [dataProviders, setDataProviders] = useState<DataProviderSerializedType[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | false>(false);

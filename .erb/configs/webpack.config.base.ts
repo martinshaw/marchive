@@ -5,10 +5,14 @@
 import webpack from 'webpack';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpackPaths from './webpack.paths';
-import { dependencies as externals } from '../../release/app/package.json';
+import { dependencies as externals, name as appName } from '../../release/app/package.json';
+// import nodeExternals from 'webpack-node-externals';
 
 const configuration: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
+  externals: [
+    ...Object.keys(externals || {}),
+    // nodeExternals(),
+  ],
 
   stats: 'errors-only',
 
@@ -51,6 +55,7 @@ const configuration: webpack.Configuration = {
 
   plugins: [
     new webpack.EnvironmentPlugin({
+      APP_NAME: appName,
       NODE_ENV: 'production',
     }),
   ],

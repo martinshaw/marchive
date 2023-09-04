@@ -17,5 +17,4 @@ const ProviderListAction = async (): Promise<DataProviderSerializedType[]> =>
       Promise.all(providers.map(provider => provider.toJSON()))
     )
 
-
 export default ProviderListAction

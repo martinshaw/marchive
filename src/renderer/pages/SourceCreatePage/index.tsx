@@ -11,20 +11,31 @@ Description: description
 
 import { Button, Card, Icon, InputGroup, Text } from '@blueprintjs/core'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-
 import useValidateUrlWithDataProviders from './hooks/useValidateUrlWithDataProviders'
 import useCreateNewSource from './hooks/useCreateNewSource'
-
-import './index.scss'
 import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider'
 import useCreateNewSchedule from './hooks/useCreateNewSchedule'
-import { useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
+import SourceCreatePageExampleSourceGallery from './components/SourceCreatePageExampleSourceGallery'
+import SourceCreatePageDataProviderOptionsGrid from './components/SourceCreatePageDataProviderOptionsGrid'
+import SourceCreatePageDataProviderOptionsNotFoundMessage from './components/SourceCreatePageDataProviderOptionsNotFoundMessage'
+import SourceCreatePageDataProviderOptionsLoadingMessage from './components/SourceCreatePageDataProviderOptionsLoadingMessage'
+import marchiveIsSetup from '../../layouts/DefaultLayout/functions/marchiveIsSetup'
+
+import './index.scss'
+
+export const sourceCreatePageDataLoader = async () => ({
+  marchiveIsSetup: await marchiveIsSetup(),
+})
 
 const SourceCreatePage = () => {
-  const [urlValue, setUrlValue] = useState('')
+  const loaderData = useLoaderData() as { marchiveIsSetup: boolean }
+
+  const [urlValue, setUrlValue] = useState<string>('')
 
   const {
     validDataProviders,
+    loadingValidDataProviders,
     errorMessage
   } = useValidateUrlWithDataProviders(urlValue)
 
@@ -66,12 +77,20 @@ const SourceCreatePage = () => {
   }, [createdSource])
 
   useEffect(() => {
-    if (createdSchedule == null) return
+    if (createdSchedule == null || createdSource == null) return
 
-    navigate(`/sources/${createdSource.id}`)
-  }, [createdSchedule, createdSource, navigate])
+    if (loaderData.marchiveIsSetup === false)
+      marchiveIsSetup(true).then(() => { setTimeout(() => {navigate(`/sources`)}, 1500) })
+    else
+      navigate(`/sources`)
 
-  const [hoveredProviderGridItem, setHoveredProviderGridItem] = useState<DataProviderSerializedType | null>(null)
+  }, [createdSchedule, createdSource, navigate, loaderData.marchiveIsSetup])
+
+  const handleOnExampleSourceSelected = useCallback((url: string, dataProviderIdentifier: string) => {
+    if (isCreatingSource !== false || createdSource != null) return
+
+    createNewSource(url, dataProviderIdentifier)
+  }, [])
 
   const createSourceFragment = (
     <>
@@ -90,33 +109,29 @@ const SourceCreatePage = () => {
         />
       </div>
 
-      <div className="data-providers__grid">
-        {validDataProviders.map((dataProvider) => {
-          if (dataProvider == null) return null
+      {urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length > 0 &&
+        <SourceCreatePageDataProviderOptionsGrid
+          dataProviders={validDataProviders}
+          isInteractive={isCreatingSource === false && createdSource == null && isCreatingSchedule === false}
+          onDataProviderOptionSelected={handleDataProviderGridItemClick}
+        />
+      }
 
-          const hoverClassName = 'data-providers__grid__item' + (hoveredProviderGridItem?.identifier === dataProvider.identifier ? '--hover' : (hoveredProviderGridItem != null ? '--not-hover' : ''))
+      {urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length === 0 &&
+        <SourceCreatePageDataProviderOptionsNotFoundMessage
+          onResetUrlValue={() => setUrlValue('')}
+        />
+      }
 
-          return (
-            <Card
-              key={dataProvider.identifier}
-              interactive={isCreatingSource === false && createdSource == null && isCreatingSchedule === false}
-              className={"data-providers__grid__item " + hoverClassName}
-              onClick={() => handleDataProviderGridItemClick(dataProvider)}
-              onMouseEnter={() => setHoveredProviderGridItem(dataProvider)}
-              onMouseLeave={() => setHoveredProviderGridItem(null)}
-            >
-              <img src={dataProvider.iconInformation.filePath} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'data-providers__grid__item__image--invert' : ''} />
-              <Text>{dataProvider.name}</Text>
-            </Card>
-          )
-        })}
-      </div>
+      {urlValue !== '' && loadingValidDataProviders && validDataProviders.length === 0 &&
+        <SourceCreatePageDataProviderOptionsLoadingMessage />
+      }
 
-      <div className="data-providers__description">
-        <Text>
-          {hoveredProviderGridItem != null ? hoveredProviderGridItem.description : ''}
-        </Text>
-      </div>
+      {urlValue === '' &&
+        <SourceCreatePageExampleSourceGallery
+          onExampleSourceSelected={handleOnExampleSourceSelected}
+        />
+      }
 
     </>
   )

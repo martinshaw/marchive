@@ -1,3 +1,26 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "EditorConfig.EditorConfig"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+
+    // From martinshaw/.vscode
+    "epivision.vscode-file-header",
+    "aaron-bond.better-comments",
+    "sleistner.vscode-fileutils",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+    "tamasfe.even-better-toml",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "github.vscode-pull-request-github",
+    "ms-vsliveshare.vsliveshare",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode-remote.remote-ssh-edit",
+    "ms-vscode.remote-explorer",
+    "syler.sass-indented",
+    "tomoki1207.pdf",
+    "planbcoding.vscode-react-refactor",
+
+    "george-alisson.html-preview-vscode",
+  ],
 }

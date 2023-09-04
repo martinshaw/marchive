@@ -13,7 +13,6 @@ import puppeteer, {Browser, Page} from 'puppeteer'
 import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import path from 'node:path'
 import fs, {link} from 'node:fs'
-import {resourcesPath, rootPath} from '../../../../paths'
 import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 // @ts-ignore

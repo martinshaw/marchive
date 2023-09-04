@@ -10,10 +10,11 @@ Description: description
 */
 
 import { Button, Navbar } from '@blueprintjs/core';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import useIsDarkMode from './hooks/useIsDarkMode';
-import useMarchiveIsSetup from './hooks/useMarchiveIsSetup';
-import { useEffect } from 'react';
+import { NavLink, Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import isDarkMode from './functions/isDarkMode';
+import marchiveIsSetup from './functions/marchiveIsSetup';
+import { useAsyncMemo } from "use-async-memo"
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -21,17 +22,31 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 
 const DefaultLayout = () => {
-  const isDarkMode = useIsDarkMode();
-  const marchiveIsSetup = useMarchiveIsSetup();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const loaderData: {
+    isDarkMode: boolean,
+    marchiveIsSetup: boolean | null
+  } = useAsyncMemo(
+    async () => ({
+      isDarkMode: await isDarkMode(),
+      marchiveIsSetup: await marchiveIsSetup(),
+    }),
+    [location]
+  ) ?? {
+    isDarkMode: false,
+    marchiveIsSetup: null,
+  }
+
   useEffect(() => {
-    if (marchiveIsSetup === false) navigate('/onboarding');
-  }, [marchiveIsSetup, navigate]);
+    if (loaderData.marchiveIsSetup === false) navigate('/onboarding');
+  }, [loaderData.marchiveIsSetup, navigate]);
 
   return (
-    <div id="layout" className={isDarkMode ? 'bp5-dark' : ''}>
-      {marchiveIsSetup === true &&
+    <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
+      {loaderData.marchiveIsSetup === true &&
         <Navbar id="navbar">
           <Navbar.Group>
             <NavLink to="/yesterday">

@@ -20,40 +20,38 @@ import { ReactNode, useRef, useState } from 'react';
 import { SourceAttributes } from 'main/database/models/Source';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import { List, ListRowRenderer } from 'react-virtualized';
+import getSources from './functions/getSources';
+import getDataProviders from './functions/getDataProviders';
 
-/**
- * TODO: We should probably migrate to using React Dom Router's loader functionality, but this would require rewriting
- *   and refactoring the custom hooks which call and wait for response from IPC channels.
- *
- * Doing so would improve responsiveness - when a form is submitted, the data would change.
- *
- * We would need to return promises which resolve when we get an IPC channel reply
- */
+type SourceIndexPageLoaderReturnType = {
+  sources: SourceAttributes[],
+  sourcesErrorMessage: string | false,
+  dataProviders: DataProviderSerializedType[],
+  dataProvidersErrorMessage: string | false,
+}
 
-// type SourceIndexPageLoaderReturnType = {
-//   sources: SourceAttributes[],
-//   sourcesErrorMessage: string | false,
-//   dataProviders: DataProviderSerializedType[],
-//   dataProvidersErrorMessage: string | false,
-// }
+export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderReturnType> => {
+  let sources: SourceAttributes[] = [];
+  let sourcesErrorMessage: string | false = false;
+  let dataProviders: DataProviderSerializedType[] = [];
+  let dataProvidersErrorMessage: string | false = false;
 
-// export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderReturnType> => {
-//   const {sources, errorMessage: sourcesErrorMessage} = useGetSources();
-//   const {dataProviders, errorMessage: dataProvidersErrorMessage} = useGetDataProviders();
+  try { sources = await getSources(); }
+  catch (errorMessage) { sourcesErrorMessage = errorMessage as string; }
 
-//   return {
-//     sources,
-//     sourcesErrorMessage,
-//     dataProviders,
-//     dataProvidersErrorMessage,
-//   }
-// }
+  try { dataProviders = await getDataProviders(); }
+  catch (errorMessage) { dataProvidersErrorMessage = errorMessage as string; }
+
+  return {
+    sources,
+    sourcesErrorMessage,
+    dataProviders,
+    dataProvidersErrorMessage,
+  }
+}
 
 const SourceIndexPage = () => {
-  // const { sources, sourcesErrorMessage, dataProviders, dataProvidersErrorMessage } = useLoaderData() as SourceIndexPageLoaderReturnType
-
-  const { sources, errorMessage: sourcesErrorMessage } = useGetSources();
-  const { dataProviders, errorMessage: dataProvidersErrorMessage } = useGetDataProviders();
+  const { sources, sourcesErrorMessage, dataProviders, dataProvidersErrorMessage } = useLoaderData() as SourceIndexPageLoaderReturnType
 
   const [hoveredSourceListItem, setHoveredSourceListItem] = useState<SourceAttributes | null>(null)
 

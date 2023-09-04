@@ -12,6 +12,9 @@ Description: description
 import { useEffect, useState } from 'react';
 import { SourceAttributes } from 'main/database/models/Source';
 
+/**
+ * @deprecated Use `getSources` async method instead
+ */
 const useGetSources = () => {
   const [sources, setSources] = useState<SourceAttributes[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | false>(false);

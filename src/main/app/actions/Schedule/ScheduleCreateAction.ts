@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import {Schedule, Source} from '../../../database'
 import slugify from 'slugify'
-import {downloadsPath as defaultDownloadsPath} from '../../../../paths'
+import {downloadCapturesPath as defaultDownloadCapturesPath} from '../../../../paths'
 import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
 import {AllowedScheduleIntervalReturnType} from '../../providers/BaseDataProvider'
 import logger from '../../../log'
@@ -52,7 +52,7 @@ const ScheduleCreateAction = async (
   }
 
   downloadLocation = path.join(
-    downloadLocation == null ? defaultDownloadsPath : downloadLocation,
+    downloadLocation == null ? defaultDownloadCapturesPath : downloadLocation,
     slugify(source.url.toString(), {
       replacement: '_',
       lower: true,

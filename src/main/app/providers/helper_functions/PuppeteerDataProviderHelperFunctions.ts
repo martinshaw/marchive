@@ -11,12 +11,12 @@ Description: description
 
 import fs from 'node:fs'
 import path from 'node:path'
-import {rootPath} from '../../../../paths'
 import {Browser, Page} from 'puppeteer'
 import puppeteer from 'puppeteer-extra'
 import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
+import { internalNodeModulesPath } from '../../../../paths'
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = false,
@@ -26,13 +26,7 @@ export const createPuppeteerBrowser = async (
 ): Promise<Browser> => {
   // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
   const extensionFileNames = [
-    withPopUpOffExtension ?
-      path.join(
-        rootPath,
-        'node_modules',
-        'popupoff-headless',
-      ) :
-      null,
+    withPopUpOffExtension ? path.join(internalNodeModulesPath, 'popupoff-headless') : null,
   ].filter(filename => filename !== null)
 
   const listOfExtensionfileNames = extensionFileNames.join(',')

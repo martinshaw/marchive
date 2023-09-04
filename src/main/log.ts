@@ -10,39 +10,21 @@ Description: description
 */
 
 import { createLogger, format, transports } from 'winston'
-import { rootPath } from '../paths'
+import { appLogsPath } from '../paths'
 import path from 'node:path'
 
 const { combine, timestamp, printf } = format
 
-const myFormat = printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`)
+const lineFormat = printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`)
 
 const logger = createLogger({
-  format: combine(
-    timestamp(),
-    myFormat
-  ),
+  format: combine(timestamp(), lineFormat),
   transports: [
-    new transports.File({
-      filename: path.join(
-        rootPath,
-        'logs',
-        'main-error.log'
-      ),
-      level: 'error'
-    }),
-    new transports.File({
-      filename: path.join(
-        rootPath,
-        'logs',
-        'main-combined.log'
-      )
-    }),
+    new transports.File({ filename: path.join(appLogsPath, 'main-error.log'), level: 'error' }),
+    new transports.File({ filename: path.join(appLogsPath, 'main-combined.log') }),
   ],
 })
 
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new transports.Console());
-}
+if (process.env.NODE_ENV !== 'production') logger.add(new transports.Console());
 
 export default logger
