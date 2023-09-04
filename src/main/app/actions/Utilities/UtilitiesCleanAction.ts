@@ -9,7 +9,7 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import fs from 'node:fs'
-import {sequelize} from '../../../database'
+import {sequelize, umzug} from '../../../database'
 import { downloadCapturesPath } from '../../../../paths'
 
 const UtilitiesCleanAction = async (
@@ -20,7 +20,7 @@ const UtilitiesCleanAction = async (
   if (downloads) await cleanDownloads()
 }
 
-const cleanDatabase = async (): Promise<unknown[]> => {
+const cleanDatabase = async (): Promise<void> => {
   /**
    * For some stupid reason, oclif seems to expect a database to always be connected. Even if I close the connection
    *   (using .close()) before deleting the file, some code somewhere still tries to synchronise the database.
@@ -28,7 +28,13 @@ const cleanDatabase = async (): Promise<unknown[]> => {
    * Instead of deleting database.db, we will drop all of the table data then allow connection.ts to re-create them
    */
 
-  return sequelize.drop()
+  // return sequelize.drop()
+
+  /**
+   * Nope, now that we are using migrations (see src/main/database/index.ts), we don't want to drop the migration table etc...
+   * So we should just roll them all back instead
+   */
+  await umzug.down({ to: 0 })
 }
 
 const cleanDownloads = async (): Promise<void> => {

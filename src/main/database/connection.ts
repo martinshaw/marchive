@@ -15,8 +15,6 @@ import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from '../../pat
 import { Sequelize } from 'sequelize-typescript'
 import logger from '../log';
 
-console.log('CREATING DB IN ', userAppDataDatabaseFilePath, userAppDataDatabasesPath)
-
 if (fs.existsSync(userAppDataDatabasesPath) === false) fs.mkdirSync(userAppDataDatabasesPath, { recursive: true })
 
 const sequelize = new Sequelize(
@@ -29,9 +27,11 @@ const sequelize = new Sequelize(
 
 sequelize
   .authenticate()
-  .then(() => { /* */ })
+  .then(() => {
+    logger.info('Sequelize: Connection has been established successfully. Using database file: ' + userAppDataDatabaseFilePath);
+   })
   .catch(err => {
-    logger.error('Unable to connect to the database:', err);
+    logger.error('Sequelize: Unable to connect to the database:', err);
   });
 
 export default sequelize
