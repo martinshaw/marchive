@@ -168,10 +168,7 @@ const galleryExampleSources: GalleryExampleSourceGroupType[] = [
 const SourceCreatePageExampleSourceGallery = (props: SourceCreatePageExampleSourceGalleryPropsType) => {
   const [selectedTab, setSelectedTab] = useState<GalleryTabIdType>('news')
 
-  const [hoveredGalleryGridItem, setHoveredGalleryGridItem] = useState<number | null>(null)
-
   const handleTabChange = useCallback((newTabId: GalleryTabIdType, prevTabId: GalleryTabIdType | undefined, event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setHoveredGalleryGridItem(null)
     setSelectedTab(newTabId)
   }, [])
 
@@ -183,27 +180,26 @@ const SourceCreatePageExampleSourceGallery = (props: SourceCreatePageExampleSour
         selectedTabId={selectedTab}
         vertical
       >
-        {galleryExampleSources.map((group) => (
-          <Tab
-            id={group.tabId}
-            key={group.tabId}
-            title={group.tabCaption}
-            panel={(
-              <div className="data-providers__gallery__tabs__tab">
-              {group.items.map(
-                (item, index) => <SourceCreatePageExampleSourceGalleryGridItem
-                  key={index}
-                  {...item}
-                  useNotHoveredEffect={hoveredGalleryGridItem != null && hoveredGalleryGridItem !== index}
-                  onMouseEnter={() => setHoveredGalleryGridItem(index)}
-                  onMouseLeave={() => setHoveredGalleryGridItem(null)}
-                  onExampleSourceSelected={props.onExampleSourceSelected}
-                />
+          {galleryExampleSources.map((group) => (
+            <Tab
+              id={group.tabId}
+              key={group.tabId}
+              title={group.tabCaption}
+              panel={(
+                <div className="data-providers__gallery__tabs__tab">
+                  <div className="data-providers__gallery__tabs__tab__inner">
+                    {group.items.map(
+                      (item, index) => <SourceCreatePageExampleSourceGalleryGridItem
+                        key={index}
+                        {...item}
+                        onExampleSourceSelected={props.onExampleSourceSelected}
+                      />
+                    )}
+                  </div>
+                </div>
               )}
-              </div>
-            )}
-          />
-        ))}
+            />
+          ))}
     </Tabs>
     </div>
   )

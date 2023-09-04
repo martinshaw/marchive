@@ -10,26 +10,28 @@ Description: description
 */
 
 import path from 'node:path'
-import { userAppDataPath } from '../../paths';
+import fs from 'node:fs'
+import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from '../../paths';
 import { Sequelize } from 'sequelize-typescript'
+import logger from '../log';
 
-const databasePath = path.join(userAppDataPath, 'database.db')
+console.log('CREATING DB IN ', userAppDataDatabaseFilePath, userAppDataDatabasesPath)
+
+if (fs.existsSync(userAppDataDatabasesPath) === false) fs.mkdirSync(userAppDataDatabasesPath, { recursive: true })
 
 const sequelize = new Sequelize(
   {
     dialect: 'sqlite',
-    storage: databasePath,
+    storage: userAppDataDatabaseFilePath,
     logging: false,
   }
 )
 
 sequelize
   .authenticate()
-  .then(() => {
-    //
-  })
+  .then(() => { /* */ })
   .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    logger.error('Unable to connect to the database:', err);
   });
 
 export default sequelize

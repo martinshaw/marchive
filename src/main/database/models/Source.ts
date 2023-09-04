@@ -10,8 +10,8 @@ Description: description
 */
 
 import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, HasMany} from 'sequelize-typescript'
-import Schedule from './Schedule'
+import {Table, Model, Column, HasMany, ForeignKey, BelongsTo} from 'sequelize-typescript'
+import {Schedule, SourceDomain} from '..'
 
 const sourceUseStartOrEndCursorValues = ['start', 'end', null] as const
 export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCursorValues[number] | null
@@ -24,6 +24,8 @@ export type SourceAttributes = {
   currentEndCursorUrl: string | null
   useStartOrEndCursor: SourceUseStartOrEndCursorValueType
   schedules: Array<Schedule>
+  sourceDomainId?: number | null
+  sourceDomain?: SourceDomain
   createdAt?: Date
   updatedAt?: Date
   deletedAt?: Date
@@ -39,7 +41,11 @@ class Source extends Model<
   SourceAttributes,
   Optional<
     SourceAttributes,
-    'id' | 'schedules' | 'useStartOrEndCursor'
+    'id' |
+    'schedules' |
+    'useStartOrEndCursor' |
+    'sourceDomainId' |
+    'sourceDomain'
   >
 > implements SourceAttributes {
   id!: number
@@ -78,6 +84,17 @@ class Source extends Model<
 
   @HasMany(() => Schedule)
   schedules!: Array<Schedule>
+
+  @ForeignKey(() => SourceDomain)
+  @Column({
+    type: DataTypes.NUMBER,
+    allowNull: true,
+    defaultValue: null,
+  })
+  sourceDomainId!: number | null | undefined
+
+  @BelongsTo(() => SourceDomain)
+  sourceDomain!: SourceDomain | undefined
 }
 
 export default Source
