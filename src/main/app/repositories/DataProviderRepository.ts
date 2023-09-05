@@ -9,12 +9,12 @@ Modified: 2023-08-02T02:43:55.200Z
 Description: description
 */
 
-import BaseDataProvider from '../providers/BaseDataProvider'
-import BehanceGalleryItemImagesDataProvider from '../providers/BehanceGalleryItemImagesDataProvider'
-import BlogArticleDataProvider from '../providers/BlogArticleDataProvider'
-import PodcastRssFeedDataProvider from '../providers/PodcastRssFeedDataProvider'
-import SimpleWebpageScreenshotDataProvider from '../providers/SimpleWebpageScreenshotDataProvider'
-import WikipediaArticleDataProvider from '../providers/WikipediaArticleDataProvider'
+import BaseDataProvider from '../data_providers/BaseDataProvider'
+import BehanceGalleryItemImagesDataProvider from '../data_providers/BehanceGalleryItemImagesDataProvider'
+import BlogArticleDataProvider from '../data_providers/BlogArticleDataProvider'
+import PodcastRssFeedDataProvider from '../data_providers/PodcastRssFeedDataProvider'
+import SimpleWebpageScreenshotDataProvider from '../data_providers/SimpleWebpageScreenshotDataProvider'
+import WikipediaArticleDataProvider from '../data_providers/WikipediaArticleDataProvider'
 
 /**
  * These Data Provider Classes should be ordered in increasing order of specificity

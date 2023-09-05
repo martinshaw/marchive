@@ -8,16 +8,15 @@
 }
 
 .onboarding__heading {
-  padding: 30px 15px;
-  font-weight: 400;
+  padding: 30px 15px !important;
   text-align: center;
+  // font-weight: 200;
 }
 
 .onboarding__subheading {
-  padding: 30px 15px;
-  font-weight: 200;
+  padding: 20px 15px !important;
   text-align: center;
-  line-height: 1.6 !important;
+  // font-weight: 100;
 }
 
 .onboarding__features {

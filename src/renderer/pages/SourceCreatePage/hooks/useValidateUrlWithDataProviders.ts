@@ -11,7 +11,7 @@ Description: description
 
 import { useEffect, useState } from 'react'
 import { useDebounce } from '@uidotdev/usehooks'
-import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider'
+import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider'
 
 const useValidateUrlWithDataProviders = (url: string) => {
   const debouncedUrlValue = useDebounce(url, 700)
@@ -25,7 +25,7 @@ const useValidateUrlWithDataProviders = (url: string) => {
     setLoadingValidDataProviders(true)
     setErrorMessage(false)
 
-    window.electron.ipcRenderer.once('providers.validate', (validDataProvidersValue, errors) => {
+    window.electron.ipcRenderer.once('data-providers.validate', (validDataProvidersValue, errors) => {
       if (errors != null) {
         setValidDataProviders([])
         setLoadingValidDataProviders(false)
@@ -38,9 +38,9 @@ const useValidateUrlWithDataProviders = (url: string) => {
       setErrorMessage(false)
     })
 
-    window.electron.ipcRenderer.sendMessage('providers.validate', debouncedUrlValue)
+    window.electron.ipcRenderer.sendMessage('data-providers.validate', debouncedUrlValue)
 
-    return () => { window.electron.ipcRenderer.removeAllListeners('providers.validate') }
+    return () => { window.electron.ipcRenderer.removeAllListeners('data-providers.validate') }
   }, [debouncedUrlValue])
 
   return {

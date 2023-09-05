@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: clean.ts
+File Name: UtilityCleanAction.ts
 Created:  2023-08-17T09:03:35.766Z
 Modified: 2023-08-17T09:03:35.767Z
 
@@ -11,8 +11,9 @@ Description: description
 import fs from 'node:fs'
 import {sequelize, umzug} from '../../../database'
 import { downloadCapturesPath } from '../../../../paths'
+import logger from '../../../log'
 
-const UtilitiesCleanAction = async (
+const UtilityCleanAction = async (
   database: boolean = false,
   downloads: boolean = false,
 ): Promise<void> => {
@@ -35,20 +36,34 @@ const cleanDatabase = async (): Promise<void> => {
    * So we should just roll them all back instead
    */
   await umzug.down({ to: 0 })
+  await umzug.up()
 }
 
 const cleanDownloads = async (): Promise<void> => {
-  fs.rmSync(downloadCapturesPath, {recursive: true})
-  if (fs.existsSync(downloadCapturesPath)) {
-    console.error('Failed to delete capture downloads directory')
-    return
-  }
+  const directoriesToClean: {path: string, description: string}[] = [
+    { path: downloadCapturesPath, description: 'capture downloads' }
+  ]
 
-  fs.mkdirSync(downloadCapturesPath, {recursive: true})
-  if (fs.existsSync(downloadCapturesPath) === false) {
-    console.error('Failed to recreate capture downloads directory')
-    return
+  for (const directory of directoriesToClean) {
+    if (fs.existsSync(directory.path) === false) {
+      logger.warn(`The ${directory.description} directory does not exist to be cleaned`)
+      continue
+    }
+
+    fs.rmSync(directory.path, {recursive: true})
+    if (fs.existsSync(directory.path)) {
+      logger.error(`Failed to delete the ${directory.description} directory`)
+      return
+    }
+
+    fs.mkdirSync(directory.path, {recursive: true})
+    if (fs.existsSync(directory.path) === false) {
+      logger.error(`Failed to recreate the ${directory.description} directory`)
+      return
+    }
+
+    logger.info(`Successfully cleaned the ${directory.description} directory`)
   }
 }
 
-export default UtilitiesCleanAction
+export default UtilityCleanAction

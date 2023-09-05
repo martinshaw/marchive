@@ -14,7 +14,7 @@ import ScheduleCreateAction from '../app/actions/Schedule/ScheduleCreateAction'
 import ScheduleDeleteAction from '../app/actions/Schedule/ScheduleDeleteAction'
 import ScheduleListAction from '../app/actions/Schedule/ScheduleListAction'
 import ScheduleUpdateAction from '../app/actions/Schedule/ScheduleUpdateAction'
-import { ScheduleAttributes } from 'main/database/models/Schedule'
+import { ScheduleAttributes } from '../database/models/Schedule'
 
 export type SchedulesChannels =
   | 'schedules.list'

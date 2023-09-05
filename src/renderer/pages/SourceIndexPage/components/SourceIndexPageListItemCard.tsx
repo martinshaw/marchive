@@ -9,25 +9,20 @@ Modified: 2023-08-31T16:13:47.844Z
 Description: description
 */
 
+import { ReactNode } from "react";
 import { Card, Icon, Text } from "@blueprintjs/core";
-import { DataProviderSerializedType } from "main/app/providers/BaseDataProvider";
-import { SourceAttributes } from "main/database/models/Source";
-import { MouseEventHandler, ReactNode } from "react";
+import { SourceAttributes } from "../../../../main/database/models/Source";
+import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
 
 export type SourceIndexPageListItemCardPropsType = {
   source: SourceAttributes,
   dataProviders: DataProviderSerializedType[],
-  useNotHoveredEffect: boolean,
-  onMouseEnter: MouseEventHandler<HTMLDivElement>,
-  onMouseLeave: MouseEventHandler<HTMLDivElement>,
 }
 
 const SourceIndexPageListItemCard = (props: SourceIndexPageListItemCardPropsType) => {
   const dataProvider: DataProviderSerializedType | null = props.dataProviders.find(
     dataProvider => dataProvider.identifier === props.source.dataProviderIdentifier
   ) || null;
-
-  const hoverClassName = 'sources__list__item' + (props.useNotHoveredEffect ? '--not-hover' : '')
 
   let scheduleCaption: ReactNode = null;
   if (props.source.schedules.length > 1) {
@@ -87,12 +82,7 @@ const SourceIndexPageListItemCard = (props: SourceIndexPageListItemCardPropsType
   }
 
   return (
-    <Card
-      key={props.source.id}
-      className={"sources__list__item " + hoverClassName}
-      onMouseEnter={props.onMouseEnter}
-      onMouseLeave={props.onMouseLeave}
-    >
+    <Card key={props.source.id} className="sources__list__item">
       {dataProvider != null && (
         <div className="sources__list__item__provider-row">
           <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'sources__list__item__image--invert' : ''} />

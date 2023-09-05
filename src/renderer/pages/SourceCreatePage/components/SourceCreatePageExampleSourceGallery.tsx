@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Tab, TabId, Tabs } from "@blueprintjs/core"
-import { BaseDataProviderIconInformationReturnType, DataProviderSerializedType } from "main/app/providers/BaseDataProvider"
+import { BaseDataProviderIconInformationReturnType, DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
 import { useCallback, useState } from "react"
 import SourceCreatePageExampleSourceGalleryGridItem, { SourceCreatePageExampleSourceGalleryGridItemPropsType } from "./SourceCreatePageExampleSourceGalleryGridItem"
 

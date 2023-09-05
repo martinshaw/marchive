@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: create.ts
+File Name: ScheduleCreateAction.ts
 Created:  2023-08-17T09:03:35.766Z
 Modified: 2023-08-17T09:03:35.767Z
 
@@ -14,9 +14,9 @@ import {Schedule, Source} from '../../../database'
 import slugify from 'slugify'
 import {downloadCapturesPath as defaultDownloadCapturesPath} from '../../../../paths'
 import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
-import {AllowedScheduleIntervalReturnType} from '../../providers/BaseDataProvider'
+import {AllowedScheduleIntervalReturnType} from '../../data_providers/BaseDataProvider'
 import logger from '../../../log'
-import { ScheduleAttributes } from 'main/database/models/Schedule'
+import { ScheduleAttributes } from '../../../database/models/Schedule'
 
 /**
  * @throws {Error}

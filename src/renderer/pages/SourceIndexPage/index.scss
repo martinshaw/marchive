@@ -44,6 +44,18 @@
     gap: 1rem;
     width: 100%;
   }
+
+  &:hover {
+    .bp5-card {
+      transition: opacity 200ms ease-out;
+      opacity: 0.65;
+
+      &:hover {
+        transition: opacity 200ms ease-out;
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .sources__list__item {
@@ -53,10 +65,7 @@
   transition: all 0.2s ease-in-out;
   transform: scale(1.0);
   cursor: pointer;
-
-  &.sources__list__item--not-hover {
-    opacity: 0.75;
-  }
+  opacity: 1;
 }
 
 .sources__list__item__provider-row {

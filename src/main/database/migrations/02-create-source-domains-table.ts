@@ -26,7 +26,8 @@ const up: Migration = async ({ context }) => {
 		},
 		faviconPath: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      defaultValue: null,
 		},
 		createdAt: {
 			type: DataTypes.DATE,

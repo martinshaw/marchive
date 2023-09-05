@@ -55,6 +55,22 @@ body {
   cursor: pointer !important;
 }
 
+.bp5-heading {
+  font-weight: 200;
+  font-size: 1.5rem;
+  line-height: 1.6 !important;
+  margin: 0;
+  padding: 0;
+}
+
+.bp5-subheading {
+  font-weight: 100;
+  font-size: 1rem;
+  line-height: 1.8 !important;
+  margin: 0;
+  padding: 0;
+}
+
 .bp5-non-ideal-state {
   display: flex;
   flex-direction: column;

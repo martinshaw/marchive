@@ -9,7 +9,7 @@ Modified: 2023-09-04T01:23:53.527Z
 Description: description
 */
 
-import { DataProviderSerializedType } from "main/app/providers/BaseDataProvider";
+import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
 
 /**
  * @throws {string}
@@ -17,7 +17,7 @@ import { DataProviderSerializedType } from "main/app/providers/BaseDataProvider"
 const getDataProviders = async (): Promise<DataProviderSerializedType[]> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once(
-      'providers.list',
+      'data-providers.list',
       (dataProviders, error) => {
         if (error != null) return reject(error);
 
@@ -25,7 +25,7 @@ const getDataProviders = async (): Promise<DataProviderSerializedType[]> => {
       }
     );
 
-    window.electron.ipcRenderer.sendMessage('providers.list');
+    window.electron.ipcRenderer.sendMessage('data-providers.list');
   })
 }
 

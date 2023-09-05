@@ -16,11 +16,11 @@ import contextMenu from 'electron-context-menu'
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
-import './ipc/captures';
-import './ipc/providers';
-import './ipc/schedules';
-import './ipc/sources';
-import './ipc/utilities';
+import './ipc/Captures';
+import './ipc/DataProviders';
+import './ipc/Schedules';
+import './ipc/Sources';
+import './ipc/Utilities';
 
 // class AppUpdater {
 //   constructor() {

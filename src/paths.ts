@@ -22,5 +22,6 @@ export const userAppDataDatabaseFilePath = path.join(userAppDataDatabasesPath, '
 
 export const downloadsPath = path.join(app.getPath('downloads'), process.env.APP_NAME || 'marchive')
 export const downloadCapturesPath = path.join(downloadsPath, 'captures')
+export const downloadSourceDomainFaviconsPath = path.join(downloadsPath, 'favicons')
 
 export const appLogsPath = path.join(app.getPath('logs'))

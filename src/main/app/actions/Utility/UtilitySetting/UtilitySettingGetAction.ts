@@ -2,20 +2,20 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: setting.ts
+File Name: UtilitySettingGetAction.ts
 Created:  2023-08-29T21:25:45.800Z
 Modified: 2023-08-29T21:25:45.800Z
 
 Description: description
 */
 import logger from '../../../../log'
-import { getOrSetStoredSetting } from '../../../../app/repositories/StoredSettingRepository'
-import { StoredSettingAttributes } from 'main/database/models/StoredSetting'
+import { getOrSetStoredSetting } from '../../../repositories/StoredSettingRepository'
+import { StoredSettingAttributes } from '../../../../database/models/StoredSetting'
 
 /**
  * @throws {Error}
  */
-const UtilitiesSettingGetAction = async (key: string): Promise<StoredSettingAttributes | never> => {
+const UtilitySettingGetAction = async (key: string): Promise<StoredSettingAttributes | never> => {
     if (key == null) {
       const errorMessage = 'You must provide a key when getting a setting'
       logger.error(errorMessage)
@@ -32,4 +32,4 @@ const UtilitiesSettingGetAction = async (key: string): Promise<StoredSettingAttr
     return storedSetting.toJSON()
 }
 
-export default UtilitiesSettingGetAction
+export default UtilitySettingGetAction

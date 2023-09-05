@@ -19,7 +19,7 @@ export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCurso
 export type SourceDomainAttributes = {
   id: number
   name: string
-  faviconPath: string
+  faviconPath: string | null
   sources: Array<Source>
   createdAt?: Date
   updatedAt?: Date
@@ -59,9 +59,10 @@ class SourceDomain extends Model<
 
   @Column({
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+    defaultValue: null,
   })
-  faviconPath!: string
+  faviconPath!: string | null
 
   @HasMany(() => Source)
   sources!: Array<Source>

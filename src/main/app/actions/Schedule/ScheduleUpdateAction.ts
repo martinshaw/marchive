@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: update.ts
+File Name: ScheduleUpdateAction.ts
 Created:  2023-08-17T09:03:35.766Z
 Modified: 2023-08-17T09:03:35.767Z
 
@@ -13,8 +13,8 @@ import {Schedule, Source} from '../../../database'
 import {Attributes} from 'sequelize'
 import logger from '../../../log'
 import { getDataProviderByIdentifier } from '../../../app/repositories/DataProviderRepository'
-import { AllowedScheduleIntervalReturnType } from '../../../app/providers/BaseDataProvider'
-import { ScheduleAttributes } from 'main/database/models/Schedule'
+import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
+import { ScheduleAttributes } from '../../../database/models/Schedule'
 
 /**
  * @throws {Error}

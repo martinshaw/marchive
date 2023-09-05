@@ -11,8 +11,7 @@ Description: description
 
 import { useCallback, useState } from 'react'
 import { Source } from '../../../../main/database'
-import { Attributes } from 'sequelize'
-import { SourceAttributes } from 'main/database/models/Source'
+import { SourceAttributes } from '../../../../main/database/models/Source'
 
 const useCreateNewSource = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false)

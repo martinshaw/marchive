@@ -6,7 +6,7 @@ import {
   MenuItemConstructorOptions,
   dialog,
 } from 'electron';
-import UtilitiesCleanAction from './app/actions/Utilities/UtilitiesCleanAction';
+import UtilitiesCleanAction from './app/actions/Utility/UtilityCleanAction';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;

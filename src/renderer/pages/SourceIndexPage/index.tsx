@@ -9,19 +9,16 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { Button, Card, Icon, Text } from '@blueprintjs/core';
+import { useState } from 'react';
+import { Button, Text } from '@blueprintjs/core';
 import { NavLink, useLoaderData } from 'react-router-dom';
-import useGetSources from './hooks/useGetSources';
-import useGetDataProviders from './hooks/useGetDataProviders';
-import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider';
-
-import './index.scss';
-import { ReactNode, useRef, useState } from 'react';
-import { SourceAttributes } from 'main/database/models/Source';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
+import { SourceAttributes } from '../../../main/database/models/Source';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
-import { List, ListRowRenderer } from 'react-virtualized';
 import getSources from './functions/getSources';
 import getDataProviders from './functions/getDataProviders';
+
+import './index.scss';
 
 type SourceIndexPageLoaderReturnType = {
   sources: SourceAttributes[],
@@ -78,9 +75,6 @@ const SourceIndexPage = () => {
               key={source.id}
               source={source}
               dataProviders={dataProviders}
-              useNotHoveredEffect={hoveredSourceListItem != null && hoveredSourceListItem.id !== source.id}
-              onMouseEnter={() => setHoveredSourceListItem(source)}
-              onMouseLeave={() => setHoveredSourceListItem(null)}
             />
         ))}
       </div>

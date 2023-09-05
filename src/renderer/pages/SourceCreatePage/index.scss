@@ -33,6 +33,18 @@
   width: 100%;
   max-width: 1000px;
   margin: auto;
+
+  &:hover {
+    .data-providers__grid__item {
+      transition: opacity 200ms ease-out;
+      opacity: 0.65;
+
+      &:hover {
+        transition: opacity 200ms ease-out;
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .data-providers__grid__item {
@@ -48,10 +60,7 @@
   transform: scale(1.0);
   cursor: pointer;
   text-align: center;
-
-  &.data-providers__grid__item--not-hover {
-    opacity: 0.75;
-  }
+  opacity: 1;
 
   img {
     width: 100%;

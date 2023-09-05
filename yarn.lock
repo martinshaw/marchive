@@ -3119,6 +3119,14 @@ axe-core@^4.6.2:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.2.tgz#040a7342b20765cb18bb50b628394c21bccc17a0"
   integrity sha512-zIURGIS1E1Q4pcrMjp+nnEh+16G56eG/MUllJH8yEvw7asDo7Ac9uhC9KIH5jzpITueEZolfYglnCGIuSBz39g==
 
+axios@^0.18.0:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.1.tgz#ff3f0de2e7b5d180e757ad98000f1081b87bcea3"
+  integrity sha512-0BfJq4NSfQXd+SkFdrvFbG7addhYSBA2mQwISr46pD6E5iqkWg02RAs8vyTT/j0RTnoYmeXauBuSv1qKwR179g==
+  dependencies:
+    follow-redirects "1.5.10"
+    is-buffer "^2.0.2"
+
 axobject-query@^3.1.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-3.2.1.tgz#39c378a6e3b06ca679f29138151e45b2b32da62a"
@@ -3564,6 +3572,31 @@ char-regex@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
+
+cheerio-select@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cheerio-select/-/cheerio-select-2.1.0.tgz#4d8673286b8126ca2a8e42740d5e3c4884ae21b4"
+  integrity sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==
+  dependencies:
+    boolbase "^1.0.0"
+    css-select "^5.1.0"
+    css-what "^6.1.0"
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+
+cheerio@^1.0.0-rc.2:
+  version "1.0.0-rc.12"
+  resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.12.tgz#788bf7466506b1c6bf5fae51d24a2c4d62e47683"
+  integrity sha512-VqR8m68vM46BNnuZ5NtnGBKIE/DfN0cRIzg9n40EIq9NOv90ayxLBXA8fXC5gquFRGJSTRqBq25Jt2ECLR431Q==
+  dependencies:
+    cheerio-select "^2.1.0"
+    dom-serializer "^2.0.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+    htmlparser2 "^8.0.1"
+    parse5 "^7.0.0"
+    parse5-htmlparser2-tree-adapter "^7.0.0"
 
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.3:
   version "3.5.3"
@@ -4215,6 +4248,13 @@ debug@4, debug@4.3.4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, de
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
+
+debug@=3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
+  dependencies:
+    ms "2.0.0"
 
 debug@^3.2.7:
   version "3.2.7"
@@ -5517,6 +5557,11 @@ file-type@^10.10.0:
   resolved "https://registry.yarnpkg.com/file-type/-/file-type-10.11.0.tgz#2961d09e4675b9fb9a3ee6b69e9cd23f43fd1890"
   integrity sha512-uzk64HRpUZyTGZtVuvrjP0FYxzQrBf4rojot6J65YMEbwBLB0CWm0CLojVpwpmFmxcE/lkvYICgfcGozbBq6rw==
 
+file-type@^7.6.0:
+  version "7.7.1"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-7.7.1.tgz#91c2f5edb8ce70688b9b68a90d931bbb6cb21f65"
+  integrity sha512-bTrKkzzZI6wH+NXhyD3SOXtb2zXTw2SbwI2RxUlRcXVsnN7jNL5hJzVQLYv7FOQhxFkK4XWdAflEaWFpaLLWpQ==
+
 filelist@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/filelist/-/filelist-1.0.4.tgz#f78978a1e944775ff9e62e744424f215e58352b5"
@@ -5583,6 +5628,13 @@ fn.name@1.x.x:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
+
+follow-redirects@1.5.10:
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
+  dependencies:
+    debug "=3.1.0"
 
 follow-redirects@^1.0.0, follow-redirects@^1.15.1:
   version "1.15.2"
@@ -5805,6 +5857,15 @@ get-uri@^6.0.1:
     data-uri-to-buffer "^5.0.1"
     debug "^4.3.4"
     fs-extra "^8.1.0"
+
+get-website-favicon@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/get-website-favicon/-/get-website-favicon-0.0.7.tgz#11d38a7f9b49cfb174d47fb31b0ea51a259c60ac"
+  integrity sha512-FD452CzghMhdMytp09Ax5R/IAi6835DcFsbF/kXNDa5Aep+aVN+c2kmy5wDTLPtY2Tnlh4eq1j6GgXtUGK3gYQ==
+  dependencies:
+    axios "^0.18.0"
+    cheerio "^1.0.0-rc.2"
+    file-type "^7.6.0"
 
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
@@ -6096,6 +6157,16 @@ htmlparser2@^6.1.0:
     domhandler "^4.0.0"
     domutils "^2.5.2"
     entities "^2.0.0"
+
+htmlparser2@^8.0.1:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-8.0.2.tgz#f002151705b383e62433b5cf466f5b716edaec21"
+  integrity sha512-GYdjWKDkbRLkZ5geuHs5NY1puJ+PXwP7+fHPRz06Eirsb9ugf6d8kkXav6ADhcODhFFPMIXyxkxSuMf3D6NCFA==
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+    entities "^4.4.0"
 
 http-cache-semantics@^4.0.0, http-cache-semantics@^4.1.1:
   version "4.1.1"
@@ -6422,6 +6493,11 @@ is-buffer@^1.0.2, is-buffer@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
+
+is-buffer@^2.0.2:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-2.0.5.tgz#ebc252e400d22ff8d77fa09888821a24a658c191"
+  integrity sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==
 
 is-callable@^1.1.3, is-callable@^1.1.4, is-callable@^1.2.7:
   version "1.2.7"
@@ -8338,6 +8414,14 @@ parse-json@^5.0.0, parse-json@^5.2.0:
     error-ex "^1.3.1"
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
+
+parse5-htmlparser2-tree-adapter@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/parse5-htmlparser2-tree-adapter/-/parse5-htmlparser2-tree-adapter-7.0.0.tgz#23c2cc233bcf09bb7beba8b8a69d46b08c62c2f1"
+  integrity sha512-B77tOZrqqfUfnVcOrUvfdLbz4pu4RopLD/4vmu3HUPswwTA8OH0EMW9BlWR2B0RCoiZRAHEUu7IxeP1Pd1UU+g==
+  dependencies:
+    domhandler "^5.0.2"
+    parse5 "^7.0.0"
 
 parse5@^7.0.0, parse5@^7.1.1:
   version "7.1.2"
