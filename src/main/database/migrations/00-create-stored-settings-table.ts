@@ -29,6 +29,10 @@ const up: Migration = async ({ context }) => {
       type: DataTypes.STRING,
       allowNull: false,
 		},
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
 		createdAt: {
 			type: DataTypes.DATE,
 			allowNull: false
