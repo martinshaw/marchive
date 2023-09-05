@@ -38,7 +38,15 @@ sequelize.addModels([
  *   generic error when making a query, the only way to fix it is to uncomment these lines, then to comment all
  *   Umzug related code, then to delete the DB file, then to finally run the app again.
  *
- * Below lines, the exports and the imports and calls in the `cleanDatabase` method of the UtilitiesCleanAction.ts file
+ * Found the issue, if the above mentioned fix works when the app crashes on startup after dropping the database,
+ *   it may be because the migrations aren't creating a column which is otherwise created when you
+ *   call .sync on the model.
+ *
+ * For example: previously, I had a column called 'type' on the 'stored_settings' table described in the model
+ *   class's property schema, so it was created when I call .sync on the model. But when I used the Umzug
+ *   implementation for migrations, the migration file for 'stored_settings' was missing the 'type'
+ *   column, so it was never created. This caused the app to crash on startup, because the 'type'
+ *   column was expected to exist by a DB query which runs on app startup.
  */
 // StoredSetting.sync()
 // Source.sync()
@@ -52,10 +60,10 @@ const umzug = new Umzug({
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
   logger: {
-    info: (event: Record<string, unknown>) => { logger.info('Sequelize Umzug event: ' + JSON.stringify(event)) },
-    warn: (event: Record<string, unknown>) => { logger.warn('Sequelize Umzug event: ' + JSON.stringify(event)) },
-    error: (event: Record<string, unknown>) => { logger.error('Sequelize Umzug event: ' + JSON.stringify(event)) },
-    debug: (event: Record<string, unknown>) => { logger.debug('Sequelize Umzug event: ' + JSON.stringify(event)) },
+    info: (event: Record<string, unknown>) => { logger.info('Sequelize Umzug event', {...event}) },
+    warn: (event: Record<string, unknown>) => { logger.warn('Sequelize Umzug event', {...event}) },
+    error: (event: Record<string, unknown>) => { logger.error('Sequelize Umzug event', {...event}) },
+    debug: (event: Record<string, unknown>) => { logger.debug('Sequelize Umzug event', {...event}) },
   },
 });
 

@@ -34,11 +34,17 @@ export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderRetu
   let dataProviders: DataProviderSerializedType[] = [];
   let dataProvidersErrorMessage: string | false = false;
 
+  console.log('BEFORE SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
+
   try { sourcesGroupedBySourceDomain = await getSourceDomains(true); }
   catch (errorMessage) { sourcesGroupedBySourceDomainErrorMessage = errorMessage as string; }
 
+  console.log('AFTER 1 SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
+
   try { dataProviders = await getDataProviders(); }
   catch (errorMessage) { dataProvidersErrorMessage = errorMessage as string; }
+
+  console.log('AFTER 2 SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
 
   return {
     sourcesGroupedBySourceDomain,
@@ -59,7 +65,7 @@ const SourceIndexPage = () => {
   const sourcesCount = useMemo(
     () => sourcesGroupedBySourceDomain == null ?
       0 :
-      sourcesGroupedBySourceDomain.reduce((c, sourceDomain) => (c + sourceDomain.sources.length), 0)
+      sourcesGroupedBySourceDomain.reduce((c, sourceDomain) => (c + (sourceDomain.sources ?? []).length), 0)
     ,
     [sourcesGroupedBySourceDomain]
   )
@@ -81,7 +87,7 @@ const SourceIndexPage = () => {
       </div>
 
       <div className="sources__list">
-        {/* {sourcesGroupedBySourceDomain.map(sourceDomain =>
+        {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
           <div key={sourceDomain.id} className="sources__list__source-domain">
             <div className="sources__list__source-domain__title">
               <img src={sourceDomain.faviconPath ?? undefined} alt={sourceDomain.name} />
@@ -97,7 +103,7 @@ const SourceIndexPage = () => {
                 />
             ))}
           </div>
-        )} */}
+        )}
       </div>
     </>
   );

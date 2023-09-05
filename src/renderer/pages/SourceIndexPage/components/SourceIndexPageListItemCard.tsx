@@ -13,6 +13,7 @@ import { ReactNode } from "react";
 import { Card, Icon, Text } from "@blueprintjs/core";
 import { SourceAttributes } from "../../../../main/database/models/Source";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import SourceIndexPageListItemCardScheduleCaption from "./SourceIndexPageListItemCardScheduleCaption";
 
 export type SourceIndexPageListItemCardPropsType = {
   source: SourceAttributes,
@@ -24,70 +25,15 @@ const SourceIndexPageListItemCard = (props: SourceIndexPageListItemCardPropsType
     dataProvider => dataProvider.identifier === props.source.dataProviderIdentifier
   ) || null;
 
-  let scheduleCaption: ReactNode = null;
-  if (props.source.schedules.length > 1) {
-    scheduleCaption = (
-      <>
-        <Icon icon="time" />
-        <Text>{props.source.schedules.length} schedules</Text>
-      </>
-    );
-  }
-  else if (props.source.schedules.length === 1) {
-    if (props.source.schedules[0].status === 'pending') {
-      if (props.source.schedules[0].interval == null) {
-        if (props.source.schedules[0].lastRunAt == null && props.source.schedules[0].nextRunAt == null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Not scheduled to run</Text>
-            </>
-          );
-        }
-        else if (props.source.schedules[0].lastRunAt != null && props.source.schedules[0].nextRunAt == null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Ran on {props.source.schedules[0].lastRunAt.toDateString()} {props.source.schedules[0].lastRunAt.toLocaleTimeString()}</Text>
-            </>
-          );
-        }
-        else if (props.source.schedules[0].lastRunAt == null && props.source.schedules[0].nextRunAt != null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Will run on {props.source.schedules[0].nextRunAt.toDateString()} {props.source.schedules[0].nextRunAt.toLocaleTimeString()}</Text>
-            </>
-          );
-        }
-      }
-      else {
-        const nextCaption = props.source.schedules[0].nextRunAt != null ? `(next time on ${props.source.schedules[0].nextRunAt.toDateString()} ${props.source.schedules[0].nextRunAt.toLocaleTimeString()})` : '';
-        scheduleCaption = (
-          <>
-            <Icon icon="time" />
-            <Text>Runs every {Math.ceil(props.source.schedules[0].interval / 60)} mins. {nextCaption}</Text>
-          </>
-        );
-      }
-    }
-    else if (props.source.schedules[0].status === 'processing') {
-      scheduleCaption = (
-        <>
-          <Icon icon="time" />
-          <Text>Running now...</Text>
-        </>
-      );
-    }
-  }
-
   return (
     <Card key={props.source.id} className="sources__list__item">
       {dataProvider != null && (
         <div className="sources__list__item__provider-row">
           <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'sources__list__item__image--invert' : ''} />
           <Text>{dataProvider?.name}</Text>
-          <div className="sources__list__item__provider-row__schedule">{scheduleCaption}</div>
+          <div className="sources__list__item__provider-row__schedule">
+            <SourceIndexPageListItemCardScheduleCaption source={props.source} />
+          </div>
         </div>
       )}
       <div className="sources__list__item__details-row">

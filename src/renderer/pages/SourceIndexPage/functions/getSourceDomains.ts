@@ -14,7 +14,7 @@ import { SourceDomainAttributes } from "../../../../main/database/models/SourceD
 /**
  * @throws {string}
  */
-const getSourceDomains = async (withSources: boolean): Promise<SourceDomainAttributes[]> => {
+const getSourceDomains = async (withSources: boolean, withSourceSchedules: boolean): Promise<SourceDomainAttributes[]> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once(
       'source-domains.list',
@@ -25,7 +25,7 @@ const getSourceDomains = async (withSources: boolean): Promise<SourceDomainAttri
       }
     );
 
-    window.electron.ipcRenderer.sendMessage('source-domains.list', withSources);
+    window.electron.ipcRenderer.sendMessage('source-domains.list', withSources, withSourceSchedules);
   })
 }
 

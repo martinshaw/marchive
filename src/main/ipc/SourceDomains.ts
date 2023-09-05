@@ -15,8 +15,8 @@ import SourceDomainListAction from '../app/actions/SourceDomain/SourceDomainList
 export type SourceDomainsChannels =
   | 'source-domains.list'
 
-ipcMain.on('source-domains.list', async (event, withSources: boolean) => {
-  return SourceDomainListAction(withSources)
+ipcMain.on('source-domains.list', async (event, withSources: boolean, withSourceSchedules: boolean) => {
+  return SourceDomainListAction(withSources, withSourceSchedules)
     .then(sourceDomains => { event.reply('source-domains.list', sourceDomains, null) })
-    .catch(error => { event.reply('source-domains.list', null, error) })
+    .catch(error => { console.error(error); event.reply('source-domains.list', null, error) })
 })

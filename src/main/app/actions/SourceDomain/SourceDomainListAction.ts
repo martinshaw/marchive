@@ -12,13 +12,22 @@ import { Includeable } from 'sequelize'
 import { Schedule, Source } from '../../../database'
 import SourceDomain, { SourceDomainAttributes } from '../../../database/models/SourceDomain'
 
-const SourceDomainListAction = async (withSources: boolean): Promise<SourceDomainAttributes[]> => {
-  let findAssociations: Includeable[] = []
-  if (withSources) findAssociations.push({ model: Source, separate: true, order: [['nextRunAt', 'desc']] })
-
+const SourceDomainListAction = async (withSources: boolean, withSourceSchedules: boolean): Promise<SourceDomainAttributes[]> => {
+  /**
+   * TODO: Add sorting by latest nextRunAt to sources in addition to sources' schedules
+   */
   return SourceDomain
-    .findAll({ include: findAssociations })
-    .then(sourceDomains => sourceDomains.map(sourceDomain => sourceDomain.toJSON()))
+    .findAll({
+      include: withSources ? [{
+        model: Source,
+        include: withSourceSchedules ? [
+          { model: Schedule, separate: true, order: [['nextRunAt', 'desc']] }
+        ] : [],
+      }] : [],
+    })
+    .then(sourceDomains => {
+      return sourceDomains.map(sourceDomain => sourceDomain.toJSON())
+    })
 }
 
 export default SourceDomainListAction

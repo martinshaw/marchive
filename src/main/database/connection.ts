@@ -9,7 +9,6 @@ Modified: 2023-08-17T09:13:34.630Z
 Description: description
 */
 
-import path from 'node:path'
 import fs from 'node:fs'
 import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from '../../paths';
 import { Sequelize } from 'sequelize-typescript'
@@ -28,10 +27,11 @@ const sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
-    logger.info('Sequelize: Connection has been established successfully. Using database file: ' + userAppDataDatabaseFilePath);
+    logger.info(`Sequelize: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`);
    })
-  .catch(err => {
-    logger.error('Sequelize: Unable to connect to the database:', err);
+  .catch(error => {
+    logger.error('Sequelize: Unable to connect to the database');
+    logger.error(error);
   });
 
 export default sequelize

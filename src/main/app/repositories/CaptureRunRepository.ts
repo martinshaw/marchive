@@ -111,7 +111,8 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     )
   } catch (error) {
     await cleanup(schedule)
-    logger.error('Failed to perform the latest Capture: ' + (error as Error).message, error)
+    logger.error('Failed to perform the latest Capture')
+    logger.error(error)
     return
   }
 

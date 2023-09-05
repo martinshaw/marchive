@@ -10,12 +10,12 @@ Description: description
 */
 import logger from '../../../../log'
 import { getOrSetStoredSetting } from '../../../repositories/StoredSettingRepository'
-import { StoredSettingAttributes } from '../../../../database/models/StoredSetting'
+import { StoredSettingAttributes, StoredSettingKeyType } from '../../../../database/models/StoredSetting'
 
 /**
  * @throws {Error}
  */
-const UtilitySettingGetAction = async (key: string): Promise<StoredSettingAttributes | never> => {
+const UtilitySettingGetAction = async (key: StoredSettingKeyType): Promise<StoredSettingAttributes | never> => {
     if (key == null) {
       const errorMessage = 'You must provide a key when getting a setting'
       logger.error(errorMessage)

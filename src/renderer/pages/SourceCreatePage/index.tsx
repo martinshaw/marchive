@@ -79,12 +79,14 @@ const SourceCreatePage = () => {
   useEffect(() => {
     if (createdSchedule == null || createdSource == null) return
 
+    console.log('SHOULD REDIRECT', loaderData.marchiveIsSetup, createdSchedule, createdSource)
+
     if (loaderData.marchiveIsSetup === false)
-      marchiveIsSetup(true).then(() => { setTimeout(() => {navigate(`/sources`)}, 1500) })
+      marchiveIsSetup(true).then(() => { navigate(`/sources`) })
     else
       navigate(`/sources`)
 
-  }, [createdSchedule, createdSource, navigate, loaderData.marchiveIsSetup])
+  }, [createdSchedule, createdSource, loaderData.marchiveIsSetup])
 
   const handleOnExampleSourceSelected = useCallback((url: string, dataProviderIdentifier: string) => {
     if (isCreatingSource !== false || createdSource != null) return

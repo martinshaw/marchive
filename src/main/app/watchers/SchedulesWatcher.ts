@@ -40,11 +40,11 @@ const tick = async (): Promise<void> => {
   dueSchedules.forEach(async schedule => {
     logger.info(`Found Schedule ${schedule.id} due to be run`)
 
-    try {
-      performCaptureRun(schedule)
-    } catch (error) {
-      //
-    }
+    performCaptureRun(schedule)
+      .catch(error => {
+        logger.error(`Error running Schedule ID ${schedule.id} in SchedulesWatcher tick loop`)
+        logger.error(error)
+      })
   })
 }
 

@@ -6,7 +6,7 @@ import {
   MenuItemConstructorOptions,
   dialog,
 } from 'electron';
-import UtilitiesCleanAction from './app/actions/Utility/UtilityCleanAction';
+import UtilityCleanAction from './app/actions/Utility/UtilityCleanAction';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -118,7 +118,7 @@ export default class MenuBuilder {
             })
               .then(async (result) => {
                 if (result.response === 1) {
-                  await UtilitiesCleanAction(true, false)
+                  await UtilityCleanAction(true, false)
                   this.mainWindow.reload()
                 }
               })
@@ -137,7 +137,7 @@ export default class MenuBuilder {
             })
               .then(async (result) => {
                 if (result.response === 1) {
-                  await UtilitiesCleanAction(true, true)
+                  await UtilityCleanAction(true, true)
                   this.mainWindow.reload()
                 }
               })

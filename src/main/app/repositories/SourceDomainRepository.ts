@@ -97,6 +97,7 @@ const iconLikelyHasSuitableSize = (icon: GetWebsiteFaviconResultIconType): boole
     }
   }
 
+  // If no sizes are specified in `sizes` or `src`, check if the icon is likely to be an 'apple-touch-icon' which is usually a nice relatively large icon
   if (icon?.origin?.includes(`rel="apple-touch-icon"`) || icon?.origin?.includes(`rel='apple-touch-icon'`)) return true
   if (icon?.src?.includes('apple_touch_icon.png')) return true
   return false
@@ -131,7 +132,8 @@ const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<string | nul
     await iconDownloader.download()
   }
   catch (error) {
-    logger.error('Unable to download favicon from URL ' + iconUrl + ' for URL ' + url + ' due to error: ' + error)
+    logger.error('Unable to download favicon from URL ' + iconUrl + ' for URL ' + url + ' due to error')
+    logger.error(error)
     return null
   }
 

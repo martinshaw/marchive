@@ -12,7 +12,8 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import contextMenu from 'electron-context-menu'
+import contextMenu from 'electron-context-menu';
+import logger from './log';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
@@ -20,6 +21,7 @@ import './ipc/Captures';
 import './ipc/DataProviders';
 import './ipc/Schedules';
 import './ipc/Sources';
+import './ipc/SourceDomains';
 import './ipc/Utilities';
 
 // class AppUpdater {
@@ -178,4 +180,7 @@ app
       if (windows[mainWindowId] === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch(error => {
+    logger.error('Electron app whenReady error occurred');
+    logger.error(error);
+  });
