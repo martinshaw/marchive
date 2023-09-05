@@ -23,7 +23,14 @@ const ScheduleUpdateAction = async (
   scheduleId: number,
   requestedChanges: ScheduleAttributes
 ): Promise<ScheduleAttributes> => {
-  const schedule = await Schedule.findByPk(scheduleId, {include: [Source]})
+  let schedule: Schedule | null = null
+  try {
+    schedule = await Schedule.findByPk(scheduleId, {include: [Source]})
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Schedule ID ${scheduleId} to be updated`)
+    logger.error(error)
+  }
+
   if (schedule == null) {
     const errorMessage = `No schedule found with id: ${scheduleId}`
     logger.error(errorMessage)

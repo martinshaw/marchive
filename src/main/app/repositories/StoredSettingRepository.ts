@@ -32,21 +32,32 @@ export const getOrSetStoredSetting = async <T = string | number | boolean>(
   }
 
   if (existingStoredSetting == null && newValue == null) return null
-
   if (existingStoredSetting != null && newValue == null) return existingStoredSetting
 
   if (existingStoredSetting == null && newValue != null)
-    return StoredSetting.create({
-      key,
-      value: newValue.toString(),
-      type: determineStoredSettingValueType(newValue as string | number | boolean),
-    })
+    return StoredSetting
+      .create({
+        key,
+        value: newValue.toString(),
+        type: determineStoredSettingValueType(newValue as string | number | boolean),
+      })
+      .catch(error => {
+        logger.error('A DB error occurred when attempting to create a new StoredSetting')
+        logger.error(error)
+        return null
+      })
 
   if (existingStoredSetting != null && newValue != null)
-    return existingStoredSetting.update({
-      value: newValue.toString(),
-      type: determineStoredSettingValueType(newValue as string | number | boolean),
-    })
+    return existingStoredSetting
+      .update({
+        value: newValue.toString(),
+        type: determineStoredSettingValueType(newValue as string | number | boolean),
+      })
+      .catch(error => {
+        logger.error('A DB error occurred when attempting to update an existing StoredSetting')
+        logger.error(error)
+        return null
+      })
 
   return null
 }

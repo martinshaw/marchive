@@ -16,7 +16,13 @@ import logger from "../../../log"
  * @throws {Error}
  */
 const SourceDeleteAction = async (sourceId: number): Promise<void> => {
-  const originalSource = await Source.findByPk(sourceId, {include: [Schedule]})
+  let originalSource: Source | null = null
+  try {
+    originalSource = await Source.findByPk(sourceId, {include: [Schedule]})
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Source ID ${sourceId} for deletion`)
+    logger.error(error)
+  }
 
   if (originalSource == null) {
     const errorMessage = 'No Source found with that ID'
@@ -34,7 +40,14 @@ const SourceDeleteAction = async (sourceId: number): Promise<void> => {
 
   await originalSource.destroy()
 
-  const sourceCheck = await Source.findByPk(sourceId)
+  let sourceCheck: Source | null = null
+  try {
+    sourceCheck = await Source.findByPk(sourceId)
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Source ID ${sourceId} for check successful deletion`)
+    logger.error(error)
+  }
+
   if (sourceCheck != null) {
     const errorMessage = 'The Source could not be deleted'
     logger.error(errorMessage)

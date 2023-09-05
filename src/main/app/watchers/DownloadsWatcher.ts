@@ -43,24 +43,30 @@ const DownloadsWatcher = async (): Promise<never | void> => {
 const tick = async (): Promise<{  processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
   logger.info('Looking for pending Capture Parts...')
 
-  const capturePart = await CapturePart.findOne({
-    where: {
-      status: 'pending',
-    },
-    include: [{
-      model: Capture,
+  let capturePart: CapturePart | null = null
+  try {
+    capturePart = await CapturePart.findOne({
+      where: {
+        status: 'pending',
+      },
       include: [{
-        model: Schedule,
+        model: Capture,
         include: [{
-          model: Source,
+          model: Schedule,
+          include: [{
+            model: Source,
+          }],
         }],
+        // where: {
+        //   allowedRetriesCount: Sequelize.col('currentRetryCount'),
+        // },
+        // required: true,
       }],
-      // where: {
-      //   allowedRetriesCount: Sequelize.col('currentRetryCount'),
-      // },
-      // required: true,
-    }],
-  })
+    })
+  } catch (error) {
+    logger.error('A DB error occurred when trying to find a pending Capture Part for processing')
+    logger.error(error)
+  }
 
   if (capturePart == null) {
     /**

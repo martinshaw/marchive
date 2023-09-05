@@ -36,14 +36,21 @@ const SourceCreateAction = async (url: string, dataProviderIdentifier: string): 
 
   const sourceDomain = await findOrCreateSourceDomainForUrl(url)
 
-  const source = await Source.create({
-    dataProviderIdentifier: chosenDataProvider.getIdentifier(),
-    url,
-    currentStartCursorUrl: null,
-    currentEndCursorUrl: null,
-    useStartOrEndCursor: null as SourceUseStartOrEndCursorValueType,
-    sourceDomainId: sourceDomain == null ? null : sourceDomain.id,
-  })
+  let source: Source | null = null
+  try {
+    source = await Source.create({
+      dataProviderIdentifier: chosenDataProvider.getIdentifier(),
+      url,
+      currentStartCursorUrl: null,
+      currentEndCursorUrl: null,
+      useStartOrEndCursor: null as SourceUseStartOrEndCursorValueType,
+      sourceDomainId: sourceDomain == null ? null : sourceDomain.id,
+    })
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to create a new Source for URL ${url}`)
+    logger.error(error)
+    throw error
+  }
 
   logger.info(`Created new Source with ID ${source.id}`)
 

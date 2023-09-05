@@ -15,7 +15,13 @@ import {Schedule, Source} from '../../../database'
  * @throws {Error}
  */
 const ScheduleDeleteAction = async (scheduleId: number): Promise<void> => {
-  const originalSchedule = await Schedule.findByPk(scheduleId, {include: [Source]})
+  let originalSchedule: Schedule | null = null
+  try {
+    originalSchedule = await Schedule.findByPk(scheduleId, {include: [Source]})
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Schedule ID  ${scheduleId} for deletion`)
+    logger.error(error)
+  }
 
   if (originalSchedule == null) {
     const errorMessage = 'No Schedule found with that ID'
@@ -33,7 +39,14 @@ const ScheduleDeleteAction = async (scheduleId: number): Promise<void> => {
 
   await originalSchedule.destroy()
 
-  const scheduleCheck = await Schedule.findByPk(originalSchedule.id)
+  let scheduleCheck: Schedule | null = null
+  try {
+    scheduleCheck = await Schedule.findByPk(originalSchedule.id)
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Schedule ID ${scheduleId} to be check successful deletion`)
+    logger.error(error)
+  }
+
   if (scheduleCheck != null) {
     const errorMessage = 'The Schedule could not be deleted'
     logger.error(errorMessage)

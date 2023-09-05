@@ -300,12 +300,18 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
          * TODO: might need to add sourceId to the capturePart table then add it as where equal criteria to this query
          */
 
-        const existingCapturePart = await CapturePart.findOne({
-          where: {
-            url: image.url,
-            status: 'completed' as CapturePartStatus,
-          },
-        })
+        let existingCapturePart: CapturePart | null = null
+        try {
+          existingCapturePart = await CapturePart.findOne({
+            where: {
+              url: image.url,
+              status: 'completed' as CapturePartStatus,
+            },
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when checking if the CapturePart\'s URL has been previously downloaded')
+          logger.error(error)
+        }
 
         if (existingCapturePart != null) {
           logger.info(`Capture Part ${index} has been previously downloaded: ${image.url}`)
@@ -330,13 +336,19 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddImage) {
-        const capturePart = await CapturePart.create({
-          status: 'pending' as CapturePartStatus,
-          url: image.url,
-          dataProviderPartIdentifier: 'image' as BehanceGalleryItemImagesDataProviderPartIdentifierType,
-          payload: JSON.stringify({index, ...image} as BehanceGalleryItemImagesDataProviderImagePayloadType),
-          captureId: capture.id,
-        })
+        let capturePart: CapturePart | null = null
+        try {
+          capturePart = await CapturePart.create({
+            status: 'pending' as CapturePartStatus,
+            url: image.url,
+            dataProviderPartIdentifier: 'image' as BehanceGalleryItemImagesDataProviderPartIdentifierType,
+            payload: JSON.stringify({index, ...image} as BehanceGalleryItemImagesDataProviderImagePayloadType),
+            captureId: capture.id,
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when creating a new Capture Part')
+          logger.error(error)
+        }
 
         if (capturePart === null) {
           logger.error(`Capture Part ${index} could not be created: ${image.url}`)

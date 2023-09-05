@@ -183,12 +183,18 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
          *  We will need to check that the capture of the found capture part belongs to the same source
          */
 
-        const existingCapturePart = await CapturePart.findOne({
-          where: {
-            url: item.link,
-            status: 'completed' as CapturePartStatus,
-          },
-        })
+        let existingCapturePart: CapturePart | null = null
+        try {
+          existingCapturePart = await CapturePart.findOne({
+            where: {
+              url: item.link,
+              status: 'completed' as CapturePartStatus,
+            },
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when trying to find an existing Capture Part')
+          logger.error(error)
+        }
 
         if (existingCapturePart != null) return true
       }
@@ -215,13 +221,19 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         const dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType =
           audioFileExtensions.some(extension => item.link?.endsWith(extension)) ? 'audio-item' : 'video-item'
 
-        const capturePart = await CapturePart.create({
-          status: 'pending' as CapturePartStatus,
-          url: item.link,
-          dataProviderPartIdentifier,
-          payload: JSON.stringify({index, ...item} as PodcastRssFeedDataProviderPartPayloadType),
-          captureId: capture.id,
-        })
+        let capturePart: CapturePart | null = null
+        try {
+          capturePart = await CapturePart.create({
+            status: 'pending' as CapturePartStatus,
+            url: item.link,
+            dataProviderPartIdentifier,
+            payload: JSON.stringify({index, ...item} as PodcastRssFeedDataProviderPartPayloadType),
+            captureId: capture.id,
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when trying to create a new Capture Part')
+          logger.error(error)
+        }
 
         if (capturePart == null) {
           logger.error(`Capture Part ${index} could not be created: ${item.link}`)

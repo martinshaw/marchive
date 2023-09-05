@@ -26,7 +26,14 @@ const ScheduleCreateAction = async (
   intervalInSeconds: number | null,
   downloadLocation: string | null = null,
 ): Promise<ScheduleAttributes | never> => {
-  const source = await Source.findByPk(sourceId)
+  let source: Source | null = null
+  try {
+    source = await Source.findByPk(sourceId)
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find Source ID ${sourceId} for new Schedule`)
+    logger.error(error)
+  }
+
   if (source == null) {
     const errorMessage = `No source found with id: ${sourceId}`
     logger.error(errorMessage)
@@ -74,14 +81,18 @@ const ScheduleCreateAction = async (
 
   const nextRunAtDate = intervalInSeconds == null ? new Date() : new Date(Date.now() + (intervalInSeconds * 1000))
 
-  const schedule = await Schedule.create(
-    {
+  let schedule: Schedule | null = null
+  try {
+    schedule = await Schedule.create({
       interval: intervalInSeconds,
       nextRunAt: nextRunAtDate,
       downloadLocation: downloadLocation,
       sourceId: source.id,
-    },
-  )
+    })
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to create a new Schedule for Source ID ${source.id}`)
+    logger.error(error)
+  }
 
   if (schedule == null) {
     const errorMessage = 'Failed to create new Schedule'

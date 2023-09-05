@@ -32,17 +32,29 @@ export const findOrCreateSourceDomainForUrl = async (url: string): Promise<Sourc
     return null
   }
 
-  const sourceDomain = await SourceDomain.findOne({ where: { name: urlDomainName } });
+  let sourceDomain: SourceDomain | null = null
+  try {
+    sourceDomain = await SourceDomain.findOne({ where: { name: urlDomainName } });
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to find SourceDomain with name ${urlDomainName}:`)
+    logger.error(error)
+  }
+
   if (sourceDomain != null) return sourceDomain
 
   const faviconPath = await retrieveAndStoreFaviconFromUrl(url)
   if (faviconPath == null || faviconPath === '') {
-    //
+    logger.warn('Unable to retrieve favicon from URL: ' + url + ' when attempting to find or create source domain, setting to null')
+    return null
   }
 
   return SourceDomain.create({
     name: urlDomainName,
     faviconPath,
+  }).catch(error => {
+    logger.error(`A DB error occurred when attempting to create SourceDomain with name ${urlDomainName}:`)
+    logger.error(error)
+    return null
   })
 }
 

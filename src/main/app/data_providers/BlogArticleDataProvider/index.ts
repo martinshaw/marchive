@@ -389,12 +389,18 @@ class BlogArticleDataProvider extends BaseDataProvider {
          *  We will need to check that the capture of the found capture part belongs to the same source
          */
 
-        const existingCapturePart = await CapturePart.findOne({
-          where: {
-            url: link.url,
-            status: 'completed' as CapturePartStatus,
-          },
-        })
+        let existingCapturePart: CapturePart | null = null
+        try {
+          existingCapturePart = await CapturePart.findOne({
+            where: {
+              url: link.url,
+              status: 'completed' as CapturePartStatus,
+            },
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when trying to find an existing Capture Part')
+          logger.error(error)
+        }
 
         if (existingCapturePart != null) {
           logger.info(`Capture Part ${index} has been previously downloaded: ${link.url}`)
@@ -419,17 +425,23 @@ class BlogArticleDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddArticleLinks) {
-        const capturePart = await CapturePart.create({
-          status: 'pending' as CapturePartStatus,
-          url: link.url,
-          dataProviderPartIdentifier: 'linked-page' as BlogArticleDataProviderPartIdentifierType,
-          payload: JSON.stringify({
-            index,
-            includes: ['screenshot', 'snapshot', 'metadata'],
-            ...link,
-          } as BlogArticleDataProviderLinkedPagePayloadType),
-          captureId: capture.id,
-        })
+        let capturePart: CapturePart | null = null
+        try {
+          capturePart = await CapturePart.create({
+            status: 'pending' as CapturePartStatus,
+            url: link.url,
+            dataProviderPartIdentifier: 'linked-page' as BlogArticleDataProviderPartIdentifierType,
+            payload: JSON.stringify({
+              index,
+              includes: ['screenshot', 'snapshot', 'metadata'],
+              ...link,
+            } as BlogArticleDataProviderLinkedPagePayloadType),
+            captureId: capture.id,
+          })
+        } catch (error) {
+          logger.error('A DB error occurred when creating a new Capture Part')
+          logger.error(error)
+        }
 
         if (capturePart === null) {
           logger.error(`Capture Part ${index} could not be created: ${link.url}`)
