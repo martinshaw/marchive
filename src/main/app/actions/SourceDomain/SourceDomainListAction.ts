@@ -14,7 +14,6 @@ import SourceDomain, { SourceDomainAttributes } from '../../../database/models/S
 
 const SourceDomainListAction = async (withSources: boolean): Promise<SourceDomainAttributes[]> => {
   let findAssociations: Includeable[] = []
-
   if (withSources) findAssociations.push({ model: Source, separate: true, order: [['nextRunAt', 'desc']] })
 
   return SourceDomain

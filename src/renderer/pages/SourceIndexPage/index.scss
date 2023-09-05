@@ -58,6 +58,16 @@
   }
 }
 
+.sources__list__source-domain {
+  //
+}
+
+.sources__list__source-domain__title {
+  display: 'flex';
+  flex-direction: 'row';
+
+}
+
 .sources__list__item {
   display: flex !important;
   flex-direction: column !important;
