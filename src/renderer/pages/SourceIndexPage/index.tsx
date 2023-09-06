@@ -13,53 +13,61 @@ import { useMemo, useState } from 'react';
 import { Button, Text } from '@blueprintjs/core';
 import { NavLink, useLoaderData } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import { SourceAttributes } from '../../../main/database/models/Source';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourceDomains from './functions/getSourceDomains';
 import getDataProviders from './functions/getDataProviders';
+import { SourceDomainAttributes } from 'main/database/models/SourceDomain';
 
 import './index.scss';
-import { SourceDomainAttributes } from 'main/database/models/SourceDomain';
+import { SourceAttributes } from 'main/database/models/Source';
+import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 
 type SourceIndexPageLoaderReturnType = {
   sourcesGroupedBySourceDomain: SourceDomainAttributes[],
-  sourcesGroupedBySourceDomainErrorMessage: string | false,
+  sourcesGroupedBySourceDomainError: Error | false,
+  sourcesWithoutSourceDomain: SourceAttributes[],
+  sourcesWithoutSourceDomainError: Error | false,
   dataProviders: DataProviderSerializedType[],
-  dataProvidersErrorMessage: string | false,
+  dataProvidersError: Error | false,
 }
 
 export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderReturnType> => {
   let sourcesGroupedBySourceDomain: SourceDomainAttributes[] = [];
-  let sourcesGroupedBySourceDomainErrorMessage: string | false = false;
+  let sourcesGroupedBySourceDomainError: Error | false = false;
+
+  try { sourcesGroupedBySourceDomain = await getSourceDomains(true, true); }
+  catch (error) { sourcesGroupedBySourceDomainError = error as Error; }
+
+  let sourcesWithoutSourceDomain: SourceAttributes[] = [];
+  let sourcesWithoutSourceDomainError: Error | false = false;
+
+  try { sourcesWithoutSourceDomain = await getSourcesWithoutSourceDomains(); }
+  catch (error) { sourcesWithoutSourceDomainError = error as Error; }
+
   let dataProviders: DataProviderSerializedType[] = [];
-  let dataProvidersErrorMessage: string | false = false;
-
-  console.log('BEFORE SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
-
-  try { sourcesGroupedBySourceDomain = await getSourceDomains(true); }
-  catch (errorMessage) { sourcesGroupedBySourceDomainErrorMessage = errorMessage as string; }
-
-  console.log('AFTER 1 SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
+  let dataProvidersError: Error | false = false;
 
   try { dataProviders = await getDataProviders(); }
-  catch (errorMessage) { dataProvidersErrorMessage = errorMessage as string; }
-
-  console.log('AFTER 2 SourceIndexPageLoader', sourcesGroupedBySourceDomain, sourcesGroupedBySourceDomainErrorMessage, dataProviders, dataProvidersErrorMessage)
+  catch (error) { dataProvidersError = error as Error; }
 
   return {
     sourcesGroupedBySourceDomain,
-    sourcesGroupedBySourceDomainErrorMessage,
+    sourcesGroupedBySourceDomainError,
+    sourcesWithoutSourceDomain,
+    sourcesWithoutSourceDomainError,
     dataProviders,
-    dataProvidersErrorMessage,
+    dataProvidersError,
   }
 }
 
 const SourceIndexPage = () => {
   const {
     sourcesGroupedBySourceDomain,
-    sourcesGroupedBySourceDomainErrorMessage,
+    sourcesGroupedBySourceDomainError,
+    sourcesWithoutSourceDomain,
+    sourcesWithoutSourceDomainError,
     dataProviders,
-    dataProvidersErrorMessage
+    dataProvidersError
   } = useLoaderData() as SourceIndexPageLoaderReturnType
 
   const sourcesCount = useMemo(
@@ -90,7 +98,7 @@ const SourceIndexPage = () => {
         {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
           <div key={sourceDomain.id} className="sources__list__source-domain">
             <div className="sources__list__source-domain__title">
-              <img src={sourceDomain.faviconPath ?? undefined} alt={sourceDomain.name} />
+              {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
               <Text ellipsize>{sourceDomain.name}</Text>
             </div>
 
@@ -104,6 +112,15 @@ const SourceIndexPage = () => {
             ))}
           </div>
         )}
+
+        {(sourcesWithoutSourceDomain ?? []).map(source => (
+          source == null ? null :
+            <SourceIndexPageListItemCard
+              key={source.id}
+              source={source}
+              dataProviders={dataProviders}
+            />
+        ))}
       </div>
     </>
   );

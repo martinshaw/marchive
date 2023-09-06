@@ -18,18 +18,18 @@ const useValidateUrlWithDataProviders = (url: string) => {
 
   const [validDataProviders, setValidDataProviders] = useState<DataProviderSerializedType[]>([])
   const [loadingValidDataProviders, setLoadingValidDataProviders] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string | false>(false)
+  const [errorMessage, setErrorMessage] = useState<Error | false>(false)
 
   useEffect(() => {
     setValidDataProviders([])
     setLoadingValidDataProviders(true)
     setErrorMessage(false)
 
-    window.electron.ipcRenderer.once('data-providers.validate', (validDataProvidersValue, errors) => {
-      if (errors != null) {
+    window.electron.ipcRenderer.once('data-providers.validate', (validDataProvidersValue, error) => {
+      if (error != null) {
         setValidDataProviders([])
         setLoadingValidDataProviders(false)
-        setErrorMessage((errors as Error).message)
+        setErrorMessage(error as Error)
         return
       }
 

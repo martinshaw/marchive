@@ -2030,6 +2030,13 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/electron-prompt@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@types/electron-prompt/-/electron-prompt-1.6.1.tgz#301297e26e3ae4df2cb03b6120772f43309faf6e"
+  integrity sha512-kTvEfI2sVyrgsoN5yN7Ak++5GP4sQ9FbLW090NZ9aysXg/6JAhOygZqpjHfeu1OCkXtEWsgyesW2j+Qg1rbncA==
+  dependencies:
+    electron latest
+
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/@types/eslint-scope/-/eslint-scope-3.7.4.tgz#37fc1223f0786c39627068a12e94d6e6fc61de16"
@@ -4715,6 +4722,11 @@ electron-log@^4.4.8:
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-4.4.8.tgz#fcb9f714dbcaefb6ac7984c4683912c74730248a"
   integrity sha512-QQ4GvrXO+HkgqqEOYbi+DHL7hj5JM+nHi/j+qrN9zeeXVKy8ZABgbu4CnG+BBqDZ2+tbeq9tUC4DZfIWFU5AZA==
 
+electron-prompt@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/electron-prompt/-/electron-prompt-1.7.0.tgz#6f9dedb2dac1dd6bad2e6592ab81cb87c37f2a35"
+  integrity sha512-IfqJYEgcRO6NuyPROo8AtdkAiZ6N9I1lQEf4dJAkPuhV5YgOHdmLqZJf6OXumZJfzrjpzCM5jHeYOrhGdgbnEA==
+
 electron-publish@24.5.0:
   version "24.5.0"
   resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-24.5.0.tgz#492a4d7caa232e88ee3c18f5c3b4dc637e5e1b3a"
@@ -4752,6 +4764,15 @@ electron@^25.0.1:
   version "25.8.0"
   resolved "https://registry.yarnpkg.com/electron/-/electron-25.8.0.tgz#60c84f1f256924ac5a0aff13276b901b0c43767a"
   integrity sha512-T3kC1a/3ntSaYMCVVfUUc9v7myPzi6J2GP0Ad/CyfWKDPp054dGyKxb2EEjKnxQQ7wfjsT1JTEdBG04x6ekVBw==
+  dependencies:
+    "@electron/get" "^2.0.0"
+    "@types/node" "^18.11.18"
+    extract-zip "^2.0.1"
+
+electron@latest:
+  version "26.1.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-26.1.0.tgz#d26fefba5a5c68069b07a117d87aee1c4e5d172d"
+  integrity sha512-qEh19H09Pysn3ibms5nZ0haIh5pFoOd7/5Ww7gzmAwDQOulRi8Sa2naeueOyIb1GKpf+6L4ix3iceYRAuA5r5Q==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^18.11.18"

@@ -34,5 +34,71 @@ Description: description
 
 import fs from 'node:fs'
 import path from 'node:path'
+import imageType, { ImageTypeResult } from 'image-type'
+import logger from '../../log'
 
-const retrieveFileAsBase64DataUrlFromAbsolutePath = async (absolutePath: string): Promise<string|false> => {
+const imageExtensionsToMimeTypes: {[key: string]: string} = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.bmp': 'image/bmp',
+  '.ico': 'image/x-icon',
+  '.webp': 'image/webp',
+  '.tiff': 'image/tiff',
+  '.tif': 'image/tiff',
+} as const
+
+const audioExtensionsToMimeTypes: {[key: string]: string} = {
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg',
+  '.m4a': 'audio/m4a',
+  '.aac': 'audio/aac',
+  '.flac': 'audio/flac',
+  '.wma': 'audio/x-ms-wma',
+  '.aiff': 'audio/aiff',
+  '.ape': 'audio/ape',
+  '.alac': 'audio/alac',
+  '.opus': 'audio/opus',
+} as const
+
+const videoExtensionsToMimeTypes: {[key: string]: string} = {
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.avi': 'video/x-msvideo',
+  '.mov': 'video/quicktime',
+  '.wmv': 'video/x-ms-wmv',
+  '.mkv': 'video/x-matroska',
+  '.flv': 'video/x-flv',
+  '.m4v': 'video/x-m4v',
+  '.mpeg': 'video/mpeg',
+  '.mpg': 'video/mpeg',
+  '.3gp': 'video/3gpp',
+  '.3g2': 'video/3gpp2',
+} as const
+
+const retrieveFileAsBase64DataUrlFromAbsolutePath = (absolutePath: string | null): string | null => {
+  if (absolutePath == null) return null
+
+  const fileData = fs.readFileSync(absolutePath)
+  const fileBase64Content = fileData.toString('base64')
+  const fileExtension = path.extname(absolutePath)
+
+  const fileImageDataType = imageType(fileData)
+  if (fileImageDataType?.mime != null) return `data:${fileImageDataType.mime};base64,${fileBase64Content}`
+
+  if (fileExtension in imageExtensionsToMimeTypes) return `data:${imageExtensionsToMimeTypes[fileExtension]};base64,${fileBase64Content}`
+  if (fileExtension in audioExtensionsToMimeTypes) return `data:${audioExtensionsToMimeTypes[fileExtension]};base64,${fileBase64Content}`
+  if (fileExtension in videoExtensionsToMimeTypes) return `data:${videoExtensionsToMimeTypes[fileExtension]};base64,${fileBase64Content}`
+
+  logger.warn(
+    'retrieveFileAsBase64DataUrlFromAbsolutePath does not support the file\'s extension. This will need to be implemented!',
+    {absolutePath, fileExtension}
+  )
+
+  return null
+}
+
+export {retrieveFileAsBase64DataUrlFromAbsolutePath}

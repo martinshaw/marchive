@@ -40,7 +40,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
           scheduleCaption = (
             <>
               <Icon icon="time" />
-              <Text>Not scheduled to run</Text>
+              <Text>Not scheduled to save</Text>
             </>
           );
         }
@@ -48,7 +48,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
           scheduleCaption = (
             <>
               <Icon icon="time" />
-              <Text>Ran on {props.source.schedules[0].lastRunAt.toDateString()} {props.source.schedules[0].lastRunAt.toLocaleTimeString()}</Text>
+              <Text>Saved on {props.source.schedules[0].lastRunAt.toDateString()} {props.source.schedules[0].lastRunAt.toLocaleTimeString()}</Text>
             </>
           );
         }
@@ -56,7 +56,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
           scheduleCaption = (
             <>
               <Icon icon="time" />
-              <Text>Will run on {props.source.schedules[0].nextRunAt.toDateString()} {props.source.schedules[0].nextRunAt.toLocaleTimeString()}</Text>
+              <Text>Will save on {props.source.schedules[0].nextRunAt.toDateString()} {props.source.schedules[0].nextRunAt.toLocaleTimeString()}</Text>
             </>
           );
         }
@@ -66,7 +66,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
         scheduleCaption = (
           <>
             <Icon icon="time" />
-            <Text>Runs every {Math.ceil(props.source.schedules[0].interval / 60)} mins. {nextCaption}</Text>
+            <Text>Saves every {Math.ceil(props.source.schedules[0].interval / 60)} mins. {nextCaption}</Text>
           </>
         );
       }
@@ -75,7 +75,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
       scheduleCaption = (
         <>
           <Icon icon="time" />
-          <Text>Running now...</Text>
+          <Text>Saving now...</Text>
         </>
       );
     }

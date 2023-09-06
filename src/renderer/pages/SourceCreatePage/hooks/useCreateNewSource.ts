@@ -16,7 +16,7 @@ import { SourceAttributes } from '../../../../main/database/models/Source'
 const useCreateNewSource = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [createdSource, setCreatedSource] = useState<SourceAttributes | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | false>(false)
+  const [errorMessage, setErrorMessage] = useState<Error | false>(false)
 
   const createNewSource = useCallback((url: string, dataProviderIdentifier: string) => {
     setIsCreating(true)
@@ -30,7 +30,8 @@ const useCreateNewSource = () => {
 
         if (errorMessage != null) {
           setCreatedSource(null)
-          setErrorMessage(errorMessage as string)
+          setErrorMessage(errorMessage as Error)
+          console.error(errorMessage)
           return
         }
 
@@ -44,11 +45,18 @@ const useCreateNewSource = () => {
     return () => { window.electron.ipcRenderer.removeAllListeners('sources.create') }
   }, [])
 
+  const resetSource = useCallback(() => {
+    setIsCreating(false)
+    setCreatedSource(null)
+    setErrorMessage(false)
+  }, [])
+
   return {
     isCreating,
     createdSource,
     errorMessage,
     createNewSource,
+    resetSource,
   }
 }
 

@@ -5,8 +5,12 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
   dialog,
+  clipboard,
 } from 'electron';
 import UtilityCleanAction from './app/actions/Utility/UtilityCleanAction';
+import UtilityRetrieveFavicon from './app/actions/Utility/UtilityRetrieveFavicon';
+import prompt from 'electron-prompt';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from './app/repositories/LocalFileRepository';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -142,6 +146,69 @@ export default class MenuBuilder {
                 }
               })
           }
+        },
+        {
+          label: 'Retrieve Icon for Website',
+          click: async () => {
+            prompt({
+              label: "Enter a link ...",
+              inputAttrs: {type: 'text'},
+              type: 'input',
+              height: 170,
+            }, this.mainWindow)
+              .then(async (result: string | null) => {
+                if (result)
+                  await UtilityRetrieveFavicon(result)
+                    .then((result) => {
+                      if (result == null || result === '') throw new Error("No icon found for the URL you entered.")
+
+                      const pathToFile = result
+
+                      dialog.showMessageBox(this.mainWindow, {
+                        type: 'info',
+                        message: "The icon image file has been saved successfully! Would you like to copy the file path to your clipboard, open the file or copy a Base64-encoded data URL?",
+                        buttons: ['I\'m Done', 'Copy File Path', 'Open File', 'Copy Base64-encoded Data URL'],
+                        defaultId: 0,
+                      })
+                        .then((result) => {
+                          if (result.response === 0) return
+                          if (result.response === 1) {
+                            clipboard.writeText(pathToFile);
+                            return
+                          }
+                          if (result.response === 2) {
+                            shell.openPath(pathToFile)
+                            return
+                          }
+                          if (result.response === 3) {
+                            try {
+                              const base64Url = retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile)
+                              if (base64Url == null) throw new Error()
+                              clipboard.writeText(base64Url)
+                            } catch (error) {
+                              dialog.showMessageBox(this.mainWindow, {
+                                type: 'error',
+                                message: "An error occurred when attempting to copy the Base64-encoded data URL to your clipboard.",
+                                buttons: ['OK'],
+                                defaultId: 0,
+                              })
+                            }
+                            return
+                          }
+                        })
+                        .catch(error => { throw error })
+                    })
+                    .catch(error => { throw error })
+              })
+              .catch((error) => {
+                dialog.showMessageBox(this.mainWindow, {
+                  type: 'error',
+                  message: "The URL you entered was invalid.",
+                  buttons: ['OK'],
+                  defaultId: 0,
+                })
+              })
+          },
         }
       ],
     };

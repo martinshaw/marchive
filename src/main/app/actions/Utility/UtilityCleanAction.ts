@@ -10,7 +10,7 @@ Description: description
 */
 import fs from 'node:fs'
 import {sequelize, umzug} from '../../../database'
-import { downloadCapturesPath } from '../../../../paths'
+import { downloadCapturesPath, downloadSourceDomainFaviconsPath } from '../../../../paths'
 import logger from '../../../log'
 
 const UtilityCleanAction = async (
@@ -41,7 +41,8 @@ const cleanDatabase = async (): Promise<void> => {
 
 const cleanDownloads = async (): Promise<void> => {
   const directoriesToClean: {path: string, description: string}[] = [
-    { path: downloadCapturesPath, description: 'capture downloads' }
+    { path: downloadCapturesPath, description: 'capture downloads' },
+    { path: downloadSourceDomainFaviconsPath, description: 'favicon downloads' },
   ]
 
   for (const directory of directoriesToClean) {

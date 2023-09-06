@@ -50,6 +50,21 @@ export const createPuppeteerBrowser = async (
   return browser
 }
 
+export const loadPageByUrl = async (url: string, browser: Browser): Promise<Page> => {
+  const page = await browser.newPage()
+  await page.setViewport({width: 1280, height: 800})
+
+  await page.goto(
+    url,
+    {
+      timeout: 0,
+      waitUntil: 'load',
+    },
+  )
+
+  return page
+}
+
 export const scrollPageToTop = async (page: Page): Promise<unknown> => {
   return page.evaluate(() => {
     window.scrollTo(0, 0)

@@ -13,7 +13,7 @@ import puppeteer, {Browser, Page} from 'puppeteer'
 import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import path from 'node:path'
 import fs, {link} from 'node:fs'
-import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 // @ts-ignore
 import standardSlugify from 'standard-slugify'
@@ -46,7 +46,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   }
 
   getName(): string {
-    return 'Blog / News Articles'
+    return 'Blog & News Articles'
   }
 
   getDescription(): string {
@@ -93,7 +93,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser()
 
-    const page = await this.loadIndexPage(
+    const page = await this.loadSourceIndexPage(
       source,
       browser,
     )
@@ -137,23 +137,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
     return true
   }
 
-  async loadIndexPage(source: Source, browser: Browser): Promise<Page> {
-    return this.loadPageByUrl(source.url, browser)
-  }
-
-  async loadPageByUrl(url: string, browser: Browser): Promise<Page> {
-    const page = await browser.newPage()
-    await page.setViewport({width: 1280, height: 800})
-
-    await page.goto(
-      url,
-      {
-        timeout: 0,
-        waitUntil: 'load',
-      },
-    )
-
-    return page
+  async loadSourceIndexPage(source: Source, browser: Browser): Promise<Page> {
+    return loadPageByUrl(source.url, browser)
   }
 
   async generatePageScreenshot(
@@ -242,7 +227,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
     const countMapOfCommonParentDirectories: CountMapOfCommonParentDirectoriesType = {}
 
     articleLinks.forEach(link => {
-      const url = new URL(link.url)
+      const safeUrl = link.url.startsWith('http://') || link.url.startsWith('https://') ? link.url : 'https://' + link.url
+      const url = new URL(safeUrl)
       const pathParts = url.pathname.split('/')
 
       const commonParentDirectory = pathParts.slice(0, -1).join('/')
@@ -264,7 +250,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
     countMap: CountMapOfCommonParentDirectoriesType,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const singleAndFewSiblingLinks = allLinks.filter(link => {
-      const url = new URL(link.url)
+      const safeUrl = link.url.startsWith('http://') || link.url.startsWith('https://') ? link.url : 'https://' + link.url
+      const url = new URL(safeUrl)
       const pathParts = url.pathname.split('/')
 
       const commonParentDirectory = pathParts.slice(0, -1).join('/')
@@ -288,7 +275,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
     )
 
     const highestSiblingLinks = allLinks.filter(link => {
-      const url = new URL(link.url)
+      const safeUrl = link.url.startsWith('http://') || link.url.startsWith('https://') ? link.url : 'https://' + link.url
+      const url = new URL(safeUrl)
       const pathParts = url.pathname.split('/')
 
       const commonParentDirectory = pathParts.slice(0, -1).join('/')
@@ -315,7 +303,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
     const highHalfOfUniqueCountMapCounts = new Set([...uniqueCountMapCounts].slice(0, Math.ceil(uniqueCountMapCounts.size / 2)))
 
     const articleLinks = allLinks.filter(link => {
-      const pathParts = (new URL(link.url)).pathname.split('/')
+      const safeUrl = link.url.startsWith('http://') || link.url.startsWith('https://') ? link.url : 'https://' + link.url
+      const url = new URL(safeUrl)
+      const pathParts = url.pathname.split('/')
       const commonParentDirectory = pathParts.slice(0, -1).join('/')
       return highHalfOfUniqueCountMapCounts.has(countMap[commonParentDirectory]) && this.testLikelyArticleLinkUrl(link.url)
     })
@@ -488,7 +478,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const browser = await createPuppeteerBrowser()
 
-    const page = await this.loadPageByUrl(payload.url, browser)
+    const page = await loadPageByUrl(payload.url, browser)
 
     if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`

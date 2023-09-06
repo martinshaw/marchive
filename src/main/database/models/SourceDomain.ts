@@ -12,6 +12,8 @@ Description: description
 import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, HasMany} from 'sequelize-typescript'
 import { Schedule, Source } from '..'
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../../app/repositories/LocalFileRepository'
+import logger from '../../log'
 
 const sourceUseStartOrEndCursorValues = ['start', 'end', null] as const
 export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCursorValues[number] | null
@@ -19,7 +21,9 @@ export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCurso
 export type SourceDomainAttributes = {
   id: number
   name: string
+  url: string | null
   faviconPath: string | null
+  faviconImage: string | null
   sources: Array<Source>
   createdAt?: Date
   updatedAt?: Date
@@ -46,7 +50,7 @@ class SourceDomain extends Model<
   SourceDomainAttributes,
   Optional<
     SourceDomainAttributes,
-    'id' | 'sources'
+    'id' | 'faviconImage' | 'sources'
   >
 > implements SourceDomainAttributes {
   id!: number
@@ -62,7 +66,21 @@ class SourceDomain extends Model<
     allowNull: true,
     defaultValue: null,
   })
+  url!: string | null
+
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
   faviconPath!: string | null
+
+  @Column({
+    type: DataTypes.VIRTUAL,
+    get() { return retrieveFileAsBase64DataUrlFromAbsolutePath((this as SourceDomain)?.faviconPath) },
+    set() { logger.warn(`'faviconImage' is a virtual column in the SourceDomain table. Do not try to set its value`) },
+  })
+  faviconImage!: string | null
 
   @HasMany(() => Source)
   sources!: Array<Source>

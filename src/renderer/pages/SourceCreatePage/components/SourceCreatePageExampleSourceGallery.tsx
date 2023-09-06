@@ -9,13 +9,14 @@ Modified: 2023-09-01T01:52:12.587Z
 Description: description
 */
 
+import { useCallback, useState } from "react"
 import { Tab, TabId, Tabs } from "@blueprintjs/core"
 import { BaseDataProviderIconInformationReturnType, DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
-import { useCallback, useState } from "react"
 import SourceCreatePageExampleSourceGalleryGridItem, { SourceCreatePageExampleSourceGalleryGridItemPropsType } from "./SourceCreatePageExampleSourceGalleryGridItem"
+import { Schedule, Source } from "../../../../main/database"
 
 export type SourceCreatePageExampleSourceGalleryPropsType = {
-  onExampleSourceSelected: (url: string, dataProviderIdentifier: string) => void,
+  onExampleSourceSelected: (url: string, dataProviderIdentifier: string) => void;
 }
 
 type GalleryTabIdType = 'news' | 'social' | 'shopping' | 'knowledge'
@@ -44,7 +45,7 @@ const galleryExampleSources: GalleryExampleSourceGroupType[] = [
           shouldInvertOnDarkMode: false
         },
         caption: 'BBC News',
-        url: 'https://www.bbc.co.uk/news',
+        url: 'https://www.bbc.com/news',
         dataProviderIdentifier: 'blog-article'
       },
       {
@@ -89,7 +90,7 @@ const galleryExampleSources: GalleryExampleSourceGroupType[] = [
           shouldInvertOnDarkMode: false
         },
         caption: 'The Times of India',
-        url: 'https://timesofindia.com',
+        url: 'https://timesofindia.indiatimes.com',
         dataProviderIdentifier: 'blog-article',
       },
       {
@@ -143,7 +144,7 @@ const galleryExampleSources: GalleryExampleSourceGroupType[] = [
           shouldInvertOnDarkMode: false
         },
         caption: 'South China Morning Post',
-        url: 'https://www.scmp.com/asia',
+        url: 'https://www.scmp.com',
         dataProviderIdentifier: 'blog-article',
       },
     ]
@@ -189,11 +190,12 @@ const SourceCreatePageExampleSourceGallery = (props: SourceCreatePageExampleSour
                 <div className="data-providers__gallery__tabs__tab">
                   <div className="data-providers__gallery__tabs__tab__inner">
                     {group.items.map(
-                      (item, index) => <SourceCreatePageExampleSourceGalleryGridItem
-                        key={index}
-                        {...item}
-                        onExampleSourceSelected={props.onExampleSourceSelected}
-                      />
+                      (item, index) =>
+                        <SourceCreatePageExampleSourceGalleryGridItem
+                          key={index}
+                          {...item}
+                          onExampleSourceSelected={props.onExampleSourceSelected}
+                        />
                     )}
                   </div>
                 </div>

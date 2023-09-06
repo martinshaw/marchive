@@ -9,11 +9,11 @@ Modified: 2023-09-01T02:44:41.725Z
 Description: description
 */
 
-import { Card, Text } from "@blueprintjs/core"
+import { Card, Spinner, SpinnerSize, Text } from "@blueprintjs/core"
 import { GalleryExampleSourceItemType } from "./SourceCreatePageExampleSourceGallery"
 
 export type SourceCreatePageExampleSourceGalleryGridItemPropsType = GalleryExampleSourceItemType & {
-  onExampleSourceSelected: (url: string, dataProviderIdentifier: string) => void,
+  onExampleSourceSelected: (url: string, dataProviderIdentifier: string) => void;
 }
 
 const SourceCreatePageExampleSourceGalleryGridItem = (props: SourceCreatePageExampleSourceGalleryGridItemPropsType) => {

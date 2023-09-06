@@ -17,45 +17,62 @@ import path from 'node:path'
 // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`
 import getFavicons from 'get-website-favicon'
 import Downloader from "nodejs-file-downloader";
+import { createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
+import slugify from 'slugify'
 
 export const findOrCreateSourceDomainForUrl = async (url: string): Promise<SourceDomain | null> => {
-  let urlDomainName: string | null = null
-
+  let urlDomainName: string | null = null;
   try {
-    urlDomainName = new URL(url).hostname
-    if (urlDomainName == null) {
-      logger.warn('Empty URL domain parsed from URL: ' + url + ' when attempting to find or create source domain, setting to null')
-      return null
-    }
+    const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
+    urlDomainName = (new URL(safeUrl)).hostname
   } catch (error) {
     logger.warn('Unable to parse URL domain name from URL: ' + url + ' when attempting to find or create source domain, setting to null')
     return null
   }
 
+  if (urlDomainName == null) {
+    logger.warn('Empty URL domain parsed from URL: ' + url + ' when attempting to find or create source domain, setting to null')
+    return null
+  }
+
   let sourceDomain: SourceDomain | null = null
   try {
-    sourceDomain = await SourceDomain.findOne({ where: { name: urlDomainName } });
+    sourceDomain = await SourceDomain.findOne({ where: { url: urlDomainName } });
   } catch (error) {
-    logger.error(`A DB error occurred when attempting to find SourceDomain with name ${urlDomainName}:`)
+    logger.error(`A DB error occurred when attempting to find SourceDomain with URL ${urlDomainName}:`)
     logger.error(error)
   }
 
   if (sourceDomain != null) return sourceDomain
 
-  const faviconPath = await retrieveAndStoreFaviconFromUrl(url)
+  let faviconPath = await retrieveAndStoreFaviconFromUrl(url)
   if (faviconPath == null || faviconPath === '') {
     logger.warn('Unable to retrieve favicon from URL: ' + url + ' when attempting to find or create source domain, setting to null')
-    return null
+    faviconPath = null
   }
 
+  const name = await attemptToDetermineSiteNameFromMetadata(url) ?? urlDomainName
+
   return SourceDomain.create({
-    name: urlDomainName,
+    name,
+    url: urlDomainName,
     faviconPath,
   }).catch(error => {
-    logger.error(`A DB error occurred when attempting to create SourceDomain with name ${urlDomainName}:`)
+    logger.error(`A DB error occurred when attempting to create SourceDomain with URL ${urlDomainName}:`)
     logger.error(error)
     return null
   })
+}
+
+const attemptToDetermineSiteNameFromMetadata = async (urlDomainName: string): Promise<string | null> => {
+  const browser = await createPuppeteerBrowser(true, true, true, true)
+  const page = await loadPageByUrl(urlDomainName, browser)
+  const metadata = await retrievePageHeadMetadata(page)
+
+  await page.close()
+  await browser.close()
+
+  return metadata.ogSiteName ?? metadata.name ?? metadata.ogTitle ?? metadata.title ?? null
 }
 
 type GetWebsiteFaviconResultIconType = {
@@ -63,6 +80,10 @@ type GetWebsiteFaviconResultIconType = {
   sizes?: string;
   type?: string;
   origin?: string;
+}
+
+type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
+  src: string;
 }
 
 type GetWebsiteFaviconResultType = {
@@ -115,40 +136,49 @@ const iconLikelyHasSuitableSize = (icon: GetWebsiteFaviconResultIconType): boole
   return false
 }
 
-const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<string | null> => {
+export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<string | null> => {
   if (fs.existsSync(downloadSourceDomainFaviconsPath) === false) fs.mkdirSync(downloadSourceDomainFaviconsPath, { recursive: true })
 
   const result = await getFavicons(url) as GetWebsiteFaviconResultType
   if (result.icons == null || result.icons.length === 0) return null
 
+  const icons = result.icons.filter(i => i?.src != null && i?.src !== '') as GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]
 
   // Prefer PNGs, then JPEGs, then SVGs, then ICOs
   const icon =
-    result.icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.png') || icon.type === 'image/png')) ??
-    result.icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.jpeg') || icon?.src?.endsWith('.jpg') || icon.type === 'image/jpeg')) ??
-    result.icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.svg') || icon.type === 'image/svg+xml')) ??
-    result.icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.ico') || icon.type === 'image/x-icon'))
-  if (icon == null) return null
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.png') || icon.type === 'image/png')) ??
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.jpeg') || icon?.src?.endsWith('.jpg') || icon.type === 'image/jpeg')) ??
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.svg') || icon.type === 'image/svg+xml')) ??
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.ico') || icon.type === 'image/x-icon'))
 
-  const iconUrl = icon.src
-  if (iconUrl == null) return null
+  let iconUrl: string | null = icon?.src ?? null
+  if (iconUrl == null) {
+    if (icons.length > 0) iconUrl = icons[0].src
+    else return null
+  }
 
   const iconUrlExtension = iconUrl.split('.').pop()
+  const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
+  const iconFileName = slugify((new URL(safeUrl)).hostname, {
+    replacement: '_',
+    lower: true,
+    trim: true,
+    strict: true,
+  }) + '.' + iconUrlExtension
+
   const iconDownloader = new Downloader({
     url: iconUrl,
     directory: downloadSourceDomainFaviconsPath,
-    fileName: new URL(url).hostname + '.' + iconUrlExtension,
+    fileName: iconFileName,
   })
 
-  try {
-    await iconDownloader.download()
-  }
+  try { await iconDownloader.download() }
   catch (error) {
     logger.error('Unable to download favicon from URL ' + iconUrl + ' for URL ' + url + ' due to error')
     logger.error(error)
     return null
   }
 
-  return path.join(downloadSourceDomainFaviconsPath, new URL(url).hostname + '.' + iconUrlExtension)
+  return path.join(downloadSourceDomainFaviconsPath, iconFileName)
 }
 

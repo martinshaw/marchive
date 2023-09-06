@@ -16,7 +16,7 @@ import { ScheduleAttributes } from '../../../../main/database/models/Schedule'
 const useCreateNewSchedule = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [createdSchedule, setCreatedSchedule] = useState<ScheduleAttributes | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | false>(false)
+  const [errorMessage, setErrorMessage] = useState<Error | false>(false)
 
   const createNewSchedule = useCallback((sourceId: number, intervalInSeconds: number | null, downloadLocation: string | null = null) => {
     setIsCreating(true)
@@ -30,7 +30,8 @@ const useCreateNewSchedule = () => {
 
         if (errorMessage != null) {
           setCreatedSchedule(null)
-          setErrorMessage(errorMessage as string)
+          setErrorMessage(errorMessage as Error)
+          console.error(errorMessage)
           return
         }
 
@@ -44,11 +45,18 @@ const useCreateNewSchedule = () => {
     return () => { window.electron.ipcRenderer.removeAllListeners('schedules.create') }
   }, [])
 
+  const resetSchedule = useCallback(() => {
+    setIsCreating(false)
+    setCreatedSchedule(null)
+    setErrorMessage(false)
+  }, [])
+
   return {
     isCreating,
     createdSchedule,
     errorMessage,
     createNewSchedule,
+    resetSchedule,
   }
 }
 

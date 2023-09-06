@@ -10,10 +10,12 @@ Description: description
 */
 import { SourceAttributes } from '../../../database/models/Source'
 import {Schedule, Source} from '../../../database'
+import { WhereOptions } from 'sequelize'
 
-const SourceListAction = async (): Promise<SourceAttributes[]> => {
+const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {
   return Source
     .findAll({
+      where,
       include: [Schedule],
     })
     .then(sources =>

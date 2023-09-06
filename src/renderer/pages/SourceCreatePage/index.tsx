@@ -21,6 +21,8 @@ import SourceCreatePageDataProviderOptionsGrid from './components/SourceCreatePa
 import SourceCreatePageDataProviderOptionsNotFoundMessage from './components/SourceCreatePageDataProviderOptionsNotFoundMessage'
 import SourceCreatePageDataProviderOptionsLoadingMessage from './components/SourceCreatePageDataProviderOptionsLoadingMessage'
 import marchiveIsSetup from '../../layouts/DefaultLayout/functions/marchiveIsSetup'
+import SourceCreatePageLoadingMessage from './components/SourceCreatePageLoadingMessage'
+import SourceCreatePageErrorMessage from './components/SourceCreatePageErrorMessage'
 
 import './index.scss'
 
@@ -44,6 +46,7 @@ const SourceCreatePage = () => {
     createdSource,
     errorMessage: sourceErrorMessage,
     createNewSource,
+    resetSource,
   } = useCreateNewSource()
 
   const {
@@ -51,14 +54,10 @@ const SourceCreatePage = () => {
     createdSchedule,
     errorMessage: scheduleErrorMessage,
     createNewSchedule,
+    resetSchedule,
   } = useCreateNewSchedule()
 
   const navigate = useNavigate()
-
-  useEffect(() => {
-    if (sourceErrorMessage !== false) alert(sourceErrorMessage)
-    if (scheduleErrorMessage !== false) alert(scheduleErrorMessage)
-  }, [sourceErrorMessage, scheduleErrorMessage])
 
   const handleDataProviderGridItemClick = useCallback(
     (dataProvider: DataProviderSerializedType) => {
@@ -79,13 +78,8 @@ const SourceCreatePage = () => {
   useEffect(() => {
     if (createdSchedule == null || createdSource == null) return
 
-    console.log('SHOULD REDIRECT', loaderData.marchiveIsSetup, createdSchedule, createdSource)
-
-    if (loaderData.marchiveIsSetup === false)
-      marchiveIsSetup(true).then(() => { navigate(`/sources`) })
-    else
-      navigate(`/sources`)
-
+    if (loaderData.marchiveIsSetup === false) marchiveIsSetup(true).then(() => { navigate(`/sources`) })
+    else navigate(`/sources`)
   }, [createdSchedule, createdSource, loaderData.marchiveIsSetup])
 
   const handleOnExampleSourceSelected = useCallback((url: string, dataProviderIdentifier: string) => {
@@ -93,6 +87,19 @@ const SourceCreatePage = () => {
 
     createNewSource(url, dataProviderIdentifier)
   }, [])
+
+  const handleReset = useCallback(() => {
+    resetSource()
+    resetSchedule()
+    setUrlValue('')
+  }, [])
+
+  const shouldShowLoading = (isCreatingSchedule || isCreatingSource) && sourceErrorMessage === false && scheduleErrorMessage === false;
+  const shouldShowErrorMessage = sourceErrorMessage !== false || scheduleErrorMessage !== false;
+  const shouldShowDataProviderOptions = urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length > 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
+  const shouldShowDataProviderErrorMessage = urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length === 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
+  const shouldShowDataProviderLoadingMessage = urlValue !== '' && loadingValidDataProviders && validDataProviders.length === 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
+  const shouldShowExampleSourceGallery = urlValue === '' && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
 
   const createSourceFragment = (
     <>
@@ -111,25 +118,33 @@ const SourceCreatePage = () => {
         />
       </div>
 
-      {urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length > 0 &&
+      {shouldShowLoading && <SourceCreatePageLoadingMessage />}
+
+      {shouldShowErrorMessage &&
+        <SourceCreatePageErrorMessage
+          errorMessages={[sourceErrorMessage, scheduleErrorMessage].filter(message => message !== false) as Error[]}
+          onResetUrlValue={() => handleReset()}
+        />
+      }
+
+      {shouldShowDataProviderOptions &&
         <SourceCreatePageDataProviderOptionsGrid
           dataProviders={validDataProviders}
-          isInteractive={isCreatingSource === false && createdSource == null && isCreatingSchedule === false}
           onDataProviderOptionSelected={handleDataProviderGridItemClick}
         />
       }
 
-      {urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length === 0 &&
+      {shouldShowDataProviderErrorMessage &&
         <SourceCreatePageDataProviderOptionsNotFoundMessage
-          onResetUrlValue={() => setUrlValue('')}
+          onResetUrlValue={() => handleReset()}
         />
       }
 
-      {urlValue !== '' && loadingValidDataProviders && validDataProviders.length === 0 &&
+      {shouldShowDataProviderLoadingMessage &&
         <SourceCreatePageDataProviderOptionsLoadingMessage />
       }
 
-      {urlValue === '' &&
+      {shouldShowExampleSourceGallery &&
         <SourceCreatePageExampleSourceGallery
           onExampleSourceSelected={handleOnExampleSourceSelected}
         />

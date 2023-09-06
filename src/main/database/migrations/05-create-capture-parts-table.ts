@@ -12,7 +12,6 @@ Description: description
 import { DataTypes } from "sequelize";
 import { Migration } from "..";
 
-
 const up: Migration = async ({ context }) => {
 	await context.createTable('capture_parts', {
 		id: {
