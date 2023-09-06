@@ -2,20 +2,19 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: downloads.ts
-Created:  2023-08-17T09:03:35.766Z
-Modified: 2023-08-17T09:03:35.767Z
+File Name: CapturePartRunProcess.ts
+Created:  2023-09-06T04:58:17.096Z
+Modified: 2023-09-06T04:58:17.096Z
 
 Description: description
 */
-
 import { Capture, CapturePart, Schedule, Source } from "../../database"
 import logger from "../log"
 import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "../../database/models/CapturePart"
 
-const DownloadsWatcher = async (): Promise<never | void> => {
+const CapturePartRunProcess = async (): Promise<never | void> => {
   // Should wait for 6 seconds between ticks when downloading pending files
   // When there are no pending files to download, should wait for 120 seconds between ticks
   let currentDelayBetweenTicks = 6 * 1000
@@ -146,4 +145,4 @@ const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvi
   return true
 }
 
-export default DownloadsWatcher
+CapturePartRunProcess()

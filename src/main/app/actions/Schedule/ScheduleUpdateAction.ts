@@ -11,7 +11,7 @@ Description: description
 import fs from 'node:fs'
 import {Schedule, Source} from '../../../database'
 import {Attributes} from 'sequelize'
-import logger from '../../../log'
+import logger from '../../log'
 import { getDataProviderByIdentifier } from '../../../app/repositories/DataProviderRepository'
 import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
 import { ScheduleAttributes } from '../../../database/models/Schedule'

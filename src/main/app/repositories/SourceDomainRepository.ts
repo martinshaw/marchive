@@ -11,7 +11,7 @@ Description: description
 
 import { downloadSourceDomainFaviconsPath } from "../../../paths";
 import { SourceDomain } from "../../database"
-import logger from "../../log";
+import logger from "../log";
 import fs from 'node:fs'
 import path from 'node:path'
 // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`

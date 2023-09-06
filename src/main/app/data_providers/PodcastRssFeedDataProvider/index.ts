@@ -19,7 +19,7 @@ import standardSlugify from 'standard-slugify'
 import {v4 as uuidV4, v4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
-import logger from '../../../log'
+import logger from '../../log'
 
 type RssParserFeedType = {
   [key: string]: any;

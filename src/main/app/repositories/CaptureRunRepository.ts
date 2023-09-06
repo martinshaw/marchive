@@ -15,7 +15,7 @@ import {Capture, Schedule, Source} from '../../database'
 import {ScheduleAttributes, ScheduleStatus} from '../../database/models/Schedule'
 import {getDataProviderByIdentifier} from './DataProviderRepository'
 import {downloadCapturesPath} from '../../../paths'
-import logger from '../../log'
+import logger from '../log'
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   logger.info('Found Schedule with ID: ' + schedule.id)

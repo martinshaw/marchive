@@ -2,18 +2,17 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: schedules.ts
-Created:  2023-08-17T09:03:35.766Z
-Modified: 2023-08-17T09:03:35.767Z
+File Name: ScheduleRunProcess.ts
+Created:  2023-09-06T04:58:02.055Z
+Modified: 2023-09-06T04:58:02.055Z
 
 Description: description
 */
-
-import logger from "../log"
+import logger from '../log'
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
 import performCaptureRun from "../repositories/CaptureRunRepository"
 
-const SchedulesWatcher = async (): Promise<void | never> => {
+const ScheduleRunProcess = async (): Promise<void | never> => {
   const currentDelayBetweenTicks = (60 * 1000) * 1 // 1 minute
 
   // eslint-disable-next-line no-constant-condition
@@ -42,10 +41,10 @@ const tick = async (): Promise<void> => {
 
     performCaptureRun(schedule)
       .catch(error => {
-        logger.error(`Error running Schedule ID ${schedule.id} in SchedulesWatcher tick loop`)
+        logger.error(`Error running Schedule ID ${schedule.id} in ScheduleRunProcess tick loop`)
         logger.error(error)
       })
   })
 }
 
-export default SchedulesWatcher
+ScheduleRunProcess()

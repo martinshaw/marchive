@@ -19,7 +19,7 @@ import {CapturePartStatus} from '../../../database/models/CapturePart'
 import standardSlugify from 'standard-slugify'
 import {v4 as uuidV4} from 'uuid'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
-import logger from '../../../log'
+import logger from '../../log'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;

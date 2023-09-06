@@ -8,7 +8,7 @@ Modified: 2023-08-29T21:25:45.800Z
 
 Description: description
 */
-import logger from '../../../../log'
+import logger from '../../../log'
 import { getOrSetStoredSetting } from '../../../repositories/StoredSettingRepository'
 import { StoredSettingAttributes, StoredSettingKeyType } from '../../../../database/models/StoredSetting'
 

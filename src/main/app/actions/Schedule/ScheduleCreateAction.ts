@@ -15,7 +15,7 @@ import slugify from 'slugify'
 import {downloadCapturesPath as defaultDownloadCapturesPath} from '../../../../paths'
 import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
 import {AllowedScheduleIntervalReturnType} from '../../data_providers/BaseDataProvider'
-import logger from '../../../log'
+import logger from '../../log'
 import { ScheduleAttributes } from '../../../database/models/Schedule'
 
 /**

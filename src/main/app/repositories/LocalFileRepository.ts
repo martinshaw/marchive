@@ -35,7 +35,7 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import imageType, { ImageTypeResult } from 'image-type'
-import logger from '../../log'
+import logger from '../log'
 
 const imageExtensionsToMimeTypes: {[key: string]: string} = {
   '.png': 'image/png',

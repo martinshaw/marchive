@@ -11,7 +11,7 @@ Description: description
 import fs from 'node:fs'
 import {sequelize, umzug} from '../../../database'
 import { downloadCapturesPath, downloadSourceDomainFaviconsPath } from '../../../../paths'
-import logger from '../../../log'
+import logger from '../../log'
 
 const UtilityCleanAction = async (
   database: boolean = false,

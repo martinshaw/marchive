@@ -19,7 +19,7 @@ import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {v4 as uuidV4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import {JSONObject, JSONValue} from 'types-json'
-import logger from '../../../log'
+import logger from '../../log'
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;

@@ -10,7 +10,7 @@ Description: description
 */
 import { Umzug, SequelizeStorage } from 'umzug';
 import path from 'node:path'
-import logger from '../log';
+import logger from '../app/log';
 
 import sequelize from './connection'
 

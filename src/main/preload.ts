@@ -5,6 +5,7 @@ import { SchedulesChannels } from './ipc/Schedules';
 import { SourcesChannels } from './ipc/Sources';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
 import { UtilitiesChannels } from './ipc/Utilities';
+import { ProcessesChannels } from './ipc/Processes';
 
 export type Channels =
   | CapturesChannels
@@ -13,6 +14,7 @@ export type Channels =
   | SourcesChannels
   | SourceDomainsChannels
   | UtilitiesChannels
+  | ProcessesChannels
 
 const electronHandler = {
   ipcRenderer: {

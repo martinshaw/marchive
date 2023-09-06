@@ -1967,6 +1967,13 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/blake2@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/blake2/-/blake2-4.0.1.tgz#baecf440808cb82524190b38c56974115df20a51"
+  integrity sha512-zcBydVD4uEsGo5gFRfm2phVMLqgrGJqcTZaT6lkZMWJzYovUi6wwraUJKdY1eO92q0bhWWVSAH4OnSp2m7rCfQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
