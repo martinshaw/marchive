@@ -55,9 +55,16 @@ body {
   cursor: pointer !important;
 }
 
-.bp5-heading {
+h1.bp5-heading {
   font-weight: 200;
   font-size: 1.5rem;
+  line-height: 1.6 !important;
+  margin: 0;
+  padding: 0;
+}
+
+h4.bp5-heading {
+  font-weight: 400;
   line-height: 1.6 !important;
   margin: 0;
   padding: 0;
