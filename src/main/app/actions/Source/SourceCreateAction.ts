@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: list.ts
+File Name: SourceCreateAction.ts
 Created:  2023-08-17T09:03:35.766Z
 Modified: 2023-08-17T09:03:35.767Z
 
@@ -11,11 +11,37 @@ Description: description
 import { validateUrlWithDataProviders } from '../../../app/repositories/DataProviderRepository'
 import {Source} from '../../../database'
 import logger from '../../../log'
-import BaseDataProvider from '../../../app/providers/BaseDataProvider'
-import { Attributes } from 'sequelize'
-import { SourceAttributes, SourceUseStartOrEndCursorValueType } from 'main/database/models/Source'
+import BaseDataProvider from '../../data_providers/BaseDataProvider'
+import { Attributes, Op } from 'sequelize'
+import { SourceAttributes, SourceUseStartOrEndCursorValueType } from '../../../database/models/Source'
+import { findOrCreateSourceDomainForUrl } from '../../../app/repositories/SourceDomainRepository'
 
 const SourceCreateAction = async (url: string, dataProviderIdentifier: string): Promise<SourceAttributes> => {
+  url = url.trim()
+  url = url.startsWith('http:') || url.startsWith('https:') ? url : 'https://' + url
+
+  let existingSource: Source | null = null
+  try {
+    existingSource = await Source.findOne({
+      where: {
+        url: {[Op.eq]: url},
+        dataProviderIdentifier: {[Op.eq]: dataProviderIdentifier},
+      },
+    })
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to check if an existing Source exists when creating a new Source for URL ${url} and Data Provider ${dataProviderIdentifier}`)
+    logger.error(error)
+    throw error
+  }
+
+  if (existingSource != null) {
+    logger.info(`Source already exists with ID ${existingSource.id} for URL ${url} and Data Provider ${dataProviderIdentifier}, cancelling`)
+
+    const friendlyInfoMessage = 'You have already added this source. Please delete the existing source or make changes to it.'
+    throw new Error(friendlyInfoMessage)
+  }
+
+
   let validDataProvidersForUrl = await validateUrlWithDataProviders(url)
   if (validDataProvidersForUrl.length === 0) {
     const errorMessage = `No Data Providers available for ${url}`
@@ -33,13 +59,23 @@ const SourceCreateAction = async (url: string, dataProviderIdentifier: string): 
     throw new Error(errorMessage)
   }
 
-  const source = await Source.create({
-    dataProviderIdentifier: chosenDataProvider.getIdentifier(),
-    url: url.toString(),
-    currentStartCursorUrl: null,
-    currentEndCursorUrl: null,
-    useStartOrEndCursor: null as SourceUseStartOrEndCursorValueType,
-  })
+  const sourceDomain = await findOrCreateSourceDomainForUrl(url)
+
+  let source: Source | null = null
+  try {
+    source = await Source.create({
+      dataProviderIdentifier: chosenDataProvider.getIdentifier(),
+      url,
+      currentStartCursorUrl: null,
+      currentEndCursorUrl: null,
+      useStartOrEndCursor: null as SourceUseStartOrEndCursorValueType,
+      sourceDomainId: sourceDomain == null ? null : sourceDomain.id,
+    })
+  } catch (error) {
+    logger.error(`A DB error occurred when attempting to create a new Source for URL ${url}`)
+    logger.error(error)
+    throw error
+  }
 
   logger.info(`Created new Source with ID ${source.id}`)
 

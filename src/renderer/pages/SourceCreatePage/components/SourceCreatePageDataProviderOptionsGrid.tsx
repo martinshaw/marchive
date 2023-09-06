@@ -10,13 +10,12 @@ Description: description
 */
 
 import { Card, Text } from "@blueprintjs/core"
-import { DataProviderSerializedType } from "main/app/providers/BaseDataProvider"
+import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
 import { useState } from "react"
 
 export type SourceCreatePageDataProviderOptionsGridPropsType = {
-  dataProviders: DataProviderSerializedType[]
-  isInteractive: boolean
-  onDataProviderOptionSelected: (dataProvider: DataProviderSerializedType) => void
+  dataProviders: DataProviderSerializedType[];
+  onDataProviderOptionSelected: (dataProvider: DataProviderSerializedType) => void;
 }
 
 const SourceCreatePageDataProviderOptionsGrid = (props: SourceCreatePageDataProviderOptionsGridPropsType) => {
@@ -28,13 +27,11 @@ const SourceCreatePageDataProviderOptionsGrid = (props: SourceCreatePageDataProv
         {props.dataProviders.map((dataProvider) => {
           if (dataProvider == null) return null
 
-          const hoverClassName = 'data-providers__grid__item' + (hoveredProviderGridItem?.identifier === dataProvider.identifier ? '--hover' : (hoveredProviderGridItem != null ? '--not-hover' : ''))
-
           return (
             <Card
               key={dataProvider.identifier}
-              interactive={props.isInteractive}
-              className={"data-providers__grid__item " + hoverClassName}
+              interactive
+              className="data-providers__grid__item"
               onClick={() => props.onDataProviderOptionSelected(dataProvider)}
               onMouseEnter={() => setHoveredProviderGridItem(dataProvider)}
               onMouseLeave={() => setHoveredProviderGridItem(null)}

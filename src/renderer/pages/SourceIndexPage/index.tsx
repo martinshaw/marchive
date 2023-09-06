@@ -9,57 +9,80 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { Button, Card, Icon, Text } from '@blueprintjs/core';
+import { useMemo, useState } from 'react';
+import { Button, Text } from '@blueprintjs/core';
 import { NavLink, useLoaderData } from 'react-router-dom';
-import useGetSources from './hooks/useGetSources';
-import useGetDataProviders from './hooks/useGetDataProviders';
-import { DataProviderSerializedType } from 'main/app/providers/BaseDataProvider';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
+import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
+import getSourceDomains from './functions/getSourceDomains';
+import getDataProviders from './functions/getDataProviders';
+import { SourceDomainAttributes } from 'main/database/models/SourceDomain';
 
 import './index.scss';
-import { ReactNode, useRef, useState } from 'react';
 import { SourceAttributes } from 'main/database/models/Source';
-import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
-import { List, ListRowRenderer } from 'react-virtualized';
-import getSources from './functions/getSources';
-import getDataProviders from './functions/getDataProviders';
+import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 
 type SourceIndexPageLoaderReturnType = {
-  sources: SourceAttributes[],
-  sourcesErrorMessage: string | false,
+  sourcesGroupedBySourceDomain: SourceDomainAttributes[],
+  sourcesGroupedBySourceDomainError: Error | false,
+  sourcesWithoutSourceDomain: SourceAttributes[],
+  sourcesWithoutSourceDomainError: Error | false,
   dataProviders: DataProviderSerializedType[],
-  dataProvidersErrorMessage: string | false,
+  dataProvidersError: Error | false,
 }
 
 export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderReturnType> => {
-  let sources: SourceAttributes[] = [];
-  let sourcesErrorMessage: string | false = false;
-  let dataProviders: DataProviderSerializedType[] = [];
-  let dataProvidersErrorMessage: string | false = false;
+  let sourcesGroupedBySourceDomain: SourceDomainAttributes[] = [];
+  let sourcesGroupedBySourceDomainError: Error | false = false;
 
-  try { sources = await getSources(); }
-  catch (errorMessage) { sourcesErrorMessage = errorMessage as string; }
+  try { sourcesGroupedBySourceDomain = await getSourceDomains(true, true); }
+  catch (error) { sourcesGroupedBySourceDomainError = error as Error; }
+
+  let sourcesWithoutSourceDomain: SourceAttributes[] = [];
+  let sourcesWithoutSourceDomainError: Error | false = false;
+
+  try { sourcesWithoutSourceDomain = await getSourcesWithoutSourceDomains(); }
+  catch (error) { sourcesWithoutSourceDomainError = error as Error; }
+
+  let dataProviders: DataProviderSerializedType[] = [];
+  let dataProvidersError: Error | false = false;
 
   try { dataProviders = await getDataProviders(); }
-  catch (errorMessage) { dataProvidersErrorMessage = errorMessage as string; }
+  catch (error) { dataProvidersError = error as Error; }
 
   return {
-    sources,
-    sourcesErrorMessage,
+    sourcesGroupedBySourceDomain,
+    sourcesGroupedBySourceDomainError,
+    sourcesWithoutSourceDomain,
+    sourcesWithoutSourceDomainError,
     dataProviders,
-    dataProvidersErrorMessage,
+    dataProvidersError,
   }
 }
 
 const SourceIndexPage = () => {
-  const { sources, sourcesErrorMessage, dataProviders, dataProvidersErrorMessage } = useLoaderData() as SourceIndexPageLoaderReturnType
+  const {
+    sourcesGroupedBySourceDomain,
+    sourcesGroupedBySourceDomainError,
+    sourcesWithoutSourceDomain,
+    sourcesWithoutSourceDomainError,
+    dataProviders,
+    dataProvidersError
+  } = useLoaderData() as SourceIndexPageLoaderReturnType
 
-  const [hoveredSourceListItem, setHoveredSourceListItem] = useState<SourceAttributes | null>(null)
+  const sourcesCount = useMemo(
+    () => sourcesGroupedBySourceDomain == null ?
+      0 :
+      sourcesGroupedBySourceDomain.reduce((c, sourceDomain) => (c + (sourceDomain.sources ?? []).length), 0)
+    ,
+    [sourcesGroupedBySourceDomain]
+  )
 
   return (
     <>
       <div className="sources__buttons">
         <Text>
-          {sources.length} Source{sources.length > 1 ? 's' : ''}
+          {sourcesCount} Source{sourcesCount > 1 ? 's' : ''}
           <span className="sources__buttons__hint">
             Right-click a source to edit or delete it.
           </span>
@@ -72,15 +95,30 @@ const SourceIndexPage = () => {
       </div>
 
       <div className="sources__list">
-        {sources.map(source => (
+        {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
+          <div key={sourceDomain.id} className="sources__list__source-domain">
+            <div className="sources__list__source-domain__title">
+              {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
+              <Text ellipsize>{sourceDomain.name}</Text>
+            </div>
+
+            {(sourceDomain.sources ?? []).map(source => (
+              source == null ? null :
+                <SourceIndexPageListItemCard
+                  key={source.id}
+                  source={source}
+                  dataProviders={dataProviders}
+                />
+            ))}
+          </div>
+        )}
+
+        {(sourcesWithoutSourceDomain ?? []).map(source => (
           source == null ? null :
             <SourceIndexPageListItemCard
               key={source.id}
               source={source}
               dataProviders={dataProviders}
-              useNotHoveredEffect={hoveredSourceListItem != null && hoveredSourceListItem.id !== source.id}
-              onMouseEnter={() => setHoveredSourceListItem(source)}
-              onMouseLeave={() => setHoveredSourceListItem(null)}
             />
         ))}
       </div>

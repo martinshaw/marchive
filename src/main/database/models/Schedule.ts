@@ -59,7 +59,7 @@ class Schedule extends Model<
   @Column({
     type: DataTypes.NUMBER,
     allowNull: true,
-    defaultValue: 60 * 15, // fifteen minutes
+    defaultValue: null,
   })
   interval!: number | null
 

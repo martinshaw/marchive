@@ -9,16 +9,17 @@ Modified: 2023-08-17T09:13:34.630Z
 Description: description
 */
 
-import path from 'node:path'
-import { userAppDataPath } from '../../paths';
+import fs from 'node:fs'
+import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from '../../paths';
 import { Sequelize } from 'sequelize-typescript'
+import logger from '../log';
 
-const databasePath = path.join(userAppDataPath, 'database.db')
+if (fs.existsSync(userAppDataDatabasesPath) === false) fs.mkdirSync(userAppDataDatabasesPath, { recursive: true })
 
 const sequelize = new Sequelize(
   {
     dialect: 'sqlite',
-    storage: databasePath,
+    storage: userAppDataDatabaseFilePath,
     logging: false,
   }
 )
@@ -26,10 +27,11 @@ const sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
-    //
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    logger.info(`Sequelize: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`);
+   })
+  .catch(error => {
+    logger.error('Sequelize: Unable to connect to the database');
+    logger.error(error);
   });
 
 export default sequelize

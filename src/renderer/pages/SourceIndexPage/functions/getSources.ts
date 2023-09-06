@@ -9,7 +9,7 @@ Modified: 2023-09-04T01:20:31.392Z
 Description: description
 */
 
-import { SourceAttributes } from "main/database/models/Source";
+import { SourceAttributes } from "../../../../main/database/models/Source";
 
 /**
  * @throws {string}

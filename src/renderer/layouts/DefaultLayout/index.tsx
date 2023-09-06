@@ -20,6 +20,7 @@ import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
+import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
 
 const DefaultLayout = () => {
 
@@ -27,26 +28,34 @@ const DefaultLayout = () => {
   const location = useLocation();
 
   const loaderData: {
-    isDarkMode: boolean,
-    marchiveIsSetup: boolean | null
+    isDarkMode: boolean;
+    marchiveIsSetup: boolean | null;
+    sourcesCount: number | null;
   } = useAsyncMemo(
     async () => ({
       isDarkMode: await isDarkMode(),
       marchiveIsSetup: await marchiveIsSetup(),
+      sourcesCount: await getSourcesCount(),
     }),
-    [location]
+    [location.pathname]
   ) ?? {
     isDarkMode: false,
     marchiveIsSetup: null,
+    sourcesCount: null,
   }
 
   useEffect(() => {
-    if (loaderData.marchiveIsSetup === false) navigate('/onboarding');
-  }, [loaderData.marchiveIsSetup, navigate]);
+    const allowedPaths = ['/onboarding', '/sources'];
+    const currentPathIsAllowedPath = allowedPaths.some((allowedPath) => location.pathname.startsWith(allowedPath));
+    const shouldForceOnboarding = loaderData.marchiveIsSetup === false && currentPathIsAllowedPath === false;
+    if (shouldForceOnboarding) navigate('/onboarding');
+
+    if (location.pathname === '/' && loaderData.sourcesCount != null) navigate('/today');
+  }, [loaderData, location.pathname]);
 
   return (
     <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
-      {loaderData.marchiveIsSetup === true &&
+      {loaderData.marchiveIsSetup === true && loaderData.sourcesCount !== null &&
         <Navbar id="navbar">
           <Navbar.Group>
             <NavLink to="/yesterday">
@@ -61,7 +70,11 @@ const DefaultLayout = () => {
             </NavLink>
             <NavLink to="/sources">
               {({ isActive }) => (
-                <Button active={isActive} icon="plus" text="Add" />
+                <Button
+                  active={isActive}
+                  icon={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "plus" : "database" }
+                  text={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "Add Source" : "Sources" }
+                />
               )}
             </NavLink>
           </Navbar.Group>

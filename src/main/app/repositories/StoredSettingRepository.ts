@@ -9,6 +9,7 @@ Modified: 2023-08-01T23:05:48.537Z
 Description: description
 */
 
+import logger from '../../log'
 import {StoredSetting} from '../../database'
 import {StoredSettingKeyType, StoredSettingTypeType} from '../../database/models/StoredSetting'
 
@@ -22,30 +23,54 @@ export const getOrSetStoredSetting = async <T = string | number | boolean>(
   key: StoredSettingKeyType,
   newValue: T | null = null,
 ): Promise<StoredSetting | null> => {
-  const existingStoredSetting = await StoredSetting.findOne({where: {key}})
+  let existingStoredSetting: StoredSetting | null = null
+  try {
+    existingStoredSetting = await StoredSetting.findOne({where: {key}})
+  } catch (error) {
+    logger.error('Unable to get stored setting due to database error:')
+    logger.error(error)
+  }
 
   if (existingStoredSetting == null && newValue == null) return null
-
   if (existingStoredSetting != null && newValue == null) return existingStoredSetting
 
   if (existingStoredSetting == null && newValue != null)
-    return StoredSetting.create({
-      key,
-      value: newValue.toString(),
-      type: determineStoredSettingValueType(newValue as string | number | boolean),
-    })
+    return StoredSetting
+      .create({
+        key,
+        value: newValue.toString(),
+        type: determineStoredSettingValueType(newValue as string | number | boolean),
+      })
+      .catch(error => {
+        logger.error('A DB error occurred when attempting to create a new StoredSetting')
+        logger.error(error)
+        return null
+      })
 
   if (existingStoredSetting != null && newValue != null)
-    return existingStoredSetting.update({
-      value: newValue.toString(),
-      type: determineStoredSettingValueType(newValue as string | number | boolean),
-    })
+    return existingStoredSetting
+      .update({
+        value: newValue.toString(),
+        type: determineStoredSettingValueType(newValue as string | number | boolean),
+      })
+      .catch(error => {
+        logger.error('A DB error occurred when attempting to update an existing StoredSetting')
+        logger.error(error)
+        return null
+      })
 
   return null
 }
 
 export const unsetStoredSetting = async (key: StoredSettingKeyType): Promise<boolean> => {
-  const existingStoredSetting = await StoredSetting.findOne({where: {key}})
+  let existingStoredSetting: StoredSetting | null = null
+  try {
+    existingStoredSetting = await StoredSetting.findOne({where: {key}})
+  } catch (error) {
+    logger.error('Unable to get stored setting due to database error:')
+    logger.error(error)
+  }
+
   if (existingStoredSetting == null) return false
   await existingStoredSetting.destroy()
   return true

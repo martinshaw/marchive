@@ -69,12 +69,20 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     return
   }
 
-  let capture = await Capture.create(
-    {
-      downloadLocation: captureDownloadDirectory,
-      scheduleId: schedule.id,
-    },
-  )
+  let capture: Capture | null = null
+  try {
+    capture = await Capture.create(
+      {
+        downloadLocation: captureDownloadDirectory,
+        scheduleId: schedule.id,
+      },
+    )
+  } catch (error) {
+    await cleanup(schedule)
+    logger.error('A DB error occurred when creating a new Capture')
+    logger.error(error)
+    return
+  }
 
   if (capture == null) {
     await cleanup(schedule)
@@ -111,7 +119,8 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     )
   } catch (error) {
     await cleanup(schedule)
-    logger.error('Failed to perform the latest Capture: ' + (error as Error).message, error)
+    logger.error('Failed to perform the latest Capture')
+    logger.error(error)
     return
   }
 

@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: sources.ts
+File Name: Sources.ts
 Created:  2023-08-01T21:00:20.815Z
 Modified: 2023-08-01T21:00:20.815Z
 
@@ -13,9 +13,13 @@ import { ipcMain } from 'electron'
 import SourceListAction from '../app/actions/Source/SourceListAction'
 import SourceCreateAction from '../app/actions/Source/SourceCreateAction'
 import SourceDeleteAction from '../app/actions/Source/SourceDeleteAction'
+import SourceCountAction from '../app/actions/Source/SourceCountAction'
+import { Op } from 'sequelize'
 
 export type SourcesChannels =
   | 'sources.list'
+  | 'sources.list-without-source-domains'
+  | 'sources.count'
   | 'sources.create'
   | 'sources.delete'
 
@@ -23,6 +27,20 @@ ipcMain.on('sources.list', async (event) => {
   return SourceListAction()
     .then(sources => { event.reply('sources.list', sources, null) })
     .catch(error => { event.reply('sources.list', null, error) })
+})
+
+ipcMain.on('sources.list-without-source-domains', async (event) => {
+  return SourceListAction({
+    sourceDomainId: {[Op.eq]: null}
+  })
+    .then(sources => { event.reply('sources.list-without-source-domains', sources, null) })
+    .catch(error => { event.reply('sources.list-without-source-domains', null, error) })
+})
+
+ipcMain.on('sources.count', async (event) => {
+  return SourceCountAction()
+    .then(count => { event.reply('sources.count', count, null) })
+    .catch(error => { event.reply('sources.count', null, error) })
 })
 
 ipcMain.on('sources.create', async (event, url: string, dataProviderIdentifier: string) => {

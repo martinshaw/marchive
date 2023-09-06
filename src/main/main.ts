@@ -10,17 +10,19 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import contextMenu from 'electron-context-menu'
+import contextMenu from 'electron-context-menu';
+import logger from './log';
+// import { autoUpdater } from 'electron-updater';
+// import log from 'electron-log';
 
-import './ipc/captures';
-import './ipc/providers';
-import './ipc/schedules';
-import './ipc/sources';
-import './ipc/utilities';
+import './ipc/Captures';
+import './ipc/DataProviders';
+import './ipc/Schedules';
+import './ipc/Sources';
+import './ipc/SourceDomains';
+import './ipc/Utilities';
 
 // class AppUpdater {
 //   constructor() {
@@ -41,18 +43,18 @@ if (isDebug) {
   require('electron-debug')();
 }
 
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+// const installExtensions = async () => {
+//   const installer = require('electron-devtools-installer');
+//   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+//   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
-  return installer
-    .default(
-      extensions.map((name) => installer[name]),
-      forceDownload
-    )
-    .catch(console.log);
-};
+//   return installer
+//     .default(
+//       extensions.map((name) => installer[name]),
+//       forceDownload
+//     )
+//     .catch(console.log);
+// };
 
 const windows: { [windowId: string]: BrowserWindow } = {};
 let mainWindowId: string | null = null;
@@ -178,4 +180,7 @@ app
       if (windows[mainWindowId] === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch(error => {
+    logger.error('Electron app whenReady error occurred');
+    logger.error(error);
+  });

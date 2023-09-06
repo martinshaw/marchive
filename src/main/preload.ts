@@ -1,17 +1,17 @@
-// Disable no-unused-vars, broken for spread args
-/* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { CapturesChannels } from './ipc/captures';
-import { UtilitiesChannels } from './ipc/utilities';
-import { ProvidersChannels } from './ipc/providers';
-import { SchedulesChannels } from './ipc/schedules';
-import { SourcesChannels } from './ipc/sources';
+import { CapturesChannels } from './ipc/Captures';
+import { DataProvidersChannels } from './ipc/DataProviders';
+import { SchedulesChannels } from './ipc/Schedules';
+import { SourcesChannels } from './ipc/Sources';
+import { SourceDomainsChannels } from './ipc/SourceDomains';
+import { UtilitiesChannels } from './ipc/Utilities';
 
 export type Channels =
   | CapturesChannels
-  | ProvidersChannels
+  | DataProvidersChannels
   | SchedulesChannels
   | SourcesChannels
+  | SourceDomainsChannels
   | UtilitiesChannels
 
 const electronHandler = {
