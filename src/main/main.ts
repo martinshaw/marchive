@@ -14,6 +14,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import contextMenu from 'electron-context-menu';
 import logger from './app/log';
+import createTray from './tray';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
@@ -145,18 +146,6 @@ const createWindow = async () => {
 };
 
 /**
- * Electron doesn't offer a usual context menu for input boxes, link etc...
- * This package adds a context menu to all input boxes, textareas and editable
- * I will use Blueprint JS's ContextMenu component to create a context menu for custom non-native elements
- */
-contextMenu({
-	showSaveImageAs: true,
-  showCopyLink: false,
-  showSaveLinkAs: false,
-  showInspectElement: isDebug,
-});
-
-/**
  * Add event listeners...
  */
 
@@ -171,6 +160,21 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+
+    createTray()
+
+    /**
+     * Electron doesn't offer a usual context menu for input boxes, link etc...
+     * This package adds a context menu to all input boxes, textareas and editable
+     * I will use Blueprint JS's ContextMenu component to create a context menu for custom non-native elements
+     */
+    contextMenu({
+      showSaveImageAs: true,
+      showCopyLink: false,
+      showSaveLinkAs: false,
+      showInspectElement: isDebug,
+    });
+
     createWindow();
     app.on('activate', () => {
       if (mainWindowId == null) return;
@@ -180,6 +184,7 @@ app
       // dock icon is clicked and there are no other windows open.
       if (windows[mainWindowId] === null) createWindow();
     });
+
   })
   .catch(error => {
     logger.error('Electron app whenReady error occurred');

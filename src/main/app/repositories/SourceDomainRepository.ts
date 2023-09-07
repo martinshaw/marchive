@@ -18,7 +18,9 @@ import path from 'node:path'
 import getFavicons from 'get-website-favicon'
 import Downloader from "nodejs-file-downloader";
 import { createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
-import slugify from 'slugify'
+import sanitize from "sanitize-filename";
+import { safeSanitizeFileName } from "../../util";
+import { v4 } from "uuid";
 
 export const findOrCreateSourceDomainForUrl = async (url: string): Promise<SourceDomain | null> => {
   let urlDomainName: string | null = null;
@@ -159,12 +161,9 @@ export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<strin
 
   const iconUrlExtension = iconUrl.split('.').pop()
   const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
-  const iconFileName = slugify((new URL(safeUrl)).hostname, {
-    replacement: '_',
-    lower: true,
-    trim: true,
-    strict: true,
-  }) + '.' + iconUrlExtension
+  let iconFileName = safeSanitizeFileName((new URL(safeUrl)).hostname + '.' + iconUrlExtension)
+  if (iconFileName === false) iconFileName = safeSanitizeFileName(v4() + '.' + iconUrlExtension)
+  if (iconFileName === false) iconFileName = v4() as string
 
   const iconDownloader = new Downloader({
     url: iconUrl,

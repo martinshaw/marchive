@@ -14,12 +14,11 @@ import Parser from 'rss-parser'
 import path from 'node:path'
 import fs from 'node:fs'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
-// @ts-ignore
-import standardSlugify from 'standard-slugify'
-import {v4 as uuidV4, v4} from 'uuid'
+import {v4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../log'
+import { safeSanitizeFileName } from '../../../util'
 
 type RssParserFeedType = {
   [key: string]: any;
@@ -289,7 +288,10 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const capturePartDownloadDirectoryName = (payload.title != null && (payload.title ?? '').trim() !== '') ? standardSlugify(payload.title) : v4()
+    let capturePartDownloadDirectoryName = safeSanitizeFileName(payload.title ?? '')
+    if (capturePartDownloadDirectoryName === '' || capturePartDownloadDirectoryName == null || capturePartDownloadDirectoryName === false)
+      capturePartDownloadDirectoryName = v4()
+
     const capturePartDownloadDestination = path.join(capturePart.capture.downloadLocation, capturePartDownloadDirectoryName)
 
     if (fs.existsSync(capturePartDownloadDestination) !== true) fs.mkdirSync(capturePartDownloadDestination, {recursive: true})

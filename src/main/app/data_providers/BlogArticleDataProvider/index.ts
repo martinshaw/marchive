@@ -15,11 +15,10 @@ import path from 'node:path'
 import fs, {link} from 'node:fs'
 import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
-// @ts-ignore
-import standardSlugify from 'standard-slugify'
 import {v4 as uuidV4} from 'uuid'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../log'
+import { safeSanitizeFileName } from '../../../util'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -347,15 +346,10 @@ class BlogArticleDataProvider extends BaseDataProvider {
     captureDownloadDirectory: string,
   ): Promise<void> {
     return fs.writeFile(
-      path.join(
-        captureDownloadDirectory,
-        'links.json',
-      ),
+      path.join(captureDownloadDirectory, 'links.json'),
       JSON.stringify(articleLinks),
       {},
-      error => {
-        //
-      },
+      error => { /* */ },
     )
   }
 
@@ -492,7 +486,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const downloadDestination = path.join(
       capturePart.capture.downloadLocation,
-      this.determineScreenshotFileNameFromLink(payload, uuidV4()),
+      this.determineScreenshotFileNameFromLink(payload),
     )
 
     if (fs.existsSync(downloadDestination) !== true) {
@@ -537,25 +531,34 @@ class BlogArticleDataProvider extends BaseDataProvider {
     return true
   }
 
-  textIsSuitableForFileName(text: string): boolean {
+  textIsSuitableForFileName(text: string | false): text is string {
+    if (text === false) return false
     if (text == null || text === '') return false
     if (text.length > 50) return false
     if (text.includes('>') || text.includes('<')) return false
     return true
   }
 
-  determineScreenshotFileNameFromLink(link: BlogArticleDataProviderLinkType, defaultFileName: string): string {
-    if (this.textIsSuitableForFileName(link.text)) return standardSlugify(link.text)
+  determineScreenshotFileNameFromLink(link: BlogArticleDataProviderLinkType): string {
+    const sanitizedText = safeSanitizeFileName(link.text)
+    if (this.textIsSuitableForFileName(sanitizedText)) return sanitizedText
+
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
-    if (this.textIsSuitableForFileName(link.innerText)) return standardSlugify(link.innerText)
-    if (this.textIsSuitableForFileName(link.title)) return standardSlugify(link.title)
-    if (this.textIsSuitableForFileName(typeof link.alt === 'string' ? link.alt : '')) return standardSlugify(typeof link.alt === 'string' ? link.alt : '')
+    const sanitizedInnerText = safeSanitizeFileName(link.innerText)
+    if (this.textIsSuitableForFileName(sanitizedInnerText)) return sanitizedInnerText
+
+    const sanitizedTitle = safeSanitizeFileName(link.title)
+    if (this.textIsSuitableForFileName(sanitizedTitle)) return sanitizedTitle
+
+    const sanitizedAlt = safeSanitizeFileName(typeof link.alt === 'string' ? link.alt : '')
+    if (this.textIsSuitableForFileName(sanitizedAlt)) return sanitizedAlt
 
     const urlParts = link.url.split('/')
     const urlLastPart = urlParts[urlParts.length - 1]
-    if (this.textIsSuitableForFileName(urlLastPart)) return standardSlugify(urlLastPart)
+    const sanitizedUrlLastPart = safeSanitizeFileName(urlLastPart)
+    if (this.textIsSuitableForFileName(sanitizedUrlLastPart)) return sanitizedUrlLastPart
 
-    return standardSlugify(defaultFileName)
+    return uuidV4()
   }
 
   /**
