@@ -11,6 +11,7 @@ import UtilityCleanAction from './app/actions/Utility/UtilityCleanAction';
 import UtilityRetrieveFavicon from './app/actions/Utility/UtilityRetrieveFavicon';
 import prompt from 'electron-prompt';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from './app/repositories/LocalFileRepository';
+import { cleanupAndQuit } from './main';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -84,9 +85,7 @@ export default class MenuBuilder {
         {
           label: 'Quit',
           accelerator: 'Command+Q',
-          click: () => {
-            app.quit();
-          },
+          click: () => { cleanupAndQuit() },
         },
       ],
     };

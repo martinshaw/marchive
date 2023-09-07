@@ -1,9 +1,10 @@
 import fs from "node:fs"
 import os from 'node:os'
 import path from "node:path"
-import { Menu, Tray, nativeImage, nativeTheme } from "electron"
+import { Menu, Tray, app, dialog, nativeImage, nativeTheme } from "electron"
 import { internalRootPath } from "../paths"
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "./app/repositories/LocalFileRepository"
+import { cleanupAndQuit, closeAllWindows, createWindow } from "./main"
 
 const createTray = async () => {
   const isDarkMode = nativeTheme.shouldUseDarkColors
@@ -59,16 +60,42 @@ const createTray = async () => {
         enabled: false,
       },
       {
-        label: 'Queue Scheduled Sources',
+        label: 'Process Scheduled Sources',
         type: 'checkbox',
         checked: scheduleRunProcessIsRunning,
         click: scheduleRunProcessOnClickHandler,
       },
       {
-        label: 'Process Downloads',
+        label: 'Process Queued Downloads',
         type: 'checkbox',
         checked: capturePartRunProcessIsRunning,
         click: capturePartRunProcessOnClickHandler,
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Open Marchive',
+        type: 'normal',
+        click: () => { createWindow() },
+      },
+      {
+        label: 'Quit',
+        type: 'normal',
+        click: () => {
+          app.focus({ steal: true })
+          dialog.showMessageBox({
+            type: 'question',
+            buttons: ['Yes, Quit Marchive', 'No, but Close All Windows', 'Cancel'],
+            defaultId: 2,
+            title: '',
+            message: 'Are you sure you want to quit Marchive? It will stop downloading from your scheduled and queued sources.',
+          })
+            .then((result) => {
+              if (result.response === 0) cleanupAndQuit()
+              else if (result.response === 1) closeAllWindows()
+            })
+        },
       },
     ])
     tray.setContextMenu(contextMenu)

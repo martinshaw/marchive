@@ -74,7 +74,7 @@ const generateNewWindowId: () => string = () => {
   return newWindowId;
 };
 
-const createWindow = async () => {
+export const createWindow = async () => {
   // if (isDebug) {
   //   await installExtensions();
   // }
@@ -122,6 +122,8 @@ const createWindow = async () => {
     } else {
       windows[mainWindowId].show();
     }
+
+    app.dock.show();
   });
 
   windows[mainWindowId].on('closed', () => {
@@ -150,11 +152,19 @@ const createWindow = async () => {
  */
 
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  /**
+   * In addition to respecting the OSX convention of having the application in memory even
+   * after all windows have been closed...
+   * We should ensure that closing all windows does not quit the application regardless of platform,
+   * because we want to keep the app running in the background to perform tasks such as
+   * child processes
+   */
+
+  // if (process.platform !== 'darwin') {
+  //   cleanupAndQuit();
+  // }
+
+  app.dock.hide();
 });
 
 app
@@ -176,6 +186,7 @@ app
     });
 
     createWindow();
+
     app.on('activate', () => {
       if (mainWindowId == null) return;
       if (windows[mainWindowId] == null) return;
@@ -190,3 +201,24 @@ app
     logger.error('Electron app whenReady error occurred');
     logger.error(error);
   });
+
+export const cleanupAndQuit = () => {
+  logger.info('Cleaning up and quitting...');
+
+  // TODO: Kill child processes gracefully
+  // TODO: Release / delete locks on processes
+
+  logger.info('À bientôt...');
+
+  app.quit()
+}
+
+export const closeAllWindows = () => {
+  logger.info('Closing all windows...');
+
+  Object.keys(windows).forEach((windowId) => {
+    if (windows[windowId] == null) return;
+
+    windows[windowId].close();
+  });
+}
