@@ -9,7 +9,7 @@ Modified: 2023-08-01T19:56:36.606Z
 Description: description
 */
 
-import { Button, Navbar } from '@blueprintjs/core';
+import { Button, Navbar, TextArea } from '@blueprintjs/core';
 import { NavLink, Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import isDarkMode from './functions/isDarkMode';
@@ -21,6 +21,7 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
+import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
 
 const DefaultLayout = () => {
 
@@ -53,6 +54,38 @@ const DefaultLayout = () => {
     if (location.pathname === '/' && loaderData.sourcesCount != null) navigate('/today');
   }, [loaderData, location.pathname]);
 
+
+
+
+
+  const [testOutput, setTestOutput] = useState<string>('')
+
+  useEffect(() => {
+    console.log('useEffect for scheduleRunProcessEvents')
+    const {removeListeners} = scheduleRunProcessEvents(
+      (connectionInfo) => {
+        console.log('connectionInfo', connectionInfo)
+        setTestOutput(JSON.stringify(connectionInfo, null, 2) + '\n\n' + testOutput)
+      },
+      (error) => {
+        console.log('error', error)
+        setTestOutput(JSON.stringify(error, null, 2) + '\n\n' + testOutput)
+      },
+      (ongoingEvent) => {
+        console.log('ongoingEvent', ongoingEvent)
+        setTestOutput(JSON.stringify(ongoingEvent, null, 2) + '\n\n' + testOutput)
+      }
+    )
+
+    return () => { removeListeners() }
+  }, [testOutput])
+
+
+
+
+
+
+
   return (
     <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
       {loaderData.marchiveIsSetup === true && loaderData.sourcesCount !== null &&
@@ -81,7 +114,10 @@ const DefaultLayout = () => {
         </Navbar>
       }
 
-      <div id="page"><Outlet /></div>
+      <div id="page">
+        <Outlet />
+        <TextArea value={testOutput} />
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import contextMenu from 'electron-context-menu';
@@ -170,6 +170,8 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+
+    // ipcMain.emit('processes.schedule-run-process.start');
 
     createTray()
 
