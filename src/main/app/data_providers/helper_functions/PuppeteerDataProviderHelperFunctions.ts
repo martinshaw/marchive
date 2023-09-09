@@ -17,19 +17,31 @@ import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import { internalNodeModulesPath } from '../../../../paths'
+import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from 'main/app/repositories/SourceDomainRepository'
 
 export const createPuppeteerBrowser = async (
-  withPopUpOffExtension = false,
+  withPopUpOffExtension = true,
   withStealthPlugin = true,
   withAdblockerPlugin = true,
   headless = true,
 ): Promise<Browser> => {
-  // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
+  let browserArguments: string[] = []
+
   const extensionFileNames = [
+
+    // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
     withPopUpOffExtension ? path.join(internalNodeModulesPath, 'popupoff-headless') : null,
+
   ].filter(filename => filename !== null)
 
   const listOfExtensionfileNames = extensionFileNames.join(',')
+  const hasExtensions = listOfExtensionfileNames.length > 0
+  if (hasExtensions) {
+    browserArguments = [
+      `--disable-extensions-except=${listOfExtensionfileNames}`,
+      `--load-extension=${listOfExtensionfileNames}`,
+    ]
+  }
 
   // Add stealth plugin (of puppeteer-extra) and use defaults (all tricks to hide puppeteer usage)
   if (withStealthPlugin) puppeteer.use(StealthPlugin())
@@ -41,27 +53,24 @@ export const createPuppeteerBrowser = async (
 
   const browser = puppeteer.launch({
     headless: headless ? 'new' : false,
-    args: [
-      `--disable-extensions-except=${listOfExtensionfileNames}`,
-      `--load-extension=${listOfExtensionfileNames}`,
-    ],
+    args: browserArguments,
   })
 
   return browser
 }
 
-export const loadPageByUrl = async (url: string, browser: Browser): Promise<Page> => {
+export const loadPageByUrl = async (
+  url: string,
+  browser: Browser,
+  // @see https://cloudlayer.io/blog/puppeteer-waituntil-options/#
+  waitUntil: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2' = 'networkidle0',
+  timeout: number = 0,
+  width: number = 1280,
+  height: number = 800,
+): Promise<Page> => {
   const page = await browser.newPage()
-  await page.setViewport({width: 1280, height: 800})
-
-  await page.goto(
-    url,
-    {
-      timeout: 0,
-      waitUntil: 'load',
-    },
-  )
-
+  await page.setViewport({width, height})
+  await page.goto(url, { waitUntil, timeout })
   return page
 }
 
@@ -226,5 +235,55 @@ export const retrievePageHeadMetadata = async (page: Page): Promise<PageHeadMeta
     metadata.articleAuthors = metadata.articleAuthors.filter((author, index) => metadata.articleAuthors?.indexOf(author) === index)
 
     return metadata as PageHeadMetadata
+  })
+}
+
+export const retrieveFaviconsFromUrl = async (url: string): Promise<GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]> => {
+  const browser = await createPuppeteerBrowser(false, false, false, true)
+  const page = await loadPageByUrl(url, browser, 'networkidle0')
+  const favicons = await retrieveFaviconsFromPage(page)
+
+  await page.close()
+  await browser.close()
+
+  return favicons
+}
+
+export const retrieveFaviconsFromPage = async (page: Page): Promise<GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]> => {
+  await page.waitForSelector('body')
+
+  return page.evaluate(() => {
+    let favicons: GetWebsiteFaviconResultIconTypeWithNonunknownSrc[] = []
+
+    const linkTags = [
+      'link[rel="apple-touch-icon"]',
+      'link[rel="apple-touch-icon-precomposed"]',
+      'link[rel="apple-touch-startup-image"]',
+      'link[rel="apple-touch-icon-image"]',
+      'link[rel="icon"]',
+      'link[rel="shortcut icon"]',
+      'link[rel="fluid-icon"]',
+      'link[rel="image_src"]',
+      'link[rel="icon shortcut"]',
+    ]
+
+    linkTags.forEach(linkTag => {
+      const linkTagElements = document.querySelectorAll(linkTag)
+
+      Array.from(linkTagElements).forEach(linkTagElement => {
+        if (linkTagElement == null) return;
+
+        const src = linkTagElement.getAttribute('href') || linkTagElement.getAttribute('src') || undefined
+        if (typeof src !== 'string') return
+
+        favicons.push({
+          sizes: linkTagElement.getAttribute('sizes') || undefined,
+          type: linkTagElement.getAttribute('type') || undefined,
+          src,
+        })
+      })
+    })
+
+    return favicons
   })
 }
