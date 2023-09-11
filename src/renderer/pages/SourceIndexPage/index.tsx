@@ -8,8 +8,7 @@ Modified: 2023-08-01T19:43:12.647Z
 
 Description: description
 */
-
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Button, Text } from '@blueprintjs/core';
 import { NavLink, useLoaderData } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
@@ -17,10 +16,10 @@ import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCar
 import getSourceDomains from './functions/getSourceDomains';
 import getDataProviders from './functions/getDataProviders';
 import { SourceDomainAttributes } from 'main/database/models/SourceDomain';
-
-import './index.scss';
 import { SourceAttributes } from 'main/database/models/Source';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
+
+import './index.scss';
 
 type SourceIndexPageLoaderReturnType = {
   sourcesGroupedBySourceDomain: SourceDomainAttributes[],

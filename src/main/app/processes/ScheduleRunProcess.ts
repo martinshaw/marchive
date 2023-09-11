@@ -39,15 +39,15 @@ const ScheduleRunProcess = async (): Promise<void | never> => {
 const tick = async (): Promise<void> => {
   const dueSchedules = await retrieveDueSchedules()
 
-  if (dueSchedules.length === 0) console.info('No Schedules due to be run')
+  if (dueSchedules.length === 0) logger.info('No Schedules due to be run')
 
   dueSchedules.forEach(async schedule => {
-    console.info(`Found Schedule ${schedule.id} due to be run`)
+    logger.info(`Found Schedule ${schedule.id} due to be run`)
 
     performCaptureRun(schedule)
       .catch(error => {
-        console.error(`Error running Schedule ID ${schedule.id} in ScheduleRunProcess tick loop`)
-        console.error(error)
+        logger.error(`Error running Schedule ID ${schedule.id} in ScheduleRunProcess tick loop`)
+        logger.error(error)
       })
   })
 }

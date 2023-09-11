@@ -54,37 +54,32 @@ const DefaultLayout = () => {
     if (location.pathname === '/' && loaderData.sourcesCount != null) navigate('/today');
   }, [loaderData, location.pathname]);
 
-
-
-
-
-  const [testOutput, setTestOutput] = useState<string>('')
-
   useEffect(() => {
-    console.log('useEffect for scheduleRunProcessEvents')
+
     const {removeListeners} = scheduleRunProcessEvents(
       (connectionInfo) => {
-        console.log('connectionInfo', connectionInfo)
-        // setTestOutput(JSON.stringify(connectionInfo, null, 2) + '\n\n' + testOutput)
-      },
-      (error) => {
-        console.log('error', error)
-        // setTestOutput(JSON.stringify(error, null, 2) + '\n\n' + testOutput)
+        // console.log('connectionInfo', connectionInfo)
       },
       (ongoingEvent) => {
-        console.log('ongoingEvent', ongoingEvent)
-        // setTestOutput(JSON.stringify(ongoingEvent, null, 2) + '\n\n' + testOutput)
-      }
+        // console.log('ongoingEvent', ongoingEvent)
+
+        const refreshOnCaptureRunSuccessfully = ['/sources']
+        const regex = /Capture ID [\d]* ran successfully/gm;
+        let ongoingEventCaptureRanSuccessfullyMatches;
+
+        while ((ongoingEventCaptureRanSuccessfullyMatches = regex.exec(ongoingEvent.data)) !== null) {
+          if (ongoingEventCaptureRanSuccessfullyMatches.index === regex.lastIndex) regex.lastIndex++;
+
+          if (ongoingEventCaptureRanSuccessfullyMatches != null && refreshOnCaptureRunSuccessfully.includes(location.pathname)) navigate(0)
+        }
+      },
+      (error) => {
+        // console.log('error', error)
+      },
     )
 
     return () => { removeListeners() }
-  }, [])
-
-
-
-
-
-
+  }, [location])
 
   return (
     <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
@@ -116,7 +111,6 @@ const DefaultLayout = () => {
 
       <div id="page">
         <Outlet />
-        <TextArea value={testOutput} />
       </div>
     </div>
   );
