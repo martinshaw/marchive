@@ -8,13 +8,21 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import {Schedule, Source} from '../../../database'
+import { Op } from 'sequelize'
+import { Capture, Schedule } from '../../../database'
 import { ScheduleAttributes } from '../../../database/models/Schedule'
 
-const ScheduleListAction = async (): Promise<ScheduleAttributes[]> => {
+const ScheduleListAction = async (sourceId: number | null = null, withCaptures = false): Promise<ScheduleAttributes[]> => {
+  let where = {}
+  if (sourceId != null) where = { ...where, sourceId: {[Op.eq]: sourceId} }
+
+  let include: any[] = []
+  if (withCaptures) include = [...include, Capture]
+
   return Schedule
     .findAll({
-      include: [Source],
+      include,
+      where,
     })
     .then(schedules =>
       schedules.map(schedule => schedule.toJSON())

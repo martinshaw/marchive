@@ -22,8 +22,8 @@ export type SchedulesChannels =
   | 'schedules.update'
   | 'schedules.delete'
 
-ipcMain.on('schedules.list', async (event) => {
-  return ScheduleListAction()
+ipcMain.on('schedules.list', async (event, sourceId, withCaptures) => {
+  return ScheduleListAction(sourceId, withCaptures)
     .then(schedules => { event.reply('schedules.list', schedules, null) })
     .catch(error => { event.reply('schedules.list', null, error) })
 })

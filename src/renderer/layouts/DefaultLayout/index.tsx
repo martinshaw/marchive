@@ -15,14 +15,14 @@ import { useEffect, useState } from 'react';
 import isDarkMode from './functions/isDarkMode';
 import marchiveIsSetup from './functions/marchiveIsSetup';
 import { useAsyncMemo } from "use-async-memo"
+import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
+import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
+import capturePartRunProcessEvents from './functions/capturePartRunProcessEvents';
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
-import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
-import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
-import capturePartRunProcessEvents from './functions/capturePartRunProcessEvents';
 
 const DefaultLayout = () => {
 
