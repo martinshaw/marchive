@@ -5,6 +5,7 @@ import { Menu, Tray, app, dialog, nativeImage, nativeTheme } from "electron"
 import { internalRootPath } from "../paths"
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "./app/repositories/LocalFileRepository"
 import { cleanupAndQuit, closeAllWindows, createWindow } from "./main"
+import { getStoredSettingValue, setStoredSettingValue } from "./app/repositories/StoredSettingRepository"
 
 const createTray = async () => {
   const isDarkMode = nativeTheme.shouldUseDarkColors
@@ -38,21 +39,21 @@ const createTray = async () => {
   let greeting = 'Hi, this is your Marchive'
   if (os.userInfo().username) greeting = `Hi ${os.userInfo().username}, this is your Marchive`
 
-  let scheduleRunProcessIsRunning = true
-  let capturePartRunProcessIsRunning = true
+  let scheduleRunProcessIsPaused = await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED') === true
+  let capturePartRunProcessIsPaused = await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED') === true
 
-  const scheduleRunProcessOnClickHandler = () => {
-    //
-
+  const scheduleRunProcessOnClickHandler = async () => {
+    await setStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED', !scheduleRunProcessIsPaused)
+    scheduleRunProcessIsPaused = !scheduleRunProcessIsPaused
     regenerateContextMenu()
   }
-  const capturePartRunProcessOnClickHandler = () => {
-    //
-
+  const capturePartRunProcessOnClickHandler = async () => {
+    await setStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED', !capturePartRunProcessIsPaused)
+    capturePartRunProcessIsPaused = !capturePartRunProcessIsPaused
     regenerateContextMenu()
   }
 
-  const regenerateContextMenu = () => {
+  const regenerateContextMenu = async () => {
     const contextMenu = Menu.buildFromTemplate([
       {
         label: greeting,
@@ -60,15 +61,15 @@ const createTray = async () => {
         enabled: false,
       },
       {
-        label: 'Process Scheduled Sources',
+        label: scheduleRunProcessIsPaused ? 'Scheduled Sources are Paused' : 'Pause Scheduled Sources',
         type: 'checkbox',
-        checked: scheduleRunProcessIsRunning,
+        checked: scheduleRunProcessIsPaused,
         click: scheduleRunProcessOnClickHandler,
       },
       {
-        label: 'Process Queued Downloads',
+        label: capturePartRunProcessIsPaused ? 'Queued Downloads are Paused' : 'Pause Queued Downloads',
         type: 'checkbox',
-        checked: capturePartRunProcessIsRunning,
+        checked: capturePartRunProcessIsPaused,
         click: capturePartRunProcessOnClickHandler,
       },
       {

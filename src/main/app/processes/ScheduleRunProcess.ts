@@ -12,15 +12,19 @@ import logger from '../log'
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
 import performCaptureRun from "../repositories/CaptureRunRepository"
 import process from 'node:process'
+import { getStoredSettingValue } from '../repositories/StoredSettingRepository'
 
 const ScheduleRunProcess = async (): Promise<void | never> => {
-  const currentDelayBetweenTicks = (60 * 1000) * 1 // 1 minute
+  // const currentDelayBetweenTicks = (60 * 1000) * 1 // 1 minute
+  const currentDelayBetweenTicks = 15 * 1000 // 15 seconds
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
+    let scheduleRunProcessIsPaused = await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED') === true
+
     try {
       // eslint-disable-next-line no-await-in-loop
-      await tick()
+      if (scheduleRunProcessIsPaused === false) await tick()
     } catch (error) {
       //
     }

@@ -9,51 +9,24 @@ Modified: 2023-09-06T18:28:58.314Z
 Description: description
 */
 
-import { ProcessesReplyOngoingEventDataType } from "../../../../main/ipc/Processes";
-import { ProcessStartProcessConnectionInfoReturnType } from "../../../../main/app/actions/Process/ProcessStartProcess";
+import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
+import processEvents from "./processEvents";
 
 const scheduleRunProcessEvents = (
   onConnected: (connectionInfo: ProcessStartProcessConnectionInfoReturnType) => void,
-  onConnectionError: (error: Error) => void,
   onOngoingEvent: (ongoingEvent: ProcessesReplyOngoingEventDataType) => void,
+  onConnectionError: (errorMessage: string) => void,
 ): {
   removeListeners: () => void;
 } => {
-  console.log('scheduleRunProcessEvents attach run')
-
-  window.electron.ipcRenderer.on(
-    'processes.schedule-run-process.connection-error',
-    (error) => {
-      console.log('processes.schedule-run-process.connection-error', error)
-      if (!(error instanceof Error)) return null;
-      onConnectionError(error);
-    }
-  );
-
-  window.electron.ipcRenderer.on(
-    'processes.schedule-run-process.ongoing-event',
-    (ongoingEvent) => {
-      console.log('processes.schedule-run-process.ongoing-event', ongoingEvent)
-      onOngoingEvent(ongoingEvent as ProcessesReplyOngoingEventDataType);
-    }
-  );
-
-  window.electron.ipcRenderer.on(
+  return processEvents(
     'processes.schedule-run-process.connected',
-    (connectionInfo) => {
-      console.log('processes.schedule-run-process.connected', connectionInfo)
-      onConnected(connectionInfo as ProcessStartProcessConnectionInfoReturnType);
-    }
-  );
-
-  const removeListeners = (): void => {
-    console.log('removeListeners')
-    window.electron.ipcRenderer.removeAllListeners('processes.schedule-run-process.connection-error');
-    window.electron.ipcRenderer.removeAllListeners('processes.schedule-run-process.ongoing-event');
-    window.electron.ipcRenderer.removeAllListeners('processes.schedule-run-process.connected');
-  }
-
-  return {removeListeners};
+    'processes.schedule-run-process.ongoing-event',
+    'processes.schedule-run-process.connection-error',
+    onConnected,
+    onOngoingEvent,
+    onConnectionError,
+  )
 };
 
 export default scheduleRunProcessEvents;
