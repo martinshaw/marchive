@@ -208,6 +208,36 @@ export default class MenuBuilder {
                 })
               })
           },
+        },
+        {
+          label: 'Need more space?',
+          click: async () => {
+            const links: [string, string | null][] = [
+              ['Nevermind', null],
+              ['Sweden', 'https://diskprices.com/?locale=se'],
+              ['India', 'https://diskprices.com/?locale=in'],
+              ['Canada', 'https://diskprices.com/?locale=ca'],
+              ['France', 'https://diskprices.com/?locale=fr'],
+              ['Spain', 'https://diskprices.com/?locale=es'],
+              ['Germany', 'https://diskprices.com/?locale=de'],
+              ['UK', 'https://diskprices.com/?locale=uk'],
+              ['For USA', 'https://diskprices.com/?locale=us'],
+            ];
+
+            dialog.showMessageBox(this.mainWindow, {
+              type: 'info',
+              message: "You can find the best prices for hard drive disks and other physical storage on the Disk Drives website",
+              buttons: links.map(link => link[0]),
+              defaultId: 0,
+            })
+              .then((result) => {
+                if (typeof links[result.response] == 'undefined') return
+                const link = links[result.response]
+                if (link[1] == null) return
+
+                shell.openExternal(link[1])
+              })
+          }
         }
       ],
     };

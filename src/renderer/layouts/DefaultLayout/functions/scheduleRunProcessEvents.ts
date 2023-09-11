@@ -53,8 +53,6 @@ const scheduleRunProcessEvents = (
     window.electron.ipcRenderer.removeAllListeners('processes.schedule-run-process.connected');
   }
 
-  window.electron.ipcRenderer.sendMessage('processes.schedule-run-process.start');
-
   return {removeListeners};
 };
 

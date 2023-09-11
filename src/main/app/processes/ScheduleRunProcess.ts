@@ -11,6 +11,7 @@ Description: description
 import logger from '../log'
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
 import performCaptureRun from "../repositories/CaptureRunRepository"
+import process from 'node:process'
 
 const ScheduleRunProcess = async (): Promise<void | never> => {
   const currentDelayBetweenTicks = (60 * 1000) * 1 // 1 minute
@@ -34,15 +35,15 @@ const ScheduleRunProcess = async (): Promise<void | never> => {
 const tick = async (): Promise<void> => {
   const dueSchedules = await retrieveDueSchedules()
 
-  if (dueSchedules.length === 0) logger.error('No Schedules due to be run')
+  if (dueSchedules.length === 0) console.info('No Schedules due to be run')
 
   dueSchedules.forEach(async schedule => {
-    logger.info(`Found Schedule ${schedule.id} due to be run`)
+    console.info(`Found Schedule ${schedule.id} due to be run`)
 
     performCaptureRun(schedule)
       .catch(error => {
-        logger.error(`Error running Schedule ID ${schedule.id} in ScheduleRunProcess tick loop`)
-        logger.error(error)
+        console.error(`Error running Schedule ID ${schedule.id} in ScheduleRunProcess tick loop`)
+        console.error(error)
       })
   })
 }

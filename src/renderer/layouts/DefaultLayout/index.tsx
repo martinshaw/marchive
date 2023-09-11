@@ -65,20 +65,20 @@ const DefaultLayout = () => {
     const {removeListeners} = scheduleRunProcessEvents(
       (connectionInfo) => {
         console.log('connectionInfo', connectionInfo)
-        setTestOutput(JSON.stringify(connectionInfo, null, 2) + '\n\n' + testOutput)
+        // setTestOutput(JSON.stringify(connectionInfo, null, 2) + '\n\n' + testOutput)
       },
       (error) => {
         console.log('error', error)
-        setTestOutput(JSON.stringify(error, null, 2) + '\n\n' + testOutput)
+        // setTestOutput(JSON.stringify(error, null, 2) + '\n\n' + testOutput)
       },
       (ongoingEvent) => {
         console.log('ongoingEvent', ongoingEvent)
-        setTestOutput(JSON.stringify(ongoingEvent, null, 2) + '\n\n' + testOutput)
+        // setTestOutput(JSON.stringify(ongoingEvent, null, 2) + '\n\n' + testOutput)
       }
     )
 
     return () => { removeListeners() }
-  }, [testOutput])
+  }, [])
 
 
 

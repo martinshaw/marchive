@@ -171,7 +171,7 @@ app
   .whenReady()
   .then(() => {
 
-    // ipcMain.emit('processes.schedule-run-process.start');
+    ipcMain.emit('processes.schedule-run-process.start');
 
     createTray()
 

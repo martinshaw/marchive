@@ -107,10 +107,7 @@ const ProcessStartProcess = async (
       exitCode: childProcess.exitCode,
     };
 
-    logger.info('ProcessStartProcess: Starting Process: ')
-    logger.info(JSON.stringify(connectionInfo))
-
-
+    logger.info('ProcessStartProcess: Starting Process: ', {connectionInfo})
 
     return resolve(connectionInfo)
   })
