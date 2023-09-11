@@ -22,6 +22,7 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
 import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
+import capturePartRunProcessEvents from './functions/capturePartRunProcessEvents';
 
 const DefaultLayout = () => {
 
@@ -80,6 +81,16 @@ const DefaultLayout = () => {
 
     return () => { removeListeners() }
   }, [location])
+
+  useEffect(() => {
+    const {removeListeners} = capturePartRunProcessEvents(
+      (connectionInfo) => { /* */ },
+      (ongoingEvent) => { console.log('capturePartRunProcessEvents ongoingEvent', ongoingEvent) },
+      (error) => { /* */ },
+    )
+
+    return () => { removeListeners() }
+  }, [])
 
   return (
     <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>

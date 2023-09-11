@@ -13,21 +13,26 @@ import logger from "../log"
 import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "../../database/models/CapturePart"
+import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
 
 const CapturePartRunProcess = async (): Promise<never | void> => {
   // Should wait for 6 seconds between ticks when downloading pending files
-  // When there are no pending files to download, should wait for 120 seconds between ticks
+  // When there are no pending files to download, should wait for 60 seconds between ticks
   let currentDelayBetweenTicks = 6 * 1000
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
     // TODO: May need to remove await, then use the returned values to set the currentDelayBetweenTicks asynchronously
 
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      const {processedSuccessfully, hadPendingCapturePart} = await tick()
+    let capturePartRunProcessIsPaused = await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED') === true
 
-      currentDelayBetweenTicks = hadPendingCapturePart === false ? 120 * 1000 : 6 * 1000
+    try {
+      if (capturePartRunProcessIsPaused === false) {
+        // eslint-disable-next-line no-await-in-loop
+        const {processedSuccessfully, hadPendingCapturePart} = await tick()
+
+        currentDelayBetweenTicks = hadPendingCapturePart === false ? 60 * 1000 : 6 * 1000
+      }
     } catch (error) {
       //
     }
@@ -39,7 +44,7 @@ const CapturePartRunProcess = async (): Promise<never | void> => {
   }
 }
 
-const tick = async (): Promise<{  processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
+const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
   logger.info('Looking for pending Capture Parts...')
 
   let capturePart: CapturePart | null = null

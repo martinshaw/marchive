@@ -172,6 +172,7 @@ app
   .then(() => {
 
     ipcMain.emit('processes.schedule-run-process.start');
+    ipcMain.emit('processes.capture-part-run-process.start');
 
     createTray()
 

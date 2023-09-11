@@ -35,13 +35,14 @@ ipcMain.on('processes.schedule-run-process.start', async (event) => {
   )
 })
 
-// ipcMain.on('processes.capture-part-run-process.start', async (event) => {
-//   return ProcessStartProcess(
-//     'CapturePartRunProcess',
-//     (childProcess) => {
-//       //
-//     }
-//   )
-//   .then(connectionInfo => { event.reply('processes.capture-part-run-process', connectionInfo, null, null) })
-//   .catch(error => { event.reply('processes.capture-part-run-process', null, error, null) })
-// })
+ipcMain.on('processes.capture-part-run-process.start', async (event) => {
+  return ProcessStartProcess(
+    'CapturePartRunProcess',
+    'processes.capture-part-run-process.connected',
+    'processes.capture-part-run-process.ongoing-event',
+    'processes.capture-part-run-process.connection-error',
+    (childProcess) => {
+      //
+    },
+  )
+})
