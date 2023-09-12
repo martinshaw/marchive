@@ -19,6 +19,7 @@ import Downloader from 'nodejs-file-downloader'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../log'
 import { safeSanitizeFileName } from '../../../util'
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 
 type RssParserFeedType = {
   [key: string]: any;
@@ -125,7 +126,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    if (await this.createCapturePartsForPodcastItems(capture, source, feed) === false) {
+    if (await this.createCapturePartsForPodcastItems(schedule, capture, source, feed) === false) {
       const errorMessage = 'Failed to create Capture Parts for podcast items'
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -161,6 +162,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async createCapturePartsForPodcastItems(
+    schedule: Schedule,
     capture: Capture,
     source: Source,
     feed: RssParserFeedType,
@@ -174,28 +176,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       if (item.link == null) return true
 
       if (source.useStartOrEndCursor == null) {
-        /**
-         * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
-         *   we should check the database to see if we have already downloaded this URL
-         *
-         * TODO: This will not work when we have multiple users and multiple types of data providers
-         *  We will need to check that the capture of the found capture part belongs to the same source
-         */
-
-        let existingCapturePart: CapturePart | null = null
-        try {
-          existingCapturePart = await CapturePart.findOne({
-            where: {
-              url: item.link,
-              status: 'completed' as CapturePartStatus,
-            },
-          })
-        } catch (error) {
-          logger.error('A DB error occurred when trying to find an existing Capture Part')
-          logger.error(error)
-        }
-
-        if (existingCapturePart != null) return true
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, item.link)) return true;
       }
 
       if (

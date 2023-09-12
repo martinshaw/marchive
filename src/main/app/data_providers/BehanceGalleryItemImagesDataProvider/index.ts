@@ -20,6 +20,7 @@ import {v4 as uuidV4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import {JSONObject, JSONValue} from 'types-json'
 import logger from '../../log'
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;
@@ -124,6 +125,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     try {
       await this.createCapturePartsForImages(
+        schedule,
         capture,
         source,
         pageImages,
@@ -279,6 +281,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async createCapturePartsForImages(
+    schedule: Schedule,
     capture: Capture,
     source: Source,
     images: BehanceGalleryItemImagesDataProviderImageType[],
@@ -290,33 +293,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (image: BehanceGalleryItemImagesDataProviderImageType, index: number): Promise<boolean> => {
       if (source.useStartOrEndCursor == null) {
-        /**
-         * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
-         *   we should check the database to see if we have already downloaded this URL
-         *
-         * TODO: This will not work when we have multiple users and multiple types of data providers
-         *  We will need to check that the capture of the found capture part belongs to the same source
-         *
-         * TODO: might need to add sourceId to the capturePart table then add it as where equal criteria to this query
-         */
-
-        let existingCapturePart: CapturePart | null = null
-        try {
-          existingCapturePart = await CapturePart.findOne({
-            where: {
-              url: image.url,
-              status: 'completed' as CapturePartStatus,
-            },
-          })
-        } catch (error) {
-          logger.error('A DB error occurred when checking if the CapturePart\'s URL has been previously downloaded')
-          logger.error(error)
-        }
-
-        if (existingCapturePart != null) {
-          logger.info(`Capture Part ${index} has been previously downloaded: ${image.url}`)
-          return true
-        }
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, image.url)) return true;
       }
 
       if (
