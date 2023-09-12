@@ -22,6 +22,7 @@ export type CapturePartAttributes = {
   url: string
   dataProviderPartIdentifier: string
   payload: string
+  downloadLocation: string
   currentRetryCount: number
   deletedFromDownloads: boolean
   captureId: number | undefined
@@ -72,6 +73,13 @@ class CapturePart extends Model<
     defaultValue: '{}',
   })
   payload!: string
+
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  downloadLocation!: string
 
   @Column({
     type: DataTypes.NUMBER,

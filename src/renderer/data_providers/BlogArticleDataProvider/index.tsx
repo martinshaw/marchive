@@ -11,12 +11,12 @@ Description: description
 
 import { DataProvidersRendererDetailsType } from "..";
 import BlogArticleDataProviderCapturePreviewThumbnail from "./BlogArticleDataProviderCapturePreviewThumbnail";
+import BlogArticleDataProviderCapturePartPreviewThumbnail from "./BlogArticleDataProviderCapturePartPreviewThumbnail";
 
 const rendererDetails: DataProvidersRendererDetailsType = {
   components: {
-    capturePreviewThumbnail: (props) => {
-      return <BlogArticleDataProviderCapturePreviewThumbnail {...props} />
-    },
+    capturePreviewThumbnail: (props) => <BlogArticleDataProviderCapturePreviewThumbnail {...props} />,
+    capturePartPreviewThumbnail: (props) => <BlogArticleDataProviderCapturePartPreviewThumbnail {...props} />,
   },
 }
 

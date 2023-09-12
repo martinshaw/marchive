@@ -201,13 +201,22 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         const dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType =
           audioFileExtensions.some(extension => item.link?.endsWith(extension)) ? 'audio-item' : 'video-item'
 
+        const payload: PodcastRssFeedDataProviderPartPayloadType = {index, ...item};
+
+        let capturePartDownloadDirectoryName = safeSanitizeFileName(payload.title ?? '')
+        if (capturePartDownloadDirectoryName === '' || capturePartDownloadDirectoryName == null || capturePartDownloadDirectoryName === false) {
+          capturePartDownloadDirectoryName = v4()
+        }
+        const downloadLocation = path.join(capture.downloadLocation, capturePartDownloadDirectoryName)
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: item.link,
             dataProviderPartIdentifier,
-            payload: JSON.stringify({index, ...item} as PodcastRssFeedDataProviderPartPayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -263,33 +272,30 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     const payload: PodcastRssFeedDataProviderPartPayloadType = JSON.parse(capturePart.payload)
     if (payload.link == null) return false
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart.downloadLocation == null || capturePart.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    let capturePartDownloadDirectoryName = safeSanitizeFileName(payload.title ?? '')
-    if (capturePartDownloadDirectoryName === '' || capturePartDownloadDirectoryName == null || capturePartDownloadDirectoryName === false)
-      capturePartDownloadDirectoryName = v4()
+    if (fs.existsSync(capturePart.downloadLocation) !== true) fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
 
-    const capturePartDownloadDestination = path.join(capturePart.capture.downloadLocation, capturePartDownloadDirectoryName)
-
-    if (fs.existsSync(capturePartDownloadDestination) !== true) fs.mkdirSync(capturePartDownloadDestination, {recursive: true})
-
-    if (fs.lstatSync(capturePartDownloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${capturePartDownloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.generatePodcastItemMetadataFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.generatePodcastItemMetadataFile(capturePart, payload) === false) {
       const errorMessage = `Failed to generate podcast item metadata file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.downloadPodcastItemMediaFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.downloadPodcastItemMediaFile(capturePart, payload) === false) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -299,11 +305,11 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async generatePodcastItemMetadataFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
   ): Promise<boolean> {
     const itemMetadataFilePath = path.join(
-      capturePartDownloadDestination,
+      capturePart.downloadLocation,
       'metadata.json',
     )
 
@@ -320,7 +326,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async downloadPodcastItemMediaFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
   ): Promise<boolean> {
     const mediaDownloadUrl = capturePartPayload.enclosure?.url ?? capturePartPayload.link ?? ''
@@ -328,7 +334,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     const downloader = new Downloader({
       url: mediaDownloadUrl,
-      directory: capturePartDownloadDestination,
+      directory: capturePart.downloadLocation,
     })
 
     try {

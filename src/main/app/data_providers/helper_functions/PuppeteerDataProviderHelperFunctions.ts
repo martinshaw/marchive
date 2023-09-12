@@ -26,7 +26,6 @@ export const createPuppeteerBrowser = async (
   headless = true,
 ): Promise<Browser> => {
   let browserArguments: string[] = []
-
   const extensionFileNames = [
 
     // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
@@ -35,8 +34,7 @@ export const createPuppeteerBrowser = async (
   ].filter(filename => filename !== null)
 
   const listOfExtensionfileNames = extensionFileNames.join(',')
-  const hasExtensions = listOfExtensionfileNames.length > 0
-  if (hasExtensions) {
+  if (listOfExtensionfileNames.length > 0) {
     browserArguments = [
       `--disable-extensions-except=${listOfExtensionfileNames}`,
       `--load-extension=${listOfExtensionfileNames}`,
@@ -239,7 +237,7 @@ export const retrievePageHeadMetadata = async (page: Page): Promise<PageHeadMeta
 }
 
 export const retrieveFaviconsFromUrl = async (url: string): Promise<GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]> => {
-  const browser = await createPuppeteerBrowser(false, false, false, true)
+  const browser = await createPuppeteerBrowser()
   const page = await loadPageByUrl(url, browser, 'networkidle0')
   const favicons = await retrieveFaviconsFromPage(page)
 

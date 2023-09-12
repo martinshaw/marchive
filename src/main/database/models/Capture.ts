@@ -10,8 +10,8 @@ Description: description
 */
 
 import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, ForeignKey, BelongsTo} from 'sequelize-typescript'
-import {Schedule} from '..'
+import {Table, Model, Column, ForeignKey, BelongsTo, HasMany} from 'sequelize-typescript'
+import {Schedule, CapturePart} from '..'
 
 export type CaptureAttributes = {
   id: number
@@ -20,6 +20,7 @@ export type CaptureAttributes = {
   deletedFromDownloads: boolean
   scheduleId: number | undefined
   schedule: Schedule | undefined
+  captureParts: Array<CapturePart>
   createdAt?: Date
   updatedAt?: Date
   deletedAt?: Date
@@ -35,7 +36,7 @@ class Capture extends Model<
   CaptureAttributes,
   Optional<
     CaptureAttributes,
-    'id' | 'schedule' | 'allowedRetriesCount' | 'deletedFromDownloads'
+    'id' | 'schedule' | 'allowedRetriesCount' | 'deletedFromDownloads' | 'captureParts'
   >
 > implements CaptureAttributes {
   id!: number
@@ -69,6 +70,9 @@ class Capture extends Model<
 
   @BelongsTo(() => Schedule)
   schedule: Schedule | undefined
+
+  @HasMany(() => CapturePart)
+  captureParts!: Array<CapturePart>
 }
 
 export default Capture

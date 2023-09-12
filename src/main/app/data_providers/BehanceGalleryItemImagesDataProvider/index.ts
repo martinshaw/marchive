@@ -313,13 +313,17 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddImage) {
+        const payload: BehanceGalleryItemImagesDataProviderImagePayloadType = {index, ...image};
+        const downloadLocation = path.join(capture.downloadLocation, uuidV4())
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: image.url,
             dataProviderPartIdentifier: 'image' as BehanceGalleryItemImagesDataProviderPartIdentifierType,
-            payload: JSON.stringify({index, ...image} as BehanceGalleryItemImagesDataProviderImagePayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -369,24 +373,24 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     const payload: BehanceGalleryItemImagesDataProviderImagePayloadType = JSON.parse(capturePart.payload)
     if (payload.url == null || payload.url === '') return false
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart.downloadLocation == null || capturePart.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    const capturePartDownloadDirectoryName = uuidV4()
-    const capturePartDownloadDestination = path.join(capturePart.capture.downloadLocation, capturePartDownloadDirectoryName)
+    if (fs.existsSync(capturePart.downloadLocation) !== true) fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
 
-    if (fs.existsSync(capturePartDownloadDestination) !== true) fs.mkdirSync(capturePartDownloadDestination, {recursive: true})
-
-    if (fs.lstatSync(capturePartDownloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${capturePartDownloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.downloadImageMediaFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.downloadImageMediaFile(capturePart, payload) === false) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -399,14 +403,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async downloadImageMediaFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     payload: BehanceGalleryItemImagesDataProviderImagePayloadType,
   ): Promise<boolean | never> {
     if (payload.url == null || (payload.url ?? '').trim() === '') return false
 
     const downloader = new Downloader({
       url: payload.url,
-      directory: capturePartDownloadDestination,
+      directory: capturePart.downloadLocation,
     })
 
     try {

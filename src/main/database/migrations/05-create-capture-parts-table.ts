@@ -37,6 +37,11 @@ const up: Migration = async ({ context }) => {
       allowNull: false,
       defaultValue: '{}',
 		},
+    downloadLocation: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
     currentRetryCount: {
       type: DataTypes.NUMBER,
       allowNull: false,

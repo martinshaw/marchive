@@ -388,17 +388,25 @@ class BlogArticleDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddArticleLinks) {
+        const payload: BlogArticleDataProviderLinkedPagePayloadType = {
+          index,
+          includes: ['screenshot', 'snapshot', 'metadata'],
+          ...link,
+        }
+
+        const downloadLocation = path.join(
+          capture.downloadLocation,
+          this.determineScreenshotFileNameFromLink(payload),
+        )
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: link.url,
             dataProviderPartIdentifier: 'linked-page' as BlogArticleDataProviderPartIdentifierType,
-            payload: JSON.stringify({
-              index,
-              includes: ['screenshot', 'snapshot', 'metadata'],
-              ...link,
-            } as BlogArticleDataProviderLinkedPagePayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -453,7 +461,10 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const page = await loadPageByUrl(payload.url, browser)
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart?.downloadLocation == null || capturePart?.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
 
@@ -463,17 +474,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const downloadDestination = path.join(
-      capturePart.capture.downloadLocation,
-      this.determineScreenshotFileNameFromLink(payload),
-    )
 
-    if (fs.existsSync(downloadDestination) !== true) {
-      fs.mkdirSync(downloadDestination, {recursive: true})
+    if (fs.existsSync(capturePart.downloadLocation) !== true) {
+      fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
     }
 
-    if (fs.lstatSync(downloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${downloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
 
       await page.close()
@@ -482,9 +489,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await this.generatePageScreenshot(page, downloadDestination) : true
-    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await this.generatePageSnapshot(page, downloadDestination) : true
-    const metadataGenerationStatus = payload.includes.includes('metadata') ? await this.generatePageMetadata(page, downloadDestination) : true
+    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await this.generatePageScreenshot(page, capturePart.downloadLocation) : true
+    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await this.generatePageSnapshot(page, capturePart.downloadLocation) : true
+    const metadataGenerationStatus = payload.includes.includes('metadata') ? await this.generatePageMetadata(page, capturePart.downloadLocation) : true
 
     await page.close()
     await browser.close()
