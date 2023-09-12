@@ -70,14 +70,26 @@ const DefaultLayout = () => {
       (ongoingEvent) => {
         // console.log('ongoingEvent', ongoingEvent)
 
-        const refreshOnCaptureRunSuccessfully = ['/sources']
-        const regex = /Capture ID [\d]* ran successfully/gm;
+        const shouldRefreshPageOnScheduleStatusChanges =
+          location.pathname.startsWith('/sources') &&
+          location.pathname.startsWith('/sources/create') === false &&
+          location.pathname.startsWith('/sources/edit') === false &&
+          location.pathname.startsWith('/sources/delete') === false;;
+
+        const ongoingEventCaptureRanSuccessfullyRegex = /Capture ID [\d]* ran successfully/gm;
         let ongoingEventCaptureRanSuccessfullyMatches;
 
-        while ((ongoingEventCaptureRanSuccessfullyMatches = regex.exec(ongoingEvent.data)) !== null) {
-          if (ongoingEventCaptureRanSuccessfullyMatches.index === regex.lastIndex) regex.lastIndex++;
+        while ((ongoingEventCaptureRanSuccessfullyMatches = ongoingEventCaptureRanSuccessfullyRegex.exec(ongoingEvent.data)) !== null) {
+          if (ongoingEventCaptureRanSuccessfullyMatches.index === ongoingEventCaptureRanSuccessfullyRegex.lastIndex) ongoingEventCaptureRanSuccessfullyRegex.lastIndex++;
+          if (ongoingEventCaptureRanSuccessfullyMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
+        }
 
-          if (ongoingEventCaptureRanSuccessfullyMatches != null && refreshOnCaptureRunSuccessfully.includes(location.pathname)) navigate(0)
+        const startedNewCaptureRegex = /Created new Capture with ID/gm
+        let startedNewCaptureMatches;
+
+        while ((startedNewCaptureMatches = startedNewCaptureRegex.exec(ongoingEvent.data)) !== null) {
+          if (startedNewCaptureMatches.index === startedNewCaptureRegex.lastIndex) startedNewCaptureRegex.lastIndex++;
+          if (startedNewCaptureMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
         }
       },
       (error) => {

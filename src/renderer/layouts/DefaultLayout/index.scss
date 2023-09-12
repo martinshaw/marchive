@@ -57,8 +57,10 @@ body {
   outline: none !important;
 }
 
-.bp5-button {
-  cursor: pointer !important;
+a, button, .bp5-button {
+  // cursor: pointer !important;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default !important;
 }
 
 h1.bp5-heading {

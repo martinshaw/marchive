@@ -10,16 +10,19 @@ Description: description
 */
 import { useMemo } from 'react';
 import { Button, Card, Text } from '@blueprintjs/core';
-import { LoaderFunction, NavLink, useLoaderData } from 'react-router-dom';
+import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
 import { useCallback } from 'react';
 import SourceShowPageGridItemPreview from './components/SourceShowPageGridItemPreview';
-import { SourceAttributes } from 'main/database/models/Source';
+import { SourceAttributes } from '../../../main/database/models/Source';
 import getSource from './functions/getSource';
-
-import './index.scss';
-import { DataProviderSerializedType } from 'main/app/data_providers/BaseDataProvider';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import AppToaster from '../../toaster';
+import AutoAnimated from '../../components/AutoAnimated';
+
+import './index.scss';
+import openExternalUrlInBrowser from 'renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 
 type SourceShowPageLoaderReturnType = {
   source: SourceAttributes | null;
@@ -64,6 +67,35 @@ const SourceShowPage = () => {
     dataProvidersError,
   } = useLoaderData() as SourceShowPageLoaderReturnType
 
+  if (source == null) {
+    let errorMessage = 'An error occurred when we tried to find the chosen source.';
+    if (typeof sourceError === 'string') errorMessage = sourceError;
+    if (sourceError instanceof Error) errorMessage = sourceError.message;
+
+    AppToaster.clear();
+    AppToaster.show({
+      message: errorMessage,
+      intent: 'danger',
+    });
+
+    return <Navigate to='/sources' replace={true} />
+  }
+
+  const dataProvider: DataProviderSerializedType | null = dataProviders.find(dataProvider => dataProvider.identifier === source?.dataProviderIdentifier) || null;
+  if (dataProvider == null) {
+    let errorMessage = 'The data provider which captured this source could not be found.';
+    if (typeof dataProvidersError === 'string') errorMessage = dataProvidersError;
+    if (dataProvidersError instanceof Error) errorMessage = dataProvidersError.message;
+
+    AppToaster.clear();
+    AppToaster.show({
+      message: errorMessage,
+      intent: 'danger',
+    });
+
+    return <Navigate to='/sources' replace={true} />
+  }
+
   const sourceCapturesCount = useMemo(
     () => source?.schedules == null ?
       0 :
@@ -71,25 +103,6 @@ const SourceShowPage = () => {
     ,
     [source]
   )
-
-  const humanDateCaption = useCallback((date: Date): string => {
-    const dateNow = new Date();
-
-    const dateIsToday = dateNow.getFullYear() === date.getFullYear() && dateNow.getMonth() === date.getMonth() && dateNow.getDate() === date.getDate();
-    const dateIsYesterday = dateNow.getFullYear() === date.getFullYear() && dateNow.getMonth() === date.getMonth() && dateNow.getDate() === date.getDate() - 1;
-
-    if (dateIsToday) {
-      return 'Today at ' + date.toLocaleTimeString();
-    } else if (dateIsYesterday) {
-      return 'Yesterday at ' + date.toLocaleTimeString();
-    } else {
-      return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString();
-    }
-  }, [])
-
-  const dataProvider: DataProviderSerializedType | null = dataProviders.find(
-    dataProvider => dataProvider.identifier === source?.dataProviderIdentifier
-  ) || null;
 
   return (
     <>
@@ -99,52 +112,44 @@ const SourceShowPage = () => {
           <Text ellipsize>{source?.sourceDomain?.name}</Text>
         </div>
         <div className="source-captures__source-domain__url">
-          <Text ellipsize>{source?.url}</Text>
+          <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
         </div>
       </div>
 
-
-      {dataProvider != null && source != null && (
-        <div className="source-captures__provider-row">
-          <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'source-captures__provider-row__image--invert' : ''} />
-          <Text>{dataProvider?.name}</Text>
-          <div className="source-captures__provider-row__schedule">
-            <SourceIndexPageListItemCardScheduleCaption source={source} />
-          </div>
+      <div className="source-captures__provider-row">
+        <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'source-captures__provider-row__image--invert' : ''} />
+        <Text>{dataProvider?.name}</Text>
+        <div className="source-captures__provider-row__schedule">
+          <SourceIndexPageListItemCardScheduleCaption source={source} />
         </div>
-      )}
-
-      <div className="source-captures__buttons">
-        <Text>
-          {sourceCapturesCount} Source Capture{sourceCapturesCount > 1 ? 's' : ''}
-          <span className="source-captures__buttons__hint">
-            Right-click a source's capture to edit or delete it.
-          </span>
-        </Text>
-        {/* <NavLink to="/sources/create">
-          {() => (
-            <Button intent="success" icon="add" text="Add a new Source" />
-          )}
-        </NavLink> */}
       </div>
 
-      <div className="source-captures__grid">
+      {sourceCapturesCount > 1 &&
+        <div className="source-captures__buttons">
+          <Text>
+            {sourceCapturesCount} Source Capture{sourceCapturesCount > 1 ? 's' : ''}
+            <span className="source-captures__buttons__hint">
+              Right-click a source's capture to edit or delete it.
+            </span>
+          </Text>
+          {/* <Button intent="success" icon="add" text="Add a new Source" /> */}
+        </div>
+      }
+
+      <AutoAnimated additionalClassNames="source-captures__grid">
         {(source?.schedules ?? []).map((schedule, scheduleIndex) => (
           (schedule?.captures ?? []).map((capture, captureIndex) => (
             <Card key={capture.id} className="source-captures__grid__item">
-              <div className="source-captures__grid__item__title">
-                <Text ellipsize>{humanDateCaption(capture.createdAt)}</Text>
-              </div>
-
               <SourceShowPageGridItemPreview
+                source={source}
                 schedule={schedule}
                 capture={capture}
+                dataProvider={dataProvider}
               />
             </Card>
           ))
         ))}
-
-      </div>
+      </AutoAnimated>
     </>
   );
 };

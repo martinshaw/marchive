@@ -1256,6 +1256,11 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.48.0.tgz#642633964e217905436033a2bd08bf322849b7fb"
   integrity sha512-ZSjtmelB7IJfWD2Fvb7+Z+ChTIKWq6kjda95fLcQKNS5aheVHn4IkfgRQE3sIIzTcSLwLcLZUD9UBt+V7+h+Pw==
 
+"@formkit/auto-animate@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@formkit/auto-animate/-/auto-animate-0.8.0.tgz#da55124e665573ef3c5ace1099f1f1702a5cec87"
+  integrity sha512-G8f7489ka0mWyi+1IEZT+xgIwcpWtRMmE2x+IrVoQ+KM1cP6VDj/TbujZjwxdb0P8w8b16/qBfViRmydbYHwMw==
+
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.11"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.11.tgz#88a04c570dbbc7dd943e4712429c3df09bc32844"

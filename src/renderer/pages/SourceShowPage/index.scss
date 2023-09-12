@@ -39,12 +39,20 @@
     color: #fff;
   }
 
-  & .source-captures__source-domain__url {
+  & .source-captures__source-domain__url, .source-captures__source-domain__url * {
     flex: 1;
     font-weight: 500;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+    opacity: .85;
+
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
 
     & > div {
       float: right;
@@ -117,12 +125,12 @@
 
 .source-captures__grid {
   width: 100%;
-  height: calc(100vh - 110px);
+  // height: calc(100vh - 110px);
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   overflow-x: hidden;
   overflow-y: auto;
-  padding-top: 8px;
+  padding-top: 22px;
   padding-bottom: 8px;
   padding-right: 12px;
   gap: 3rem;
@@ -142,8 +150,11 @@
 
 .source-captures__grid__item {
   width: 100%;
+  padding: 20px 5px;
+  padding-bottom: 5px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  cursor: pointer;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default;
 }

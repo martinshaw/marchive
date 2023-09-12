@@ -112,7 +112,8 @@
   gap: 1rem !important;
   transition: all 0.2s ease-in-out;
   transform: scale(1.0);
-  cursor: pointer;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default;
   opacity: 1;
 }
 

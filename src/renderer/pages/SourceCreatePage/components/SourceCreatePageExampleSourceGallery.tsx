@@ -14,6 +14,7 @@ import { Tab, TabId, Tabs } from "@blueprintjs/core"
 import { BaseDataProviderIconInformationReturnType, DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
 import SourceCreatePageExampleSourceGalleryGridItem, { SourceCreatePageExampleSourceGalleryGridItemPropsType } from "./SourceCreatePageExampleSourceGalleryGridItem"
 import { Schedule, Source } from "../../../../main/database"
+import AutoAnimated from '../../../components/AutoAnimated';
 
 export type SourceCreatePageExampleSourceGalleryPropsType = {
   onExampleSourceSelected: (url: string, dataProviderIdentifier: string) => void;
@@ -312,7 +313,7 @@ const SourceCreatePageExampleSourceGallery = (props: SourceCreatePageExampleSour
               title={group.tabCaption}
               panel={(
                 <div className="data-providers__gallery__tabs__tab">
-                  <div className="data-providers__gallery__tabs__tab__inner">
+                  <AutoAnimated additionalClassNames="data-providers__gallery__tabs__tab__inner">
                     {group.items.map(
                       (item, index) =>
                         <SourceCreatePageExampleSourceGalleryGridItem
@@ -321,7 +322,7 @@ const SourceCreatePageExampleSourceGallery = (props: SourceCreatePageExampleSour
                           onExampleSourceSelected={props.onExampleSourceSelected}
                         />
                     )}
-                  </div>
+                  </AutoAnimated>
                 </div>
               )}
             />

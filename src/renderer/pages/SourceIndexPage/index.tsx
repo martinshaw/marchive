@@ -15,9 +15,10 @@ import { DataProviderSerializedType } from '../../../main/app/data_providers/Bas
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourceDomains from './functions/getSourceDomains';
 import getDataProviders from './functions/getDataProviders';
-import { SourceDomainAttributes } from 'main/database/models/SourceDomain';
-import { SourceAttributes } from 'main/database/models/Source';
+import { SourceDomainAttributes } from '../../../main/database/models/SourceDomain';
+import { SourceAttributes } from '../../../main/database/models/Source';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
+import AutoAnimated from '../../components/AutoAnimated';
 
 import './index.scss';
 
@@ -93,7 +94,7 @@ const SourceIndexPage = () => {
         </NavLink>
       </div>
 
-      <div className="sources__list">
+      <AutoAnimated additionalClassNames="sources__list">
         {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
           <div key={sourceDomain.id} className="sources__list__source-domain">
             <div className="sources__list__source-domain__title">
@@ -120,7 +121,7 @@ const SourceIndexPage = () => {
               dataProviders={dataProviders}
             />
         ))}
-      </div>
+      </AutoAnimated>
     </>
   );
 };

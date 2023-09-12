@@ -9,7 +9,7 @@ Modified: 2023-09-05T13:47:27.688Z
 Description: description
 */
 
-import { Icon, Text } from "@blueprintjs/core";
+import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { ScheduleAttributes } from "main/database/models/Schedule";
 import { SourceAttributes } from "main/database/models/Source";
 import { ReactNode } from "react";
@@ -74,7 +74,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
     else if (props.source.schedules[0].status === 'processing') {
       scheduleCaption = (
         <>
-          <Icon icon="time" />
+          <Spinner size={SpinnerSize.SMALL} />
           <Text>Saving now...</Text>
         </>
       );

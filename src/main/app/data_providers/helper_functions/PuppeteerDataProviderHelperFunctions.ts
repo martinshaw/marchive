@@ -43,6 +43,8 @@ export const createPuppeteerBrowser = async (
     ]
   }
 
+  console.log('browserArguments', browserArguments)
+
   // Add stealth plugin (of puppeteer-extra) and use defaults (all tricks to hide puppeteer usage)
   if (withStealthPlugin) puppeteer.use(StealthPlugin())
 

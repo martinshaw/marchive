@@ -13,7 +13,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import contextMenu from 'electron-context-menu';
@@ -85,12 +85,15 @@ export const createWindow = async () => {
   // }
 
   const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
+
+  const darkBackgroundColor = '#2f343c';
+  const lightBackgroundColor = '#f6f7f9';
 
   mainWindowId = generateNewWindowId();
 
@@ -119,9 +122,16 @@ export const createWindow = async () => {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
       spellcheck: true,
     },
+    backgroundColor: nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor,
   });
 
   mainWindowState.manage(windows[mainWindowId]);
+
+  nativeTheme.on('updated', () => {
+    if (mainWindowId == null) return;
+    const backgroundColor = nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
+    windows[mainWindowId].setBackgroundColor(backgroundColor);
+});
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 

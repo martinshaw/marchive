@@ -58,7 +58,8 @@
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
   transform: scale(1.0);
-  cursor: pointer;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default;
   text-align: center;
   opacity: 1;
 
@@ -156,7 +157,8 @@
   align-items: center !important;
   gap: 1rem !important;
   text-align: center;
-  cursor: pointer;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default;
   transition: opacity 200ms ease-out;
   opacity: 1;
 

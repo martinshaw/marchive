@@ -26,8 +26,8 @@ const SourceShowAction = async (
 
   let include: Includeable[] = []
   if (withSchedules) {
-    const includeSchedules: Includeable = { model: Schedule }
-    if (withCaptures) includeSchedules.include = [{ model: Capture }]
+    const includeSchedules: Includeable = { model: Schedule, separate: true, order: [['createdAt', 'DESC']] }
+    if (withCaptures) includeSchedules.include = [{ model: Capture, separate: true, order: [['createdAt', 'DESC']] }]
 
     include.push(includeSchedules)
   }
