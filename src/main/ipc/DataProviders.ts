@@ -13,11 +13,13 @@ import { ipcMain } from "electron";
 import DataProviderListAction from "../app/actions/DataProvider/DataProviderListAction";
 import DataProviderValidateAction from "../app/actions/DataProvider/DataProviderValidateAction";
 import DataProviderGetFileFromCaptureDirectoryAction from "../app/actions/DataProvider/DataProviderGetFileFromCaptureDirectoryAction";
+import DataProviderGetFileFromCapturePartDirectoryAction from "../app/actions/DataProvider/DataProviderGetFileFromCapturePartDirectoryAction";
 
 export type DataProvidersChannels =
   | 'data-providers.list'
   | 'data-providers.validate'
   | 'data-providers.get-image-from-capture-directory'
+  | 'data-providers.get-text-from-capture-part-directory'
 
 ipcMain.on('data-providers.list', async (event) => {
   return DataProviderListAction()
@@ -35,4 +37,10 @@ ipcMain.on('data-providers.get-image-from-capture-directory', async (event, capt
   return DataProviderGetFileFromCaptureDirectoryAction(captureId, path, 'image')
     .then(image => { event.reply('data-providers.get-image-from-capture-directory', image.imageDataUrl, image.fullPath, null) })
     .catch(error => { event.reply('data-providers.get-image-from-capture-directory', null, null, error) })
+})
+
+ipcMain.on('data-providers.get-text-from-capture-part-directory', async (event, capturePartId: number | null, path: string) => {
+  return DataProviderGetFileFromCapturePartDirectoryAction(capturePartId, path, 'text')
+    .then(text => { event.reply('data-providers.get-text-from-capture-part-directory', text.text, text.fullPath, null) })
+    .catch(error => { event.reply('data-providers.get-text-from-capture-part-directory', null, null, error) })
 })

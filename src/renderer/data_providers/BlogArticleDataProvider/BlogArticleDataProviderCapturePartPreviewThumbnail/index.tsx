@@ -15,16 +15,17 @@ import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureD
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 
 import './index.scss'
+import useGetTextFromCapturePartDirectory from "renderer/data_providers/hooks/useGetTextFromCapturePartDirectory";
 
 const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType) => {
-  // const {
-  //   imageDataUrl,
-  //   fullPath,
-  //   errorMessage,
-  // } = useGetImageFromCaptureDirectory({
-  //   capture: props.capture,
-  //   path: 'index.jpg'
-  // });
+  const {
+    text,
+    fullPath,
+    errorMessage,
+  } = useGetTextFromCapturePartDirectory({
+    capturePart: props.capturePart,
+    path: 'metadata.json'
+  });
 
   const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
 
@@ -37,7 +38,8 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
 
       <div className="blog-article-data-provider-capture-preview-thumbnail__operation-caption">
         {/* <Text ellipsize>Click to see this snapshot and its related pages</Text> */}
-        {JSON.stringify(props.capturePart)}
+        {text}
+        {fullPath}
       </div>
 
       {/* <div className="blog-article-data-provider-capture-preview-thumbnail__status-caption">
