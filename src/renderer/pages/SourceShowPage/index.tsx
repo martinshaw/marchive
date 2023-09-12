@@ -139,7 +139,7 @@ const SourceShowPage = () => {
       <AutoAnimated additionalClassNames="source-captures__grid">
         {(source?.schedules ?? []).map((schedule, scheduleIndex) => (
           (schedule?.captures ?? []).map((capture, captureIndex) => (
-            <Card key={capture.id} className="source-captures__grid__item">
+            <Card key={capture.id} className="source-captures__grid__item" interactive>
               <SourceShowPageGridItemPreview
                 source={source}
                 schedule={schedule}

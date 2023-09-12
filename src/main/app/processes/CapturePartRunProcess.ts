@@ -14,6 +14,7 @@ import { getDataProviderByIdentifier } from "../repositories/DataProviderReposit
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "../../database/models/CapturePart"
 import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
+import { Op } from "sequelize"
 
 const CapturePartRunProcess = async (): Promise<never | void> => {
   // Should wait for 6 seconds between ticks when downloading pending files
@@ -57,6 +58,11 @@ const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCaptur
         model: Capture,
         include: [{
           model: Schedule,
+          where: {
+            status: {
+              [Op.eq]: 'pending',
+            },
+          },
           include: [{
             model: Source,
           }],

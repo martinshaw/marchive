@@ -69,15 +69,19 @@
     height: auto;
     margin: 10px;
     aspect-ratio: 1/1;
-
-    &.data-providers__grid__item__image--invert {
-      filter: invert(1);
-    }
   }
 
   .bp5-text {
     flex: 1 0 auto;
   }
+}
+
+#layout.bp5-dark .data-providers__grid__item__image--invert {
+  filter: invert(1);
+}
+
+#layout:not(.bp5-dark) .data-providers__grid__item__image--invert {
+  filter: invert(0);
 }
 
 .data-providers__grid__not-found,
@@ -167,9 +171,13 @@
     height: 30px;
     object-fit: contain;
     object-position: center;
-
-    &.data-providers__gallery__item__image--invert {
-      filter: invert(1);
-    }
   }
+}
+
+#layout.bp5-dark .data-providers__gallery__item__image--invert {
+  filter: invert(1);
+}
+
+#layout:not(.bp5-dark) .data-providers__gallery__item__image--invert {
+  filter: invert(0);
 }

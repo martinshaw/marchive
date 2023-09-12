@@ -9,15 +9,16 @@ Modified: 2023-08-01T19:56:36.606Z
 Description: description
 */
 
-import { Button, Navbar, TextArea } from '@blueprintjs/core';
-import { NavLink, Outlet, useLoaderData, useLocation, useNavigate, useNavigation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Navbar } from '@blueprintjs/core';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import isDarkMode from './functions/isDarkMode';
 import marchiveIsSetup from './functions/marchiveIsSetup';
 import { useAsyncMemo } from "use-async-memo"
-import getSourcesCount from 'renderer/pages/SourceIndexPage/functions/getSourcesCount';
+import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
 import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
 import capturePartRunProcessEvents from './functions/capturePartRunProcessEvents';
+import { ProcessesReplyOngoingEventDataType } from '../../../main/app/actions/Process/ProcessStartProcess';
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -25,8 +26,6 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 
 const DefaultLayout = () => {
-  const [hasHistory, setHasHistory] = useState<boolean>(false);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,22 +33,26 @@ const DefaultLayout = () => {
     isDarkMode: boolean;
     marchiveIsSetup: boolean | null;
     sourcesCount: number | null;
+    hasHistory: boolean;
   } = useAsyncMemo(
     async () => {
+      let hasHistory = false;
       const ignoredLandingPages = ['/', '/today']
-      if (hasHistory === false && ignoredLandingPages.includes(location.pathname) === false) setHasHistory(true)
+      if (hasHistory === false && ignoredLandingPages.includes(location.pathname) === false) hasHistory = true;
 
       return {
         isDarkMode: await isDarkMode(),
         marchiveIsSetup: await marchiveIsSetup(),
         sourcesCount: await getSourcesCount(),
+        hasHistory,
       };
     },
-    [location.pathname, hasHistory]
+    [location.pathname]
   ) ?? {
     isDarkMode: false,
     marchiveIsSetup: null,
     sourcesCount: null,
+    hasHistory: false,
   }
 
   useEffect(() => {
@@ -61,40 +64,42 @@ const DefaultLayout = () => {
     if (location.pathname === '/' && loaderData.sourcesCount != null) navigate('/today');
   }, [loaderData, location.pathname]);
 
+  const checkIfPageStateShouldRefreshDueToScheduleStatusChange = useCallback(
+    (ongoingEvent: ProcessesReplyOngoingEventDataType) => {
+      const shouldRefreshPageOnScheduleStatusChanges =
+        location.pathname.startsWith('/sources') &&
+        location.pathname.startsWith('/sources/create') === false &&
+        location.pathname.startsWith('/sources/edit') === false &&
+        location.pathname.startsWith('/sources/delete') === false;;
+
+      const ongoingEventCaptureRanSuccessfullyRegex = /Capture ID [\d]* ran successfully/gm;
+      let ongoingEventCaptureRanSuccessfullyMatches;
+
+      while ((ongoingEventCaptureRanSuccessfullyMatches = ongoingEventCaptureRanSuccessfullyRegex.exec(ongoingEvent.data)) !== null) {
+        if (ongoingEventCaptureRanSuccessfullyMatches.index === ongoingEventCaptureRanSuccessfullyRegex.lastIndex) ongoingEventCaptureRanSuccessfullyRegex.lastIndex++;
+        if (ongoingEventCaptureRanSuccessfullyMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
+      }
+
+      const startedNewCaptureRegex = /Created new Capture with ID/gm
+      let startedNewCaptureMatches;
+
+      while ((startedNewCaptureMatches = startedNewCaptureRegex.exec(ongoingEvent.data)) !== null) {
+        if (startedNewCaptureMatches.index === startedNewCaptureRegex.lastIndex) startedNewCaptureRegex.lastIndex++;
+        if (startedNewCaptureMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
+      }
+    } ,
+    [location.pathname]
+  )
+
   useEffect(() => {
-
     const {removeListeners} = scheduleRunProcessEvents(
-      (connectionInfo) => {
-        // console.log('connectionInfo', connectionInfo)
-      },
+      (connectionInfo) => { /* */ },
       (ongoingEvent) => {
-        // console.log('ongoingEvent', ongoingEvent)
 
-        const shouldRefreshPageOnScheduleStatusChanges =
-          location.pathname.startsWith('/sources') &&
-          location.pathname.startsWith('/sources/create') === false &&
-          location.pathname.startsWith('/sources/edit') === false &&
-          location.pathname.startsWith('/sources/delete') === false;;
+        checkIfPageStateShouldRefreshDueToScheduleStatusChange(ongoingEvent);
 
-        const ongoingEventCaptureRanSuccessfullyRegex = /Capture ID [\d]* ran successfully/gm;
-        let ongoingEventCaptureRanSuccessfullyMatches;
-
-        while ((ongoingEventCaptureRanSuccessfullyMatches = ongoingEventCaptureRanSuccessfullyRegex.exec(ongoingEvent.data)) !== null) {
-          if (ongoingEventCaptureRanSuccessfullyMatches.index === ongoingEventCaptureRanSuccessfullyRegex.lastIndex) ongoingEventCaptureRanSuccessfullyRegex.lastIndex++;
-          if (ongoingEventCaptureRanSuccessfullyMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
-        }
-
-        const startedNewCaptureRegex = /Created new Capture with ID/gm
-        let startedNewCaptureMatches;
-
-        while ((startedNewCaptureMatches = startedNewCaptureRegex.exec(ongoingEvent.data)) !== null) {
-          if (startedNewCaptureMatches.index === startedNewCaptureRegex.lastIndex) startedNewCaptureRegex.lastIndex++;
-          if (startedNewCaptureMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
-        }
       },
-      (error) => {
-        // console.log('error', error)
-      },
+      (error) => { /* */ },
     )
 
     return () => { removeListeners() }
@@ -103,7 +108,7 @@ const DefaultLayout = () => {
   useEffect(() => {
     const {removeListeners} = capturePartRunProcessEvents(
       (connectionInfo) => { /* */ },
-      (ongoingEvent) => { console.log('capturePartRunProcessEvents ongoingEvent', ongoingEvent) },
+      (ongoingEvent) => { /* */ },
       (error) => { /* */ },
     )
 
@@ -116,7 +121,7 @@ const DefaultLayout = () => {
         <Navbar id="navbar">
 
           <Navbar.Group align="left">
-            {hasHistory ?
+            {loaderData.hasHistory ?
               <Button type='button' icon='arrow-left' onClick={() => navigate(-1)} /> :
               <div style={{width: '37.5px'}}>&nbsp;</div>
             }

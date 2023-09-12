@@ -378,7 +378,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
           existingCapturePart = await CapturePart.findOne({
             where: {
               url: link.url,
-              status: 'completed' as CapturePartStatus,
+              // status: 'completed' as CapturePartStatus,
             },
           })
         } catch (error) {

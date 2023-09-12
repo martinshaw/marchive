@@ -28,7 +28,7 @@ const SourceIndexPageListItemCard = (props: SourceIndexPageListItemCardPropsType
 
   return (
     <NavLink to={`/sources/${props.source.id}`} className="sources__list__item__link">
-      <Card key={props.source.id} className="sources__list__item">
+      <Card key={props.source.id} className="sources__list__item" interactive>
         {dataProvider != null && (
           <div className="sources__list__item__provider-row">
             <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'sources__list__item__image--invert' : ''} />

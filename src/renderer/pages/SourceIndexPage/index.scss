@@ -16,8 +16,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-height: 35px;
+  margin: 10px 0;
+  padding-left: 5px;
+  padding-right: 12px;
   gap: 1rem;
-  margin-bottom: 1rem;
   font-weight: 900;
   min-height: 30px;
 
@@ -49,6 +52,7 @@
   overflow-y: auto;
   padding-top: 8px;
   padding-bottom: 8px;
+  padding-left: 5px;
   padding-right: 12px;
   gap: 3rem;
 
@@ -74,6 +78,8 @@
 
 .sources__list__source-domain {
   width: 100%;
+  min-height: 35px;
+  margin: 10px 0;
   display: flex;
   flex-direction: column;
   justify-content: top;
@@ -99,7 +105,7 @@
 
 .sources__list__item__link {
   width: 100%;
-  color: #fff !important;
+  color: unset !important;
 }
 
 .sources__list__item__link, .sources__list__item__link * {
@@ -129,12 +135,15 @@
     height: 14px;
     object-fit: contain;
     object-position: center;
-
-    &.sources__list__item__image--invert {
-      filter: invert(1);
-    }
   }
+}
 
+#layout.bp5-dark .sources__list__item__image--invert {
+  filter: invert(1);
+}
+
+#layout:not(.bp5-dark) .sources__list__item__image--invert {
+  filter: invert(0);
 }
 
 .sources__list__item__provider-row__schedule {
