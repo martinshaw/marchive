@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Button, Navbar, TextArea } from '@blueprintjs/core';
-import { NavLink, Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLoaderData, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import isDarkMode from './functions/isDarkMode';
 import marchiveIsSetup from './functions/marchiveIsSetup';
@@ -25,6 +25,7 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.scss';
 
 const DefaultLayout = () => {
+  const [hasHistory, setHasHistory] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,12 +35,17 @@ const DefaultLayout = () => {
     marchiveIsSetup: boolean | null;
     sourcesCount: number | null;
   } = useAsyncMemo(
-    async () => ({
-      isDarkMode: await isDarkMode(),
-      marchiveIsSetup: await marchiveIsSetup(),
-      sourcesCount: await getSourcesCount(),
-    }),
-    [location.pathname]
+    async () => {
+      const ignoredLandingPages = ['/', '/today']
+      if (hasHistory === false && ignoredLandingPages.includes(location.pathname) === false) setHasHistory(true)
+
+      return {
+        isDarkMode: await isDarkMode(),
+        marchiveIsSetup: await marchiveIsSetup(),
+        sourcesCount: await getSourcesCount(),
+      };
+    },
+    [location.pathname, hasHistory]
   ) ?? {
     isDarkMode: false,
     marchiveIsSetup: null,
@@ -96,20 +102,29 @@ const DefaultLayout = () => {
     <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
       {loaderData.marchiveIsSetup === true && loaderData.sourcesCount !== null &&
         <Navbar id="navbar">
-          <Navbar.Group>
+
+          <Navbar.Group align="left">
+            {hasHistory ?
+              <Button type='button' icon='arrow-left' onClick={() => navigate(-1)} /> :
+              <div style={{width: '37.5px'}}>&nbsp;</div>
+            }
+          </Navbar.Group>
+
+          <Navbar.Group align='center'>
             <NavLink to="/yesterday">
               {({ isActive }) => (
-                <Button active={isActive} icon="history" text="Yesterday" />
+                <Button type='button' active={isActive} icon="history" text="Yesterday" />
               )}
             </NavLink>
             <NavLink to="/today">
               {({ isActive }) => (
-                <Button active={isActive} icon="calendar" text="Today" />
+                <Button type='button' active={isActive} icon="calendar" text="Today" />
               )}
             </NavLink>
             <NavLink to="/sources">
               {({ isActive }) => (
                 <Button
+                  type='button'
                   active={isActive}
                   icon={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "plus" : "database" }
                   text={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "Add Source" : "Sources" }
@@ -117,6 +132,12 @@ const DefaultLayout = () => {
               )}
             </NavLink>
           </Navbar.Group>
+
+          <Navbar.Group align="right">
+            {/* <Button type='button' icon='cog' /> */}
+            <div style={{width: '37.5px'}}>&nbsp;</div>
+          </Navbar.Group>
+
         </Navbar>
       }
 

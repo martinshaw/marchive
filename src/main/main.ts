@@ -1,3 +1,7 @@
+/**
+ * @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8
+ */
+
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -17,6 +21,7 @@ import logger from './app/log';
 import createTray from './tray';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
+import windowStateKeeper from 'electron-window-state';
 
 import './ipc/Captures';
 import './ipc/DataProviders';
@@ -92,10 +97,18 @@ export const createWindow = async () => {
   if (mainWindowId == null) return;
   if (windows[mainWindowId] != null) return;
 
+  // TODO: If we have different types of windows, we should use the `path` prop to differentiate stored size/position preferences
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 1024,
+    defaultHeight: 800
+  });
+
   windows[mainWindowId] = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
     minWidth: 364,
     minHeight: 600,
     titleBarStyle: 'default',
@@ -107,6 +120,8 @@ export const createWindow = async () => {
       spellcheck: true,
     },
   });
+
+  mainWindowState.manage(windows[mainWindowId]);
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 

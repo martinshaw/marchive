@@ -18,22 +18,33 @@
   width: 100%;
   gap: 1rem;
   margin-bottom: 1rem;
+  font-weight: 900;
+  min-height: 30px;
+
+  & > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    margin-right: 1rem;
+  }
 
   .sources__buttons__hint {
     margin-left: 1rem;
-    opacity: .6;
+    opacity: .8;
     font-style: italic;
+    font-weight: 500;
+    float: right;
   }
 }
 
 .sources__list {
   width: 100%;
+  height: calc(100vh - 110px);
   display: flex;
   flex-direction: column;
   justify-content: top;
   align-items: center;
-  width: 100%;
-  height: calc(100vh - 100px);
   overflow-x: hidden;
   overflow-y: auto;
   padding-top: 8px;
@@ -84,6 +95,15 @@
     border-radius: 5px;
     padding: 6px;
   }
+}
+
+.sources__list__item__link {
+  width: 100%;
+  color: #fff !important;
+}
+
+.sources__list__item__link, .sources__list__item__link * {
+  text-decoration: none !important;
 }
 
 .sources__list__item {
