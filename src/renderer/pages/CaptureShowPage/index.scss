@@ -134,38 +134,11 @@
   }
 }
 
-.capture__grid {
+.capture__main {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: calc(100% - 100px);
   padding-top: 22px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 12px;
-  gap: 3rem;
-
-  &:hover {
-    .bp5-card {
-      transition: opacity 200ms ease-out;
-      opacity: 0.65;
-
-      &:hover {
-        transition: opacity 200ms ease-out;
-        opacity: 1;
-      }
-    }
-  }
-}
-
-.capture__grid__item {
-  width: 100%;
-  padding: 20px 5px;
-  padding-bottom: 5px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
-  cursor: default;
 }

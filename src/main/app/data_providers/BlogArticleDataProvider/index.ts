@@ -118,6 +118,16 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
+    const firstPageMetadata = await this.generatePageMetadata(page, capture.downloadLocation)
+    if (firstPageMetadata === false) {
+      const errorMessage = 'The first page metadata could not be generated'
+      logger.error(errorMessage)
+
+      await page.close()
+      await browser.close()
+      throw new Error(errorMessage)
+    }
+
     const allLinks = await this.determineAllLinks(page)
     const countMapOfCommonParentDirectories = await this.determineCountMapOfCommonParentDirectories(allLinks)
     const articleLinks = await this.filterLikelyArticleLinks(allLinks, countMapOfCommonParentDirectories)

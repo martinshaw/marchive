@@ -42,7 +42,7 @@ export { userAppDataPath, downloadsPath, appLogsPath }
 export const userAppDataDatabasesPath = path.join(userAppDataPath, 'databases')
 export const userAppDataDatabaseFilePath = path.join(userAppDataDatabasesPath, 'marchive-desktop.db')
 
-export const downloadsAppPath = path.join(downloadsPath, process.env.APP_NAME || 'marchive')
+export const downloadsAppPath = path.join(downloadsPath, process.env.APP_NAME || 'Marchive')
 export const downloadCapturesPath = path.join(downloadsAppPath, 'captures')
 export const downloadSourceDomainFaviconsPath = path.join(downloadsAppPath, 'favicons')
 

@@ -41,7 +41,7 @@ const CaptureShowAction = async (
   }
 
   if (withCaptureParts) {
-    const includeCaptureParts: Includeable = { model: CapturePart, separate: true, order: [['createdAt', 'DESC']] }
+    const includeCaptureParts: Includeable = { model: CapturePart, separate: true, order: [['createdAt', 'ASC']] }
     include.push(includeCaptureParts)
   }
 

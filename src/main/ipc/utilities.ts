@@ -9,14 +9,14 @@ Modified: 2023-08-01T20:04:09.893Z
 Description: description
 */
 
-import { ipcMain, nativeTheme, shell } from 'electron';
+import { BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
 import { getStoredSettingValue, setStoredSettingValue } from '../app/repositories/StoredSettingRepository';
-import { sequelize } from '../database';
 
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'
   | 'utilities.marchive-is-setup'
   | 'utilities.open-external-url-in-browser'
+  | 'utilities.focused-window.toggle-maximise'
 
 ipcMain.on('utilities.is-dark-mode', async (event) => {
   event.reply('utilities.is-dark-mode', nativeTheme.shouldUseDarkColors);
@@ -30,4 +30,10 @@ ipcMain.on('utilities.marchive-is-setup', async (event, newValue) => {
 ipcMain.on('utilities.open-external-url-in-browser', async (event, url) => {
   if (url == null) return;
   shell.openExternal(url);
+})
+
+ipcMain.on('utilities.focused-window.toggle-maximise', async (event) => {
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow == null) return;
+  focusedWindow.isMaximized() ? focusedWindow.unmaximize() : focusedWindow.maximize();
 })

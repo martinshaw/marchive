@@ -9,10 +9,11 @@ Modified: 2023-09-12T04:34:10.808Z
 Description: description
 */
 
-const openExternalUrlInBrowser = async (url: string | null | undefined): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    if (url == null) return;
+const openExternalUrlInBrowser = async (url: string | null | undefined): Promise<void> => {
+  return new Promise<void>((resolve, reject) => {
+    if (url == null) return resolve();
     window.electron.ipcRenderer.sendMessage('utilities.open-external-url-in-browser', url);
+    return resolve()
   });
 };
 

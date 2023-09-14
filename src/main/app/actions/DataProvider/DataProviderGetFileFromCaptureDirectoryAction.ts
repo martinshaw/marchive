@@ -16,11 +16,11 @@ import { Capture } from "../../../database";
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../../../../main/app/repositories/LocalFileRepository';
 
 type DataProviderGetFileFromCaptureDirectoryActionReturnsType = {
-  imageDataUrl: string;
+  resolvedUrl: string;
   fullPath: string;
-}
+};
 
-type DataProviderGetFileFromCaptureDirectoryActionFileType = 'image';
+type DataProviderGetFileFromCaptureDirectoryActionFileType = 'image' | 'text';
 
 /**
  * @throws {Error}
@@ -97,12 +97,20 @@ const DataProviderGetFileFromCaptureDirectoryAction = async (
       }
 
       return {
-        imageDataUrl,
+        resolvedUrl: imageDataUrl,
+        fullPath: absolutePath,
+      }
+
+    case 'text':
+      const fileContents = fs.readFileSync(absolutePath, 'utf8')
+
+      return {
+        resolvedUrl: fileContents,
         fullPath: absolutePath,
       }
 
     default:
-      const errorMessage = `The file type "${fileType}" is not supported`
+      const errorMessage = `The file type "${fileType}" is not supported in DataProviderGetFileFromCaptureDirectoryAction`
       logger.error(errorMessage)
       throw new Error(errorMessage)
 

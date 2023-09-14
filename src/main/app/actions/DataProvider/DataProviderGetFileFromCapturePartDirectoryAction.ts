@@ -16,14 +16,13 @@ import { CapturePart, Capture } from "../../../database";
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../../../../main/app/repositories/LocalFileRepository';
 
 type DataProviderGetFileFromCapturePartDirectoryActionReturnsType = {
-  text: string;
+  resolvedUrl: string;
   fullPath: string;
 }
 
-type DataProviderGetFileFromCapturePartDirectoryActionFileType = 'text';
+type DataProviderGetFileFromCapturePartDirectoryActionFileType = 'image' | 'text';
 
 /**
- * TODO : change DataProviderGetFileFromCapturePartDirectoryAction to DataProviderGetTextFromCapturePartDirectoryAction, same with the other action
  * @throws {Error}
  */
 const DataProviderGetFileFromCapturePartDirectoryAction = async (
@@ -84,21 +83,34 @@ const DataProviderGetFileFromCapturePartDirectoryAction = async (
 
   if (fs.existsSync(absolutePath) === false) {
     const errorMessage = `A file does not exist at the path: ${absolutePath}`
-    logger.error(errorMessage)
+    logger.warn(errorMessage)
     throw new Error(errorMessage)
   }
 
   switch (fileType) {
+    case 'image':
+      const imageDataUrl = retrieveFileAsBase64DataUrlFromAbsolutePath(absolutePath);
+      if (imageDataUrl == null) {
+        const errorMessage = `A Base64 data URL could not be retrieved for the file at path: ${absolutePath}`
+        logger.error(errorMessage)
+        throw new Error(errorMessage)
+      }
+
+      return {
+        resolvedUrl: imageDataUrl,
+        fullPath: absolutePath,
+      }
+
     case 'text':
       const fileContents = fs.readFileSync(absolutePath, 'utf8')
 
       return {
-        text: fileContents,
+        resolvedUrl: fileContents,
         fullPath: absolutePath,
       }
 
     default:
-      const errorMessage = `The file type "${fileType}" is not supported`
+      const errorMessage = `The file type "${fileType}" is not supported in DataProviderGetFileFromCapturePartDirectoryAction`
       logger.error(errorMessage)
       throw new Error(errorMessage)
 

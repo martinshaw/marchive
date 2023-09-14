@@ -13,7 +13,6 @@ import { ReactNode } from "react";
 import { SourceAttributes } from "../../main/database/models/Source";
 import { ScheduleAttributes } from "../../main/database/models/Schedule";
 import { CaptureAttributes } from "../../main/database/models/Capture";
-import { CapturePartAttributes } from "../../main/database/models/CapturePart";
 import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDataProvider";
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
 
@@ -24,17 +23,16 @@ export type DataProvidersRendererComponentCapturePreviewThumbnailPropsType = {
   dataProvider: DataProviderSerializedType
 }
 
-export type DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType = {
+export type DataProvidersRendererComponentCaptureShowPageFragmentPropsType = {
   source: SourceAttributes;
   schedule: ScheduleAttributes;
   capture: CaptureAttributes;
-  capturePart: CapturePartAttributes;
   dataProvider: DataProviderSerializedType
 }
 
 export type DataProvidersRendererComponents = {
   capturePreviewThumbnail: (props: DataProvidersRendererComponentCapturePreviewThumbnailPropsType) => ReactNode;
-  capturePartPreviewThumbnail: (props: DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType) => ReactNode;
+  captureShowPageFragment: (props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType) => ReactNode;
 }
 
 export type DataProvidersRendererDetailsType = {

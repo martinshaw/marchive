@@ -9,20 +9,18 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 import { useMemo } from 'react';
+import AppToaster from '../../toaster';
+import getCapture from './functions/getCapture';
 import { Button, Card, Text } from '@blueprintjs/core';
-import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
-import CaptureShowPageGridItemPreview from './components/CaptureShowPageGridItemPreview';
+import { SourceAttributes } from '../../../main/database/models/Source';
 import { CaptureAttributes } from '../../../main/database/models/Capture';
 import { ScheduleAttributes } from '../../../main/database/models/Schedule';
-import { SourceAttributes } from '../../../main/database/models/Source';
-import { SourceDomainAttributes } from '../../../main/database/models/SourceDomain';
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
-import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
-import AppToaster from '../../toaster';
-import AutoAnimated from '../../components/AutoAnimated';
+import CaptureShowPageFragment from './components/CaptureShowPageFragment';
+import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import openExternalUrlInBrowser from 'renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
-import getCapture from './functions/getCapture';
+import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 
 import './index.scss';
 
@@ -141,19 +139,14 @@ const CaptureShowPage = () => {
         </div>
       }
 
-      <AutoAnimated additionalClassNames="capture__grid">
-        {(capture?.captureParts ?? []).map((capturePart, capturePartIndex) => (
-          <Card key={capturePart.id} className="capture__grid__item" interactive>
-            <CaptureShowPageGridItemPreview
-              source={source}
-              schedule={schedule}
-              capture={capture}
-              capturePart={capturePart}
-              dataProvider={dataProvider}
-            />
-          </Card>
-        ))}
-      </AutoAnimated>
+      <div className="capture__main">
+        <CaptureShowPageFragment
+          source={source}
+          schedule={schedule}
+          capture={capture}
+          dataProvider={dataProvider}
+        />
+      </div>
     </>
   );
 };

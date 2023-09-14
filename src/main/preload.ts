@@ -6,6 +6,14 @@ import { SourcesChannels } from './ipc/Sources';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
 import { UtilitiesChannels } from './ipc/Utilities';
 import { ProcessesChannels } from './ipc/Processes';
+import { RenderersChannels } from './ipc/Renderers';
+
+/**
+ * TODO: This is a temporary fix for the following error:
+ *   (node:12345) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [process]. Use emitter.setMaxListeners() to increase limit
+ * This is not the best way to solve this problem
+ */
+require('events').EventEmitter.defaultMaxListeners = 20
 
 export type Channels =
   | CapturesChannels
@@ -15,6 +23,7 @@ export type Channels =
   | SourceDomainsChannels
   | UtilitiesChannels
   | ProcessesChannels
+  | RenderersChannels;
 
 const electronHandler = {
   ipcRenderer: {

@@ -62,18 +62,6 @@
     gap: 1rem;
     width: 100%;
   }
-
-  &:hover {
-    .bp5-card {
-      transition: opacity 200ms ease-out;
-      opacity: 0.65;
-
-      &:hover {
-        transition: opacity 200ms ease-out;
-        opacity: 1;
-      }
-    }
-  }
 }
 
 .sources__list__source-domain {

@@ -9,7 +9,7 @@ Modified: 2023-09-12T01:01:50.638Z
 Description: description
 */
 
-import { Text } from "@blueprintjs/core";
+import { Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { DataProvidersRendererComponentCapturePreviewThumbnailPropsType } from "../..";
 import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureDirectory";
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
@@ -44,6 +44,7 @@ const BlogArticleDataProviderCapturePreviewThumbnail = (props: DataProvidersRend
         <Text ellipsize>{dateCaption || <>&nbsp;</>}</Text>
       </div> */}
 
+      {imageDataUrl == null && <div className="blog-article-data-provider-capture-preview-thumbnail__image__placeholder"><Spinner size={SpinnerSize.STANDARD} /></div>}
       {imageDataUrl != null && <img src={imageDataUrl} alt="Thumbnail of captured page" />}
 
       <div className="blog-article-data-provider-capture-preview-thumbnail__image__overflow-gradient">&nbsp;</div>

@@ -145,18 +145,6 @@
   padding-left: 5px;
   padding-right: 12px;
   gap: 3rem;
-
-  &:hover {
-    .bp5-card {
-      transition: opacity 200ms ease-out;
-      opacity: 0.65;
-
-      &:hover {
-        transition: opacity 200ms ease-out;
-        opacity: 1;
-      }
-    }
-  }
 }
 
 .source-captures__grid__item__link {

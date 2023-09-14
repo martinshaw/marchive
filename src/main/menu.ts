@@ -6,6 +6,7 @@ import {
   MenuItemConstructorOptions,
   dialog,
   clipboard,
+  ipcMain,
 } from 'electron';
 import UtilityCleanAction from './app/actions/Utility/UtilityCleanAction';
 import UtilityRetrieveFavicon from './app/actions/Utility/UtilityRetrieveFavicon';
@@ -61,46 +62,73 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'marchive',
+      label: 'Marchive',
       submenu: [
         {
-          label: 'About marchive',
+          label: 'About Marchive',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         // { label: 'Services', submenu: [] },
         // { type: 'separator' },
         {
-          label: 'Hide marchive',
-          accelerator: 'Command+H',
+          label: 'Hide Marchive',
+          accelerator: 'CmdOrCtrl+H',
           selector: 'hide:',
         },
         {
           label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
+          accelerator: 'CmdOrCtrl+Shift+H',
           selector: 'hideOtherApplications:',
         },
         { label: 'Show All', selector: 'unhideAllApplications:' },
         { type: 'separator' },
         {
           label: 'Quit',
-          accelerator: 'Command+Q',
+          accelerator: 'CmdOrCtrl+Q',
           click: () => { cleanupAndQuit() },
+        },
+      ],
+    };
+    const subMenuFile: DarwinMenuItemConstructorOptions = {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New Source',
+          accelerator: 'CmdOrCtrl+N',
+          enabled: this.mainWindow !== null,
+          click: () => {
+            this.mainWindow.webContents.send('renderer.focused-window.navigate', '/sources/create');
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Close Window',
+          accelerator: 'CmdOrCtrl+W',
+          enabled: this.mainWindow !== null,
+          role: 'close',
+        },
+        {
+          label: 'Quit Marchive',
+          accelerator: 'CmdOrCtrl+Q',
+          role: 'quit',
         },
       ],
     };
     const subMenuEdit: DarwinMenuItemConstructorOptions = {
       label: 'Edit',
       submenu: [
-        { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
-        { label: 'Redo', accelerator: 'Shift+Command+Z', selector: 'redo:' },
+        { label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
+        { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
         { type: 'separator' },
-        { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
+        { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
         {
           label: 'Select All',
-          accelerator: 'Command+A',
+          accelerator: 'CmdOrCtrl+A',
           selector: 'selectAll:',
         },
       ],
@@ -246,31 +274,31 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Reload',
-          accelerator: 'Command+R',
+          accelerator: 'CmdOrCtrl+R',
           click: () => {
             this.mainWindow.webContents.reload();
           },
         },
         {
           label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
+          accelerator: 'Alt+CmdOrCtrl+I',
           click: () => {
             this.mainWindow.webContents.toggleDevTools();
           },
         },
         {
           label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
+          accelerator: 'Ctrl+CmdOrCtrl+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
           },
         },
         {
           label: 'Minimize',
-          accelerator: 'Command+M',
+          accelerator: 'CmdOrCtrl+M',
           selector: 'performMiniaturize:',
         },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
+        { label: 'Close', accelerator: 'CmdOrCtrl+W', selector: 'performClose:' },
         { type: 'separator' },
         { label: 'Bring All to Front', selector: 'arrangeInFront:' },
       ],
@@ -280,17 +308,17 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
+          accelerator: 'Ctrl+CmdOrCtrl+F',
           click: () => {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
           },
         },
         {
           label: 'Minimize',
-          accelerator: 'Command+M',
+          accelerator: 'CmdOrCtrl+M',
           selector: 'performMiniaturize:',
         },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
+        { label: 'Close', accelerator: 'CmdOrCtrl+W', selector: 'performClose:' },
         { type: 'separator' },
         { label: 'Bring All to Front', selector: 'arrangeInFront:' },
       ],
@@ -330,7 +358,7 @@ export default class MenuBuilder {
     const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
     const subMenuWindow = isDebug ? subMenuWindowDev : subMenuWindowProd;
 
-    return [subMenuAbout, subMenuEdit, subMenuMarchiveUtilities, subMenuWindow];
+    return [subMenuAbout, subMenuFile, subMenuEdit, subMenuMarchiveUtilities, subMenuWindow];
   }
 
   buildDefaultTemplate() {

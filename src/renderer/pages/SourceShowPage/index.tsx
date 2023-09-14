@@ -20,9 +20,9 @@ import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 import AppToaster from '../../toaster';
 import AutoAnimated from '../../components/AutoAnimated';
+import openExternalUrlInBrowser from '../../layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 
 import './index.scss';
-import openExternalUrlInBrowser from 'renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 
 type SourceShowPageLoaderReturnType = {
   source: SourceAttributes | null;

@@ -8,15 +8,18 @@
 }
 
 .onboarding__heading {
-  padding: 30px 15px !important;
-  text-align: center;
-  // font-weight: 200;
+  font-weight: 100 !important;
+  padding: 40px 15px !important;
+  text-align: center !important;
+  font-size: 3.6rem !important;
 }
 
 .onboarding__subheading {
   padding: 20px 15px !important;
-  text-align: center;
-  // font-weight: 100;
+  text-align: center !important;
+  font-weight: 300 !important;
+  opacity: 0.6 !important;
+  font-size: 2rem !important;
 }
 
 .onboarding__features {
@@ -30,6 +33,7 @@
 }
 
 .onboarding__buttons {
+  padding: 40px 15px !important;
   display: flex;
   flex-direction: row;
   align-items: center;

@@ -39,13 +39,6 @@ import './ipc/Processes';
 //   }
 // }
 
-/**
- * TODO: This is a temporary fix for the following error:
- *   (node:12345) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [process]. Use emitter.setMaxListeners() to increase limit
- * This is not the best way to solve this problem
- */
-require('events').EventEmitter.defaultMaxListeners = Infinity;
-
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
@@ -99,7 +92,7 @@ export const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
-  const darkBackgroundColor = '#2f343c';
+  const darkBackgroundColor = '#1e1e1e';
   const lightBackgroundColor = '#f6f7f9';
 
   mainWindowId = generateNewWindowId();
@@ -121,7 +114,8 @@ export const createWindow = async () => {
     y: mainWindowState.y,
     minWidth: 364,
     minHeight: 600,
-    titleBarStyle: 'default',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 15, y: 17 },
     title: 'Marchive',
     center: true,
     icon: getAssetPath('icon.png'),
@@ -138,7 +132,21 @@ export const createWindow = async () => {
     if (mainWindowId == null) return;
     const backgroundColor = nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
     windows[mainWindowId].setBackgroundColor(backgroundColor);
-});
+  });
+
+  windows[mainWindowId].on('focus', () => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    windows[mainWindowId].webContents.send('renderer.focused-window.is-focused');
+  })
+
+  windows[mainWindowId].on('blur', () => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    windows[mainWindowId].webContents.send('renderer.focused-window.is-blurred');
+  })
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 

@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: processEvents.ts
+File Name: processListeners.ts
 Created:  2023-09-11T09:43:10.689Z
 Modified: 2023-09-11T09:43:10.689Z
 
@@ -12,7 +12,7 @@ Description: description
 import { Channels } from "main/preload";
 import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
 
-const processEvents = (
+const processListeners = (
   processConnectedChannelName: Channels,
   processOngoingEventChannelName: Channels,
   processConnectionErrorChannelName: Channels,
@@ -22,21 +22,21 @@ const processEvents = (
 ): {
   removeListeners: () => void;
 } => {
-  window.electron.ipcRenderer.on(
+  const connectedEventRemoveListener = window.electron.ipcRenderer.on(
     processConnectedChannelName,
     (connectionInfo) => {
       onConnected(connectionInfo as ProcessStartProcessConnectionInfoReturnType);
     }
   );
 
-  window.electron.ipcRenderer.on(
+  const ongoingEventRemoveListener = window.electron.ipcRenderer.on(
     processOngoingEventChannelName,
     (ongoingEvent) => {
       onOngoingEvent(ongoingEvent as ProcessesReplyOngoingEventDataType);
     }
   );
 
-  window.electron.ipcRenderer.on(
+  const connectionErrorEventRemoveListener = window.electron.ipcRenderer.on(
     processConnectionErrorChannelName,
     (errorMessage) => {
       if (errorMessage == null || errorMessage == '') return null;
@@ -45,12 +45,12 @@ const processEvents = (
   );
 
   const removeListeners = (): void => {
-    window.electron.ipcRenderer.removeAllListeners(processConnectionErrorChannelName);
-    window.electron.ipcRenderer.removeAllListeners(processOngoingEventChannelName);
-    window.electron.ipcRenderer.removeAllListeners(processConnectedChannelName);
+    connectedEventRemoveListener();
+    ongoingEventRemoveListener();
+    connectionErrorEventRemoveListener();
   }
 
   return {removeListeners};
 };
 
-export default processEvents;
+export default processListeners;

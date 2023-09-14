@@ -9,15 +9,15 @@ Modified: 2023-08-01T19:56:36.606Z
 Description: description
 */
 
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Navbar } from '@blueprintjs/core';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import { useAsyncMemo } from "use-async-memo"
+import { useCallback, useEffect } from 'react';
 import isDarkMode from './functions/isDarkMode';
 import marchiveIsSetup from './functions/marchiveIsSetup';
-import { useAsyncMemo } from "use-async-memo"
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
-import scheduleRunProcessEvents from './functions/scheduleRunProcessEvents';
-import capturePartRunProcessEvents from './functions/capturePartRunProcessEvents';
+import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
+import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
 import { ProcessesReplyOngoingEventDataType } from '../../../main/app/actions/Process/ProcessStartProcess';
 
 import 'normalize.css';
@@ -25,10 +25,14 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'react-virtualized/styles.css';
 import './index.scss';
+import mainToRendererListeners from './functions/mainToRendererListeners';
+import { createRef } from 'react';
 
 const DefaultLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const layoutRef = createRef<HTMLDivElement>();
 
   const loaderData: {
     isDarkMode: boolean;
@@ -65,39 +69,46 @@ const DefaultLayout = () => {
     if (location.pathname === '/' && loaderData.sourcesCount != null) navigate('/today');
   }, [loaderData, location.pathname]);
 
-  const checkIfPageStateShouldRefreshDueToScheduleStatusChange = useCallback(
+  const checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange = useCallback(
     (ongoingEvent: ProcessesReplyOngoingEventDataType) => {
       const shouldRefreshPageOnScheduleStatusChanges =
-        location.pathname.startsWith('/sources') &&
-        location.pathname.startsWith('/sources/create') === false &&
-        location.pathname.startsWith('/sources/edit') === false &&
-        location.pathname.startsWith('/sources/delete') === false;;
+        (
+          location.pathname.startsWith('/sources') &&
+          location.pathname.startsWith('/sources/create') === false &&
+          location.pathname.startsWith('/sources/edit') === false &&
+          location.pathname.startsWith('/sources/delete') === false
+        ) || (
+          location.pathname.startsWith('/captures')
+        );
 
-      const ongoingEventCaptureRanSuccessfullyRegex = /Capture ID [\d]* ran successfully/gm;
-      let ongoingEventCaptureRanSuccessfullyMatches;
+      const relevantStdoutMessages = [
+        /Capture ID [\d]* ran successfully/gm,
+        /Created new Capture with ID/gm,
+        /Successfully Processed Capture Part/gm,
+        /Processing Capture Part/gm,
+      ];
 
-      while ((ongoingEventCaptureRanSuccessfullyMatches = ongoingEventCaptureRanSuccessfullyRegex.exec(ongoingEvent.data)) !== null) {
-        if (ongoingEventCaptureRanSuccessfullyMatches.index === ongoingEventCaptureRanSuccessfullyRegex.lastIndex) ongoingEventCaptureRanSuccessfullyRegex.lastIndex++;
-        if (ongoingEventCaptureRanSuccessfullyMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
-      }
+      relevantStdoutMessages.some((relevantStdoutMessage) => {
+        let matches;
 
-      const startedNewCaptureRegex = /Created new Capture with ID/gm
-      let startedNewCaptureMatches;
-
-      while ((startedNewCaptureMatches = startedNewCaptureRegex.exec(ongoingEvent.data)) !== null) {
-        if (startedNewCaptureMatches.index === startedNewCaptureRegex.lastIndex) startedNewCaptureRegex.lastIndex++;
-        if (startedNewCaptureMatches != null && shouldRefreshPageOnScheduleStatusChanges) navigate(0)
-      }
-    } ,
+        while ((matches = relevantStdoutMessage.exec(ongoingEvent.data)) !== null) {
+          if (matches.index === relevantStdoutMessage.lastIndex) relevantStdoutMessage.lastIndex++;
+          if (matches != null && shouldRefreshPageOnScheduleStatusChanges) {
+            navigate(0);
+            return true;
+          }
+        }
+      });
+    },
     [location.pathname]
   )
 
   useEffect(() => {
-    const {removeListeners} = scheduleRunProcessEvents(
+    const {removeListeners} = scheduleRunProcessListeners(
       (connectionInfo) => { /* */ },
       (ongoingEvent) => {
 
-        checkIfPageStateShouldRefreshDueToScheduleStatusChange(ongoingEvent);
+        checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(ongoingEvent);
 
       },
       (error) => { /* */ },
@@ -107,57 +118,27 @@ const DefaultLayout = () => {
   }, [location])
 
   useEffect(() => {
-    const {removeListeners} = capturePartRunProcessEvents(
+    const {removeListeners} = capturePartRunProcessListeners(
       (connectionInfo) => { /* */ },
-      (ongoingEvent) => { /* */ },
+      (ongoingEvent) => {
+
+        checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(ongoingEvent);
+
+      },
       (error) => { /* */ },
     )
 
     return () => { removeListeners() }
   }, [])
 
+  useEffect(() => {
+    const {removeListeners} = mainToRendererListeners(location, navigate, layoutRef);
+    return () => { removeListeners() }
+  }, [location, navigate, layoutRef])
+
   return (
-    <div id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
-      {loaderData.marchiveIsSetup === true && loaderData.sourcesCount !== null &&
-        <Navbar id="navbar">
-
-          <Navbar.Group align="left">
-            {loaderData.hasHistory ?
-              <Button type='button' icon='arrow-left' onClick={() => navigate(-1)} /> :
-              <div style={{width: '37.5px'}}>&nbsp;</div>
-            }
-          </Navbar.Group>
-
-          <Navbar.Group align='center'>
-            <NavLink to="/yesterday">
-              {({ isActive }) => (
-                <Button type='button' active={isActive} icon="history" text="Yesterday" />
-              )}
-            </NavLink>
-            <NavLink to="/today">
-              {({ isActive }) => (
-                <Button type='button' active={isActive} icon="calendar" text="Today" />
-              )}
-            </NavLink>
-            <NavLink to="/sources">
-              {({ isActive }) => (
-                <Button
-                  type='button'
-                  active={isActive}
-                  icon={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "plus" : "database" }
-                  text={ loaderData.sourcesCount == null || loaderData.sourcesCount < 1 ? "Add Source" : "Sources" }
-                />
-              )}
-            </NavLink>
-          </Navbar.Group>
-
-          <Navbar.Group align="right">
-            {/* <Button type='button' icon='cog' /> */}
-            <div style={{width: '37.5px'}}>&nbsp;</div>
-          </Navbar.Group>
-
-        </Navbar>
-      }
+    <div ref={layoutRef} id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
+      <Navbar {...loaderData} />
 
       <div id="page">
         <Outlet />
