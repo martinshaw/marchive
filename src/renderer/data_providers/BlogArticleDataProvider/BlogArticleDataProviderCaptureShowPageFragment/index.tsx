@@ -102,7 +102,6 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
           <AutoSizer>
             {({height, width}) => (
               <List
-
                 style={{paddingBottom: '50px'}}
                 width={width}
                 height={height}
