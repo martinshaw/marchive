@@ -9,20 +9,18 @@ Modified: 2023-09-12T01:01:50.638Z
 Description: description
 */
 
-import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureDirectory";
-import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
-
-import './index.scss'
-import useGetTextFromCapturePartDirectory from "renderer/data_providers/hooks/useGetTextFromCapturePartDirectory";
-import { JSONObject } from "types-json";
-import { ReactNode } from "react";
 import { useMemo } from "react";
+import { ReactNode } from "react";
+import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { SourceAttributes } from "../../../../main/database/models/Source";
 import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
 import { CaptureAttributes } from "../../../../main/database/models/Capture";
 import { CapturePartAttributes } from "../../../../main/database/models/CapturePart";
+import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import useGetObjectFromJsonFile from "../../../../renderer/layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
+
+import './index.scss'
 
 export type DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType = {
   source: SourceAttributes;
@@ -33,16 +31,10 @@ export type DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType =
 }
 
 const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType) => {
-  const {
-    text,
-    fullPath,
-    errorMessage,
-  } = useGetTextFromCapturePartDirectory({
-    capturePart: props.capturePart,
-    path: 'metadata.json'
+  const metadata = useGetObjectFromJsonFile({
+    if: props.capturePart != null && props?.capturePart?.status === 'completed',
+    filePath: 'marchive-downloads:///capture-part/'+props.capturePart.id + '/metadata.json',
   });
-
-  console.log(props.capturePart.id, text, fullPath, errorMessage)
 
   const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
 
@@ -54,11 +46,12 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     descriptionElement: ReactNode | null,
   }>(
     () => {
-      if (text == null) return {metadata: null, titleElement: null, descriptionElement: null}
+      if (metadata == null) return {
+        titleElement: null,
+        descriptionElement: null,
+      }
 
-      const contentPartMetadata = JSON.parse(text) as JSONObject;
-
-      let titleText = (contentPartMetadata?.title as string | null) || null;
+      let titleText = (metadata?.title as string | null) || null;
       if (titleText?.includes(' - ')) {
         const titleTextParts = titleText.split(' - ');
         titleTextParts.pop()
@@ -71,20 +64,24 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
       }
       if (typeof titleText === 'string') titleText = titleText.trim();
 
-      let descriptionText = (contentPartMetadata?.description as string | null) || null;
+      let descriptionText = (metadata?.description as string | null) || null;
       if (typeof descriptionText === 'string') descriptionText = descriptionText.trim();
 
       return {
-        titleElement: titleText == null || titleText == '' ? null : <h1>{titleText}</h1>,
-        descriptionElement: descriptionText == null || descriptionText == '' ? null : <p>{descriptionText}</p>,
+        titleElement: titleText == null || titleText == '' ?
+          null :
+          <h1 className="blog-article-data-provider-capture-part-preview-thumbnail__details__title font-serif">{titleText}</h1>,
+        descriptionElement: descriptionText == null || descriptionText == '' ?
+          null :
+          <p className="blog-article-data-provider-capture-part-preview-thumbnail__details__description font-serif">{descriptionText}</p>,
       }
     },
-    [text]
+    [metadata]
   )
 
   // TODO: We need to implement functionality for the capture part to actually fail, and for the user to request for the capture part to be retried (reset status to pending)
   const failedCapturePart = (
-    <div className="blog-article-data-provider-capture-preview-thumbnail__warning">
+    <div className="blog-article-data-provider-capture-part-preview-thumbnail__warning">
       <Icon icon="warning-sign" />
       <Text>Failed to save article or post: {props.capturePart.url} ...</Text>
     </div>
@@ -92,46 +89,38 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
 
   // TODO: We need to implement functionality for the capture part to actually be cancelled, and for the user to request for the capture part to be retried (reset status to pending)
   const cancelledCapturePart = (
-    <div className="blog-article-data-provider-capture-preview-thumbnail__warning">
+    <div className="blog-article-data-provider-capture-part-preview-thumbnail__warning">
       <Icon icon="warning-sign" />
       <Text>Attempt to save article or post was cancelled: {props.capturePart.url} ...</Text>
     </div>
   );
 
   const pendingCapturePart = (
-    <div className="blog-article-data-provider-capture-preview-thumbnail__warning">
+    <div className="blog-article-data-provider-capture-part-preview-thumbnail__warning">
       <Icon icon="time" />
       <Text>Queued to be saved soon: {props.capturePart.url} ...</Text>
     </div>
   );
 
   const processingCapturePart = (
-    <div className="blog-article-data-provider-capture-preview-thumbnail__warning">
+    <div className="blog-article-data-provider-capture-part-preview-thumbnail__warning">
       <Spinner size={SpinnerSize.SMALL}/>
       <Text>Saving article or post: {props.capturePart.url} ...</Text>
     </div>
   );
 
   const completedCapturePart = (
-    <div className="blog-article-data-provider-capture-preview-thumbnail__container">
+    <div className="blog-article-data-provider-capture-part-preview-thumbnail__container">
 
-      <div className="blog-article-data-provider-capture-preview-thumbnail__date-caption">
+      {/* <div className="blog-article-data-provider-capture-part-preview-thumbnail__date-caption">
         <Text ellipsize>{dateCaption || <>&nbsp;</>}</Text>
-      </div>
+      </div> */}
 
-      <div className="blog-article-data-provider-capture-preview-thumbnail__operation-caption">
+      <div className="blog-article-data-provider-capture-part-preview-thumbnail__details">
         {/* <Text ellipsize>Click to see this snapshot and its related pages</Text> */}
         {titleElement}
         {descriptionElement}
       </div>
-
-      {/* <div className="blog-article-data-provider-capture-preview-thumbnail__status-caption">
-        <Text ellipsize>{dateCaption || <>&nbsp;</>}</Text>
-      </div> */}
-
-      {/* {imageDataUrl != null && <img src={imageDataUrl} alt="Thumbnail of captured page" />} */}
-
-      {/* <div className="blog-article-data-provider-capture-preview-thumbnail__image__overflow-gradient">&nbsp;</div> */}
 
     </div>
   );

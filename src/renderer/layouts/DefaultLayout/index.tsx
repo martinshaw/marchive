@@ -94,6 +94,8 @@ const DefaultLayout = () => {
         while ((matches = relevantStdoutMessage.exec(ongoingEvent.data)) !== null) {
           if (matches.index === relevantStdoutMessage.lastIndex) relevantStdoutMessage.lastIndex++;
           if (matches != null && shouldRefreshPageOnScheduleStatusChanges) {
+            console.log('REFRESHING PAGE DUE TO SCHEDULE STATUS CHANGE')
+
             navigate(0);
             return true;
           }

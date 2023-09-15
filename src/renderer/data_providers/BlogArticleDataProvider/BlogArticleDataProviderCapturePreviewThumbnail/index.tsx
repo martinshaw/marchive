@@ -11,21 +11,12 @@ Description: description
 
 import { Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { DataProvidersRendererComponentCapturePreviewThumbnailPropsType } from "../..";
-import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureDirectory";
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 
 import './index.scss'
 
 const BlogArticleDataProviderCapturePreviewThumbnail = (props: DataProvidersRendererComponentCapturePreviewThumbnailPropsType) => {
-  const {
-    imageDataUrl,
-    fullPath,
-    errorMessage,
-  } = useGetImageFromCaptureDirectory({
-    capture: props.capture,
-    path: 'index.jpg'
-  });
-
+  const imageDataUrl = 'marchive-downloads:///capture/'+props.capture.id + '/index.jpg';
   const dateCaption = props?.capture?.createdAt == null ? null : useHumanDateCaption(props.capture.createdAt);
 
   return (

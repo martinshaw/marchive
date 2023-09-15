@@ -31,7 +31,6 @@ const Navbar = (props: NavbarPropsType) => {
   const handleNavbarDoubleClick = useCallback(
     (event: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
       event.preventDefault();
-      console.log(event.currentTarget)
 
       toggleMaximize();
     }, []
