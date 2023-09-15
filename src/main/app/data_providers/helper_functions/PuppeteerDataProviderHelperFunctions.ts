@@ -9,15 +9,14 @@ Modified: 2023-08-23T10:45:57.404Z
 Description: description
 */
 
-import fs from 'node:fs'
 import path from 'node:path'
-import {Browser, Page} from 'puppeteer'
 import puppeteer from 'puppeteer-extra'
-import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
+import {Browser, Page} from 'puppeteer-core'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import { internalNodeModulesPath } from '../../../../paths'
-import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from 'main/app/repositories/SourceDomainRepository'
+import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
+import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
+import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository'
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,

@@ -28,7 +28,7 @@ const useGetTextFromCapturePartDirectory: (props: useGetTextFromCapturePartDirec
     return (
       new Promise<useGetTextFromCapturePartDirectoryReturnsType>(
         (resolve, reject) => {
-          window.electron.ipcRenderer.once(
+          window.electron.ipcRenderer.on(
             'data-providers.get-text-from-capture-part-directory',
             (text, fullPath, error) => {
               if (error != null && typeof error === 'string') return reject(error);

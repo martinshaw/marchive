@@ -13,15 +13,15 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
+import logger from './app/log';
+import createTray from './tray';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import contextMenu from 'electron-context-menu';
-import logger from './app/log';
-import createTray from './tray';
+import windowStateKeeper from 'electron-window-state';
+import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
-import windowStateKeeper from 'electron-window-state';
 
 import './ipc/Captures';
 import './ipc/DataProviders';
@@ -30,6 +30,8 @@ import './ipc/Sources';
 import './ipc/SourceDomains';
 import './ipc/Utilities';
 import './ipc/Processes';
+
+import './protocols';
 
 // class AppUpdater {
 //   constructor() {

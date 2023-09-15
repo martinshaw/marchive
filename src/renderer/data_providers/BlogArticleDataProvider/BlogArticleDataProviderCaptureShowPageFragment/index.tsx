@@ -9,8 +9,7 @@ Modified: 2023-09-14T02:42:40.042Z
 Description: description
 */
 
-import { useMemo } from "react";
-import { ReactNode } from "react";
+import { useMemo, useState, ReactNode } from "react";
 import { JSONObject } from "types-json";
 import List from 'react-virtualized/dist/commonjs/List';
 import AutoAnimated from '../../../components/AutoAnimated';
@@ -21,18 +20,21 @@ import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureD
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 import useGetTextFromCapturePartDirectory from "../../../../renderer/data_providers/hooks/useGetTextFromCapturePartDirectory";
 import useGetTextFromCaptureDirectory from "../../../../renderer/data_providers/hooks/useGetTextFromCaptureDirectory";
-
-import './index.scss'
 import BlogArticleDataProviderCapturePartPreviewThumbnail from "../BlogArticleDataProviderCapturePartPreviewThumbnail";
 
+import './index.scss'
+
 const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType) => {
-  const {
-    imageDataUrl: captureImageUrl,
-    errorMessage: captureImageErrorMessage,
-  } = useGetImageFromCaptureDirectory({
-    capture: props.capture,
-    path: 'index.jpg'
-  });
+  // const {
+  //   imageDataUrl: captureImageUrl,
+  //   errorMessage: captureImageErrorMessage,
+  // } = useGetImageFromCaptureDirectory({
+  //   capture: props.capture,
+  //   path: 'index.jpg'
+  // });
+
+  const captureImageUrl = 'marchive-downloads:///capture/'+props.capture.id + '/index.jpg';
+  console.log('captureImageUrl', captureImageUrl)
 
   const {
     text: captureMetadataJson,
@@ -118,18 +120,19 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
         </H4>
 
         <div className="blog-article-capture-show-fragment__right__list">
-          <AutoSizer>
+          {/*<AutoSizer>
             {({height, width}) => (
               <List
                 width={width}
                 height={height}
                 rowCount={(props?.capture?.captureParts ?? []).length}
                 rowHeight={200}
-                rowRenderer={({key, index, style}) => {
-                  const capturePart = props?.capture?.captureParts[index];
+            rowRenderer={*/}{props.capture.captureParts.map((/*{key, index, style}*/capturePart, key) => {
+                  // const capturePart = props?.capture?.captureParts?.[index];
 
-                  return <Card key={key} style={style} className="blog-article-capture-show-fragment__right__list__item" interactive>
+                  return <Card key={key} /*style={style}*/ className="blog-article-capture-show-fragment__right__list__item" interactive>
                     <BlogArticleDataProviderCapturePartPreviewThumbnail
+                      key={key}
                       source={props.source}
                       schedule={props.schedule}
                       capture={props.capture}
@@ -137,10 +140,10 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
                       dataProvider={props.dataProvider}
                     />
                   </Card>
-                }}
+                })}{/*}
               />
             )}
-          </AutoSizer>
+          </AutoSizer>*/}
         </div>
       </div>
 

@@ -96,6 +96,10 @@ const SourceShowPage = () => {
     return <Navigate to='/sources' replace={true} />
   }
 
+  if ((source?.schedules ?? []).length === 1 && (source.schedules[0]?.captures ?? []).length === 1) {
+    return <Navigate to={`/captures/${source.schedules[0]?.captures[0]?.id}`} replace={true} />
+  }
+
   const sourceCapturesCount = useMemo(
     () => source?.schedules == null ?
       0 :

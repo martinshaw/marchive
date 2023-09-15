@@ -9,12 +9,12 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import puppeteer, {Browser, Page} from 'puppeteer'
-import BlogArticleDataProvider, {BlogArticleDataProviderLinkType, CountMapOfCommonParentDirectoriesType} from '../BlogArticleDataProvider'
-import {parse as parseHtml} from 'node-html-parser'
-import {sentenceCase} from 'change-case'
 import path from 'node:path'
+import { sentenceCase } from 'change-case'
+import { Page } from 'puppeteer-core'
+import { parse as parseHtml } from 'node-html-parser'
 import { BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
+import BlogArticleDataProvider, { BlogArticleDataProviderLinkType, CountMapOfCommonParentDirectoriesType } from '../BlogArticleDataProvider'
 
 class WikipediaArticleDataProvider extends BlogArticleDataProvider {
   getIdentifier(): string {

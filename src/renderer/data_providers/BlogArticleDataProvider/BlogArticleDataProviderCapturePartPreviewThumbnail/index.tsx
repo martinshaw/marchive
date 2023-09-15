@@ -10,7 +10,6 @@ Description: description
 */
 
 import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType } from "../..";
 import useGetImageFromCaptureDirectory from "../../hooks/useGetImageFromCaptureDirectory";
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 
@@ -19,6 +18,19 @@ import useGetTextFromCapturePartDirectory from "renderer/data_providers/hooks/us
 import { JSONObject } from "types-json";
 import { ReactNode } from "react";
 import { useMemo } from "react";
+import { SourceAttributes } from "../../../../main/database/models/Source";
+import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
+import { CaptureAttributes } from "../../../../main/database/models/Capture";
+import { CapturePartAttributes } from "../../../../main/database/models/CapturePart";
+import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+
+export type DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType = {
+  source: SourceAttributes;
+  schedule: ScheduleAttributes;
+  capture: CaptureAttributes;
+  capturePart: CapturePartAttributes;
+  dataProvider: DataProviderSerializedType
+}
 
 const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType) => {
   const {
@@ -29,6 +41,8 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     capturePart: props.capturePart,
     path: 'metadata.json'
   });
+
+  console.log(props.capturePart.id, text, fullPath, errorMessage)
 
   const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
 

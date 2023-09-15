@@ -9,17 +9,17 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import puppeteer, {Browser, Page} from 'puppeteer'
-import {Capture, Schedule, Source, CapturePart} from '../../../database'
+import fs from 'node:fs'
 import path from 'node:path'
-import fs, {link} from 'node:fs'
-import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import {CapturePartStatus} from '../../../database/models/CapturePart'
-import {v4 as uuidV4} from 'uuid'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../log'
+import {v4 as uuidV4} from 'uuid'
+import {Browser, Page} from 'puppeteer-core'
 import { safeSanitizeFileName } from '../../../util'
+import {CapturePartStatus} from '../../../database/models/CapturePart'
+import {Capture, Schedule, Source, CapturePart} from '../../../database'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
+import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
