@@ -10,8 +10,8 @@ Description: description
 */
 
 import { useCallback, MouseEvent as ReactMouseEvent} from 'react';
-import { Button, Navbar as BlueprintNavBar, NavbarGroup } from '@blueprintjs/core';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Navbar as BlueprintNavBar, NavbarGroup, Spinner, SpinnerSize } from '@blueprintjs/core';
+import { NavLink, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { toggleMaximize } from '.././functions/focusedWindowControls';
 
 export type NavbarPropsType = {
@@ -38,22 +38,24 @@ const Navbar = (props: NavbarPropsType) => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const navigation = useNavigation();
 
   const locationCaptions: {[key: string]: string} = {
     '/onboarding': 'Welcome!',
     '/sources/create': 'Pick The First Source of Information for Your Marchive...'
   };
 
+  const isLoadingPage = navigation.state === 'loading';
+
   return (
     <BlueprintNavBar id="navbar"/* onClick={handleNavbarClick}*/ onDoubleClick={handleNavbarDoubleClick}>
       {
         (props.marchiveIsSetup === true && props.sourcesCount !== null) ?
           <>
-            <NavbarGroup align="left">
-              {props.hasHistory ?
-                <Button type='button' icon='arrow-left' onClick={() => navigate(-1)} /> :
-                <div style={{width: '37.5px'}}>&nbsp;</div>
-              }
+            <NavbarGroup align="left" style={{width: '50px'}}>
+              {props.hasHistory && isLoadingPage === false && <Button type='button' icon='arrow-left' onClick={() => navigate(-1)} /> }
+              {isLoadingPage && <Button type='button' icon={<Spinner size={SpinnerSize.SMALL}/>} disabled /> }
+              <div style={{width: '37.5px'}}>&nbsp;</div>
             </NavbarGroup>
 
             <NavbarGroup align='center'>
@@ -79,7 +81,7 @@ const Navbar = (props: NavbarPropsType) => {
               </NavLink>
             </NavbarGroup>
 
-            <NavbarGroup align="right">
+            <NavbarGroup align="right" style={{width: '50px'}}>
               {/* <Button type='button' icon='cog' /> */}
               <div style={{width: '37.5px'}}>&nbsp;</div>
             </NavbarGroup>

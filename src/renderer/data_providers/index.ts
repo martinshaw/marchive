@@ -15,6 +15,7 @@ import { ScheduleAttributes } from "../../main/database/models/Schedule";
 import { CaptureAttributes } from "../../main/database/models/Capture";
 import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDataProvider";
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
+import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider'
 
 export type DataProvidersRendererComponentCapturePreviewThumbnailPropsType = {
   source: SourceAttributes;
@@ -41,6 +42,7 @@ export type DataProvidersRendererDetailsType = {
 
 const dataProvidersRendererDetailsList: {[identifier: string]: DataProvidersRendererDetailsType} = {
   'blog-article': BlogArticleDataProviderRendererDetails,
+  'wikipedia-article': WikipediaArticleDataProviderRendererDetails,
 }
 
 export default dataProvidersRendererDetailsList;

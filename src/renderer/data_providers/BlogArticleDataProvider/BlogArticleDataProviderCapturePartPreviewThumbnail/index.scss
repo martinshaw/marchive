@@ -20,7 +20,6 @@
 
 .blog-article-data-provider-capture-part-preview-thumbnail__container {
   width: calc(100% - 10px);
-  // max-height: 500px;
   height: 200px;
   overflow: hidden;
   position: relative;
@@ -57,7 +56,8 @@
     .blog-article-data-provider-capture-part-preview-thumbnail__details__title {
       margin-top: 0;
       padding-top: 0;
-      line-height: 3.25rem !important;
+      font-size: 1.7rem;
+      line-height: 2.1rem !important;
     }
 
     .blog-article-data-provider-capture-part-preview-thumbnail__details__description {

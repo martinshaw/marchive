@@ -94,15 +94,16 @@ const DefaultLayout = () => {
         while ((matches = relevantStdoutMessage.exec(ongoingEvent.data)) !== null) {
           if (matches.index === relevantStdoutMessage.lastIndex) relevantStdoutMessage.lastIndex++;
           if (matches != null && shouldRefreshPageOnScheduleStatusChanges) {
-            console.log('REFRESHING PAGE DUE TO SCHEDULE STATUS CHANGE')
-
             navigate(0);
             return true;
           }
         }
       });
     },
-    [location.pathname]
+    [
+      location.pathname,
+      location.search,
+    ]
   )
 
   useEffect(() => {
@@ -117,7 +118,10 @@ const DefaultLayout = () => {
     )
 
     return () => { removeListeners() }
-  }, [location])
+  }, [
+    location.pathname,
+    location.search
+  ])
 
   useEffect(() => {
     const {removeListeners} = capturePartRunProcessListeners(
@@ -136,7 +140,12 @@ const DefaultLayout = () => {
   useEffect(() => {
     const {removeListeners} = mainToRendererListeners(location, navigate, layoutRef);
     return () => { removeListeners() }
-  }, [location, navigate, layoutRef])
+  }, [
+    location.pathname,
+    location.search,
+    navigate,
+    layoutRef
+  ])
 
   return (
     <div ref={layoutRef} id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>

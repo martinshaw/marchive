@@ -19,6 +19,7 @@ import { CapturePartAttributes } from "../../../../main/database/models/CaptureP
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
 import useGetObjectFromJsonFile from "../../../../renderer/layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
+import { useNavigate } from "react-router-dom";
 
 import './index.scss'
 
@@ -31,6 +32,8 @@ export type DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType =
 }
 
 const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProvidersRendererComponentCapturePartPreviewThumbnailPropsType) => {
+  const navigate = useNavigate();
+
   const metadata = useGetObjectFromJsonFile({
     if: props.capturePart != null && props?.capturePart?.status === 'completed',
     filePath: 'marchive-downloads:///capture-part/'+props.capturePart.id + '/metadata.json',
@@ -110,7 +113,12 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
   );
 
   const completedCapturePart = (
-    <div className="blog-article-data-provider-capture-part-preview-thumbnail__container">
+    <div
+      className="blog-article-data-provider-capture-part-preview-thumbnail__container"
+      onClick={() => {
+        navigate('/captures/'+props.capture.id+'?focused=capture-part:'+props.capturePart.id)
+      }}
+    >
 
       {/* <div className="blog-article-data-provider-capture-part-preview-thumbnail__date-caption">
         <Text ellipsize>{dateCaption || <>&nbsp;</>}</Text>

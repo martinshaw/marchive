@@ -43,7 +43,7 @@ body {
   &.grayscale {
     &, & * {
       // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8
-      filter: grayscale(100%) brightness(0.9);
+      filter: grayscale(100%) brightness(0.99);
       transition: filter 150ms;
     }
   }
