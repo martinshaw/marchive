@@ -8,13 +8,7 @@ import { UtilitiesChannels } from './ipc/Utilities';
 import { ProcessesChannels } from './ipc/Processes';
 import { RenderersChannels } from './ipc/Renderers';
 
-/**
- * TODO: This is a temporary fix for the following error:
- *   (node:12345) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [process]. Use emitter.setMaxListeners() to increase limit
- * This is not the best way to solve this problem
- */
-// TODO: CHANGE ME BACK TO ~25
-require('events').EventEmitter.defaultMaxListeners = 100000
+require('events').EventEmitter.defaultMaxListeners = 15
 
 export type Channels =
   | CapturesChannels
