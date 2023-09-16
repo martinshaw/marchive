@@ -12,7 +12,7 @@ Description: description
 import {Op} from 'sequelize'
 import {Schedule, Source} from '../../database'
 import {ScheduleStatus} from '../../database/models/Schedule'
-import logger from '../../log'
+import logger from '../log'
 
 export const retrieveDueSchedules = async (): Promise<Schedule[]> => {
   let dueSchedules: Schedule[] = []

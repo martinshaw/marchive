@@ -15,7 +15,7 @@ Description: description
  *   folders on the user's file system.
  *
  * We store absolute paths to files and folders in the database because the user might choose not to store all of their
- *   capture downloads in the single default downloads folder '~/Downloads/marchive' (see paths.ts), due to storage
+ *   capture downloads in the single default downloads folder '~/Downloads/Marchive' (see paths.ts), due to storage
  *   constraints and preference to store some captures in other locations.
  *
  * But we cannot let the renderer process access the user's file system directly, using the file:// protocol, because
@@ -35,7 +35,7 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import imageType, { ImageTypeResult } from 'image-type'
-import logger from '../../log'
+import logger from '../log'
 
 const imageExtensionsToMimeTypes: {[key: string]: string} = {
   '.png': 'image/png',

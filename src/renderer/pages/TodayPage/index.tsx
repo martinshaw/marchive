@@ -9,14 +9,13 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { Alignment, Button, Navbar, Text } from '@blueprintjs/core';
-
 import './index.scss';
 
 const TodayPage = () => {
+
   return (
     <div>
-      <Text>Today</Text>
+      TODAY
     </div>
   );
 };

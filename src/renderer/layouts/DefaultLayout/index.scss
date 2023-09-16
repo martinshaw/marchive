@@ -4,7 +4,12 @@
  */
 
 // We are fine using the CDN which assumes that the user has an internet connection because custom fonts is non-essential
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@100;200;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:wght@400&display=swap');
+
+html {
+  font-size: 13px;
+}
 
 body {
   padding: 0;
@@ -14,7 +19,10 @@ body {
   height: 100vh;
   font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   overflow: hidden;
-  background-color: #1e1e1e;
+}
+
+.font-serif {
+  font-family: 'DM Serif Display', 'Times New Roman', Times, serif !important;
 }
 
 #root {
@@ -27,19 +35,34 @@ body {
   width: 100%;
   height: 100%;
   user-select: none;
-  background-color: #f0f0f0;
 
   &.bp5-dark {
     background-color: #1e1e1e;
   }
+
+  &.grayscale {
+    &, & * {
+      // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8
+      filter: grayscale(100%) brightness(0.99);
+      transition: filter 150ms;
+    }
+  }
 }
 
 #navbar {
+  padding: 0 88px;
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  -webkit-app-region: drag;
+
+  & * {
+  -webkit-app-region: no-drag;
+  }
 
   & > div {
-    width: 100%;
+    // width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,31 +74,40 @@ body {
   outline: none !important;
 }
 
-.bp5-button {
-  cursor: pointer !important;
+a, button, .bp5-button {
+  // cursor: pointer !important;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default !important;
+  -webkit-user-drag: none !important;
 }
 
 h1.bp5-heading {
-  font-weight: 200;
-  font-size: 1.5rem;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  font-size: 2.4rem;
   line-height: 1.6 !important;
   margin: 0;
   padding: 0;
+  font-kerning: none;
 }
 
-h4.bp5-heading {
-  font-weight: 400;
+h3.bp5-heading {
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 500;
   line-height: 1.6 !important;
   margin: 0;
   padding: 0;
+  font-kerning: none;
 }
 
 .bp5-subheading {
-  font-weight: 100;
+  font-family: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 300;
   font-size: 1rem;
   line-height: 1.8 !important;
   margin: 0;
   padding: 0;
+  font-kerning: none;
 }
 
 .bp5-non-ideal-state {
@@ -92,4 +124,8 @@ h4.bp5-heading {
     flex-direction: column;
     gap: 1rem;
   }
+}
+
+.bp5-tab-list {
+  font-weight: 800;
 }

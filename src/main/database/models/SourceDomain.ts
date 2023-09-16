@@ -13,7 +13,7 @@ import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, HasMany} from 'sequelize-typescript'
 import { Schedule, Source } from '..'
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../../app/repositories/LocalFileRepository'
-import logger from '../../log'
+import logger from '../../app/log'
 
 const sourceUseStartOrEndCursorValues = ['start', 'end', null] as const
 export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCursorValues[number] | null

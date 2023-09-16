@@ -15,7 +15,6 @@ const isDarkMode = async (): Promise<boolean> => {
       'utilities.is-dark-mode',
       (isDarkModeValue) => {
         if (typeof isDarkModeValue !== 'boolean') return reject();
-
         resolve(isDarkModeValue);
       }
     );

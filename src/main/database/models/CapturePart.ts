@@ -13,7 +13,7 @@ import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, ForeignKey, BelongsTo} from 'sequelize-typescript'
 import {Capture, Schedule} from '..'
 
-const capturePartStatuses = ['pending', 'processing', 'completed', 'failed'] as const
+const capturePartStatuses = ['pending', 'processing', 'completed', 'failed', 'cancelled'] as const
 export type CapturePartStatus = typeof capturePartStatuses[number]
 
 export type CapturePartAttributes = {
@@ -22,6 +22,7 @@ export type CapturePartAttributes = {
   url: string
   dataProviderPartIdentifier: string
   payload: string
+  downloadLocation: string
   currentRetryCount: number
   deletedFromDownloads: boolean
   captureId: number | undefined
@@ -72,6 +73,13 @@ class CapturePart extends Model<
     defaultValue: '{}',
   })
   payload!: string
+
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  downloadLocation!: string
 
   @Column({
     type: DataTypes.NUMBER,

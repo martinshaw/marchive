@@ -15,6 +15,7 @@ const CaptureListAction = async (): Promise<CaptureAttributes[]> => {
   return Capture
     .findAll({
       include: [Schedule],
+      order: [['createdAt', 'DESC']],
     })
     .then(captures =>
       captures.map(capture => capture.toJSON())

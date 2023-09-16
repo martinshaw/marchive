@@ -9,17 +9,17 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import puppeteer, {Browser, Page} from 'puppeteer'
-import {Capture, Schedule, Source, CapturePart} from '../../../database'
+import fs from 'node:fs'
 import path from 'node:path'
-import fs, {link} from 'node:fs'
-import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import {CapturePartStatus} from '../../../database/models/CapturePart'
-// @ts-ignore
-import standardSlugify from 'standard-slugify'
+import logger from '../../log'
 import {v4 as uuidV4} from 'uuid'
+import {Browser, Page} from 'puppeteer-core'
+import { safeSanitizeFileName } from '../../../util'
+import {CapturePartStatus} from '../../../database/models/CapturePart'
+import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
-import logger from '../../../log'
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
+import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -118,6 +118,16 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
+    const firstPageMetadata = await this.generatePageMetadata(page, capture.downloadLocation)
+    if (firstPageMetadata === false) {
+      const errorMessage = 'The first page metadata could not be generated'
+      logger.error(errorMessage)
+
+      await page.close()
+      await browser.close()
+      throw new Error(errorMessage)
+    }
+
     const allLinks = await this.determineAllLinks(page)
     const countMapOfCommonParentDirectories = await this.determineCountMapOfCommonParentDirectories(allLinks)
     const articleLinks = await this.filterLikelyArticleLinks(allLinks, countMapOfCommonParentDirectories)
@@ -125,6 +135,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     await this.generateIndexPageJsonFileOfLinks(articleLinks, capture.downloadLocation)
 
     await this.createCapturePartsForArticleLinks(
+      schedule,
       capture,
       source,
       articleLinks,
@@ -347,19 +358,15 @@ class BlogArticleDataProvider extends BaseDataProvider {
     captureDownloadDirectory: string,
   ): Promise<void> {
     return fs.writeFile(
-      path.join(
-        captureDownloadDirectory,
-        'links.json',
-      ),
+      path.join(captureDownloadDirectory, 'links.json'),
       JSON.stringify(articleLinks),
       {},
-      error => {
-        //
-      },
+      error => { /* */ },
     )
   }
 
   async createCapturePartsForArticleLinks(
+    schedule: Schedule,
     capture: Capture,
     source: Source,
     articleLinks: BlogArticleDataProviderLinkType[],
@@ -371,31 +378,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (link: BlogArticleDataProviderLinkType, index: number): Promise<boolean> => {
       if (source.useStartOrEndCursor == null) {
-        /**
-         * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
-         *   we should check the database to see if we have already downloaded this URL
-         *
-         * TODO: This will not work when we have multiple users and multiple types of data providers
-         *  We will need to check that the capture of the found capture part belongs to the same source
-         */
-
-        let existingCapturePart: CapturePart | null = null
-        try {
-          existingCapturePart = await CapturePart.findOne({
-            where: {
-              url: link.url,
-              status: 'completed' as CapturePartStatus,
-            },
-          })
-        } catch (error) {
-          logger.error('A DB error occurred when trying to find an existing Capture Part')
-          logger.error(error)
-        }
-
-        if (existingCapturePart != null) {
-          logger.info(`Capture Part ${index} has been previously downloaded: ${link.url}`)
-          return true
-        }
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, link.url)) return true;
       }
 
       if (
@@ -415,17 +398,25 @@ class BlogArticleDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddArticleLinks) {
+        const payload: BlogArticleDataProviderLinkedPagePayloadType = {
+          index,
+          includes: ['screenshot', 'snapshot', 'metadata'],
+          ...link,
+        }
+
+        const downloadLocation = path.join(
+          capture.downloadLocation,
+          this.determineScreenshotFileNameFromLink(payload),
+        )
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: link.url,
             dataProviderPartIdentifier: 'linked-page' as BlogArticleDataProviderPartIdentifierType,
-            payload: JSON.stringify({
-              index,
-              includes: ['screenshot', 'snapshot', 'metadata'],
-              ...link,
-            } as BlogArticleDataProviderLinkedPagePayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -480,7 +471,10 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const page = await loadPageByUrl(payload.url, browser)
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart?.downloadLocation == null || capturePart?.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
 
@@ -490,17 +484,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const downloadDestination = path.join(
-      capturePart.capture.downloadLocation,
-      this.determineScreenshotFileNameFromLink(payload, uuidV4()),
-    )
 
-    if (fs.existsSync(downloadDestination) !== true) {
-      fs.mkdirSync(downloadDestination, {recursive: true})
+    if (fs.existsSync(capturePart.downloadLocation) !== true) {
+      fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
     }
 
-    if (fs.lstatSync(downloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${downloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
 
       await page.close()
@@ -509,9 +499,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await this.generatePageScreenshot(page, downloadDestination) : true
-    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await this.generatePageSnapshot(page, downloadDestination) : true
-    const metadataGenerationStatus = payload.includes.includes('metadata') ? await this.generatePageMetadata(page, downloadDestination) : true
+    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await this.generatePageScreenshot(page, capturePart.downloadLocation) : true
+    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await this.generatePageSnapshot(page, capturePart.downloadLocation) : true
+    const metadataGenerationStatus = payload.includes.includes('metadata') ? await this.generatePageMetadata(page, capturePart.downloadLocation) : true
 
     await page.close()
     await browser.close()
@@ -537,25 +527,34 @@ class BlogArticleDataProvider extends BaseDataProvider {
     return true
   }
 
-  textIsSuitableForFileName(text: string): boolean {
+  textIsSuitableForFileName(text: string | false): text is string {
+    if (text === false) return false
     if (text == null || text === '') return false
     if (text.length > 50) return false
     if (text.includes('>') || text.includes('<')) return false
     return true
   }
 
-  determineScreenshotFileNameFromLink(link: BlogArticleDataProviderLinkType, defaultFileName: string): string {
-    if (this.textIsSuitableForFileName(link.text)) return standardSlugify(link.text)
+  determineScreenshotFileNameFromLink(link: BlogArticleDataProviderLinkType): string {
+    const sanitizedText = safeSanitizeFileName(link.text)
+    if (this.textIsSuitableForFileName(sanitizedText)) return sanitizedText
+
     // eslint-disable-next-line unicorn/prefer-dom-node-text-content
-    if (this.textIsSuitableForFileName(link.innerText)) return standardSlugify(link.innerText)
-    if (this.textIsSuitableForFileName(link.title)) return standardSlugify(link.title)
-    if (this.textIsSuitableForFileName(typeof link.alt === 'string' ? link.alt : '')) return standardSlugify(typeof link.alt === 'string' ? link.alt : '')
+    const sanitizedInnerText = safeSanitizeFileName(link.innerText)
+    if (this.textIsSuitableForFileName(sanitizedInnerText)) return sanitizedInnerText
+
+    const sanitizedTitle = safeSanitizeFileName(link.title)
+    if (this.textIsSuitableForFileName(sanitizedTitle)) return sanitizedTitle
+
+    const sanitizedAlt = safeSanitizeFileName(typeof link.alt === 'string' ? link.alt : '')
+    if (this.textIsSuitableForFileName(sanitizedAlt)) return sanitizedAlt
 
     const urlParts = link.url.split('/')
     const urlLastPart = urlParts[urlParts.length - 1]
-    if (this.textIsSuitableForFileName(urlLastPart)) return standardSlugify(urlLastPart)
+    const sanitizedUrlLastPart = safeSanitizeFileName(urlLastPart)
+    if (this.textIsSuitableForFileName(sanitizedUrlLastPart)) return sanitizedUrlLastPart
 
-    return standardSlugify(defaultFileName)
+    return uuidV4()
   }
 
   /**

@@ -11,12 +11,12 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import {Schedule, Source} from '../../../database'
-import slugify from 'slugify'
 import {downloadCapturesPath as defaultDownloadCapturesPath} from '../../../../paths'
 import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
 import {AllowedScheduleIntervalReturnType} from '../../data_providers/BaseDataProvider'
-import logger from '../../../log'
+import logger from '../../log'
 import { ScheduleAttributes } from '../../../database/models/Schedule'
+import { safeSanitizeFileName } from '../../../util'
 
 /**
  * @throws {Error}
@@ -58,14 +58,16 @@ const ScheduleCreateAction = async (
     intervalInSeconds = minimumNonNullIntervalInSeconds
   }
 
+  const downloadDirectory = safeSanitizeFileName(source.url)
+  if (downloadDirectory === false) {
+    const errorMessage = 'Failed to sanitize download directory name'
+    logger.error(errorMessage)
+    throw new Error(errorMessage)
+  }
+
   downloadLocation = path.join(
     downloadLocation == null ? defaultDownloadCapturesPath : downloadLocation,
-    slugify(source.url.toString(), {
-      replacement: '_',
-      lower: true,
-      trim: true,
-      strict: true,
-    }),
+    downloadDirectory,
   )
 
   logger.info('Using download location: ' + downloadLocation + ' for new Schedule')

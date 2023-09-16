@@ -10,7 +10,7 @@ Description: description
 */
 import { Schedule } from '../../../database'
 import performCaptureRun from '../../repositories/CaptureRunRepository'
-import logger from '../../../log'
+import logger from '../../log'
 
 /**
  * @throws {Error}

@@ -14,6 +14,8 @@ import {Table, Model, Column} from 'sequelize-typescript'
 
 const storedSettingKeys = [
   'MARCHIVE_IS_SETUP',
+  'SCHEDULE_RUN_PROCESS_IS_PAUSED',
+  'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
 ] as const
 export type StoredSettingKeyType = typeof storedSettingKeys[number]
 

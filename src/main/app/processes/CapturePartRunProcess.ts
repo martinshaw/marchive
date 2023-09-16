@@ -2,33 +2,38 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: downloads.ts
-Created:  2023-08-17T09:03:35.766Z
-Modified: 2023-08-17T09:03:35.767Z
+File Name: CapturePartRunProcess.ts
+Created:  2023-09-06T04:58:17.096Z
+Modified: 2023-09-06T04:58:17.096Z
 
 Description: description
 */
-
 import { Capture, CapturePart, Schedule, Source } from "../../database"
-import logger from "../../log"
+import logger from "../log"
 import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "../../database/models/CapturePart"
+import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
+import { Op } from "sequelize"
 
-const DownloadsWatcher = async (): Promise<never | void> => {
+const CapturePartRunProcess = async (): Promise<never | void> => {
   // Should wait for 6 seconds between ticks when downloading pending files
-  // When there are no pending files to download, should wait for 120 seconds between ticks
+  // When there are no pending files to download, should wait for 60 seconds between ticks
   let currentDelayBetweenTicks = 6 * 1000
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
     // TODO: May need to remove await, then use the returned values to set the currentDelayBetweenTicks asynchronously
 
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      const {processedSuccessfully, hadPendingCapturePart} = await tick()
+    let capturePartRunProcessIsPaused = await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED') === true
 
-      currentDelayBetweenTicks = hadPendingCapturePart === false ? 120 * 1000 : 6 * 1000
+    try {
+      if (capturePartRunProcessIsPaused === false) {
+        // eslint-disable-next-line no-await-in-loop
+        const {processedSuccessfully, hadPendingCapturePart} = await tick()
+
+        currentDelayBetweenTicks = hadPendingCapturePart === false ? 60 * 1000 : 6 * 1000
+      }
     } catch (error) {
       //
     }
@@ -40,7 +45,7 @@ const DownloadsWatcher = async (): Promise<never | void> => {
   }
 }
 
-const tick = async (): Promise<{  processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
+const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
   logger.info('Looking for pending Capture Parts...')
 
   let capturePart: CapturePart | null = null
@@ -53,6 +58,11 @@ const tick = async (): Promise<{  processedSuccessfully: boolean, hadPendingCapt
         model: Capture,
         include: [{
           model: Schedule,
+          where: {
+            status: {
+              [Op.eq]: 'pending',
+            },
+          },
           include: [{
             model: Source,
           }],
@@ -146,4 +156,4 @@ const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvi
   return true
 }
 
-export default DownloadsWatcher
+CapturePartRunProcess()

@@ -1,0 +1,163 @@
+#page {
+  width: calc(100%);
+  height: calc(100% - 3rem);
+  max-width: 90%;
+  margin: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+}
+
+.source-captures__source-domain {
+  width: 100%;
+  min-height: 35px;
+  margin: 10px 0;
+  padding-left: 5px;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 15px;
+
+  img {
+    position: relative;
+    margin-left: -8px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255,255,255,.56);
+    border-radius: 5px;
+    padding: 6px;
+  }
+
+  & .source-captures__source-domain__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 700;
+  }
+
+  & .source-captures__source-domain__url, .source-captures__source-domain__url * {
+    flex: 1;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+    opacity: .85;
+
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    & > div {
+      float: right;
+      max-width: calc(100% - 50px);
+    }
+  }
+}
+
+.source-captures__provider-row {
+  width: 100%;
+  min-height: 30px;
+  margin: 2.5px 0;
+  padding-left: 5px;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  opacity: .85;
+
+  img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  & .source-captures__provider-row__schedule {
+    flex: 1;
+    justify-content: end;
+    float: right;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}
+
+#layout.bp5-dark .source-captures__provider-row__image--invert {
+  filter: invert(1);
+}
+
+#layout:not(.bp5-dark) .source-captures__provider-row__image--invert {
+  filter: invert(0);
+}
+
+.source-captures__buttons {
+  width: 100%;
+  min-height: 30px;
+  margin: 2.5px 0;
+  margin-bottom: 1rem;
+  padding-left: 5px;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  font-weight: 900;
+  opacity: .85;
+
+  & > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+  }
+
+  .source-captures__buttons__hint {
+    margin-left: 1rem;
+    // opacity: .8;
+    font-style: italic;
+    font-weight: 500;
+    float: right;
+  }
+}
+
+.source-captures__grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 22px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 12px;
+  gap: 3rem;
+}
+
+.source-captures__grid__item__link {
+  color: unset !important;
+}
+
+.source-captures__grid__item {
+  width: 100%;
+  padding: 20px 5px;
+  padding-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
+  cursor: default;
+}

@@ -24,6 +24,7 @@ const SourceDomainListAction = async (withSources: boolean, withSourceSchedules:
           { model: Schedule, separate: true, order: [['nextRunAt', 'desc']] }
         ] : [],
       }] : [],
+      order: [['createdAt', 'desc']],
     })
     .then(sourceDomains => {
       return sourceDomains.map(sourceDomain => sourceDomain.toJSON())

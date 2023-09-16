@@ -9,17 +9,18 @@ Modified: 2023-08-27T18:29:22.150Z
 Description: description
 */
 
-import {Browser, Page} from 'puppeteer'
-import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import path from 'node:path'
 import fs from 'node:fs'
-import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
-import {CapturePartStatus} from '../../../database/models/CapturePart'
+import path from 'node:path'
+import logger from '../../log'
 import {v4 as uuidV4} from 'uuid'
+import {Browser, Page} from 'puppeteer-core'
 import Downloader from 'nodejs-file-downloader'
 import {JSONObject, JSONValue} from 'types-json'
-import logger from '../../../log'
+import {CapturePartStatus} from '../../../database/models/CapturePart'
+import {Capture, CapturePart, Schedule, Source} from '../../../database'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
+import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;
@@ -124,6 +125,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     try {
       await this.createCapturePartsForImages(
+        schedule,
         capture,
         source,
         pageImages,
@@ -279,6 +281,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async createCapturePartsForImages(
+    schedule: Schedule,
     capture: Capture,
     source: Source,
     images: BehanceGalleryItemImagesDataProviderImageType[],
@@ -290,33 +293,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (image: BehanceGalleryItemImagesDataProviderImageType, index: number): Promise<boolean> => {
       if (source.useStartOrEndCursor == null) {
-        /**
-         * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
-         *   we should check the database to see if we have already downloaded this URL
-         *
-         * TODO: This will not work when we have multiple users and multiple types of data providers
-         *  We will need to check that the capture of the found capture part belongs to the same source
-         *
-         * TODO: might need to add sourceId to the capturePart table then add it as where equal criteria to this query
-         */
-
-        let existingCapturePart: CapturePart | null = null
-        try {
-          existingCapturePart = await CapturePart.findOne({
-            where: {
-              url: image.url,
-              status: 'completed' as CapturePartStatus,
-            },
-          })
-        } catch (error) {
-          logger.error('A DB error occurred when checking if the CapturePart\'s URL has been previously downloaded')
-          logger.error(error)
-        }
-
-        if (existingCapturePart != null) {
-          logger.info(`Capture Part ${index} has been previously downloaded: ${image.url}`)
-          return true
-        }
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, image.url)) return true;
       }
 
       if (
@@ -336,13 +313,17 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddImage) {
+        const payload: BehanceGalleryItemImagesDataProviderImagePayloadType = {index, ...image};
+        const downloadLocation = path.join(capture.downloadLocation, uuidV4())
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: image.url,
             dataProviderPartIdentifier: 'image' as BehanceGalleryItemImagesDataProviderPartIdentifierType,
-            payload: JSON.stringify({index, ...image} as BehanceGalleryItemImagesDataProviderImagePayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -392,24 +373,24 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     const payload: BehanceGalleryItemImagesDataProviderImagePayloadType = JSON.parse(capturePart.payload)
     if (payload.url == null || payload.url === '') return false
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart.downloadLocation == null || capturePart.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    const capturePartDownloadDirectoryName = uuidV4()
-    const capturePartDownloadDestination = path.join(capturePart.capture.downloadLocation, capturePartDownloadDirectoryName)
+    if (fs.existsSync(capturePart.downloadLocation) !== true) fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
 
-    if (fs.existsSync(capturePartDownloadDestination) !== true) fs.mkdirSync(capturePartDownloadDestination, {recursive: true})
-
-    if (fs.lstatSync(capturePartDownloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${capturePartDownloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.downloadImageMediaFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.downloadImageMediaFile(capturePart, payload) === false) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -422,14 +403,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async downloadImageMediaFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     payload: BehanceGalleryItemImagesDataProviderImagePayloadType,
   ): Promise<boolean | never> {
     if (payload.url == null || (payload.url ?? '').trim() === '') return false
 
     const downloader = new Downloader({
       url: payload.url,
-      directory: capturePartDownloadDestination,
+      directory: capturePart.downloadLocation,
     })
 
     try {

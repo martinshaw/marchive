@@ -10,7 +10,7 @@ Description: description
 */
 import { StoredSettingKeyType } from '../../../../database/models/StoredSetting'
 import { unsetStoredSetting } from '../../../repositories/StoredSettingRepository'
-import logger from '../../../../log'
+import logger from '../../../log'
 
 /**
  * @throws {Error}

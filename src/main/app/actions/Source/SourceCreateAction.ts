@@ -10,7 +10,7 @@ Description: description
 */
 import { validateUrlWithDataProviders } from '../../../app/repositories/DataProviderRepository'
 import {Source} from '../../../database'
-import logger from '../../../log'
+import logger from '../../log'
 import BaseDataProvider from '../../data_providers/BaseDataProvider'
 import { Attributes, Op } from 'sequelize'
 import { SourceAttributes, SourceUseStartOrEndCursorValueType } from '../../../database/models/Source'

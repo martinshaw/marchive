@@ -13,7 +13,7 @@ import {DataTypes, Optional} from 'sequelize'
 import {Table, Model, Column, ForeignKey, BelongsTo, HasMany} from 'sequelize-typescript'
 import {Source, Capture} from '..'
 
-const scheduleStatuses = ['pending', 'processing'] as const
+const scheduleStatuses = ['pending', 'processing', 'cancelled'] as const
 export type ScheduleStatus = typeof scheduleStatuses[number]
 
 export type ScheduleAttributes = {

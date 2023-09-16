@@ -5,6 +5,10 @@ import { SchedulesChannels } from './ipc/Schedules';
 import { SourcesChannels } from './ipc/Sources';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
 import { UtilitiesChannels } from './ipc/Utilities';
+import { ProcessesChannels } from './ipc/Processes';
+import { RenderersChannels } from './ipc/Renderers';
+
+require('events').EventEmitter.defaultMaxListeners = 15
 
 export type Channels =
   | CapturesChannels
@@ -13,6 +17,8 @@ export type Channels =
   | SourcesChannels
   | SourceDomainsChannels
   | UtilitiesChannels
+  | ProcessesChannels
+  | RenderersChannels;
 
 const electronHandler = {
   ipcRenderer: {

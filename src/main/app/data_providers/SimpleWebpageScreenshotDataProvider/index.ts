@@ -9,12 +9,13 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import {Browser} from 'puppeteer'
-import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import path from 'node:path'
 import fs from 'node:fs'
-import {createPuppeteerBrowser, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import path from 'node:path'
+import logger from '../../../app/log'
+import {Browser, Page} from 'puppeteer-core'
+import {Capture, CapturePart, Schedule, Source} from '../../../database'
 import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
+import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -69,22 +70,6 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser()
 
-    await this.generatePageScreenshot(
-      source,
-      browser,
-      capture.downloadLocation,
-    )
-
-    await browser.close()
-
-    return true
-  }
-
-  async generatePageScreenshot(
-    source: Source,
-    browser: Browser,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
     const page = await browser.newPage()
     await page.setViewport({width: 1280, height: 800})
 
@@ -96,6 +81,36 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
       },
     )
 
+    const firstPageScreenshot = await this.generatePageScreenshot(page, capture.downloadLocation)
+    if (firstPageScreenshot === false) {
+      const errorMessage = 'The first page screenshot could not be generated'
+      logger.error(errorMessage)
+
+      await page.close()
+      await browser.close()
+      throw new Error(errorMessage)
+    }
+
+    const firstPageMetadata = await this.generatePageMetadata(page, capture.downloadLocation)
+    if (firstPageMetadata === false) {
+      const errorMessage = 'The first page metadata could not be generated'
+      logger.error(errorMessage)
+
+      await page.close()
+      await browser.close()
+      throw new Error(errorMessage)
+    }
+
+    await page.close()
+    await browser.close()
+
+    return true
+  }
+
+  async generatePageScreenshot(
+    page: Page,
+    captureDownloadDirectory: string,
+  ): Promise<boolean> {
     await scrollPageToTop(page)
     await smoothlyScrollPageToBottom(page, {})
     await scrollPageToTop(page)
@@ -111,9 +126,19 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
       quality: 85,
     })
 
-    await page.close()
-
     return fs.existsSync(indexPageDownloadFileName)
+  }
+
+  async generatePageMetadata(
+    page: Page,
+    captureDownloadDirectory: string,
+  ): Promise<boolean> {
+    const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
+
+    const metadata = await retrievePageHeadMetadata(page)
+    fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
+
+    return fs.existsSync(metadataFileName)
   }
 
   /**

@@ -1,3 +1,7 @@
+/**
+ * @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8
+ */
+
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -9,11 +13,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import logger from './app/log';
+import createTray from './tray';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import contextMenu from 'electron-context-menu';
-import logger from './log';
+import windowStateKeeper from 'electron-window-state';
+import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
@@ -23,6 +29,9 @@ import './ipc/Schedules';
 import './ipc/Sources';
 import './ipc/SourceDomains';
 import './ipc/Utilities';
+import './ipc/Processes';
+
+import './protocols';
 
 // class AppUpdater {
 //   constructor() {
@@ -72,31 +81,43 @@ const generateNewWindowId: () => string = () => {
   return newWindowId;
 };
 
-const createWindow = async () => {
+export const createWindow = async () => {
   // if (isDebug) {
   //   await installExtensions();
   // }
 
   const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
+  ? path.join(process.resourcesPath, 'assets')
+  : path.join(__dirname, '../../assets');
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
+
+  const darkBackgroundColor = '#1e1e1e';
+  const lightBackgroundColor = '#f6f7f9';
 
   mainWindowId = generateNewWindowId();
 
   if (mainWindowId == null) return;
   if (windows[mainWindowId] != null) return;
 
+  // TODO: If we have different types of windows, we should use the `path` prop to differentiate stored size/position preferences
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 1024,
+    defaultHeight: 800
+  });
+
   windows[mainWindowId] = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
     minWidth: 364,
     minHeight: 600,
-    titleBarStyle: 'default',
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 15, y: 17 },
     title: 'Marchive',
     center: true,
     icon: getAssetPath('icon.png'),
@@ -104,7 +125,30 @@ const createWindow = async () => {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
       spellcheck: true,
     },
+    backgroundColor: nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor,
   });
+
+  mainWindowState.manage(windows[mainWindowId]);
+
+  nativeTheme.on('updated', () => {
+    if (mainWindowId == null) return;
+    const backgroundColor = nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
+    windows[mainWindowId].setBackgroundColor(backgroundColor);
+  });
+
+  windows[mainWindowId].on('focus', () => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    windows[mainWindowId].webContents.send('renderer.focused-window.is-focused');
+  })
+
+  windows[mainWindowId].on('blur', () => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    windows[mainWindowId].webContents.send('renderer.focused-window.is-blurred');
+  })
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 
@@ -120,6 +164,8 @@ const createWindow = async () => {
     } else {
       windows[mainWindowId].show();
     }
+
+    app.dock.show();
   });
 
   windows[mainWindowId].on('closed', () => {
@@ -144,33 +190,48 @@ const createWindow = async () => {
 };
 
 /**
- * Electron doesn't offer a usual context menu for input boxes, link etc...
- * This package adds a context menu to all input boxes, textareas and editable
- * I will use Blueprint JS's ContextMenu component to create a context menu for custom non-native elements
- */
-contextMenu({
-	showSaveImageAs: true,
-  showCopyLink: false,
-  showSaveLinkAs: false,
-  showInspectElement: isDebug,
-});
-
-/**
  * Add event listeners...
  */
 
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  /**
+   * In addition to respecting the OSX convention of having the application in memory even
+   * after all windows have been closed...
+   * We should ensure that closing all windows does not quit the application regardless of platform,
+   * because we want to keep the app running in the background to perform tasks such as
+   * child processes
+   */
+
+  // if (process.platform !== 'darwin') {
+  //   cleanupAndQuit();
+  // }
+
+  app.dock.hide();
 });
 
 app
   .whenReady()
   .then(() => {
+
+    ipcMain.emit('processes.schedule-run-process.start');
+    ipcMain.emit('processes.capture-part-run-process.start');
+
+    createTray()
+
+    /**
+     * Electron doesn't offer a usual context menu for input boxes, link etc...
+     * This package adds a context menu to all input boxes, textareas and editable
+     * I will use Blueprint JS's ContextMenu component to create a context menu for custom non-native elements
+     */
+    contextMenu({
+      showSaveImageAs: true,
+      showCopyLink: false,
+      showSaveLinkAs: false,
+      showInspectElement: isDebug,
+    });
+
     createWindow();
+
     app.on('activate', () => {
       if (mainWindowId == null) return;
       if (windows[mainWindowId] == null) return;
@@ -179,8 +240,30 @@ app
       // dock icon is clicked and there are no other windows open.
       if (windows[mainWindowId] === null) createWindow();
     });
+
   })
   .catch(error => {
     logger.error('Electron app whenReady error occurred');
     logger.error(error);
   });
+
+export const cleanupAndQuit = () => {
+  logger.info('Cleaning up and quitting...');
+
+  // TODO: Kill child processes gracefully
+  // TODO: Release / delete locks on processes
+
+  logger.info('À bientôt...');
+
+  app.quit()
+}
+
+export const closeAllWindows = () => {
+  logger.info('Closing all windows...');
+
+  Object.keys(windows).forEach((windowId) => {
+    if (windows[windowId] == null) return;
+
+    windows[windowId].close();
+  });
+}

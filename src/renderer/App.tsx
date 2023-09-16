@@ -6,6 +6,8 @@ import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage'
 import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
 import OnboardingIndexPage from './pages/OnboardingIndexPage';
 import DefaultLayout from './layouts/DefaultLayout';
+import SourceShowPage, { SourceShowPageLoader } from './pages/SourceShowPage';
+import CaptureShowPage, { CaptureShowPageLoader } from './pages/CaptureShowPage';
 
 const App = () => {
   return (
@@ -39,7 +41,13 @@ const App = () => {
             },
             {
               path: '/sources/:sourceId',
-              element: <SourceCreatePage />
+              loader: SourceShowPageLoader,
+              element: <SourceShowPage />
+            },
+            {
+              path: '/captures/:captureId',
+              loader: CaptureShowPageLoader,
+              element: <CaptureShowPage />
             },
           ]
         }

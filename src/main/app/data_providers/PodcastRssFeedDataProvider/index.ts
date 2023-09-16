@@ -14,12 +14,12 @@ import Parser from 'rss-parser'
 import path from 'node:path'
 import fs from 'node:fs'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
-// @ts-ignore
-import standardSlugify from 'standard-slugify'
-import {v4 as uuidV4, v4} from 'uuid'
+import {v4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
-import logger from '../../../log'
+import logger from '../../log'
+import { safeSanitizeFileName } from '../../../util'
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 
 type RssParserFeedType = {
   [key: string]: any;
@@ -126,7 +126,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    if (await this.createCapturePartsForPodcastItems(capture, source, feed) === false) {
+    if (await this.createCapturePartsForPodcastItems(schedule, capture, source, feed) === false) {
       const errorMessage = 'Failed to create Capture Parts for podcast items'
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -162,6 +162,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async createCapturePartsForPodcastItems(
+    schedule: Schedule,
     capture: Capture,
     source: Source,
     feed: RssParserFeedType,
@@ -175,28 +176,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       if (item.link == null) return true
 
       if (source.useStartOrEndCursor == null) {
-        /**
-         * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
-         *   we should check the database to see if we have already downloaded this URL
-         *
-         * TODO: This will not work when we have multiple users and multiple types of data providers
-         *  We will need to check that the capture of the found capture part belongs to the same source
-         */
-
-        let existingCapturePart: CapturePart | null = null
-        try {
-          existingCapturePart = await CapturePart.findOne({
-            where: {
-              url: item.link,
-              status: 'completed' as CapturePartStatus,
-            },
-          })
-        } catch (error) {
-          logger.error('A DB error occurred when trying to find an existing Capture Part')
-          logger.error(error)
-        }
-
-        if (existingCapturePart != null) return true
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, item.link)) return true;
       }
 
       if (
@@ -221,13 +201,22 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         const dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType =
           audioFileExtensions.some(extension => item.link?.endsWith(extension)) ? 'audio-item' : 'video-item'
 
+        const payload: PodcastRssFeedDataProviderPartPayloadType = {index, ...item};
+
+        let capturePartDownloadDirectoryName = safeSanitizeFileName(payload.title ?? '')
+        if (capturePartDownloadDirectoryName === '' || capturePartDownloadDirectoryName == null || capturePartDownloadDirectoryName === false) {
+          capturePartDownloadDirectoryName = v4()
+        }
+        const downloadLocation = path.join(capture.downloadLocation, capturePartDownloadDirectoryName)
+
         let capturePart: CapturePart | null = null
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
             url: item.link,
             dataProviderPartIdentifier,
-            payload: JSON.stringify({index, ...item} as PodcastRssFeedDataProviderPartPayloadType),
+            payload: JSON.stringify(payload),
+            downloadLocation,
             captureId: capture.id,
           })
         } catch (error) {
@@ -283,30 +272,30 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     const payload: PodcastRssFeedDataProviderPartPayloadType = JSON.parse(capturePart.payload)
     if (payload.link == null) return false
 
-    if (capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '') {
+    if (
+      capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
+      capturePart.downloadLocation == null || capturePart.downloadLocation === ''
+    ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    const capturePartDownloadDirectoryName = (payload.title != null && (payload.title ?? '').trim() !== '') ? standardSlugify(payload.title) : v4()
-    const capturePartDownloadDestination = path.join(capturePart.capture.downloadLocation, capturePartDownloadDirectoryName)
+    if (fs.existsSync(capturePart.downloadLocation) !== true) fs.mkdirSync(capturePart.downloadLocation, {recursive: true})
 
-    if (fs.existsSync(capturePartDownloadDestination) !== true) fs.mkdirSync(capturePartDownloadDestination, {recursive: true})
-
-    if (fs.lstatSync(capturePartDownloadDestination).isDirectory() === false) {
-      const errorMessage = `Download destination '${capturePartDownloadDestination}' is not a directory`
+    if (fs.lstatSync(capturePart.downloadLocation).isDirectory() === false) {
+      const errorMessage = `Download destination '${capturePart.downloadLocation}' is not a directory`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.generatePodcastItemMetadataFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.generatePodcastItemMetadataFile(capturePart, payload) === false) {
       const errorMessage = `Failed to generate podcast item metadata file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }
 
-    if (await this.downloadPodcastItemMediaFile(capturePartDownloadDestination, payload) === false) {
+    if (await this.downloadPodcastItemMediaFile(capturePart, payload) === false) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -316,11 +305,11 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async generatePodcastItemMetadataFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
   ): Promise<boolean> {
     const itemMetadataFilePath = path.join(
-      capturePartDownloadDestination,
+      capturePart.downloadLocation,
       'metadata.json',
     )
 
@@ -337,7 +326,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async downloadPodcastItemMediaFile(
-    capturePartDownloadDestination: string,
+    capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
   ): Promise<boolean> {
     const mediaDownloadUrl = capturePartPayload.enclosure?.url ?? capturePartPayload.link ?? ''
@@ -345,7 +334,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     const downloader = new Downloader({
       url: mediaDownloadUrl,
-      directory: capturePartDownloadDestination,
+      directory: capturePart.downloadLocation,
     })
 
     try {

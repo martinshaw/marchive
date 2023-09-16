@@ -12,6 +12,7 @@ Description: description
 import { Card, Text } from "@blueprintjs/core"
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
 import { useState } from "react"
+import AutoAnimated from '../../../components/AutoAnimated';
 
 export type SourceCreatePageDataProviderOptionsGridPropsType = {
   dataProviders: DataProviderSerializedType[];
@@ -23,7 +24,7 @@ const SourceCreatePageDataProviderOptionsGrid = (props: SourceCreatePageDataProv
 
   return (
     <>
-      <div className="data-providers__grid">
+      <AutoAnimated additionalClassNames="data-providers__grid">
         {props.dataProviders.map((dataProvider) => {
           if (dataProvider == null) return null
 
@@ -41,7 +42,7 @@ const SourceCreatePageDataProviderOptionsGrid = (props: SourceCreatePageDataProv
             </Card>
           )
         })}
-      </div>
+      </AutoAnimated>
 
       <div className="data-providers__description">
         <Text>

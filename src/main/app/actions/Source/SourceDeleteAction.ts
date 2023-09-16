@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Schedule, Source } from "../../../database"
-import logger from "../../../log"
+import logger from "../../log"
 
 /**
  * @throws {Error}

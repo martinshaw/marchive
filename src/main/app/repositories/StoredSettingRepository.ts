@@ -9,7 +9,7 @@ Modified: 2023-08-01T23:05:48.537Z
 Description: description
 */
 
-import logger from '../../log'
+import logger from '../log'
 import {StoredSetting} from '../../database'
 import {StoredSettingKeyType, StoredSettingTypeType} from '../../database/models/StoredSetting'
 

@@ -9,7 +9,7 @@ Modified: 2023-09-05T13:47:27.688Z
 Description: description
 */
 
-import { Icon, Text } from "@blueprintjs/core";
+import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { ScheduleAttributes } from "main/database/models/Schedule";
 import { SourceAttributes } from "main/database/models/Source";
 import { ReactNode } from "react";
@@ -62,11 +62,18 @@ const SourceIndexPageListItemCardScheduleCaption = (
         }
       }
       else {
+        let timeCaption = Math.ceil(props.source.schedules[0].interval / 60) + ' mins.'
+        if ((Math.ceil(props.source.schedules[0].interval / 60)) > 120) timeCaption = Math.ceil(props.source.schedules[0].interval / 3600) + ' hrs.';
+        if ((Math.ceil(props.source.schedules[0].interval / 3600)) > 48) timeCaption = Math.ceil(props.source.schedules[0].interval / 86400) + ' days.';
+        if ((Math.ceil(props.source.schedules[0].interval / 86400)) > 14) timeCaption = Math.ceil(props.source.schedules[0].interval / 604800) + ' weeks.';
+        if ((Math.ceil(props.source.schedules[0].interval / 604800)) > 8) timeCaption = Math.ceil(props.source.schedules[0].interval / 2419200) + ' months.';
+        if ((Math.ceil(props.source.schedules[0].interval / 2419200)) > 12) timeCaption = Math.ceil(props.source.schedules[0].interval / 29030400) + ' years.';
+
         const nextCaption = props.source.schedules[0].nextRunAt != null ? `(next time on ${props.source.schedules[0].nextRunAt.toDateString()} ${props.source.schedules[0].nextRunAt.toLocaleTimeString()})` : '';
         scheduleCaption = (
           <>
             <Icon icon="time" />
-            <Text>Saves every {Math.ceil(props.source.schedules[0].interval / 60)} mins. {nextCaption}</Text>
+            <Text>Saves every {timeCaption} {nextCaption}</Text>
           </>
         );
       }
@@ -74,7 +81,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
     else if (props.source.schedules[0].status === 'processing') {
       scheduleCaption = (
         <>
-          <Icon icon="time" />
+          <Spinner size={SpinnerSize.SMALL} />
           <Text>Saving now...</Text>
         </>
       );
