@@ -111,7 +111,7 @@ const ProcessStartProcess = async (
     process?.stdin?.resume();
 
     childProcess.stderr?.on('data', async (buffer) => {
-      logger.info(processDetailName + ': stderr data: ', {/*buffer,*/ text: buffer.toString()})
+      logger.info(processDetailName + ': stderr data: ', {text: buffer.toString()})
       webContents.getAllWebContents().forEach((webContent) => {
         webContent.send(processOngoingEventChannelName, {
           origin: 'stderr',
@@ -122,7 +122,7 @@ const ProcessStartProcess = async (
     })
 
     childProcess.stdout?.on('data', async (buffer) => {
-      logger.info(processDetailName + ': stdout data: ', {/*buffer,*/ text: buffer.toString()})
+      logger.info(processDetailName + ': stdout data: ', {text: buffer.toString()})
       webContents.getAllWebContents().forEach((webContent) => {
         webContent.send(processOngoingEventChannelName, {
           origin: 'stdout',

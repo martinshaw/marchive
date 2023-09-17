@@ -12,10 +12,24 @@ Description: description
 import { Logger, createLogger, format, transports } from 'winston'
 import { appLogsPath } from '../../../paths'
 import path from 'node:path'
+import DailyRotateFile, { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file'
 
 export const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
+  const sharedFileTransportConfig: DailyRotateFileTransportOptions = {
+    filename: '%DATE%.log',
+    dirname: appLogsPath,
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d',
+  }
+
+  const errorFileTransportConfig: DailyRotateFileTransportOptions = { ...sharedFileTransportConfig, filename: 'error-%DATE%.log', level: 'error' }
+  const combinedFileTransportConfig: DailyRotateFileTransportOptions = { ...sharedFileTransportConfig, filename: 'combined-%DATE%.log' }
+
   /**
-   * Notes when logging, the log level methods use an overloading interface to allow for the following uses (signatures) inspired by https://github.com/winstonjs/winston/blob/master/examples/quick-start.js:
+   * Notes when logging, the log level methods use an overloading interface to allow for the following uses (signatures) inspired
+   *   by https://github.com/winstonjs/winston/blob/master/examples/quick-start.js:
    *
    * 👍 This logs using the 'info' level, the message 'Hello world' and the metadata object {foo: 'bar'}
    * logger.info('Hello world', {foo: 'bar'})
@@ -42,10 +56,10 @@ export const createWinstonLogger: (serviceName: string) => Logger = (serviceName
       format.splat(),
       format.json()
     ),
-    defaultMeta: { service: `marchive-desktop-${serviceName}` },
+    defaultMeta: { service: serviceName },
     transports: [
-      new transports.File({ filename: path.join(appLogsPath, 'main-error.log'), level: 'error' }),
-      new transports.File({ filename: path.join(appLogsPath, 'main-combined.log') }),
+      new DailyRotateFile(errorFileTransportConfig),
+      new DailyRotateFile(combinedFileTransportConfig),
     ],
   })
 
