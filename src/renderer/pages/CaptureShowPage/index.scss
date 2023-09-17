@@ -51,6 +51,7 @@
     text-decoration: underline !important;
     text-underline-offset: 4px;
     opacity: .85;
+    user-select: text !important;
 
     &:hover {
       opacity: 1;

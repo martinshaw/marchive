@@ -51,7 +51,7 @@ export const createPuppeteerBrowser = async (
   const browser = puppeteer.launch({
     headless: headless ? 'new' : false,
     args: browserArguments,
-  })
+  }) as unknown as Promise<Browser>
 
   return browser
 }
@@ -60,7 +60,7 @@ export const loadPageByUrl = async (
   url: string,
   browser: Browser,
   // @see https://cloudlayer.io/blog/puppeteer-waituntil-options/#
-  waitUntil: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2' = 'networkidle0',
+  waitUntil: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2' = 'networkidle2',
   timeout: number = 0,
   width: number = 1280,
   height: number = 800,

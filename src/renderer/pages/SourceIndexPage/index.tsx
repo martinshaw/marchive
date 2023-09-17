@@ -99,7 +99,7 @@ const SourceIndexPage = () => {
           <div key={sourceDomain.id} className="sources__list__source-domain">
             <div className="sources__list__source-domain__title">
               {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
-              <Text ellipsize>{sourceDomain.name}</Text>
+              <Text ellipsize={false}>{sourceDomain.name}</Text>
             </div>
 
             {(sourceDomain.sources ?? []).map(source => (
