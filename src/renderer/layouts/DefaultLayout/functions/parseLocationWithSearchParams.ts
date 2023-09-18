@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: parseRouterLocation.ts
+File Name: parseLocationWithSearchParams.ts
 Created:  2023-09-16T09:22:05.197Z
 Modified: 2023-09-16T09:22:05.197Z
 
@@ -11,13 +11,13 @@ Description: description
 
 import { Location } from "react-router-dom";
 
-export type ParseRouterLocationReturnType = Location & {
+export type ParseLocationWithSearchParamsReturnType = Location & {
   searchParams: {[key: string]: (string | number | boolean) | (string | number | boolean)[]};
 }
 
-const parseRouterLocation = (location: Location) => {
+const parseLocationWithSearchParams = (location: Location) => {
   const searchParams = new URLSearchParams(location.search);
-  const searchParamsObject: ParseRouterLocationReturnType['searchParams'] = {};
+  const searchParamsObject: ParseLocationWithSearchParamsReturnType['searchParams'] = {};
 
   for (const [key, value] of searchParams.entries()) {
     const colonSplitParts = value
@@ -34,7 +34,7 @@ const parseRouterLocation = (location: Location) => {
   return {
     ...location,
     searchParams: searchParamsObject,
-  } as ParseRouterLocationReturnType;
+  } as ParseLocationWithSearchParamsReturnType;
 }
 
-export default parseRouterLocation;
+export default parseLocationWithSearchParams;

@@ -68,6 +68,7 @@ export const loadPageByUrl = async (
   const page = await browser.newPage()
   await page.setViewport({width, height})
   await page.goto(url, { waitUntil, timeout })
+  await page.waitForSelector('body')
   return page
 }
 

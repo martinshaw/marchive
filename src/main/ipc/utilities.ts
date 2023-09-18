@@ -9,13 +9,15 @@ Modified: 2023-08-01T20:04:09.893Z
 Description: description
 */
 
-import { BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
+import { BrowserWindow, dialog, ipcMain, nativeTheme, shell } from 'electron';
 import { getStoredSettingValue, setStoredSettingValue } from '../app/repositories/StoredSettingRepository';
+import logger from '../app/log';
 
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'
   | 'utilities.marchive-is-setup'
   | 'utilities.open-external-url-in-browser'
+  | 'utilities.open-internal-path-in-default-program'
   | 'utilities.focused-window.toggle-maximise'
 
 ipcMain.on('utilities.is-dark-mode', async (event) => {
@@ -30,6 +32,11 @@ ipcMain.on('utilities.marchive-is-setup', async (event, newValue) => {
 ipcMain.on('utilities.open-external-url-in-browser', async (event, url) => {
   if (url == null) return;
   shell.openExternal(url);
+})
+
+ipcMain.on('utilities.open-internal-path-in-default-program', async (event, path) => {
+  if (path == null) return;
+  shell.openPath(path);
 })
 
 ipcMain.on('utilities.focused-window.toggle-maximise', async (event) => {
