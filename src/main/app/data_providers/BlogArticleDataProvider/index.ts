@@ -14,12 +14,13 @@ import path from 'node:path'
 import logger from '../../log'
 import {v4 as uuidV4} from 'uuid'
 import {Browser, Page} from 'puppeteer-core'
-import { safeSanitizeFileName } from '../../../util'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import { compressImageSimple } from '../../../utilties/compressImage'
+import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -142,7 +143,6 @@ class BlogArticleDataProvider extends BaseDataProvider {
     )
 
     await page.close()
-
     await browser.close()
 
     return true
@@ -166,7 +166,30 @@ class BlogArticleDataProvider extends BaseDataProvider {
       fullPage: true,
       path: screenshotFileName,
       quality: 85,
+      type: 'jpeg',
     })
+
+    /**
+     * TODO: We need to find out why we are getting an error which causes the process to return
+     * @see https://www.notion.so/codeatlas/Need-to-do-something-about-files-taking-so-much-space-Fix-issue-with-image-compression-8a5d2749ce53481a8847506377a65834?pvs=4
+     */
+
+    // const compressedScreenshotsDirectory = path.join(captureDownloadDirectory, 'compressed')
+    // if (fs.existsSync(compressedScreenshotsDirectory) !== true) {
+    //   fs.mkdirSync(compressedScreenshotsDirectory, {recursive: true})
+    // }
+
+    // compressImageSimple(
+    //   screenshotFileName,
+    //   compressedScreenshotsDirectory,
+    //   function (error, completed, statistic) {
+    //     logger.error("-------------");
+    //     logger.error(error);
+    //     logger.error(completed);
+    //     logger.error(statistic);
+    //     logger.error("-------------");
+    //   }
+    // );
 
     return fs.existsSync(screenshotFileName)
   }

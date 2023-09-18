@@ -15,7 +15,6 @@ Description: description
 import logger from "../log";
 import { SourceDomain } from "../../database";
 // import Downloader from "nodejs-file-downloader";
-// import { safeSanitizeFileName } from "../../util";
 // import resolveRelative from 'resolve-relative-url';
 // import { downloadSourceDomainFaviconsPath } from "../../../paths";
 // // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`

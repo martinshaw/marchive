@@ -16,6 +16,8 @@ import { CapturePartStatus } from "../../database/models/CapturePart"
 import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
 import { Op } from "sequelize"
 
+let lastCapturePart: CapturePart | null = null;
+
 const CapturePartRunProcess = async (): Promise<never | void> => {
   // Should wait for 6 seconds between ticks when downloading pending files
   // When there are no pending files to download, should wait for 60 seconds between ticks
@@ -35,7 +37,12 @@ const CapturePartRunProcess = async (): Promise<never | void> => {
         currentDelayBetweenTicks = hadPendingCapturePart === false ? 60 * 1000 : 6 * 1000
       }
     } catch (error) {
-      //
+      if (lastCapturePart != null) {
+        logger.error(`An error occurred when trying to process Capture Part ${lastCapturePart.id} ${lastCapturePart.url}`)
+        logger.error(error)
+
+        await lastCapturePart.update({status: 'failed' as CapturePartStatus})
+      }
     }
 
     // eslint-disable-next-line no-await-in-loop
@@ -124,6 +131,8 @@ const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCaptur
 }
 
 const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvider): Promise<boolean> => {
+  lastCapturePart = capturePart
+
   logger.info(`Processing Capture Part ${capturePart.id} ${capturePart.url}...`)
 
   await capturePart.update({status: 'processing' as CapturePartStatus})

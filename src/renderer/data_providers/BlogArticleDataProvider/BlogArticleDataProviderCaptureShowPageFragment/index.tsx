@@ -65,13 +65,6 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
         };
 
         const afterMetadataFileLoadCallback = async (metadata: CaptureStateValueReturnType['metadata']) => {
-          if (returnValue.captureSnapshotUrl != null) {
-            let captureSnapshotUrl = await fetch(returnValue.captureSnapshotUrl);
-            let captureSnapshotHtml = await captureSnapshotUrl.text();
-            let captureSnapshotBlob = new Blob([captureSnapshotHtml], { type: "multipart/related" });
-            if (captureSnapshotBlob != null) returnValue.captureSnapshotUrl = URL.createObjectURL(captureSnapshotBlob);
-          }
-
           returnValue.metadata = metadata;
           if (returnValue.metadata == null) {
             resolve(returnValue);
