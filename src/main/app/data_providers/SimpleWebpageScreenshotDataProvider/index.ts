@@ -15,7 +15,7 @@ import logger from '../../../app/log'
 import {Browser, Page} from 'puppeteer-core'
 import {Capture, CapturePart, Schedule, Source} from '../../../database'
 import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
-import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -69,17 +69,7 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser()
-
-    const page = await browser.newPage()
-    await page.setViewport({width: 1280, height: 800})
-
-    await page.goto(
-      source.url,
-      {
-        timeout: 0,
-        waitUntil: 'load',
-      },
-    )
+    const page = await loadPageByUrl(source.url, browser)
 
     const firstPageScreenshot = await this.generatePageScreenshot(page, capture.downloadLocation)
     if (firstPageScreenshot === false) {

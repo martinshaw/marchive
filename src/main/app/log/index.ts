@@ -27,6 +27,6 @@ let logger: winston.Logger | typeof console = console;
  */
 
 if (typeof process.versions['electron'] !== 'undefined' && ['renderer', 'browser'].includes(process.type))
-  logger = require('./winston').createWinstonLogger(process.type)
+  logger = require('./winston').createWinstonLogger(process.type === 'browser' ? 'main' : process.type)
 
 export default logger

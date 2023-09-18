@@ -46,7 +46,7 @@ const CapturePartRunProcess = async (): Promise<never | void> => {
 }
 
 const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCapturePart: boolean}> => {
-  logger.info('Looking for pending Capture Parts...')
+  logger.debug('Looking for pending Capture Parts...')
 
   let capturePart: CapturePart | null = null
   try {
@@ -86,7 +86,7 @@ const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCaptur
      * I need to find a way to handle errors in a way that doesn't cause the process to exit allowing the loop to continue
      * Maybe use .error, then a use try / catch block around `await this.tick()` in the `run` method
      */
-    logger.info('No pending Capture Parts found')
+    logger.debug('No pending Capture Parts found')
 
     return {
       processedSuccessfully: false,

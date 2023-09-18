@@ -20,7 +20,7 @@ import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {Capture, CapturePart, Schedule, Source} from '../../../database'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
-import {createPuppeteerBrowser, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;
@@ -90,17 +90,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser()
-
-    const page = await browser.newPage()
-    await page.setViewport({width: 1280, height: 800})
-
-    await page.goto(
-      source.url,
-      {
-        timeout: 0,
-        waitUntil: 'networkidle2',
-      },
-    )
+    const page = await loadPageByUrl(source.url, browser)
 
     await scrollPageToTop(page)
     await smoothlyScrollPageToBottom(page, {})

@@ -39,7 +39,7 @@ const ScheduleRunProcess = async (): Promise<void | never> => {
 const tick = async (): Promise<void> => {
   const dueSchedules = await retrieveDueSchedules()
 
-  if (dueSchedules.length === 0) logger.info('No Schedules due to be run')
+  if (dueSchedules.length === 0) logger.debug('No Schedules due to be run')
 
   dueSchedules.forEach(async schedule => {
     logger.info(`Found Schedule ${schedule.id} due to be run`)
