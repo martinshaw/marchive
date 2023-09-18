@@ -509,6 +509,11 @@ color-support@^1.1.2, color-support@^1.1.3:
   resolved "https://registry.npmjs.org/color-support/-/color-support-1.1.3.tgz"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
+compress-image@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/compress-image/-/compress-image-0.0.1.tgz#9574dab02d9d639ecf94bb0ed4e212c6a7bf13c0"
+  integrity sha512-whNbpgghLB9yUpCorb4q/3p5zWd1CdpDB04OQQHyji9igvCm8A5uF92rnDR/Kxoo5ZAfOV+fJHkG9HSsGr9vcw==
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"

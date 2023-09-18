@@ -3905,6 +3905,11 @@ compare-version@^0.1.2:
   resolved "https://registry.yarnpkg.com/compare-version/-/compare-version-0.1.2.tgz#0162ec2d9351f5ddd59a9202cba935366a725080"
   integrity sha512-pJDh5/4wrEnXX/VWRZvruAGHkzKdr46z11OlTPN+VrATlWWhSKewNCJ1futCO5C7eJB3nPMFZA1LeYtcFboZ2A==
 
+compress-image@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/compress-image/-/compress-image-0.0.1.tgz#9574dab02d9d639ecf94bb0ed4e212c6a7bf13c0"
+  integrity sha512-whNbpgghLB9yUpCorb4q/3p5zWd1CdpDB04OQQHyji9igvCm8A5uF92rnDR/Kxoo5ZAfOV+fJHkG9HSsGr9vcw==
+
 compressible@~2.0.16:
   version "2.0.18"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.18.tgz#af53cca6b070d4c3c0750fbd77286a6d7cc46fba"
