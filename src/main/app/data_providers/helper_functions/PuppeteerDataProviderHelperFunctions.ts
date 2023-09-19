@@ -9,6 +9,7 @@ Modified: 2023-08-23T10:45:57.404Z
 Description: description
 */
 
+import fs from 'node:fs'
 import path from 'node:path'
 import puppeteer from 'puppeteer-extra'
 import {Browser, Page} from 'puppeteer-core'
@@ -17,6 +18,10 @@ import { internalNodeModulesPath } from '../../../../paths'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
 import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository'
+import { Readability } from '@mozilla/readability';
+import { JSDOM } from 'jsdom';
+import DOMPurify from 'dompurify';
+import logger from '../../../app/log'
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,
@@ -59,7 +64,7 @@ export const createPuppeteerBrowser = async (
 export const loadPageByUrl = async (
   url: string,
   browser: Browser,
-  // @see https://cloudlayer.io/blog/puppeteer-waituntil-options/#
+  // @see https://cloudlayer.io/blog/puppeteer-waituntil-options
   waitUntil: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2' = 'networkidle2',
   timeout: number = 0,
   width: number = 1280,
@@ -69,6 +74,11 @@ export const loadPageByUrl = async (
   await page.setViewport({width, height})
   await page.goto(url, { waitUntil, timeout })
   await page.waitForSelector('body')
+
+  await scrollPageToTop(page)
+  await smoothlyScrollPageToBottom(page, {})
+  await scrollPageToTop(page)
+
   return page
 }
 
@@ -87,6 +97,122 @@ export const smoothlyScrollPageToBottom = async (page: Page, options: Options = 
       ...options,
     },
   )
+}
+
+export const generatePageReadability = async (
+  page: Page,
+  captureDownloadDirectory: string,
+): Promise<boolean> => {
+  const evaluatedPageUrl = await page.evaluate(() => {
+    return window.location.href
+  })
+
+  const bodyTagHtmlIncludingTag = await page.evaluate(() => {
+    const bodyTag = document.querySelector('body')
+    if (bodyTag == null) return null
+
+    return bodyTag.outerHTML
+  })
+  if (bodyTagHtmlIncludingTag == null) return false
+  if (bodyTagHtmlIncludingTag.trim().length === 0) return false
+
+  var doc = new JSDOM(bodyTagHtmlIncludingTag, {
+    url: evaluatedPageUrl,
+  });
+  let reader = new Readability(doc.window.document);
+  let article = reader.parse();
+  if (article == null) {
+    logger.warn("Readability failed to parse article, probably isn't formatted ideally, skipping silently...");
+    return true;
+  }
+
+  const readabilityJsonFileName = path.join(captureDownloadDirectory, 'readability.json')
+  fs.writeFileSync(readabilityJsonFileName, JSON.stringify(article))
+
+  if (fs.existsSync(readabilityJsonFileName) !== true) {
+    logger.warn("Readability JSON file doesn't exist, skipping silently...");
+    return true;
+  }
+
+  if (article.content == null) {
+    logger.warn("Readability HTML content is null, skipping silently...");
+    return true;
+  }
+
+  article.content = DOMPurify.sanitize(article.content);
+
+  const readabilityHtmlFileName = path.join(captureDownloadDirectory, 'readability.html')
+  fs.writeFileSync(readabilityHtmlFileName, article.content)
+
+  if (fs.existsSync(readabilityHtmlFileName) !== true) {
+    logger.warn("Readability HTML file doesn't exist, skipping silently...");
+    return true
+  }
+
+  return true;
+}
+
+export const generatePageScreenshot = async (
+  page: Page,
+  captureDownloadDirectory: string,
+): Promise<boolean> => {
+  const screenshotFileName = path.join(captureDownloadDirectory, 'screenshot.jpg')
+
+  await page.screenshot({
+    fullPage: true,
+    path: screenshotFileName,
+    quality: 85,
+    type: 'jpeg',
+  })
+
+  /**
+   * TODO: We need to find out why we are getting an error which causes the process to return
+   * @see https://www.notion.so/codeatlas/Need-to-do-something-about-files-taking-so-much-space-Fix-issue-with-image-compression-8a5d2749ce53481a8847506377a65834?pvs=4
+   */
+
+  // const compressedScreenshotsDirectory = path.join(captureDownloadDirectory, 'compressed')
+  // if (fs.existsSync(compressedScreenshotsDirectory) !== true) {
+  //   fs.mkdirSync(compressedScreenshotsDirectory, {recursive: true})
+  // }
+
+  // compressImageSimple(
+  //   screenshotFileName,
+  //   compressedScreenshotsDirectory,
+  //   function (error, completed, statistic) {
+  //     logger.error("-------------");
+  //     logger.error(error);
+  //     logger.error(completed);
+  //     logger.error(statistic);
+  //     logger.error("-------------");
+  //   }
+  // );
+
+  return fs.existsSync(screenshotFileName)
+}
+
+export const generatePageSnapshot = async (
+  page: Page,
+  captureDownloadDirectory: string,
+): Promise<boolean> => {
+  const snapshotFileName = path.join(captureDownloadDirectory, 'snapshot.mhtml')
+
+  const cdp = await page.target().createCDPSession()
+  const {data} = await cdp.send('Page.captureSnapshot', {format: 'mhtml'})
+  fs.writeFileSync(snapshotFileName, data)
+
+  return fs.existsSync(snapshotFileName)
+}
+
+export const generatePageMetadata = async (
+  page: Page,
+  captureDownloadDirectory: string,
+): Promise<boolean> => {
+  const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
+
+  const metadata = await retrievePageHeadMetadata(page)
+  fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
+
+  return fs.existsSync(metadataFileName)
 }
 
 export type PageHeadMetadata = {

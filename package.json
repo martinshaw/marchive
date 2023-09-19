@@ -106,6 +106,7 @@
     "get-website-favicon": "^0.0.7",
     "image-type": "^4.1.0",
     "imageinfo": "^1.0.4",
+    "jsdom": "^22.1.0",
     "node-html-parser": "^6.1.6",
     "nodejs-file-downloader": "^4.12.1",
     "pngquant": "^4.2.0",

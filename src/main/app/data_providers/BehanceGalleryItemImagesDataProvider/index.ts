@@ -92,10 +92,6 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     const browser = await createPuppeteerBrowser()
     const page = await loadPageByUrl(source.url, browser)
 
-    await scrollPageToTop(page)
-    await smoothlyScrollPageToBottom(page, {})
-    await scrollPageToTop(page)
-
     const indexPageDownloadFileName = path.join(
       capture.downloadLocation,
       'screenshot.jpg',

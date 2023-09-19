@@ -23,7 +23,7 @@ const formatLocationUrlWithChangedSearchParams = (
         location;
     return locationWithSearchParams.pathname + '?' + Object
       .entries({ ...locationWithSearchParams.searchParams, ...changes })
-      .map(([key, value]) => (key + '=' + (Array.isArray(value) ? JSON.stringify(value) : value)))
+      .map(([key, value]) => (key + '=' + (Array.isArray(value) ? value.join(':') : value)))
       .join('&');
   }
 )
