@@ -18,8 +18,8 @@ import {v4} from 'uuid'
 import Downloader from 'nodejs-file-downloader'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import logger from '../../log'
-import { safeSanitizeFileName } from '../../../util'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
+import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
 
 type RssParserFeedType = {
   [key: string]: any;

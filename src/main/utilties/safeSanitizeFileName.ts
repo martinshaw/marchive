@@ -1,17 +1,15 @@
-/* eslint import/prefer-default-export: off */
-import { URL } from 'url';
-import path from 'path';
-import sanitize from 'sanitize-filename';
+/*
+All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
-export function resolveHtmlPath(htmlFileName: string) {
-  if (process.env.NODE_ENV === 'development') {
-    const port = process.env.PORT || 1212;
-    const url = new URL(`http://localhost:${port}`);
-    url.pathname = htmlFileName;
-    return url.href;
-  }
-  return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`;
-}
+Author: Martin Shaw (developer@martinshaw.co)
+File Name: safeSanitizeFileName.ts
+Created:  2023-09-18T19:03:12.357Z
+Modified: 2023-09-18T19:03:12.357Z
+
+Description: description
+*/
+
+import sanitize from 'sanitize-filename';
 
 /**
  * The `sanitize` package is awesome for removing illegal characters and bizarre quirks of Windows etc...
@@ -22,7 +20,9 @@ export function resolveHtmlPath(htmlFileName: string) {
  * - It doesn't determine whether the full joined path already exists, this is an issue which should
  *     be remedied by a different method in the future.
  */
-export const safeSanitizeFileName = (url: string): string | false => {
+const safeSanitizeFileName = (url: string): string | false => {
   const sanitizedUrl = sanitize(url);
   return sanitizedUrl === '' ? false : sanitizedUrl;
 }
+
+export default safeSanitizeFileName;

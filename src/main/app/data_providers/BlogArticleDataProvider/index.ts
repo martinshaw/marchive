@@ -14,12 +14,13 @@ import path from 'node:path'
 import logger from '../../log'
 import {v4 as uuidV4} from 'uuid'
 import {Browser, Page} from 'puppeteer-core'
-import { safeSanitizeFileName } from '../../../util'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
-import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import {createPuppeteerBrowser, generatePageMetadata, generatePageReadability, generatePageScreenshot, generatePageSnapshot, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import { compressImageSimple } from '../../../utilties/compressImage'
+import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -29,7 +30,7 @@ export type BlogArticleDataProviderLinkType = {
   title: string;
 }
 
-export type BlogArticleDataProviderLinkedPagePayloadIncludesType = 'screenshot' | 'snapshot' | 'metadata'
+export type BlogArticleDataProviderLinkedPagePayloadIncludesType = 'readability' | 'screenshot' | 'snapshot' | 'metadata'
 
 export type BlogArticleDataProviderLinkedPagePayloadType = {
   index: number;
@@ -92,13 +93,19 @@ class BlogArticleDataProvider extends BaseDataProvider {
     source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser()
+    const page = await loadPageByUrl(source.url, browser)
 
-    const page = await this.loadSourceIndexPage(
-      source,
-      browser,
-    )
+    const firstPageReadability = await generatePageReadability(page, capture.downloadLocation)
+    if (firstPageReadability === false) {
+      const errorMessage = 'The first page readability could not be generated'
+      logger.error(errorMessage)
 
-    const firstPageScreenshot = await this.generatePageScreenshot(page, capture.downloadLocation)
+      await page.close()
+      await browser.close()
+      throw new Error(errorMessage)
+    }
+
+    const firstPageScreenshot = await generatePageScreenshot(page, capture.downloadLocation)
     if (firstPageScreenshot === false) {
       const errorMessage = 'The first page screenshot could not be generated'
       logger.error(errorMessage)
@@ -108,7 +115,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const firstPageSnapshot = await this.generatePageSnapshot(page, capture.downloadLocation)
+    const firstPageSnapshot = await generatePageSnapshot(page, capture.downloadLocation)
     if (firstPageSnapshot === false) {
       const errorMessage = 'The first page snapshot could not be generated'
       logger.error(errorMessage)
@@ -118,7 +125,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const firstPageMetadata = await this.generatePageMetadata(page, capture.downloadLocation)
+    const firstPageMetadata = await generatePageMetadata(page, capture.downloadLocation)
     if (firstPageMetadata === false) {
       const errorMessage = 'The first page metadata could not be generated'
       logger.error(errorMessage)
@@ -142,58 +149,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
     )
 
     await page.close()
-
     await browser.close()
 
     return true
-  }
-
-  async loadSourceIndexPage(source: Source, browser: Browser): Promise<Page> {
-    return loadPageByUrl(source.url, browser)
-  }
-
-  async generatePageScreenshot(
-    page: Page,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
-    await scrollPageToTop(page)
-    await smoothlyScrollPageToBottom(page, {})
-    await scrollPageToTop(page)
-
-    const screenshotFileName = path.join(captureDownloadDirectory, 'index.jpg')
-
-    await page.screenshot({
-      fullPage: true,
-      path: screenshotFileName,
-      quality: 85,
-    })
-
-    return fs.existsSync(screenshotFileName)
-  }
-
-  async generatePageSnapshot(
-    page: Page,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
-    const snapshotFileName = path.join(captureDownloadDirectory, 'snapshot.mhtml')
-
-    const cdp = await page.target().createCDPSession()
-    const {data} = await cdp.send('Page.captureSnapshot', {format: 'mhtml'})
-    fs.writeFileSync(snapshotFileName, data)
-
-    return fs.existsSync(snapshotFileName)
-  }
-
-  async generatePageMetadata(
-    page: Page,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
-    const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
-
-    const metadata = await retrievePageHeadMetadata(page)
-    fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
-
-    return fs.existsSync(metadataFileName)
   }
 
   async determineAllLinks(
@@ -400,7 +358,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       if (shouldAddArticleLinks) {
         const payload: BlogArticleDataProviderLinkedPagePayloadType = {
           index,
-          includes: ['screenshot', 'snapshot', 'metadata'],
+          includes: ['readability', 'screenshot', 'snapshot', 'metadata'],
           ...link,
         }
 
@@ -499,12 +457,19 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await this.generatePageScreenshot(page, capturePart.downloadLocation) : true
-    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await this.generatePageSnapshot(page, capturePart.downloadLocation) : true
-    const metadataGenerationStatus = payload.includes.includes('metadata') ? await this.generatePageMetadata(page, capturePart.downloadLocation) : true
+    const readabilityGenerationStatus = payload.includes.includes('readability') ? await generatePageReadability(page, capturePart.downloadLocation) : true
+    const screenshotGenerationStatus = payload.includes.includes('screenshot') ? await generatePageScreenshot(page, capturePart.downloadLocation) : true
+    const snapshotGenerationStatus = payload.includes.includes('snapshot') ? await generatePageSnapshot(page, capturePart.downloadLocation) : true
+    const metadataGenerationStatus = payload.includes.includes('metadata') ? await generatePageMetadata(page, capturePart.downloadLocation) : true
 
     await page.close()
     await browser.close()
+
+    if (readabilityGenerationStatus !== true) {
+      const errorMessage = `Readability could not be generated for Capture Part ${capturePart.id}`
+      logger.error(errorMessage)
+      throw new Error(errorMessage)
+    }
 
     if (screenshotGenerationStatus !== true) {
       const errorMessage = `Screenshot could not be generated for Capture Part ${capturePart.id}`
