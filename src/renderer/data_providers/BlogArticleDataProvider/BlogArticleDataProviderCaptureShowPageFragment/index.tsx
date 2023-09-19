@@ -328,18 +328,18 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
             >
               <H1
                 className="blog-article-capture-show-fragment__left__media__readability-title font-serif"
-                dangerouslySetInnerHTML={{__html: captureReadabilityObject.title ?? ''}}
+                dangerouslySetInnerHTML={{__html: typeof captureReadabilityObject.title === 'string' ? captureReadabilityObject.title : ''}}
               ></H1>
 
               <H4
                 className="blog-article-capture-show-fragment__left__media__readability-byline font-serif"
-                dangerouslySetInnerHTML={{__html: captureReadabilityObject.byline ?? ''}}
+                dangerouslySetInnerHTML={{__html: typeof captureReadabilityObject.byline === 'string' ? captureReadabilityObject.byline : ''}}
               ></H4>
 
 
               <div
                 className="blog-article-capture-show-fragment__left__media__readability-content font-serif"
-                dangerouslySetInnerHTML={{__html: captureReadabilityObject.content ?? ''}}
+                dangerouslySetInnerHTML={{__html: typeof captureReadabilityObject.content === 'string' ? captureReadabilityObject.content : ''}}
               ></div>
             </div>
           }
