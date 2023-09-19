@@ -134,20 +134,20 @@ export const generatePageReadability = async (
     return true;
   }
 
-  if (article.content == null) {
-    logger.warn("Readability HTML content is null, skipping silently...");
-    return true;
-  }
+  // if (article.content == null) {
+  //   logger.warn("Readability HTML content is null, skipping silently...");
+  //   return true;
+  // }
 
-  article.content = DOMPurify.sanitize(article.content);
+  // article.content = DOMPurify.sanitize(article.content);
 
-  const readabilityHtmlFileName = path.join(captureDownloadDirectory, 'readability.html')
-  fs.writeFileSync(readabilityHtmlFileName, article.content)
+  // const readabilityHtmlFileName = path.join(captureDownloadDirectory, 'readability.html')
+  // fs.writeFileSync(readabilityHtmlFileName, article.content)
 
-  if (fs.existsSync(readabilityHtmlFileName) !== true) {
-    logger.warn("Readability HTML file doesn't exist, skipping silently...");
-    return true
-  }
+  // if (fs.existsSync(readabilityHtmlFileName) !== true) {
+  //   logger.warn("Readability HTML file doesn't exist, skipping silently...");
+  //   return true
+  // }
 
   return true;
 }

@@ -10,18 +10,16 @@
   gap: 2rem;
 
   &.blog-article-capture-show-fragment__container--has-focused-media {
-    // height: auto !important;
-    // overflow: auto;
-
     .blog-article-capture-show-fragment__left {
       width: 100%;
-      overflow: auto;
+      overflow: scroll;
 
       .blog-article-capture-show-fragment__left__toggle-buttons {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
+        gap: 1rem;
         padding: 1rem;
       }
 

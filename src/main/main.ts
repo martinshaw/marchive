@@ -151,8 +151,6 @@ export const createWindow = async () => {
     windows[mainWindowId].webContents.send('renderer.focused-window.is-blurred');
   })
 
-  windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
-
   windows[mainWindowId].on('ready-to-show', () => {
     if (mainWindowId == null) return;
     if (windows[mainWindowId] == null) return;
@@ -175,6 +173,26 @@ export const createWindow = async () => {
 
     delete windows[mainWindowId];
   });
+
+  // Mainly to resolve issue with hyperlinks in rendered Mozilla Readability causing the whole app to become the linked URL
+  windows[mainWindowId].webContents.on('will-navigate', (event, url) => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    const allowedTemplateFiles = ['index.html'];
+
+    if (
+      url.indexOf('http://localhost') === 0 ||
+      allowedTemplateFiles.some((templateFile) => url.indexOf(templateFile) > -1 && url.indexOf('://') < 0)
+    ) return;
+
+    event.preventDefault();
+    shell.openExternal(url);
+
+    return false;
+  });
+
+  windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 
   const menuBuilder = new MenuBuilder(windows[mainWindowId]);
   menuBuilder.buildMenu();
