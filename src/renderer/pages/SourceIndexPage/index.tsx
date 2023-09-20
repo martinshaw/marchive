@@ -10,7 +10,7 @@ Description: description
 */
 import { useMemo } from 'react';
 import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
-import { NavLink, useLoaderData, useNavigate } from 'react-router-dom';
+import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourceDomains from './functions/getSourceDomains';
@@ -81,6 +81,8 @@ const SourceIndexPage = () => {
     ,
     [sourcesGroupedBySourceDomain]
   )
+
+  if (sourcesCount === 0) return <Navigate to="/sources/create" replace={true} />;
 
   return (
     <>

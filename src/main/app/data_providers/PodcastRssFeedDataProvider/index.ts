@@ -58,30 +58,40 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     }
   }
 
+  /**
+   * @throws {Error}
+   */
+  getUrlForFeedItem(
+    feedItem: Parser.Item | null | undefined,
+  ): string | null {
+    if (feedItem == null) return null
+    if (feedItem.link != null && feedItem.link !== '') return feedItem.link.trim()
+    if (feedItem.enclosure != null && feedItem.enclosure.url != null && feedItem.enclosure.url !== '') return feedItem.enclosure.url.trim()
+
+    logger.error('Could not find a URL for podcast feed item', {feedItem})
+    return null
+  }
+
   async validateUrlPrompt(url: string): Promise<boolean> {
     if ((url.startsWith('http://') || url.startsWith('https://')) === false) url = `https://${url}`
 
     try {
       const feed: RssParserFeedType | null = await this.determinePodcastContent(url)
       if (feed == null) return false
-      if (!feed.items) return false
+      if (feed.items === null) return false
       if (feed.items.length === 0) return false
 
       const allItemsHaveLinksEndingInAudioFileExtension = feed.items.every(item => {
-        if (!item.link) return false
+        const fileUrl = this.getUrlForFeedItem(item)
+        if (fileUrl == null) return false;
+
         return (
-          audioFileExtensions.find(extension => item.link?.endsWith(extension)) ||
-          videoFileExtensions.find(extension => item.link?.endsWith(extension))
+          audioFileExtensions.find(extension => fileUrl.endsWith(extension)) ||
+          videoFileExtensions.find(extension => fileUrl.endsWith(extension))
         )
       })
-      if (!allItemsHaveLinksEndingInAudioFileExtension) return false
 
-      const allItemsHaveEnclosures = feed.items.every(item => {
-        if (!item.enclosure) return false
-        if (!item.enclosure.url) return false
-        return audioFileExtensions.find(extension => item.enclosure?.url?.endsWith(extension))
-      })
-      if (!allItemsHaveEnclosures) return false
+      if (allItemsHaveLinksEndingInAudioFileExtension === false) return false
     } catch (error) {
       return false
     }
@@ -105,7 +115,6 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     if (contents.includes('<rss') === false && contents.includes('<rss>') === false) return null
 
     const parser = new Parser()
-
     return parser.parseString(contents)
   }
 
@@ -173,16 +182,16 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     let countOfAddedCaptureParts = 0
 
     const addCapturePart = async (item: typeof feed.items[0], index: number): Promise<boolean> => {
-      if (item.link == null) return true
+      const feedItemFileUrl = this.getUrlForFeedItem(item)
+      if (feedItemFileUrl == null) return true
 
       if (source.useStartOrEndCursor == null) {
-        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, item.link)) return true;
+        if (await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(schedule, feedItemFileUrl)) return true;
       }
 
       if (
         source.useStartOrEndCursor === 'start' &&
-        item.link != null &&
-        source?.currentStartCursorUrl === item.link
+        source?.currentStartCursorUrl === feedItemFileUrl
       ) {
         shouldAddFeedItems = false
         return false
@@ -190,8 +199,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
       if (
         source.useStartOrEndCursor === 'end' &&
-        item.link != null &&
-        source?.currentEndCursorUrl === item.link
+        source?.currentEndCursorUrl === feedItemFileUrl
       ) {
         shouldAddFeedItems = true
         return true
@@ -199,7 +207,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
       if (shouldAddFeedItems) {
         const dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType =
-          audioFileExtensions.some(extension => item.link?.endsWith(extension)) ? 'audio-item' : 'video-item'
+          audioFileExtensions.some(extension => feedItemFileUrl?.endsWith(extension)) ? 'audio-item' : 'video-item'
 
         const payload: PodcastRssFeedDataProviderPartPayloadType = {index, ...item};
 
@@ -213,7 +221,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         try {
           capturePart = await CapturePart.create({
             status: 'pending' as CapturePartStatus,
-            url: item.link,
+            url: feedItemFileUrl,
             dataProviderPartIdentifier,
             payload: JSON.stringify(payload),
             downloadLocation,
@@ -225,7 +233,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         }
 
         if (capturePart == null) {
-          logger.error(`Capture Part ${index} could not be created: ${item.link}`)
+          logger.error(`Capture Part ${index} could not be created: ${feedItemFileUrl}`, {payload})
           return true
         }
 
@@ -238,11 +246,15 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     // Reminder: returning false will cancel loop, returning true will continue loop
     await feed.items.every((item, index) => addCapturePart(item, index))
 
-    if (source.useStartOrEndCursor === 'start' && feed.items[0].link != null)
-      source.currentStartCursorUrl = feed.items[0].link ?? null
+    const startUrl = this.getUrlForFeedItem(feed.items[0])
+    if (source.useStartOrEndCursor === 'start' && startUrl != null) {
+      source.currentStartCursorUrl = startUrl ?? null
+    }
 
-    if (source.useStartOrEndCursor === 'end' && feed.items[feed.items.length - 1].link != null)
-      source.currentEndCursorUrl = feed.items[feed.items.length - 1].link ?? null
+    const endUrl = this.getUrlForFeedItem(feed.items[feed.items.length - 1])
+    if (source.useStartOrEndCursor === 'end' && endUrl != null) {
+      source.currentEndCursorUrl = endUrl ?? null
+    }
 
     await source.save()
 
@@ -270,7 +282,8 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     capturePart: CapturePart,
   ): Promise<boolean> {
     const payload: PodcastRssFeedDataProviderPartPayloadType = JSON.parse(capturePart.payload)
-    if (payload.link == null) return false
+    const feedItemFileUrl = this.getUrlForFeedItem(payload)
+    if (feedItemFileUrl == null) return false
 
     if (
       capturePart?.capture?.downloadLocation == null || capturePart?.capture?.downloadLocation === '' ||
@@ -295,7 +308,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
-    if (await this.downloadPodcastItemMediaFile(capturePart, payload) === false) {
+    if (await this.downloadPodcastItemMediaFile(capturePart, payload, feedItemFileUrl) === false) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
@@ -328,10 +341,8 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async downloadPodcastItemMediaFile(
     capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
+    mediaDownloadUrl: string,
   ): Promise<boolean> {
-    const mediaDownloadUrl = capturePartPayload.enclosure?.url ?? capturePartPayload.link ?? ''
-    if (mediaDownloadUrl == null || (mediaDownloadUrl ?? '').trim() === '') return false
-
     const downloader = new Downloader({
       url: mediaDownloadUrl,
       directory: capturePart.downloadLocation,
