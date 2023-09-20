@@ -21,6 +21,7 @@ import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-d
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import openExternalUrlInBrowser from '../../../renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';
 
@@ -115,21 +116,7 @@ const CaptureShowPage = () => {
           <Text ellipsize>{source?.sourceDomain?.name}</Text>
         </div>
         <div className="capture__source-domain__url">
-          <ContextMenu style={{width: '100%'}} content={<Menu>
-            <MenuItem
-              icon="clipboard"
-              text="Copy Link"
-              onClick={() => {
-                navigator.clipboard.writeText(source?.url ?? '');
-                AppToaster.show({
-                  message: 'The link has been copied. You can now paste it anywhere. 🙂',
-                  intent: 'success',
-                });
-              }}
-            />
-          </Menu>}>
-            <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
-          </ContextMenu>
+          {source?.url != null && <CopyableExternalUrlLinkText url={source.url} />}
         </div>
       </div>
 

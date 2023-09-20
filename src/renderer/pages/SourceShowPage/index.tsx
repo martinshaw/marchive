@@ -21,6 +21,7 @@ import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/compo
 import AppToaster from '../../toaster';
 import AutoAnimated from '../../components/AutoAnimated';
 import openExternalUrlInBrowser from '../../layouts/DefaultLayout/functions/openExternalUrlInBrowser';
+import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';
 
@@ -116,7 +117,7 @@ const SourceShowPage = () => {
           <Text ellipsize>{source?.sourceDomain?.name}</Text>
         </div>
         <div className="source-captures__source-domain__url">
-          <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
+          {source?.url != null && <CopyableExternalUrlLinkText url={source.url} />}
         </div>
       </div>
 
@@ -144,6 +145,7 @@ const SourceShowPage = () => {
         {(source?.schedules ?? []).map((schedule, scheduleIndex) => (
           (schedule?.captures ?? []).map((capture, captureIndex) => (
             <SourceShowPageGridItemPreview
+              key={capture.id}
               source={source}
               schedule={schedule}
               capture={capture}
