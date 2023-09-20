@@ -19,7 +19,7 @@ import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
 import CaptureShowPageFragment from './components/CaptureShowPageFragment';
 import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import openExternalUrlInBrowser from 'renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
+import openExternalUrlInBrowser from '../../../renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 
 import './index.scss';
@@ -146,7 +146,7 @@ const CaptureShowPage = () => {
           <Text>
             {capturePartsCount} Capture Part{capturePartsCount > 1 ? 's' : ''}
             <span className="capture__buttons__hint">
-              Right-click a source's capture part to edit or delete it.
+              Right-click a source's capture part to {/*edit or */}delete it.
             </span>
           </Text>
           {/* <Button intent="success" icon="add" text="Add a new Source" /> */}

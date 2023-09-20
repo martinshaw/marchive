@@ -12,7 +12,8 @@
   &.blog-article-capture-show-fragment__container--has-focused-media {
     .blog-article-capture-show-fragment__left {
       width: 100%;
-      overflow: scroll;
+      overflow-x: hidden;
+      overflow-y: scroll;
 
       .blog-article-capture-show-fragment__left__toggle-buttons {
         display: flex;

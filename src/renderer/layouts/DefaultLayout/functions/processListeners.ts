@@ -9,7 +9,7 @@ Modified: 2023-09-11T09:43:10.689Z
 Description: description
 */
 
-import { Channels } from "main/preload";
+import { Channels } from "../../../../main/preload";
 import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
 
 const processListeners = (

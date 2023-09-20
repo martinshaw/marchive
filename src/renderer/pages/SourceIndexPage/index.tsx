@@ -19,10 +19,10 @@ import { SourceDomainAttributes } from '../../../main/database/models/SourceDoma
 import { SourceAttributes } from '../../../main/database/models/Source';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 import AutoAnimated from '../../components/AutoAnimated';
+import promptForSourceDeletion from '../../../renderer/layouts/DefaultLayout/functions/promptForSourceDeletion';
+import AppToaster from '../../../renderer/toaster';
 
 import './index.scss';
-import promptForSourceDeletion from 'renderer/layouts/DefaultLayout/functions/promptForSourceDeletion';
-import AppToaster from 'renderer/toaster';
 
 type SourceIndexPageLoaderReturnType = {
   sourcesGroupedBySourceDomain: SourceDomainAttributes[],
@@ -88,7 +88,7 @@ const SourceIndexPage = () => {
         <Text>
           {sourcesCount} Source{sourcesCount > 1 ? 's' : ''}
           <span className="sources__buttons__hint">
-            Right-click a source to edit or delete it.
+            Right-click a source to {/*edit or */}delete it.
           </span>
         </Text>
         <NavLink to="/sources/create">
@@ -118,6 +118,7 @@ const SourceIndexPage = () => {
                         <MenuItem
                           icon="trash"
                           text="Delete Source"
+                          disabled={source.schedules.every(schedule => schedule.status === 'processing')}
                           onClick={() => {
                             promptForSourceDeletion(source)
                               .then(() => {

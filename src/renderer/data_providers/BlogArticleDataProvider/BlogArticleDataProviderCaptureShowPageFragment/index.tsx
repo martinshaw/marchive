@@ -342,13 +342,16 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
               }}
             />
 
-            <Button
-              icon="cross"
-              text={"See Other Articles"}
-              onClick={() => {
-                navigate('/captures/' + props.capture.id)
-              }}
-            />
+            {
+              props.capture.captureParts.length > 0 &&
+                <Button
+                  icon="cross"
+                  text={"See Other Articles"}
+                  onClick={() => {
+                    navigate('/captures/' + props.capture.id)
+                  }}
+                />
+            }
           </div>
         }
 
