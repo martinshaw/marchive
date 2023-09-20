@@ -15,6 +15,7 @@ import SourceCountAction from '../app/actions/Source/SourceCountAction'
 import SourceShowAction from '../app/actions/Source/SourceShowAction'
 import SourceCreateAction from '../app/actions/Source/SourceCreateAction'
 import SourceDeleteAction from '../app/actions/Source/SourceDeleteAction'
+import SourcePromptForDeletionAction from '../app/actions/Source/SourcePromptForDeletionAction'
 import { Op } from 'sequelize'
 
 export type SourcesChannels =
@@ -24,6 +25,7 @@ export type SourcesChannels =
   | 'sources.show'
   | 'sources.create'
   | 'sources.delete'
+  | 'sources.prompt-for-deletion'
 
 ipcMain.on('sources.list', async (event) => {
   return SourceListAction()
@@ -67,4 +69,10 @@ ipcMain.on('sources.delete', async (event, sourceId: number) => {
   return SourceDeleteAction(sourceId)
     .then(source => { event.reply('sources.delete', source, null) })
     .catch(error => { event.reply('sources.delete', null, error) })
+})
+
+ipcMain.on('sources.prompt-for-deletion', async (event, sourceId: number) => {
+  return SourcePromptForDeletionAction(sourceId)
+    .then(deleted => { event.reply('sources.prompt-for-deletion', deleted, null) })
+    .catch(error => { event.reply('sources.prompt-for-deletion', null, error) })
 })

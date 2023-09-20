@@ -43,7 +43,8 @@
 
         .blog-article-capture-show-fragment__left__media__readability-content {
           &, & * {
-            width: 100%;
+            // width: 100%;
+            max-width: 100%;
           }
 
           & > .page > * {

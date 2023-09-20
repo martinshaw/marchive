@@ -143,16 +143,12 @@ const SourceShowPage = () => {
       <AutoAnimated additionalClassNames="source-captures__grid">
         {(source?.schedules ?? []).map((schedule, scheduleIndex) => (
           (schedule?.captures ?? []).map((capture, captureIndex) => (
-            <NavLink key={capture.id} to={`/captures/${capture.id}`} className="source-captures__grid__item__link">
-              <Card className="source-captures__grid__item" interactive>
-                <SourceShowPageGridItemPreview
-                  source={source}
-                  schedule={schedule}
-                  capture={capture}
-                  dataProvider={dataProvider}
-                />
-              </Card>
-            </NavLink>
+            <SourceShowPageGridItemPreview
+              source={source}
+              schedule={schedule}
+              capture={capture}
+              dataProvider={dataProvider}
+            />
           ))
         ))}
       </AutoAnimated>

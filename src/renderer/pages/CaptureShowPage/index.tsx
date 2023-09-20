@@ -11,7 +11,7 @@ Description: description
 import { useMemo } from 'react';
 import AppToaster from '../../toaster';
 import getCapture from './functions/getCapture';
-import { Button, Card, Text } from '@blueprintjs/core';
+import { Button, Card, ContextMenu, MenuItem, Menu, Text } from '@blueprintjs/core';
 import { SourceAttributes } from '../../../main/database/models/Source';
 import { CaptureAttributes } from '../../../main/database/models/Capture';
 import { ScheduleAttributes } from '../../../main/database/models/Schedule';
@@ -115,7 +115,21 @@ const CaptureShowPage = () => {
           <Text ellipsize>{source?.sourceDomain?.name}</Text>
         </div>
         <div className="capture__source-domain__url">
-          <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
+          <ContextMenu style={{width: '100%'}} content={<Menu>
+            <MenuItem
+              icon="clipboard"
+              text="Copy Link"
+              onClick={() => {
+                navigator.clipboard.writeText(source?.url ?? '');
+                AppToaster.show({
+                  message: 'The link has been copied. You can now paste it anywhere. 🙂',
+                  intent: 'success',
+                });
+              }}
+            />
+          </Menu>}>
+            <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
+          </ContextMenu>
         </div>
       </div>
 

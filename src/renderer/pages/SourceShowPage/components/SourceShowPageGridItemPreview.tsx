@@ -16,6 +16,8 @@ import { SourceAttributes } from "../../../../main/database/models/Source";
 import { CaptureAttributes } from "../../../../main/database/models/Capture";
 import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import { NavLink } from "react-router-dom";
+import { Card } from "@blueprintjs/core";
 
 export type SourceShowPageGridItemPreviewPropsType = {
   source: SourceAttributes;
@@ -40,7 +42,20 @@ const SourceShowPageGridItemPreview = (props: SourceShowPageGridItemPreviewProps
     });
   }, [props.source, props.schedule, props.capture])
 
-  return capturePreviewThumbnailComponent
+  return (
+    <NavLink
+      key={props.capture.id}
+      to={`/captures/${props.capture.id}`}
+      className="source-captures__grid__item__link"
+    >
+      <Card
+        className="source-captures__grid__item"
+        interactive
+      >
+        {capturePreviewThumbnailComponent}
+      </Card>
+    </NavLink>
+  )
 }
 
 export default SourceShowPageGridItemPreview;

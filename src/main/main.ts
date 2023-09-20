@@ -14,7 +14,6 @@
  */
 import path from 'path';
 import logger from './app/log';
-import createTray from './tray';
 import MenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';
@@ -30,8 +29,11 @@ import './ipc/Sources';
 import './ipc/SourceDomains';
 import './ipc/Utilities';
 import './ipc/Processes';
+import './ipc/Renderers';
 
 import './protocols';
+
+import createTray from './tray';
 
 // class AppUpdater {
 //   constructor() {

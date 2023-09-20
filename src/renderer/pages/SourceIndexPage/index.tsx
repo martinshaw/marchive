@@ -9,8 +9,8 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 import { useMemo } from 'react';
-import { Button, Text } from '@blueprintjs/core';
-import { NavLink, useLoaderData } from 'react-router-dom';
+import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
+import { NavLink, useLoaderData, useNavigate } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourceDomains from './functions/getSourceDomains';
@@ -21,6 +21,8 @@ import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceD
 import AutoAnimated from '../../components/AutoAnimated';
 
 import './index.scss';
+import promptForSourceDeletion from 'renderer/layouts/DefaultLayout/functions/promptForSourceDeletion';
+import AppToaster from 'renderer/toaster';
 
 type SourceIndexPageLoaderReturnType = {
   sourcesGroupedBySourceDomain: SourceDomainAttributes[],
@@ -70,6 +72,8 @@ const SourceIndexPage = () => {
     dataProvidersError
   } = useLoaderData() as SourceIndexPageLoaderReturnType
 
+  const navigate = useNavigate();
+
   const sourcesCount = useMemo(
     () => sourcesGroupedBySourceDomain == null ?
       0 :
@@ -95,23 +99,50 @@ const SourceIndexPage = () => {
       </div>
 
       <AutoAnimated additionalClassNames="sources__list">
-        {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
-          <div key={sourceDomain.id} className="sources__list__source-domain">
-            <div className="sources__list__source-domain__title">
-              {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
-              <Text ellipsize={false}>{sourceDomain.name}</Text>
-            </div>
+        {(sourcesGroupedBySourceDomain ?? [])
+          .filter(sourceDomain => sourceDomain.sources != null && sourceDomain.sources.length > 0)
+          .map(sourceDomain =>
+            <div key={sourceDomain.id} className="sources__list__source-domain">
+              <div className="sources__list__source-domain__title">
+                {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
+                <Text ellipsize={false}>{sourceDomain.name}</Text>
+              </div>
 
-            {(sourceDomain.sources ?? []).map(source => (
-              source == null ? null :
-                <SourceIndexPageListItemCard
-                  key={source.id}
-                  source={source}
-                  dataProviders={dataProviders}
-                />
-            ))}
-          </div>
-        )}
+              {(sourceDomain.sources ?? []).map(source => (
+                source == null ? null :
+                  <ContextMenu
+                    key={source.id}
+                    style={{width: '100%'}}
+                    content={
+                      <Menu>
+                        <MenuItem
+                          icon="trash"
+                          text="Delete Source"
+                          onClick={() => {
+                            promptForSourceDeletion(source)
+                              .then(() => {
+                                navigate(0);
+                              })
+                              .catch(() => {
+                                AppToaster.show({
+                                  message: 'An error occurred while deleting the source.',
+                                  intent: 'danger',
+                                })
+                              });
+                          }}
+                        />
+                      </Menu>
+                    }
+                  >
+                    <SourceIndexPageListItemCard
+                      key={source.id}
+                      source={source}
+                      dataProviders={dataProviders}
+                    />
+                  </ContextMenu>
+              ))}
+            </div>
+          )}
 
         {(sourcesWithoutSourceDomain ?? []).map(source => (
           source == null ? null :

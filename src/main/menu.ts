@@ -241,7 +241,7 @@ export default class MenuBuilder {
           label: 'Need more space?',
           click: async () => {
             const links: [string, string | null][] = [
-              ['Nevermind', null],
+              ['Never Mind', null],
               ['Sweden', 'https://diskprices.com/?locale=se'],
               ['India', 'https://diskprices.com/?locale=in'],
               ['Canada', 'https://diskprices.com/?locale=ca'],
