@@ -278,7 +278,12 @@
       "provider": "github",
       "owner": "martinshaw",
       "repo": "marchive"
-    }
+    },
+    "protocols": [{
+      "name": "marchive",
+      "role": "Marchive ",
+      "schemes": ["marchive"]
+    }]
   },
   "collective": {
     "url": "https://martinshaw.co"
