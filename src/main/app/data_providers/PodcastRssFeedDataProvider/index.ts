@@ -21,13 +21,13 @@ import logger from '../../log'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
 
-type RssParserFeedType = {
+export type RssParserFeedType = {
   [key: string]: any;
 } & Parser.Output<{
   [key: string]: any;
 }>
 
-type PodcastRssFeedDataProviderPartPayloadType = {
+export type PodcastRssFeedDataProviderPartPayloadType = {
   index: number;
 } & {
   [key: string]: any;
@@ -135,6 +135,16 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       throw new Error(errorMessage)
     }
 
+    if (await this.generatePodcastLogoImageFile(capture, feed) === false) {
+      const warningMessage = 'Podcast feed does not have a logo image file to be downloaded'
+      logger.warn(warningMessage, {feed, captureId: capture.id})
+    }
+
+    if (await this.generatePodcastItunesImageFile(capture, feed) === false) {
+      const warningMessage = 'Podcast feed does not have a iTunes image file to be downloaded'
+      logger.warn(warningMessage, {feed, captureId: capture.id})
+    }
+
     if (await this.createCapturePartsForPodcastItems(schedule, capture, source, feed) === false) {
       const errorMessage = 'Failed to create Capture Parts for podcast items'
       logger.error(errorMessage)
@@ -164,6 +174,57 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         JSON.stringify(feedWithoutItems, null, 2),
       )
     } catch (error) {
+      return false
+    }
+
+    return true
+  }
+
+  async generatePodcastLogoImageFile(
+    capture: Capture,
+    feed: RssParserFeedType,
+  ): Promise<boolean> {
+    if (feed.image == null) return false
+
+    const podcastLogoImageUrl = feed.image.url ?? null
+    if (podcastLogoImageUrl == null) return false
+
+    const logoImageDownloader = new Downloader({
+      url: podcastLogoImageUrl,
+      directory: capture.downloadLocation,
+      fileName: 'logo-image.jpg',
+    })
+
+    try { await logoImageDownloader.download() }
+    catch (error) {
+      logger.error('Unable to download podcast feed logo image due to error', {feed, captureId: capture.id})
+      logger.error(error)
+      return false
+    }
+
+    return true
+  }
+
+  async generatePodcastItunesImageFile(
+    capture: Capture,
+    feed: RssParserFeedType,
+  ): Promise<boolean> {
+    if (feed.itunes == null) return false
+    if (feed.itunes.image == null) return false
+
+    const podcastItunesImageUrl = feed.itunes.image ?? null
+    if (podcastItunesImageUrl == null) return false
+
+    const itunesImageDownloader = new Downloader({
+      url: podcastItunesImageUrl,
+      directory: capture.downloadLocation,
+      fileName: 'itunes-image.jpg',
+    })
+
+    try { await itunesImageDownloader.download() }
+    catch (error) {
+      logger.error('Unable to download podcast feed iTunes image due to error', {feed, captureId: capture.id})
+      logger.error(error)
       return false
     }
 
@@ -237,14 +298,19 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
           return true
         }
 
+        logger.info('Created Capture Part', {capturePartId: capturePart.id, capturePartDownloadLocation: capturePart.downloadLocation, capturePartUrl: capturePart.url})
+
         countOfAddedCaptureParts += 1
       }
 
       return true
     }
 
-    // Reminder: returning false will cancel loop, returning true will continue loop
-    await feed.items.every((item, index) => addCapturePart(item, index))
+    for (let index = 0; index < feed.items.length; index++) {
+      const item = feed.items[index]
+      const shouldContinue = await addCapturePart(item, index)
+      if (shouldContinue === false) break
+    }
 
     const startUrl = this.getUrlForFeedItem(feed.items[0])
     if (source.useStartOrEndCursor === 'start' && startUrl != null) {

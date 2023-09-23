@@ -9,19 +9,18 @@ Modified: 2023-09-12T02:55:05.307Z
 Description: description
 */
 
-const useHumanDateCaption: (date: Date) => string = (date) => {
+const useHumanDateCaption: (date: Date, withTime: boolean) => string = (date, withTime = true) => {
   const dateNow = new Date();
 
   const dateIsToday = dateNow.getFullYear() === date.getFullYear() && dateNow.getMonth() === date.getMonth() && dateNow.getDate() === date.getDate();
   const dateIsYesterday = dateNow.getFullYear() === date.getFullYear() && dateNow.getMonth() === date.getMonth() && dateNow.getDate() === date.getDate() - 1;
 
-  if (dateIsToday) {
-    return 'Today at ' + date.toLocaleTimeString();
-  } else if (dateIsYesterday) {
-    return 'Yesterday at ' + date.toLocaleTimeString();
-  } else {
-    return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString();
-  }
+  let dateCaption = date.toLocaleDateString();
+  if (dateIsToday) dateCaption = 'Today'
+  if (dateIsYesterday) dateCaption = 'Yesterday'
+  if (withTime) dateCaption += ' at ' + date.toLocaleTimeString();
+
+  return dateCaption;
 }
 
 export default useHumanDateCaption;

@@ -393,10 +393,11 @@ class BlogArticleDataProvider extends BaseDataProvider {
       return true
     }
 
-    // Reminder: returning false will cancel loop, returning true will continue loop
-    await articleLinks.every((link, index) => {
-      return addCapturePart(link, index)
-    })
+    for (let index = 0; index < articleLinks.length; index++) {
+      const articleLink = articleLinks[index]
+      const shouldContinue = await addCapturePart(articleLink, index)
+      if (shouldContinue === false) break
+    }
 
     if (source.useStartOrEndCursor === 'start') source.currentStartCursorUrl = articleLinks[0].url
     if (source.useStartOrEndCursor === 'end') source.currentEndCursorUrl = articleLinks[articleLinks.length - 1].url

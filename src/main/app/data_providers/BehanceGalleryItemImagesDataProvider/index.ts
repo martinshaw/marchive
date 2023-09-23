@@ -328,8 +328,11 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       return true
     }
 
-    // Reminder: returning false will cancel loop, returning true will continue loop
-    images.every(async (image, index) => await addCapturePart(image, index))
+    for (let index = 0; index < images.length; index++) {
+      const image = images[index]
+      const shouldContinue = await addCapturePart(image, index)
+      if (shouldContinue === false) break
+    }
 
     if (source.useStartOrEndCursor === 'start') source.currentStartCursorUrl = images[0].url
     if (source.useStartOrEndCursor === 'end') source.currentEndCursorUrl = images[images.length - 1].url

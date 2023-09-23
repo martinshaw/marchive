@@ -21,10 +21,10 @@ import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHu
 import BlogArticleDataProviderCapturePartPreviewThumbnail from "../BlogArticleDataProviderCapturePartPreviewThumbnail";
 import getObjectFromJsonFile, { GetObjectFromJsonFileReturnType } from "../../../../renderer/layouts/DefaultLayout/functions/getObjectFromJsonFile";
 import formatLocationUrlWithChangedSearchParams from "renderer/layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams";
-
-import './index.scss'
 import { useCallback } from 'react';
 import { useMemo } from 'react';
+
+import './index.scss'
 
 const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType) => {
   const navigate = useNavigate();
