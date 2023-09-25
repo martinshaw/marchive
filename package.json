@@ -110,7 +110,6 @@
     "node-html-parser": "^6.1.6",
     "nodejs-file-downloader": "^4.12.1",
     "pngquant": "^4.2.0",
-    "popupoff-headless": "github:martinshaw/PopUpOFF-headless#3dd5a72",
     "puppeteer": "^21.1.1",
     "puppeteer-autoscroll-down": "^1.1.2",
     "puppeteer-core": "^21.1.1",
@@ -120,7 +119,6 @@
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-json-view": "^1.21.3",
     "react-router-dom": "^6.15.0",
     "react-virtualized": "^9.22.5",
     "resolve-relative-url": "^1.0.0",
@@ -258,7 +256,9 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "assets/icon.ico",
+      "legalTrademarks": "All Rights Reserved, (c) 2023 CodeAtlas LTD. (Martin Shaw)"
     },
     "linux": {
       "target": [
@@ -279,11 +279,14 @@
       "owner": "martinshaw",
       "repo": "marchive"
     },
-    "protocols": [{
-      "name": "marchive",
-      "role": "Marchive ",
-      "schemes": ["marchive"]
-    }]
+    "protocols": [
+      {
+        "name": "marchive",
+        "schemes": [
+          "marchive"
+        ]
+      }
+    ]
   },
   "collective": {
     "url": "https://martinshaw.co"

@@ -14,7 +14,7 @@ import path from 'node:path'
 import puppeteer from 'puppeteer-extra'
 import {Browser, Page} from 'puppeteer-core'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import { internalNodeModulesPath } from '../../../../paths'
+import { internalBrowserExtensionsPath } from '../../../../paths'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
 import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository'
@@ -33,7 +33,7 @@ export const createPuppeteerBrowser = async (
   const extensionFileNames = [
 
     // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
-    withPopUpOffExtension ? path.join(internalNodeModulesPath, 'popupoff-headless') : null,
+    withPopUpOffExtension ? path.join(internalBrowserExtensionsPath, 'PopUpOFF-headless') : null,
 
   ].filter(filename => filename !== null)
 

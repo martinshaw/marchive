@@ -8,9 +8,11 @@ Modified: 2023-08-17T09:12:39.366Z
 
 Description: description
 */
-import { Umzug, SequelizeStorage } from 'umzug';
+
 import path from 'node:path'
-import logger from '../app/log';
+import logger from '../app/log'
+import { Umzug, SequelizeStorage } from 'umzug'
+import convertCrossPlatformSlashPathToNodePath from '../utilities/convertCrossPlatformSlashPathToNodePath'
 
 import sequelize from './connection'
 
@@ -48,6 +50,7 @@ sequelize.addModels([
  *   column, so it was never created. This caused the app to crash on startup, because the 'type'
  *   column was expected to exist by a DB query which runs on app startup.
  */
+
 // StoredSetting.sync()
 // Source.sync()
 // SourceDomain.sync()
@@ -56,7 +59,7 @@ sequelize.addModels([
 // CapturePart.sync()
 
 const umzug = new Umzug({
-  migrations: { glob: path.join(__dirname, 'migrations', '*') },
+  migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(__dirname, 'migrations', '*')) },
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
   logger: {
@@ -68,6 +71,7 @@ const umzug = new Umzug({
 });
 
 (async () => { await umzug.up() })();
+
 type Migration = typeof umzug._types.migration;
 
 export {

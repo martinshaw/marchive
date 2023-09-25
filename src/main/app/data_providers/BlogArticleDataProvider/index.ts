@@ -19,8 +19,8 @@ import {Capture, Schedule, Source, CapturePart} from '../../../database'
 import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 import {createPuppeteerBrowser, generatePageMetadata, generatePageReadability, generatePageScreenshot, generatePageSnapshot, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
-import { compressImageSimple } from '../../../utilties/compressImage'
-import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
+import { compressImageSimple } from '../../../utilities/compressImage'
+import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;

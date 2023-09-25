@@ -16,7 +16,7 @@ import {getDataProviderByIdentifier} from '../../repositories/DataProviderReposi
 import {AllowedScheduleIntervalReturnType} from '../../data_providers/BaseDataProvider'
 import logger from '../../log'
 import { ScheduleAttributes } from '../../../database/models/Schedule'
-import safeSanitizeFileName from '../../../utilties/safeSanitizeFileName'
+import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName'
 
 /**
  * @throws {Error}

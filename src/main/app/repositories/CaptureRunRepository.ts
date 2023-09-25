@@ -17,7 +17,7 @@ import {getDataProviderByIdentifier} from './DataProviderRepository'
 import {downloadCapturesPath} from '../../../paths'
 import logger from '../log'
 import { v4 } from 'uuid'
-import safeSanitizeFileName from '../../utilties/safeSanitizeFileName'
+import safeSanitizeFileName from '../../utilities/safeSanitizeFileName'
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   logger.info('Found Schedule with ID: ' + schedule.id)

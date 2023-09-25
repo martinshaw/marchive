@@ -9,25 +9,24 @@ Modified: 2023-09-04T04:51:56.084Z
 Description: description
 */
 
-import { DataTypes } from "sequelize";
-import { Migration } from "..";
-
+import { DataTypes } from 'sequelize';
+import { Migration } from '..';
 
 const up: Migration = async ({ context }) => {
-	await context.createTable('sources', {
-		id: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-			primaryKey: true
-		},
-		dataProviderIdentifier: {
+  await context.createTable('sources', {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
+    dataProviderIdentifier: {
       type: DataTypes.STRING,
       allowNull: false,
-		},
-		url: {
+    },
+    url: {
       type: DataTypes.STRING,
       allowNull: false,
-		},
+    },
     currentStartCursorUrl: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -46,23 +45,23 @@ const up: Migration = async ({ context }) => {
       allowNull: true,
       defaultValue: null,
     },
-		createdAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		deletedAt: {
-			type: DataTypes.DATE,
-			allowNull: true
-		}
-	});
-}
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  });
+};
 
 const down: Migration = async ({ context }) => {
-	await context.dropTable('sources');
-}
+  await context.dropTable('sources');
+};
 
 module.exports = { up, down };

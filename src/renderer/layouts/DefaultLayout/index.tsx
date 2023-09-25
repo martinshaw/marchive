@@ -11,10 +11,11 @@ Description: description
 
 import Navbar from './components/Navbar';
 import { useAsyncMemo } from "use-async-memo"
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, createRef } from 'react';
 import isDarkMode from './functions/isDarkMode';
 import marchiveIsSetup from './functions/marchiveIsSetup';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import mainToRendererListeners from './functions/mainToRendererListeners';
 import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
 import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
 import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
@@ -25,8 +26,6 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'react-virtualized/styles.css';
 import './index.scss';
-import mainToRendererListeners from './functions/mainToRendererListeners';
-import { createRef } from 'react';
 
 const DefaultLayout = () => {
   const navigate = useNavigate();
@@ -39,6 +38,7 @@ const DefaultLayout = () => {
     marchiveIsSetup: boolean | null;
     sourcesCount: number | null;
     hasHistory: boolean;
+    platform: string;
   } = useAsyncMemo(
     async () => {
       let hasHistory = false;
@@ -50,6 +50,7 @@ const DefaultLayout = () => {
         marchiveIsSetup: await marchiveIsSetup(),
         sourcesCount: await getSourcesCount(),
         hasHistory,
+        platform: window.electron.platform,
       };
     },
     [location.pathname]
@@ -58,6 +59,7 @@ const DefaultLayout = () => {
     marchiveIsSetup: null,
     sourcesCount: null,
     hasHistory: false,
+    platform: '',
   }
 
   useEffect(() => {
@@ -147,8 +149,12 @@ const DefaultLayout = () => {
     layoutRef
   ])
 
+  let className = '';
+  if (loaderData.isDarkMode) className += ' bp5-dark';
+  if (loaderData.platform) className += ` platform-${loaderData.platform}`;
+
   return (
-    <div ref={layoutRef} id="layout" className={loaderData.isDarkMode ? 'bp5-dark' : ''}>
+    <div ref={layoutRef} id="layout" className={className}>
       <Navbar {...loaderData} />
 
       <div id="page">

@@ -33,9 +33,9 @@ if (typeof process.versions['electron'] !== 'undefined' && ['renderer', 'browser
 }
 
 
-// Do not use `internalRootPath` nor `internalNodeModulesPath` for any write operations. Use `userAppDataPath` instead.
+// Do not use `internalRootPath` nor `internalBrowserExtensionsPath` for any write operations. Use `userAppDataPath` instead.
 export const internalRootPath = path.join(__dirname, '..')
-export const internalNodeModulesPath = path.join(internalRootPath, 'node_modules')
+export const internalBrowserExtensionsPath = path.join(internalRootPath, 'src', 'main', 'browser_extensions')
 
 export { userAppDataPath, downloadsPath, appLogsPath }
 

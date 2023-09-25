@@ -9,71 +9,70 @@ Modified: 2023-09-04T04:51:56.084Z
 Description: description
 */
 
-import { DataTypes } from "sequelize";
-import { Migration } from "..";
-
+import { DataTypes } from 'sequelize';
+import { Migration } from '..';
 
 const up: Migration = async ({ context }) => {
-	await context.createTable('schedules', {
-		id: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-			primaryKey: true
-		},
-		status: {
+  await context.createTable('schedules', {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'pending',
-		},
-		interval: {
+    },
+    interval: {
       type: DataTypes.NUMBER,
       allowNull: true,
-		},
-		lastRunAt: {
+    },
+    lastRunAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
-		},
-		nextRunAt: {
+    },
+    nextRunAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
-		},
-		downloadLocation: {
+    },
+    downloadLocation: {
       type: DataTypes.STRING,
       allowNull: false,
-		},
-		enabled: {
+    },
+    enabled: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-		},
-		deletedFromDownloads: {
+    },
+    deletedFromDownloads: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-		},
-		sourceId: {
+    },
+    sourceId: {
       type: DataTypes.NUMBER,
       allowNull: false,
-		},
-		createdAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		deletedAt: {
-			type: DataTypes.DATE,
-			allowNull: true
-		}
-	});
-}
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  });
+};
 
 const down: Migration = async ({ context }) => {
-	await context.dropTable('schedules');
-}
+  await context.dropTable('schedules');
+};
 
 module.exports = { up, down };

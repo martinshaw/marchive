@@ -19,23 +19,19 @@ Modified: 2023-09-04T04:51:56.084Z
 Description: description
 */
 
-import { DataTypes } from "sequelize";
-import { Migration } from "..";
+import { DataTypes } from 'sequelize';
+import { Migration } from '..';
 
 const up: Migration = async ({ context }) => {
-  await context.addColumn(
-    'source_domains',
-    'url',
-    {
-      type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: null,
-    }
-  )
-}
+  await context.addColumn('source_domains', 'url', {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null,
+  });
+};
 
 const down: Migration = async ({ context }) => {
-  await context.removeColumn('source_domains', 'url')
-}
+  await context.removeColumn('source_domains', 'url');
+};
 
 module.exports = { up, down };
