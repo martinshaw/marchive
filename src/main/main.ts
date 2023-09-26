@@ -14,7 +14,7 @@
  */
 import path from 'path';
 import logger from './app/log';
-import MenuBuilder from './menu';
+import WindowMenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';
 import resolveHtmlPath from './utilities/resolveHtmlPath';
@@ -213,8 +213,8 @@ export const createWindow = async () => {
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
 
-  const menuBuilder = new MenuBuilder(windows[mainWindowId]);
-  menuBuilder.buildMenu();
+  const windowMenuBuilder = new WindowMenuBuilder(windows[mainWindowId]);
+  windowMenuBuilder.buildMenu();
 
   // Open urls in the user's browser
   windows[mainWindowId].webContents.setWindowOpenHandler((edata) => {

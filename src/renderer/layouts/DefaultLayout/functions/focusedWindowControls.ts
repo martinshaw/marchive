@@ -11,7 +11,7 @@ Description: description
 
 const toggleMaximize = () => {
   return new Promise<void>((resolve, reject) => {
-    window.electron.ipcRenderer.sendMessage('utilities.focused-window.toggle-maximise');
+    window.electron.ipcRenderer.sendMessage('utilities.focused-window.toggle-maximize');
     resolve();
   });
 }

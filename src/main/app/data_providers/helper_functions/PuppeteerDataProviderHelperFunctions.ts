@@ -161,7 +161,7 @@ export const generatePageScreenshot = async (
   await page.screenshot({
     fullPage: true,
     path: screenshotFileName,
-    quality: 85,
+    quality: 90,
     type: 'jpeg',
   })
 
@@ -206,13 +206,13 @@ export const generatePageSnapshot = async (
 export const generatePageMetadata = async (
   page: Page,
   captureDownloadDirectory: string,
-): Promise<boolean> => {
+): Promise<false | PageHeadMetadata> => {
   const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
 
   const metadata = await retrievePageHeadMetadata(page)
   fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
 
-  return fs.existsSync(metadataFileName)
+  return fs.existsSync(metadataFileName) ? metadata : false
 }
 
 export type PageHeadMetadata = {

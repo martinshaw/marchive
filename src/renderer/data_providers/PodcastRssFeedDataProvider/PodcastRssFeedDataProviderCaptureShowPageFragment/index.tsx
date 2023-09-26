@@ -11,7 +11,6 @@ Description: description
 
 import { useMemo } from 'react';
 import { useCallback } from 'react';
-import ReactJson from 'react-json-view';
 import { Grid } from 'react-virtualized';
 import { useAsyncMemo } from "use-async-memo";
 import List from 'react-virtualized/dist/commonjs/List';

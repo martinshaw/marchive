@@ -100,7 +100,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     await page.screenshot({
       fullPage: true,
       path: indexPageDownloadFileName,
-      quality: 85,
+      quality: 90,
+      type: 'jpeg',
     })
 
     await this.generatePageHeadMetadata(page, capture.downloadLocation)

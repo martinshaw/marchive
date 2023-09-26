@@ -71,8 +71,8 @@ export const findOrCreateSourceDomainForUrl = async (url: string): Promise<Sourc
 }
 
 const attemptToDetermineSiteNameFromMetadata = async (urlDomainName: string): Promise<string | null> => {
-  const browser = await createPuppeteerBrowser()
-  const page = await loadPageByUrl(urlDomainName, browser)
+  const browser = await createPuppeteerBrowser(false, false, false, true)
+  const page = await loadPageByUrl(urlDomainName, browser, 'load')
   const metadata = await retrievePageHeadMetadata(page)
 
   await page.close()
