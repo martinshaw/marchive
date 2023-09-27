@@ -16,11 +16,11 @@
     gap: 1.5rem;
   }
 
-  & > .bp5-navbar-group.bp5-align-left {
+  .bp5-navbar-group.bp5-align-left {
     justify-content: flex-start;
   }
 
-  & > .bp5-navbar-group.bp5-align-right {
+  .bp5-navbar-group.bp5-align-right {
     justify-content: flex-end;
   }
 }
@@ -28,6 +28,10 @@
 #layout.platform-darwin #navbar {
   // Fits positioning of MacOS 'traffic lights' controls
   padding: 0 88px;
+
+  .bp5-navbar-group.bp5-align-left, .bp5-navbar-group.bp5-align-right {
+    width: 100px;
+  }
 }
 
 #layout.platform-win32 #navbar {
@@ -35,7 +39,7 @@
   width: 100%;
   padding: 0 12px;
 
-  & > .bp5-navbar-group.bp5-align-left, & > .bp5-navbar-group.bp5-align-right {
+  .bp5-navbar-group.bp5-align-left, .bp5-navbar-group.bp5-align-right {
     width: 160px !important;
   }
 }

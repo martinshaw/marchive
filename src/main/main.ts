@@ -117,10 +117,12 @@ export const createWindow = async () => {
     symbolColor: '#eeeeee',
   })
 
-  const windowControlsAdditions: Partial<BrowserWindowConstructorOptions> = process.platform === 'darwin' ? {
+  let windowControlsAdditions: Partial<BrowserWindowConstructorOptions> = { titleBarStyle: 'default' }
+  if (process.platform === 'darwin') windowControlsAdditions = {
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 15, y: 17 },
-  } : {
+  }
+  if (process.platform === 'win32') windowControlsAdditions = {
     titleBarStyle: 'hidden',
     titleBarOverlay: windowControlsTitleBarOverlay(),
   }

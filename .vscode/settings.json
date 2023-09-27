@@ -64,4 +64,8 @@
   "editor.stickyScroll.enabled": true,
   "editor.tabSize": 4,
   "editor.detectIndentation": true,
+
+  "cSpell.words": [
+    "Marchive"
+  ],
 }
