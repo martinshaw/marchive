@@ -13,177 +13,46 @@ import { useMemo } from 'react';
 import { useCallback } from 'react';
 import { Grid } from 'react-virtualized';
 import { useAsyncMemo } from "use-async-memo";
-import List from 'react-virtualized/dist/commonjs/List';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import useHumanDateCaption from "../../hooks/useHumanDateCaption";
 import { Location, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from "../..";
 import { RssParserFeedType } from '../../../../main/app/data_providers/PodcastRssFeedDataProvider';
 import parseLocationWithSearchParams from "../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams";
 import PodcastRssFeedDataProviderCapturePartPreviewThumbnail from '../PodcastRssFeedDataProviderCapturePartPreviewThumbnail';
 import getObjectFromJsonFile, { GetObjectFromJsonFileReturnType } from "../../../layouts/DefaultLayout/functions/getObjectFromJsonFile";
-import formatLocationUrlWithChangedSearchParams from "../../../../renderer/layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams";
 import { Button, ButtonGroup, ContextMenu, ContextMenuContentProps, H1, H4, Menu, MenuDivider, MenuItem, NonIdealState, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 
 import './index.scss'
+import useFocusedCapturePartFromLocation from 'renderer/data_providers/hooks/useFocusedCapturePartFromLocation';
+import useCaptureMetadata from 'renderer/data_providers/hooks/useCaptureMetadata';
 
 const PodcastRssFeedDataProviderCaptureShowPageFragment = (props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
 
-  type CaptureStateDisplayedMediaType = 'media' | 'details' | 'metadata';
-  type CaptureFocusedMediaStateReturnType = { mediaIsFocused: boolean, displayedMediaType: CaptureStateDisplayedMediaType };
-  const {
-    mediaIsFocused,
-    displayedMediaType,
-  } = useMemo<CaptureFocusedMediaStateReturnType>(
-    () => {
-      return {
-        mediaIsFocused: location.searchParams?.focused != null,
-        displayedMediaType: location.searchParams?.displayedMediaType as CaptureStateDisplayedMediaType ?? 'readability',
-      };
-    },
-    [location.pathname, location.searchParams, props.capture],
-  );
+  type CaptureStateDisplayedMediaType = 'media-details' | 'metadata';
 
-  const getFocusedCapturePart = useCallback(
-    () => {
-      if (props?.capture?.captureParts == null || (props?.capture?.captureParts || []).length < 1) return null;
-      const focusedSearchParam = location.searchParams.focused;
-      if (Array.isArray(focusedSearchParam) === false) return null;
-      const focusedSearchParamAsArray = focusedSearchParam as [string, number];
-      if (focusedSearchParamAsArray[0] !== 'capture-part' || typeof focusedSearchParamAsArray[1] !== 'number') return null;
-      const capturePart = props.capture.captureParts.find((capturePart) => capturePart.id === focusedSearchParamAsArray[1]);
-      if (capturePart == null) return null;
-      return capturePart;
-    },
-    [location.pathname, location.searchParams, props.capture, displayedMediaType],
-  );
-
-  // type CaptureImageStateReturnType = {
-  //   captureImageUrl: string | 'error' | null;
-  //   imageDimensions: {w: null | number, h: null | number};
-  // }
-  // const {
-  //   captureImageUrl,
-  //   imageDimensions,
-  // } = useAsyncMemo<CaptureImageStateReturnType>(
-  //   () =>
-  //     new Promise((resolve, reject) => {
-  //       let returnValue: CaptureImageStateReturnType = {
-  //         captureImageUrl: null,
-  //         imageDimensions: {w: null, h: null},
-  //       }
-
-  //       let newImageUrl: string = 'marchive-downloads:///capture/' + props.capture.id + '/screenshot.jpg';
-
-  //       const focusedCapturePart = getFocusedCapturePart();
-  //       if (
-  //         location.searchParams?.focused != null &&
-  //         Array.isArray(location.searchParams?.focused) &&
-  //         location.searchParams?.focused?.[0] === 'capture-part' &&
-  //         typeof location.searchParams?.focused?.[1] === 'number' &&
-  //         focusedCapturePart != null
-  //       ) {
-  //         newImageUrl = 'marchive-downloads:///capture-part/' + focusedCapturePart.id + '/screenshot.jpg';
-  //       }
-
-  //       console.log({newImageUrl, pathname: location.pathname, search: location.search, searchParams: location.searchParams, hash: location.hash});
-  //       // returnValue.captureImageUrl = newImageUrl;
-  //       // resolve(returnValue);
-
-  //       const preloadImage = new Image();
-  //       preloadImage.src = newImageUrl;
-  //       preloadImage.onload = () => {
-  //         console.log('Successfully loaded', newImageUrl, preloadImage.width, preloadImage.height)
-  //         returnValue.captureImageUrl = newImageUrl;
-  //         returnValue.imageDimensions.w = preloadImage.width;
-  //         returnValue.imageDimensions.h = preloadImage.height;
-  //         resolve(returnValue);
-  //       }
-  //       preloadImage.onerror = () => {
-  //         resolve({
-  //           captureImageUrl: 'error',
-  //           imageDimensions: {w: null, h: null},
-  //         })
-  //       }
-  //     }),
-  //   [location.pathname, location.searchParams, props.capture, mediaIsFocused, displayedMediaType],
-  //   {
-  //     captureImageUrl: null,
-  //     imageDimensions: {w: null, h: null},
-  //   },
-  // );
-
-  type CaptureFeedMetadataStateReturnType = {
-    feedMetadataObject: RssParserFeedType | null;
-    feedTitleText: string | null;
-    feedDescriptionText: string | null;
-  }
+  const mediaIsFocused = location.searchParams?.focused != null;
+  const displayedMediaType =
+    (location.searchParams
+      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? 'media-details';
 
   const {
-    feedMetadataObject,
-    feedTitleText,
-    feedDescriptionText,
-  } = useAsyncMemo<CaptureFeedMetadataStateReturnType>(
-    () =>
-      getObjectFromJsonFile({
-        if: props.capture != null && props?.capture?.schedule?.status === 'pending',
-        filePath: 'marchive-downloads:///capture/' + props.capture.id + '/metadata.json',
-      })
-      .then((metadata) => {
-        let returnValue: CaptureFeedMetadataStateReturnType = {
-          feedMetadataObject: null,
-          feedTitleText: null,
-          feedDescriptionText: null,
-        };
-        if (metadata == null) return returnValue;
-
-        returnValue.feedMetadataObject = metadata as RssParserFeedType;
-
-        returnValue.feedTitleText = (returnValue.feedMetadataObject?.title as string | null) || null;
-        if (returnValue.feedTitleText?.includes(' - ')) {
-          const feedTitleTextParts = returnValue.feedTitleText.split(' - ');
-          feedTitleTextParts.pop()
-          returnValue.feedTitleText = feedTitleTextParts.join(' - ');
-        }
-        if (returnValue.feedTitleText?.includes(' | ')) {
-          const feedTitleTextParts = returnValue.feedTitleText.split(' | ');
-          feedTitleTextParts.pop()
-          returnValue.feedTitleText = feedTitleTextParts.join(' - ');
-        }
-        if (typeof returnValue.feedTitleText === 'string') returnValue.feedTitleText = returnValue.feedTitleText.trim();
-
-        returnValue.feedDescriptionText = (returnValue.feedMetadataObject?.description as string | null) || null;
-        if (typeof returnValue.feedDescriptionText === 'string') returnValue.feedDescriptionText = returnValue.feedDescriptionText.trim();
-
-        return returnValue;
-      }),
-    [location.pathname, location.searchParams, props.capture, mediaIsFocused, displayedMediaType],
-    {
-      feedMetadataObject: null,
-      feedTitleText: null,
-      feedDescriptionText: null,
-    },
+    focusedCapturePart,
+    focusedCaptureOrCapturePartDownloadLocation,
+  } = useFocusedCapturePartFromLocation(
+    location,
+    props.capture,
+    props.capture.captureParts ?? []
   );
+
+  const { captureMetadataObject: feedMetadataObject, titleText: feedTitleText, descriptionText: feedDescriptionText } =
+    useCaptureMetadata(props.capture, null);
 
   const usingDarkTheme = document.querySelector('#layout')?.classList?.contains('bp5-dark') || false;
-  const metadataViewerTheme = usingDarkTheme ? 'bright' : 'bright:inverted';
 
   const className = 'podcast-rss-feed-capture-show-fragment__container ' +
     (mediaIsFocused ? 'podcast-rss-feed-capture-show-fragment__container--has-focused-media ' : '');
-
-  const getAbsoluteDownloadLocationForFocusedCaptureOrCapturePart = () => {
-    let absolutePath = props.capture.downloadLocation;
-
-    const locationFocusedSearchParam = location.searchParams.focused;
-    if (Array.isArray(locationFocusedSearchParam) && locationFocusedSearchParam[0] === 'capture-part' && typeof locationFocusedSearchParam[1] === 'number') {
-      const capturePart = props.capture.captureParts.find((capturePart) => capturePart.id === locationFocusedSearchParam[1]);
-      if (capturePart != null) absolutePath = capturePart.downloadLocation;
-    }
-
-    return absolutePath;
-  }
 
   let fileBrowserName = 'Your File Browser';
   if (window.electron.platform === 'darwin') fileBrowserName = 'Finder';
