@@ -66,6 +66,8 @@
   "editor.detectIndentation": true,
 
   "cSpell.words": [
+    "ellipsize",
+    "Includeable",
     "Marchive"
   ],
 }

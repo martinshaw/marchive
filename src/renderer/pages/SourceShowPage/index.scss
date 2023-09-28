@@ -150,15 +150,41 @@
 
 .source-captures__grid__item__link {
   color: unset !important;
+  text-decoration: none !important;
 }
 
 .source-captures__grid__item {
   width: 100%;
-  padding: 20px 5px;
+  // padding: 20px 5px;
+  padding: 20px 20px;
   padding-bottom: 5px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1rem;
+  overflow: hidden;
+  transition: filter 250ms, background-color 250ms;
+  border-radius: 7px;
   // @see https://dev.to/vadimdemedes/making-electron-apps-feel-native-on-mac-52e8#cursor
   cursor: default;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
+#layout.bp5-dark .source-captures__grid__item {
+  background-color: rgba(255, 255, 255, 0.02);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+#layout:not(.bp5-dark).source-captures__grid__item {
+  background-color: rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }

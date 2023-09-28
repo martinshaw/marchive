@@ -26,7 +26,7 @@
   margin-right: -10px;
   padding: 10px 20px;
   transition: filter 250ms, background-color 250ms;
-  border-radius: 0px;
+  border-radius: 7px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -35,7 +35,6 @@
 
   &:hover {
     filter: brightness(1.05);
-    border-radius: 7px;
   }
 }
 
@@ -47,14 +46,13 @@
   margin-right: -10px;
   padding: 10px 20px;
   transition: filter 250ms, background-color 250ms;
-  border-radius: 0px;
+  border-radius: 7px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   &:hover {
     filter: brightness(1.05);
-    border-radius: 7px;
   }
 
   .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__date-caption {
@@ -73,7 +71,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
 
     .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__details__title {
       margin-top: 0;
@@ -92,7 +90,7 @@
       padding: 0;
       font-size: 1.1rem;
       line-height: 1.85rem;
-      opacity: .825;
+      opacity: 0.825;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -105,30 +103,34 @@
       padding: 0;
       font-size: 1.1rem;
       line-height: 1.85rem;
-      opacity: .6;
+      opacity: 0.6;
       font-style: italic;
       display: -webkit-box;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      // text-overflow: ellipsis;
     }
   }
 }
 
+#layout.bp5-dark
+  .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__container,
+#layout.bp5-dark
+  .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__not-found {
+  background-color: rgba(255, 255, 255, 0.02);
 
-#layout.bp5-dark .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__container:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
 }
 
-#layout:not(.bp5-dark) .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__container:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
+#layout:not(.bp5-dark)
+  .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__container,
+#layout:not(.bp5-dark)
+  .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__not-found {
+  background-color: rgba(0, 0, 0, 0.02);
 
-#layout.bp5-dark .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__not-found:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-#layout:not(.bp5-dark) .podcast-rss-feed-data-provider-capture-part-preview-thumbnail__not-found:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }

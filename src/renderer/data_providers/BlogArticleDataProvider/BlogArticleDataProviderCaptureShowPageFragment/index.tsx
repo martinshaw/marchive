@@ -478,7 +478,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
       </div>
 
       <div className="blog-article-capture-show-fragment__right">
-        <H4 className="blog-article-capture-show-fragment__right__related-heading">
+        <H4 className="blog-article-capture-show-fragment__right__related-heading font-serif">
           Related Articles and Posts...
         </H4>
 
