@@ -44,7 +44,7 @@ const PodcastRssFeedDataProviderCapturePartPreviewThumbnail = (props: DataProvid
     }) || JSON.parse(props.capturePart.payload)
   ) as PodcastRssFeedDataProviderPartPayloadType | null;
 
-  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
+  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt, true);
 
   const {
     titleElement,

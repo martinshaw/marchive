@@ -9,18 +9,19 @@ Modified: 2023-09-04T19:15:37.840Z
 Description: description
 */
 
-// import fs from 'node:fs';
-// import { v4 } from "uuid";
-// import path from 'node:path';
+import fs from 'node:fs';
+import { v4 } from "uuid";
+import path from 'node:path';
 import logger from "../log";
 import { SourceDomain } from "../../database";
-// import Downloader from "nodejs-file-downloader";
-// import resolveRelative from 'resolve-relative-url';
-// import { downloadSourceDomainFaviconsPath } from "../../../paths";
+import Downloader from "nodejs-file-downloader";
+import resolveRelative from 'resolve-relative-url';
+import { downloadSourceDomainFaviconsPath } from "../../../paths";
 // // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`
 // import getFavicons from 'get-website-favicon'
-import { createPuppeteerBrowser, loadPageByUrl/*, retrieveFaviconsFromUrl as retrieveFaviconsFromUrlUsingPuppeteer*/, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
+import { createPuppeteerBrowser, loadPageByUrl, retrieveFaviconsFromUrl as retrieveFaviconsFromUrlUsingPuppeteer, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
 import BaseDataProvider from "../data_providers/BaseDataProvider";
+import safeSanitizeFileName from '../../utilities/safeSanitizeFileName';
 
 export const findOrCreateSourceDomainForUrl = async (url: string, dataProvider: BaseDataProvider): Promise<SourceDomain | null> => {
   let urlDomainName: string | null = null;
@@ -73,146 +74,130 @@ export const findOrCreateSourceDomainForUrl = async (url: string, dataProvider: 
   })
 }
 
-// /**
-//  * This (still a little slow) method of getting the name for a Source's Source Domain, only works for Sources with URLs pointing to HTML websites.
-//  *   As this browser doesn't have a timeout set, it causes the app to hang if the URL is not a valid HTML website
-//  *   (like a URL for a podcast feed or arbitrary file)
-//  */
-// const attemptToDetermineSiteNameFromMetadata = async (urlDomainName: string): Promise<string | null> => {
-//   const browser = await createPuppeteerBrowser(false, false, false, true)
-//   const page = await loadPageByUrl(urlDomainName, browser, 'load')
-//   const metadata = await retrievePageHeadMetadata(page)
+type GetWebsiteFaviconResultIconType = {
+  src?: string;
+  sizes?: string;
+  type?: string;
+  origin?: string;
+  rank?: number;
+}
 
-//   await page.close()
-//   await browser.close()
+export type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
+  src: string;
+}
 
-//   return metadata.ogSiteName ?? metadata.name ?? metadata.ogTitle ?? metadata.title ?? null
-// }
+type GetWebsiteFaviconResultType = {
+  url?: string;
+  baseUrl?: string;
+  originUrl?: string;
+  icons?: GetWebsiteFaviconResultIconType[];
+}
 
-// type GetWebsiteFaviconResultIconType = {
-//   src?: string;
-//   sizes?: string;
-//   type?: string;
-//   origin?: string;
-//   rank?: number;
-// }
+const iconLikelyHasSuitableSize = (icon: GetWebsiteFaviconResultIconType): boolean => {
+  const minimumSize = 120
 
-// export type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
-//   src: string;
-// }
+  // Check if `sizes` contains a size above the minimum
+  const sizesRegex = /^([\d]+)x([\d]+)$/gm;
+  let sizesMatches: RegExpExecArray | null = null;
 
-// type GetWebsiteFaviconResultType = {
-//   url?: string;
-//   baseUrl?: string;
-//   originUrl?: string;
-//   icons?: GetWebsiteFaviconResultIconType[];
-// }
+  while ((sizesMatches = sizesRegex.exec(icon?.sizes || '')) !== null) {
+    if (sizesMatches.index === sizesRegex.lastIndex) sizesRegex.lastIndex++;
 
-// const iconLikelyHasSuitableSize = (icon: GetWebsiteFaviconResultIconType): boolean => {
-//   const minimumSize = 120
+    if (sizesMatches != null) {
+      if (sizesMatches.length === 3) {
+        const width = parseInt(sizesMatches[1])
+        const height = parseInt(sizesMatches[2])
+        if (width >= minimumSize && height >= minimumSize) return true
+        if (width < minimumSize && height < minimumSize) return false
+      }
+    }
+  }
 
-//   // Check if `sizes` contains a size above the minimum
-//   const sizesRegex = /^([\d]+)x([\d]+)$/gm;
-//   let sizesMatches: RegExpExecArray | null = null;
+  // Check if `src` contains a size above the minimum
+  const srcRegex = /([\d]+)x([\d]+)/gm;
+  let srcMatches: RegExpExecArray | null = null;
 
-//   while ((sizesMatches = sizesRegex.exec(icon?.sizes || '')) !== null) {
-//     if (sizesMatches.index === sizesRegex.lastIndex) sizesRegex.lastIndex++;
+  while ((srcMatches = srcRegex.exec(icon?.sizes || '')) !== null) {
+    if (srcMatches.index === srcRegex.lastIndex) srcRegex.lastIndex++;
 
-//     if (sizesMatches != null) {
-//       if (sizesMatches.length === 3) {
-//         const width = parseInt(sizesMatches[1])
-//         const height = parseInt(sizesMatches[2])
-//         if (width >= minimumSize && height >= minimumSize) return true
-//         if (width < minimumSize && height < minimumSize) return false
-//       }
-//     }
-//   }
+    if (srcMatches != null) {
+      if (srcMatches.length === 3) {
+        const width = parseInt(srcMatches[1])
+        const height = parseInt(srcMatches[2])
+        if (width >= minimumSize && height >= minimumSize) return true
+        if (width < minimumSize && height < minimumSize) return false
+      }
+    }
+  }
 
-//   // Check if `src` contains a size above the minimum
-//   const srcRegex = /([\d]+)x([\d]+)/gm;
-//   let srcMatches: RegExpExecArray | null = null;
+  // If no sizes are specified in `sizes` or `src`, check if the icon is likely to be an 'apple-touch-icon' which is usually a nice relatively large icon
+  if (icon?.origin?.includes(`rel="apple-touch-icon"`) || icon?.origin?.includes(`rel='apple-touch-icon'`)) return true
+  if (icon?.src?.includes('apple_touch_icon.png')) return true
+  return false
+}
 
-//   while ((srcMatches = srcRegex.exec(icon?.sizes || '')) !== null) {
-//     if (srcMatches.index === srcRegex.lastIndex) srcRegex.lastIndex++;
+export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<string | null> => {
+  if (fs.existsSync(downloadSourceDomainFaviconsPath) === false) fs.mkdirSync(downloadSourceDomainFaviconsPath, { recursive: true })
 
-//     if (srcMatches != null) {
-//       if (srcMatches.length === 3) {
-//         const width = parseInt(srcMatches[1])
-//         const height = parseInt(srcMatches[2])
-//         if (width >= minimumSize && height >= minimumSize) return true
-//         if (width < minimumSize && height < minimumSize) return false
-//       }
-//     }
-//   }
+  /**
+   * This doesn't seem to work as expected for some sites, so we'll use my own Puppeteer-based favicon code below instead, even though it's much slower
+   *   TODO: Will need to find an alternative to speed up the process of adding a new Source with a new Source Domain
+   */
+  // const result = await getFavicons(url) as GetWebsiteFaviconResultType
 
-//   // If no sizes are specified in `sizes` or `src`, check if the icon is likely to be an 'apple-touch-icon' which is usually a nice relatively large icon
-//   if (icon?.origin?.includes(`rel="apple-touch-icon"`) || icon?.origin?.includes(`rel='apple-touch-icon'`)) return true
-//   if (icon?.src?.includes('apple_touch_icon.png')) return true
-//   return false
-// }
+  let icons: GetWebsiteFaviconResultIconTypeWithNonunknownSrc[] = []
+  // if (result.icons == null || result.icons.length === 0) {
+    /**
+     * The `get-website-favicon` package doesn't seem to be able to find favicons for some sites
+     *   (I suspect sites which are dynamically JS rendered on page load), so we'll try to use
+     *   my own Puppeteer-based favicon code get the favicon (this takes much longer because
+     *   it has to load the browser, the page and then to wait)
+     */
+    icons = await retrieveFaviconsFromUrlUsingPuppeteer(url)
+    if (icons.length === 0) return null
+  // } else {
+  //   icons = result.icons.filter(i => i?.src != null && i?.src !== '') as GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]
+  // }
 
-// export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<string | null> => {
-//   if (fs.existsSync(downloadSourceDomainFaviconsPath) === false) fs.mkdirSync(downloadSourceDomainFaviconsPath, { recursive: true })
+  // Prefer PNGs, then JPEGs, then SVGs, then ICOs
+  const icon =
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.png') || icon.type === 'image/png')) ??
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.jpeg') || icon?.src?.endsWith('.jpg') || icon.type === 'image/jpeg')) ??
+    icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.svg') || icon.type === 'image/svg+xml')) ??
+    icons.find(icon => (icon?.src?.endsWith('.ico') || icon.type === 'image/x-icon'))
 
-//   /**
-//    * This doesn't seem to work as expected for some sites, so we'll use my own Puppeteer-based favicon code below instead, even though it's much slower
-//    *   TODO: Will need to find an alternative to speed up the process of adding a new Source with a new Source Domain
-//    */
-//   // const result = await getFavicons(url) as GetWebsiteFaviconResultType
+  let iconUrl: string | null = icon?.src ?? null
+  if (iconUrl == null) {
+    if (icons.length > 0) iconUrl = icons[0].src
+    else return null
+  }
 
-//   let icons: GetWebsiteFaviconResultIconTypeWithNonunknownSrc[] = []
-//   // if (result.icons == null || result.icons.length === 0) {
-//     /**
-//      * The `get-website-favicon` package doesn't seem to be able to find favicons for some sites
-//      *   (I suspect sites which are dynamically JS rendered on page load), so we'll try to use
-//      *   my own Puppeteer-based favicon code get the favicon (this takes much longer because
-//      *   it has to load the browser, the page and then to wait)
-//      */
-//     icons = await retrieveFaviconsFromUrlUsingPuppeteer(url)
-//     if (icons.length === 0) return null
-//   // } else {
-//   //   icons = result.icons.filter(i => i?.src != null && i?.src !== '') as GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]
-//   // }
+  if (iconUrl.startsWith('//')) iconUrl = 'https:' + iconUrl
+  if (iconUrl.startsWith('/')) iconUrl = resolveRelative(iconUrl, url) as string || null
+  if (iconUrl == null) {
+    logger.warn('Unable to resolve relative URL for favicon URL ' + iconUrl + ' for URL ' + url + ' when attempting to retrieve and store favicon, setting to null')
+    return null
+  }
 
-//   // Prefer PNGs, then JPEGs, then SVGs, then ICOs
-//   const icon =
-//     icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.png') || icon.type === 'image/png')) ??
-//     icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.jpeg') || icon?.src?.endsWith('.jpg') || icon.type === 'image/jpeg')) ??
-//     icons.find(icon => iconLikelyHasSuitableSize(icon) && (icon?.src?.endsWith('.svg') || icon.type === 'image/svg+xml')) ??
-//     icons.find(icon => (icon?.src?.endsWith('.ico') || icon.type === 'image/x-icon'))
+  const iconUrlExtension = iconUrl.split('.').pop()
+  const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
+  let iconFileName = safeSanitizeFileName((new URL(safeUrl)).hostname + '.' + iconUrlExtension)
+  if (iconFileName === false) iconFileName = safeSanitizeFileName(v4() + '.' + iconUrlExtension)
+  if (iconFileName === false) iconFileName = v4() as string
 
-//   let iconUrl: string | null = icon?.src ?? null
-//   if (iconUrl == null) {
-//     if (icons.length > 0) iconUrl = icons[0].src
-//     else return null
-//   }
+  const iconDownloader = new Downloader({
+    url: iconUrl,
+    directory: downloadSourceDomainFaviconsPath,
+    fileName: iconFileName,
+  })
 
-//   if (iconUrl.startsWith('//')) iconUrl = 'https:' + iconUrl
-//   if (iconUrl.startsWith('/')) iconUrl = resolveRelative(iconUrl, url) as string || null
-//   if (iconUrl == null) {
-//     logger.warn('Unable to resolve relative URL for favicon URL ' + iconUrl + ' for URL ' + url + ' when attempting to retrieve and store favicon, setting to null')
-//     return null
-//   }
+  try { await iconDownloader.download() }
+  catch (error) {
+    logger.error('Unable to download favicon from URL ' + iconUrl + ' for URL ' + url + ' due to error')
+    logger.error(error)
+    return null
+  }
 
-//   const iconUrlExtension = iconUrl.split('.').pop()
-//   const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
-//   let iconFileName = safeSanitizeFileName((new URL(safeUrl)).hostname + '.' + iconUrlExtension)
-//   if (iconFileName === false) iconFileName = safeSanitizeFileName(v4() + '.' + iconUrlExtension)
-//   if (iconFileName === false) iconFileName = v4() as string
-
-//   const iconDownloader = new Downloader({
-//     url: iconUrl,
-//     directory: downloadSourceDomainFaviconsPath,
-//     fileName: iconFileName,
-//   })
-
-//   try { await iconDownloader.download() }
-//   catch (error) {
-//     logger.error('Unable to download favicon from URL ' + iconUrl + ' for URL ' + url + ' due to error')
-//     logger.error(error)
-//     return null
-//   }
-
-//   return path.join(downloadSourceDomainFaviconsPath, iconFileName)
-// }
+  return path.join(downloadSourceDomainFaviconsPath, iconFileName)
+}
 
