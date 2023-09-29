@@ -7,9 +7,20 @@
 
   & * {
     -webkit-app-region: no-drag;
+    user-select: none !important;
   }
 
   & > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /**
+   * TODO: Remove this when I restore commented code for 'Today' and 'Yesterday' pages
+   */
+  .bp5-popover-target > div {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -36,6 +36,9 @@ const SourceIndexPageListItemCard = (
     return props.source.schedules[0].lastRunAt == null;
   })();
 
+  let nameAndUrlCaption = props.source.url;
+  if (props.source.name != null) nameAndUrlCaption = props.source.name + ' - ' + nameAndUrlCaption;
+
   return (
     <NavLink
       to={hasNotFinishedProcessingFirstCapture ? '' : `/sources/${props.source.id}`}
@@ -46,6 +49,9 @@ const SourceIndexPageListItemCard = (
         className="sources__list__item"
         interactive={hasNotFinishedProcessingFirstCapture === false}
       >
+        <div className="sources__list__item__details-row">
+          <Text>{nameAndUrlCaption}</Text>
+        </div>
         {dataProvider != null && (
           <div className="sources__list__item__provider-row">
             <img
@@ -59,15 +65,12 @@ const SourceIndexPageListItemCard = (
             />
             <Text>{dataProvider?.name}</Text>
             <div className="sources__list__item__provider-row__schedule">
-              <SourceIndexPageListItemCardScheduleCaption
-                source={props.source}
-              />
+              {(props.source?.schedules ?? []).length > 0 && <SourceIndexPageListItemCardScheduleCaption
+                schedule={props.source.schedules[0]}
+              />}
             </div>
           </div>
         )}
-        <div className="sources__list__item__details-row">
-          <Text>{props.source.url}</Text>
-        </div>
       </Card>
     </NavLink>
   );

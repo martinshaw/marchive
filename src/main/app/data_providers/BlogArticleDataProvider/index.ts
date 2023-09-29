@@ -19,6 +19,7 @@ import { Capture, Schedule, Source, CapturePart } from '../../../database';
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
   BaseDataProviderIconInformationReturnType,
+  SourceDomainInformationReturnType,
 } from '../BaseDataProvider';
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
 import {
@@ -34,6 +35,7 @@ import {
 } from '../helper_functions/PuppeteerDataProviderHelperFunctions';
 import { compressImageSimple } from '../../../utilities/compressImage';
 import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName';
+import entities from "entities";
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -106,6 +108,47 @@ class BlogArticleDataProvider extends BaseDataProvider {
     return {};
   }
 
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    return super.getSourceDomainInformation(url);
+
+    /**
+     * TODO: @see https://www.notion.so/codeatlas/Build-UI-etc-for-podcast-DP-2b11d20d72ec4c91be3033217034f020?pvs=4#de488f21490d4c6cb2ba70d0aa6a7970
+     */
+    // let request: Response | null = null;
+    // try {
+    //   request = await fetch(url);
+    //   if (request === null) return super.getSourceDomainInformation(url);
+    //   if (request.status !== 200) return super.getSourceDomainInformation(url);
+
+    //   const contents = await request.text();
+    //   if (!contents) return super.getSourceDomainInformation(url);
+    //   if (
+    //     contents.includes('<title ') === false &&
+    //     contents.includes('<title>') === false
+    //   ) {
+    //     return super.getSourceDomainInformation(url);
+    //   }
+
+    //   let titleMatches;
+    //   if ((titleMatches = /<title>([^<\/]*)<\/title>/iu.exec(contents)) !== null) {
+    //     if (titleMatches.length < 2) return super.getSourceDomainInformation(url);
+
+    //     const unescapedTitle = titleMatches[1];
+    //     const title = entities.decodeHTML(unescapedTitle);
+
+    //     return {
+    //       siteName: title,
+    //     }
+    //   }
+    // } catch (error) {
+    //   return super.getSourceDomainInformation(url);
+    // }
+
+    // return super.getSourceDomainInformation(url);
+  }
+
   /**
    * @throws {Error}
    */
@@ -154,6 +197,11 @@ class BlogArticleDataProvider extends BaseDataProvider {
       await page.close();
       await browser.close();
       throw new Error(errorMessage);
+    }
+
+    if (firstPageMetadata.title != null && firstPageMetadata.title !== '') {
+      source.name = firstPageMetadata.title.toString()
+      await source.save()
     }
 
     // We don't want to create a 'simplified' Mozilla Readability version of the URL if it is likely a homepage instead of an article

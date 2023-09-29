@@ -18,15 +18,17 @@ import {
   ContextMenu,
 } from '@blueprintjs/core';
 import { useNavigate } from 'react-router-dom';
-import { Capture } from '../../../../../main/database';
-import { CaptureAttributes } from '../../../../../main/database/models/Capture';
+import { Capture } from '../../../main/database';
+import { CaptureAttributes } from '../../../main/database/models/Capture';
 
 type FocusedCaptureImageContextMenuPropsType = {
   capture: Capture | CaptureAttributes,
   downloadLocation: string,
   imagePath: string,
   fileBrowserName: string,
-} & Omit<ContextMenuProps, 'content'>;
+  contextMenuProps?: Omit<ContextMenuProps, 'content' | 'children'>,
+  children: ReactNode,
+};
 
 const FocusedCaptureImageContextMenu: (
   props: FocusedCaptureImageContextMenuPropsType
@@ -69,7 +71,9 @@ const FocusedCaptureImageContextMenu: (
   );
 
   return (
-    <ContextMenu {...props} content={imageMediaContextMenu} />
+    <ContextMenu {...props.contextMenuProps ?? {}} content={imageMediaContextMenu}>
+      {props.children}
+    </ContextMenu>
   );
 };
 

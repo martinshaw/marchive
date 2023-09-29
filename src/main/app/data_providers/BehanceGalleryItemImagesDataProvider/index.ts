@@ -18,7 +18,7 @@ import Downloader from 'nodejs-file-downloader'
 import {JSONObject, JSONValue} from 'types-json'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType, SourceDomainInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
@@ -81,6 +81,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     }
   }
 
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    return {
+      siteName: 'Behance Projects'
+    }
+  }
+
   /**
    * @throws {Error}
    */
@@ -106,7 +114,17 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     await this.generatePageHeadMetadata(page, capture.downloadLocation)
 
-    await this.generatePageProjectMetadata(page, capture.downloadLocation)
+    const projectMetadata = await this.generatePageProjectMetadata(page, capture.downloadLocation)
+    if (projectMetadata === false) {
+      await page.close()
+      await browser.close()
+
+      throw new Error('Failed to generate project metadata')
+    }
+    if (projectMetadata.title != null && projectMetadata.title !== '') {
+      source.name = projectMetadata.title.toString()
+      await source.save()
+    }
 
     const pageImages = await this.determineAllImages(page)
 
@@ -145,7 +163,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   async generatePageProjectMetadata(
     page: Page,
     captureDownloadDirectory: string,
-  ): Promise<boolean> {
+  ): Promise<false | JSONObject> {
     const projectMetadataFileName = path.join(captureDownloadDirectory, 'project.json')
 
     const projectMetadata: JSONObject = {}
@@ -228,7 +246,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     fs.writeFileSync(projectMetadataFileName, JSON.stringify(projectMetadata))
 
-    return fs.existsSync(projectMetadataFileName)
+    return fs.existsSync(projectMetadataFileName) ? projectMetadata : false
   }
 
   async determineAllImages(

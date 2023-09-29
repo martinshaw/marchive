@@ -81,11 +81,6 @@
         gap: 1rem;
       }
 
-      .blog-article-capture-show-fragment__left__media__image__inner {
-        // min-height: 100%;
-        // height: auto !important;
-      }
-
       .blog-article-capture-show-fragment__left__media__to-top-button {
         width: 100%;
         display: flex;
@@ -140,12 +135,9 @@
       flex: 1;
       position: relative;
 
-      .blog-article-capture-show-fragment__left__media__image__inner {
+      .blog-article-capture-show-fragment__left__media__image {
         width: 100%;
         height: 100%;
-        // TODO: Bizarre bug where the image is not being displayed when the following properties are set: WTF??
-        // border-top-left-radius: 7px;
-        // border-top-right-radius: 7px;
         background-position: top left;
         background-repeat: no-repeat;
         background-size: cover;

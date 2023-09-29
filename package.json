@@ -102,6 +102,7 @@
     "electron-prompt": "^1.7.0",
     "electron-updater": "^5.3.0",
     "electron-window-state": "^5.0.3",
+    "entities": "^4.5.0",
     "filesize.js": "^2.0.0",
     "generate-template-files": "^3.2.1",
     "get-website-favicon": "^0.0.7",

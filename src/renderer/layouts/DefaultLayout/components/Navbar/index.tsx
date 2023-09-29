@@ -19,6 +19,7 @@ import {
   MenuItem,
   Menu,
   ContextMenu,
+  Tooltip,
 } from '@blueprintjs/core';
 import {
   NavLink,
@@ -31,6 +32,7 @@ import { toggleMaximize } from '../../functions/focusedWindowControls';
 import './index.scss';
 
 export type NavbarPropsType = {
+  isDarkMode: boolean | null;
   marchiveIsSetup: boolean | null;
   sourcesCount: number | null;
   hasHistory: boolean;
@@ -63,6 +65,9 @@ const Navbar = (props: NavbarPropsType) => {
       'utilities.focused-window.open-application-menu'
     );
   }, []);
+
+  const comingSoonTooltipCaption =
+    'A curated view of recently saved news, media and information is coming soon.';
 
   return (
     <BlueprintNavBar id="navbar" onDoubleClick={handleNavbarDoubleClick}>
@@ -102,26 +107,38 @@ const Navbar = (props: NavbarPropsType) => {
           </NavbarGroup>
 
           <NavbarGroup align="center">
-            <NavLink to="/yesterday">
-              {({ isActive }) => (
+            <Tooltip
+              content={comingSoonTooltipCaption}
+              usePortal
+              interactionKind="hover"
+            >
+              <div>
+                {/*<NavLink to="/yesterday">*/}
+                {/*{({ isActive }) => (*/}
                 <Button
                   type="button"
-                  active={isActive}
+                  // active={isActive}
+                  disabled
                   icon="history"
                   text="Yesterday"
                 />
-              )}
-            </NavLink>
-            <NavLink to="/today">
-              {({ isActive }) => (
+                {/*)}*/}
+                {/*</NavLink>*/}
+
+                {/*<NavLink to="/today">*/}
+                {/*{({ isActive }) => (*/}
                 <Button
                   type="button"
-                  active={isActive}
+                  // active={isActive}
+                  disabled
                   icon="calendar"
                   text="Today"
                 />
-              )}
-            </NavLink>
+                {/*)}*/}
+                {/*</NavLink>*/}
+              </div>
+            </Tooltip>
+
             <NavLink to="/sources">
               {({ isActive }) => (
                 <Button

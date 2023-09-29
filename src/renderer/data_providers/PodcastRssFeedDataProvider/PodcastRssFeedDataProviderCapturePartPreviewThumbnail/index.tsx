@@ -88,6 +88,14 @@ const PodcastRssFeedDataProviderCapturePartPreviewThumbnail = (props: DataProvid
         dateCaption = useHumanDateCaption(new Date(metadata?.pubDate), false);
       }
 
+      let dataProviderPartIdentifierCaption: ReactNode | string | null = null;
+      if (props.capturePart.dataProviderPartIdentifier === 'audio-item') {
+        dataProviderPartIdentifierCaption = '- Audio File'
+      }
+      if (props.capturePart.dataProviderPartIdentifier === 'video-item') {
+        dataProviderPartIdentifierCaption = '- Video File'
+      }
+
       return {
         titleElement: titleText == null || titleText == '' ?
           null :
@@ -98,7 +106,7 @@ const PodcastRssFeedDataProviderCapturePartPreviewThumbnail = (props: DataProvid
         dateElement: dateCaption == null || dateCaption == '' ?
           null :
           <div className="podcast-rss-feed-data-provider-capture-part-preview-thumbnail__details__date">
-            {dateCaption}
+            {dateCaption} {dataProviderPartIdentifierCaption}
           </div>,
       }
     },

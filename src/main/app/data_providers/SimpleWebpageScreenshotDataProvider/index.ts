@@ -13,8 +13,9 @@ import path from 'node:path'
 import logger from '../../../app/log'
 import {Browser, Page} from 'puppeteer-core'
 import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
+import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType, SourceDomainInformationReturnType } from '../BaseDataProvider'
 import {createPuppeteerBrowser, generatePageMetadata, generatePageScreenshot, loadPageByUrl} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import entities from "entities";
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -59,6 +60,47 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     return {}
   }
 
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    return super.getSourceDomainInformation(url);
+
+    /**
+     * TODO: @see https://www.notion.so/codeatlas/Build-UI-etc-for-podcast-DP-2b11d20d72ec4c91be3033217034f020?pvs=4#de488f21490d4c6cb2ba70d0aa6a7970
+     */
+    // let request: Response | null = null;
+    // try {
+    //   request = await fetch(url);
+    //   if (request === null) return super.getSourceDomainInformation(url);
+    //   if (request.status !== 200) return super.getSourceDomainInformation(url);
+
+    //   const contents = await request.text();
+    //   if (!contents) return super.getSourceDomainInformation(url);
+    //   if (
+    //     contents.includes('<title ') === false &&
+    //     contents.includes('<title>') === false
+    //   ) {
+    //     return super.getSourceDomainInformation(url);
+    //   }
+
+    //   let titleMatches;
+    //   if ((titleMatches = /<title>([^<\/]*)<\/title>/iu.exec(contents)) !== null) {
+    //     if (titleMatches.length < 2) return super.getSourceDomainInformation(url);
+
+    //     const unescapedTitle = titleMatches[1];
+    //     const title = entities.decodeHTML(unescapedTitle);
+
+    //     return {
+    //       siteName: title,
+    //     }
+    //   }
+    // } catch (error) {
+    //   return super.getSourceDomainInformation(url);
+    // }
+
+    // return super.getSourceDomainInformation(url);
+  }
+
   /**
    * @throws {Error}
    */
@@ -88,6 +130,11 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
       await page.close()
       await browser.close()
       throw new Error(errorMessage)
+    }
+
+    if (firstPageMetadata.title != null && firstPageMetadata.title !== '') {
+      source.name = firstPageMetadata.title.toString()
+      await source.save()
     }
 
     await page.close()

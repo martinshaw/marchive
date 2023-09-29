@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: 04-create-captures-table.js
+File Name: 04-create-captures-table.ts
 Created:  2023-09-04T04:51:56.084Z
 Modified: 2023-09-04T04:51:56.084Z
 

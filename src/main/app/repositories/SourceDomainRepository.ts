@@ -20,8 +20,9 @@ import { SourceDomain } from "../../database";
 // // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`
 // import getFavicons from 'get-website-favicon'
 import { createPuppeteerBrowser, loadPageByUrl/*, retrieveFaviconsFromUrl as retrieveFaviconsFromUrlUsingPuppeteer*/, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
+import BaseDataProvider from "../data_providers/BaseDataProvider";
 
-export const findOrCreateSourceDomainForUrl = async (url: string): Promise<SourceDomain | null> => {
+export const findOrCreateSourceDomainForUrl = async (url: string, dataProvider: BaseDataProvider): Promise<SourceDomain | null> => {
   let urlDomainName: string | null = null;
   try {
     const safeUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'https://' + url
@@ -57,7 +58,9 @@ export const findOrCreateSourceDomainForUrl = async (url: string): Promise<Sourc
     const faviconPath = null
   // }
 
-  const name = await attemptToDetermineSiteNameFromMetadata(url) ?? urlDomainName
+
+  const sourceDomainInformationFromDataProvider = await dataProvider.getSourceDomainInformation(url)
+  const name = sourceDomainInformationFromDataProvider?.siteName != null ? sourceDomainInformationFromDataProvider.siteName: urlDomainName
 
   return SourceDomain.create({
     name,
@@ -70,28 +73,33 @@ export const findOrCreateSourceDomainForUrl = async (url: string): Promise<Sourc
   })
 }
 
-const attemptToDetermineSiteNameFromMetadata = async (urlDomainName: string): Promise<string | null> => {
-  const browser = await createPuppeteerBrowser(false, false, false, true)
-  const page = await loadPageByUrl(urlDomainName, browser, 'load')
-  const metadata = await retrievePageHeadMetadata(page)
+// /**
+//  * This (still a little slow) method of getting the name for a Source's Source Domain, only works for Sources with URLs pointing to HTML websites.
+//  *   As this browser doesn't have a timeout set, it causes the app to hang if the URL is not a valid HTML website
+//  *   (like a URL for a podcast feed or arbitrary file)
+//  */
+// const attemptToDetermineSiteNameFromMetadata = async (urlDomainName: string): Promise<string | null> => {
+//   const browser = await createPuppeteerBrowser(false, false, false, true)
+//   const page = await loadPageByUrl(urlDomainName, browser, 'load')
+//   const metadata = await retrievePageHeadMetadata(page)
 
-  await page.close()
-  await browser.close()
+//   await page.close()
+//   await browser.close()
 
-  return metadata.ogSiteName ?? metadata.name ?? metadata.ogTitle ?? metadata.title ?? null
-}
+//   return metadata.ogSiteName ?? metadata.name ?? metadata.ogTitle ?? metadata.title ?? null
+// }
 
-type GetWebsiteFaviconResultIconType = {
-  src?: string;
-  sizes?: string;
-  type?: string;
-  origin?: string;
-  rank?: number;
-}
+// type GetWebsiteFaviconResultIconType = {
+//   src?: string;
+//   sizes?: string;
+//   type?: string;
+//   origin?: string;
+//   rank?: number;
+// }
 
-export type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
-  src: string;
-}
+// export type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
+//   src: string;
+// }
 
 // type GetWebsiteFaviconResultType = {
 //   url?: string;

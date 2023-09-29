@@ -1,10 +1,17 @@
 .blog-article-data-provider-capture-part-preview-thumbnail__warning {
+  width: calc(100% - 10px);
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  margin-right: -10px;
+  padding: 10px 20px;
+  transition: filter 250ms, background-color 250ms;
+  border-radius: 7px;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  align-items: start;
   justify-content: center;
-  height: 200px;
+  align-items: center;
+  gap: 1rem;
 
   & > div:nth-child(2) {
     flex: 1;

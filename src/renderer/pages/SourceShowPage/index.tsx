@@ -109,12 +109,15 @@ const SourceShowPage = () => {
     [source]
   )
 
+  let sourceNameText: string = source?.sourceDomain?.name ?? '';
+  if (source?.name != null && source?.name !== '') sourceNameText = source.name;
+
   return (
     <>
       <div className="source-captures__source-domain">
         <div className="source-captures__source-domain__title">
           {source?.sourceDomain?.faviconImage != null && source?.sourceDomain?.faviconImage !== '' && <img src={source?.sourceDomain?.faviconImage ?? undefined} alt={source?.sourceDomain?.name} /> }
-          <Text ellipsize>{source?.sourceDomain?.name}</Text>
+          <Text ellipsize>{sourceNameText}</Text>
         </div>
         <div className="source-captures__source-domain__url">
           {source?.url != null && <CopyableExternalUrlLinkText url={source.url} />}
@@ -125,7 +128,7 @@ const SourceShowPage = () => {
         <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'source-captures__provider-row__image--invert' : ''} />
         <Text>{dataProvider?.name}</Text>
         <div className="source-captures__provider-row__schedule">
-          <SourceIndexPageListItemCardScheduleCaption source={source} />
+          {(source?.schedules ?? []).length > 0 && <SourceIndexPageListItemCardScheduleCaption schedule={source.schedules[0]} />}
         </div>
       </div>
 

@@ -22,14 +22,11 @@ type PodcastRssFeedDataProviderPartPayloadType = {
   [key: string]: any;
 } & Parser.Item
 
-const audioFileExtensions = ['.mp3', '.m4a', '.wav', '.ogg', '.aac', '.flac', '.wma', '.alac']
-const videoFileExtensions = ['.mp4', '.m4v', '.mov', '.wmv', '.avi', '.avchd', '.flv', '.f4v', '.swf', '.mkv', '.webm', '.vob', '.ogv', '.drc', '.gif', '.gifv', '.mng', '.mts', '.m2ts', '.ts', '.mov', '.qt', '.wmv', '.yuv', '.rm', '.rmvb', '.asf', '.amv', '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mpg', '.mpeg', '.m2v', '.m4v', '.svi', '.3gp', '.3g2', '.mxf', '.roq', '.nsv', '.flv', '.f4v', '.f4p', '.f4a', '.f4b']
-
 export type UsePodcastAudioVideoUrlReturnType = {
   capturePartMetadataObject: PodcastRssFeedDataProviderPartPayloadType | null,
   titleText: string | null,
   mediaUrl: string | null,
-  mediaType: 'audio' | 'video' | null,
+  mediaType: 'audio-item' | 'video-item' | null,
   dateText: string | null,
   contentText: string | null,
 };
@@ -101,14 +98,8 @@ const usePodcastItemMetadataAndMediaUrl: (
           returnValue.mediaUrl =
             returnValue.capturePartMetadataObject?.enclosure.url.trim();
 
-        if (returnValue.mediaUrl != null && returnValue.mediaUrl !== '') {
-          const mediaUrlParts = returnValue.mediaUrl.split('.');
-          const mediaUrlFileExtension = mediaUrlParts.pop();
-          if (mediaUrlFileExtension != null && mediaUrlFileExtension !== '') {
-            if (audioFileExtensions.includes('.' + mediaUrlFileExtension)) returnValue.mediaType = 'audio';
-            if (videoFileExtensions.includes('.' + mediaUrlFileExtension)) returnValue.mediaType = 'video';
-          }
-        }
+        if (capturePart?.dataProviderPartIdentifier === 'audio-item') returnValue.mediaType = 'audio-item';
+        if (capturePart?.dataProviderPartIdentifier === 'video-item') returnValue.mediaType = 'video-item';
 
         if (
           returnValue.capturePartMetadataObject?.isoDate != null &&

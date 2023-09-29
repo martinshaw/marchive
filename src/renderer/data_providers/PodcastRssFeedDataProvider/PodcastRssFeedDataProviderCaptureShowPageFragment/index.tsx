@@ -114,7 +114,7 @@ const PodcastRssFeedDataProviderCaptureShowPageFragment = (
   // );
   const amalgamatedCaptureParts = props.capture.captureParts;
 
-  const columnCount = 2;
+  const columnCount = 3;
 
   const contentPart = (
     <div className="podcast-rss-feed-capture-show-fragment__content">
@@ -246,7 +246,7 @@ const PodcastRssFeedDataProviderCaptureShowPageFragment = (
         displayedMediaType === 'media-details' && (
           <div className="podcast-rss-feed-capture-show-fragment__focused__details">
             <div className="podcast-rss-feed-capture-show-fragment__focused__details__media">
-              {focusedItemMediaType === 'video' && (
+              {focusedItemMediaType === 'video-item' && (
                 <video
                   src={focusedItemMediaUrl}
                   controls={true}
@@ -255,7 +255,7 @@ const PodcastRssFeedDataProviderCaptureShowPageFragment = (
                 />
               )}
 
-              {focusedItemMediaType === 'audio' && (
+              {focusedItemMediaType === 'audio-item' && (
                 <audio
                   src={focusedItemMediaUrl}
                   controls={true}
