@@ -28,6 +28,7 @@ import {
   useNavigation,
 } from 'react-router-dom';
 import { toggleMaximize } from '../../functions/focusedWindowControls';
+import NavbarProcessesPausedIndicator from './NavbarProcessesPausedIndicator';
 
 import './index.scss';
 
@@ -75,27 +76,41 @@ const Navbar = (props: NavbarPropsType) => {
         <>
           <NavbarGroup align="left">
             {window.electron.platform === 'win32' && (
-              <Button type="button" icon="menu" onClick={() => openAppMenu()} />
+              <Tooltip
+                content={'More Options...'}
+                usePortal
+                interactionKind="hover"
+                position="bottom-left"
+              >
+                <Button type="button" icon="menu" onClick={() => openAppMenu()} />
+              </Tooltip>
             )}
 
             {props.hasHistory && isLoadingPage === false && (
-              <ContextMenu
-                content={
-                  <Menu>
-                    <MenuItem
-                      icon="refresh"
-                      text="Refresh Information"
-                      onClick={() => navigate(0)}
-                    />
-                  </Menu>
-                }
+              <Tooltip
+                content={'Go Back'}
+                usePortal
+                interactionKind="hover"
+                position="bottom-left"
               >
-                <Button
-                  type="button"
-                  icon="arrow-left"
-                  onClick={() => navigate(-1)}
-                />
-              </ContextMenu>
+                <ContextMenu
+                  content={
+                    <Menu>
+                      <MenuItem
+                        icon="refresh"
+                        text="Refresh Information"
+                        onClick={() => navigate(0)}
+                      />
+                    </Menu>
+                  }
+                >
+                  <Button
+                    type="button"
+                    icon="arrow-left"
+                    onClick={() => navigate(-1)}
+                  />
+                </ContextMenu>
+              </Tooltip>
             )}
             {isLoadingPage && (
               <Button
@@ -159,7 +174,9 @@ const Navbar = (props: NavbarPropsType) => {
             </NavLink>
           </NavbarGroup>
 
-          <NavbarGroup align="right">{/* */}</NavbarGroup>
+          <NavbarGroup align="right">
+            <NavbarProcessesPausedIndicator />
+          </NavbarGroup>
         </>
       ) : (
         <div style={{ textAlign: 'center', width: '100%' }}>

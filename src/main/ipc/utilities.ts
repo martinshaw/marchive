@@ -25,6 +25,8 @@ import {
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'
   | 'utilities.marchive-is-setup'
+  | 'utilities.schedule-run-process-is-paused'
+  | 'utilities.capture-part-run-process-is-paused'
   | 'utilities.open-external-url-in-browser'
   | 'utilities.open-internal-path-in-default-program'
   | 'utilities.focused-window.toggle-maximize'
@@ -40,6 +42,24 @@ ipcMain.on('utilities.marchive-is-setup', async (event, newValue) => {
   event.reply(
     'utilities.marchive-is-setup',
     (await getStoredSettingValue('MARCHIVE_IS_SETUP')) ?? false
+  );
+});
+
+ipcMain.on('utilities.schedule-run-process-is-paused', async (event, newValue) => {
+  if (newValue != null)
+    await setStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED', newValue);
+  event.reply(
+    'utilities.schedule-run-process-is-paused',
+    (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) ?? false
+  );
+});
+
+ipcMain.on('utilities.capture-part-run-process-is-paused', async (event, newValue) => {
+  if (newValue != null)
+    await setStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED', newValue);
+  event.reply(
+    'utilities.capture-part-run-process-is-paused',
+    (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) ?? false
   );
 });
 

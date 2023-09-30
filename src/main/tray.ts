@@ -18,6 +18,7 @@ import {
   getStoredSettingValue,
   setStoredSettingValue,
 } from './app/repositories/StoredSettingRepository';
+import { webContents } from 'electron';
 
 const isDarkMode = nativeTheme.shouldUseDarkColors;
 
@@ -80,6 +81,14 @@ const createTray = async () => {
       'SCHEDULE_RUN_PROCESS_IS_PAUSED',
       !scheduleRunProcessIsPaused
     );
+
+    webContents.getAllWebContents().forEach((webContent) => {
+      webContent.send(
+        'utilities.schedule-run-process-is-paused',
+        !scheduleRunProcessIsPaused
+      );
+    });
+
     scheduleRunProcessIsPaused = !scheduleRunProcessIsPaused;
     regenerateContextMenu();
   };
@@ -88,6 +97,14 @@ const createTray = async () => {
       'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
       !capturePartRunProcessIsPaused
     );
+
+    webContents.getAllWebContents().forEach((webContent) => {
+      webContent.send(
+        'utilities.capture-part-run-process-is-paused',
+        !capturePartRunProcessIsPaused
+      );
+    });
+
     capturePartRunProcessIsPaused = !capturePartRunProcessIsPaused;
     regenerateContextMenu();
   };
