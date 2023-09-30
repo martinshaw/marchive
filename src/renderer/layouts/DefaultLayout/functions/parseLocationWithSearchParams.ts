@@ -39,7 +39,7 @@ const parseLocationWithSearchParams = (location: Location) => {
         searchParams: searchParamsObject,
       }
     },
-    [location]
+    [location.hash, location.pathname, location.search, location.state]
   )
 
   return newLocation;

@@ -38,10 +38,10 @@ const usePodcastItemMetadataAndMediaUrl: (
   capture: Capture | CaptureAttributes,
   capturePart: CapturePart | CapturePartAttributes | null
 ) => UsePodcastAudioVideoUrlReturnType = (capture, capturePart) => {
-  return useAsyncMemo<UsePodcastAudioVideoUrlReturnType>(
-    () =>
-      getObjectFromJsonFile({
-        if: capture != null && capture?.schedule?.status === 'pending',
+  const state = useAsyncMemo<UsePodcastAudioVideoUrlReturnType>(
+    () => {
+      return getObjectFromJsonFile({
+        if: capture != null,
         filePath: () => {
           return capturePart != null
             ? 'marchive-downloads:///capture-part/' +
@@ -132,8 +132,10 @@ const usePodcastItemMetadataAndMediaUrl: (
         }
 
         return returnValue;
-      }),
-    [capture, capturePart],
+
+      })
+    },
+    [capture.id, capturePart?.id],
     {
       capturePartMetadataObject: null,
       titleText: null,
@@ -143,6 +145,8 @@ const usePodcastItemMetadataAndMediaUrl: (
       contentText: null,
     }
   );
+
+  return state;
 };
 
 export default usePodcastItemMetadataAndMediaUrl;

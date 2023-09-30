@@ -21,10 +21,10 @@ const useCaptureReadability: (
   capture: Capture | CaptureAttributes,
   capturePart: CapturePart | CapturePartAttributes | null
 ) => GetObjectFromJsonFileReturnType = (capture, capturePart) => {
-  return useAsyncMemo<GetObjectFromJsonFileReturnType>(
+  const state = useAsyncMemo<GetObjectFromJsonFileReturnType>(
     () =>
       getObjectFromJsonFile({
-        if: capture != null && capture?.schedule?.status === 'pending',
+        if: capture != null,
         filePath: () => {
           return capturePart != null
             ? 'marchive-downloads:///capture-part/' +
@@ -35,9 +35,11 @@ const useCaptureReadability: (
                 '/readability.json';
         },
       }),
-    [capture, capturePart],
+    [capture.id, capturePart?.id],
     null
   );
+
+  return state;
 };
 
 export default useCaptureReadability;

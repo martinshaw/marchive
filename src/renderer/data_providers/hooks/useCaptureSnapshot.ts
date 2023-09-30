@@ -36,7 +36,7 @@ const useCaptureSnapshot: (
           return resolve(null);
         }
       }),
-    [capture, capturePart],
+    [capture.id, capturePart?.id],
     null
   );
 

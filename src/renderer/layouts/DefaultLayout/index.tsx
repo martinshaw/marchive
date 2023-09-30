@@ -130,7 +130,7 @@ const DefaultLayout = () => {
     return () => {
       removeListeners();
     };
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
     const { removeListeners } = capturePartRunProcessListeners(
@@ -150,7 +150,7 @@ const DefaultLayout = () => {
     return () => {
       removeListeners();
     };
-  }, []);
+  }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
     const { removeListeners } = mainToRendererListeners(

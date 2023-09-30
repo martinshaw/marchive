@@ -27,10 +27,10 @@ const useCaptureMetadata: (
   capture: Capture | CaptureAttributes,
   capturePart: CapturePart | CapturePartAttributes | null
 ) => CaptureMetadataStateReturnType = (capture, capturePart) => {
-  return useAsyncMemo<CaptureMetadataStateReturnType>(
+  const state = useAsyncMemo<CaptureMetadataStateReturnType>(
     () =>
       getObjectFromJsonFile({
-        if: capture != null && capture?.schedule?.status === 'pending',
+        if: capture != null,
         filePath: () => {
           return capturePart != null
             ? 'marchive-downloads:///capture-part/' +
@@ -71,13 +71,15 @@ const useCaptureMetadata: (
 
         return returnValue;
       }),
-    [capture, capturePart],
+    [capture.id, capturePart?.id],
     {
       captureMetadataObject: null,
       titleText: null,
       descriptionText: null,
     }
   );
+
+  return state;
 };
 
 export default useCaptureMetadata;

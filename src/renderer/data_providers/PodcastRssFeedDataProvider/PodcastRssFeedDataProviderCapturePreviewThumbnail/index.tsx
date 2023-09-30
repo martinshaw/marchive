@@ -18,14 +18,10 @@ import './index.scss';
 const PodcastRssFeedDataProviderCapturePreviewThumbnail = (
   props: DataProvidersRendererComponentCapturePreviewThumbnailPropsType
 ) => {
-  // const imageDataUrl = 'marchive-downloads:///capture/'+props.capture.id + '/screenshot.jpg';
   const dateCaption =
     props?.capture?.createdAt == null
       ? null
       : useHumanDateCaption(props.capture.createdAt, true);
-
-      console.log('props.capture', props.capture)
-      console.log('props.captureParts', props.capture?.captureParts);
 
   return (
     <div className="podcast-rss-feed-data-provider-capture-preview-thumbnail__container">

@@ -23,7 +23,7 @@ const useCaptureImage: (
   capture: Capture | CaptureAttributes,
   capturePart: CapturePart | CapturePartAttributes | null
 ) => CaptureImageStateReturnType = (capture, capturePart) => {
-  return useAsyncMemo<CaptureImageStateReturnType>(
+  const state = useAsyncMemo<CaptureImageStateReturnType>(
     () =>
       new Promise((resolve, reject) => {
         let returnValue: CaptureImageStateReturnType = {
@@ -56,12 +56,14 @@ const useCaptureImage: (
           });
         };
       }),
-    [capture, capturePart],
+    [capture.id, capturePart?.id],
     {
       captureImageUrl: null,
       imageDimensions: { w: null, h: null },
     }
   );
+
+  return state;
 };
 
 export default useCaptureImage;
