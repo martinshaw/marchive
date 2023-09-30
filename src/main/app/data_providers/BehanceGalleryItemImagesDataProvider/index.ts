@@ -66,7 +66,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
       const contents = await request.text()
       if (!contents) return false
-      if (contents.includes('<body ') === false && contents.includes('<body>') === false) return false
+      if (contents.includes('<body') === false && contents.includes('<body>') === false) return false
     } catch (error) {
       return false
     }

@@ -294,7 +294,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                         behavior: 'smooth',
                       });
                     }}
-                    text="Back to Top"
+                    text="Go to Top"
                   />
                 </div>
               </div>
@@ -363,7 +363,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                         behavior: 'smooth',
                       });
                     }}
-                    text="Back to Top"
+                    text="Go to Top"
                   />
                 </div>
               </div>

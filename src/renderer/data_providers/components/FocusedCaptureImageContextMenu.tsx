@@ -61,8 +61,22 @@ const FocusedCaptureImageContextMenu: (
       />
       <MenuDivider />
       <MenuItem
+        icon="arrow-up"
+        text="Go to Top"
+        onClick={() => {
+          const toggleButtons = document.querySelectorAll(
+            '.blog-article-capture-show-fragment__left__toggle-buttons'
+          );
+          if (Array.from(toggleButtons).length < 1) return;
+
+          toggleButtons[0].scrollIntoView({
+            behavior: 'smooth',
+          });
+        }}
+      />
+      <MenuItem
         icon="arrow-left"
-        text="Back"
+        text="Go Back"
         onClick={() => {
           navigate(-1);
         }}

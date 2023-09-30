@@ -24,6 +24,7 @@ import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavico
 import prompt from 'electron-prompt';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../app/repositories/LocalFileRepository';
 import { cleanupAndQuit } from '../main';
+import process from 'node:process'
 
 export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
   dialog
@@ -39,7 +40,16 @@ export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
     .then(async (result) => {
       if (result.response === 1) {
         await UtilityCleanAction(true, false);
-        mainWindow.reload();
+        // mainWindow.reload();
+
+        dialog.showMessageBox(mainWindow, {
+          type: 'info',
+          message: 'Your Marchive will now quit. Reopen it for a fresh start...',
+          buttons: ['Cool!'],
+          defaultId: 0,
+        }).then(() => {
+          cleanupAndQuit();
+        })
       }
     });
 }
@@ -59,7 +69,16 @@ export const clearDatabaseAndDeleteDownloadsMenuAction = async (mainWindow: Brow
     .then(async (result) => {
       if (result.response === 1) {
         await UtilityCleanAction(true, true);
-        mainWindow.reload();
+        // mainWindow.reload();
+
+        dialog.showMessageBox(mainWindow, {
+          type: 'info',
+          message: 'Your Marchive will now quit. Reopen it for a fresh start...',
+          buttons: ['Cool!'],
+          defaultId: 0,
+        }).then(() => {
+          cleanupAndQuit();
+        })
       }
     });
 }
