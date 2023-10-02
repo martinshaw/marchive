@@ -68,7 +68,7 @@
 .source-captures__provider-row {
   width: 100%;
   min-height: 30px;
-  margin: 2.5px 0;
+  margin: 10px 0;
   padding-left: 5px;
   padding-right: 12px;
   display: flex;
@@ -88,10 +88,15 @@
   & .source-captures__provider-row__schedule {
     flex: 1;
     justify-content: end;
+    align-items: center;
     float: right;
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+
+    & > .bp5-button-group, & > .bp5-button, & > .bp5-popover-target {
+      margin-left: 1rem;
+    }
   }
 }
 
@@ -106,7 +111,7 @@
 .source-captures__buttons {
   width: 100%;
   min-height: 30px;
-  margin: 2.5px 0;
+  margin: 10px 0;
   margin-bottom: 1rem;
   padding-left: 5px;
   padding-right: 12px;

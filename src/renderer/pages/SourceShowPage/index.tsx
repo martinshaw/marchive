@@ -206,10 +206,10 @@ const SourceShowPage = () => {
       {sourceCapturesCount > 1 && (
         <div className="source-captures__buttons">
           <Text>
-            {sourceCapturesCount} Source Capture
+            {sourceCapturesCount} Source Save
             {sourceCapturesCount > 1 ? 's' : ''}
             <span className="source-captures__buttons__hint">
-              Right-click a source's capture to {/*edit or */}delete it.
+              Right-click a source's save to {/*edit or */}delete it.
             </span>
           </Text>
           {/* <Button intent="success" icon="add" text="Add a new Source" /> */}

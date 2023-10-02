@@ -46,7 +46,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
     if (url.trim() === '') return false
 
     let matches
-    const validUrls: {url: string, articleName: string}[] = []
+    let validUrls: {url: string, articleName: string}[] = []
 
     while ((matches = regex.exec(url)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
@@ -60,6 +60,8 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
         else if (groupIndex === 5) validUrls[validUrls.length - 1].articleName = sentenceCase(match)
       })
     }
+
+    validUrls = validUrls.filter(validUrl => validUrl.url.includes('action=edit') === false)
 
     return validUrls.length > 0 ? validUrls[0] : false
   }
