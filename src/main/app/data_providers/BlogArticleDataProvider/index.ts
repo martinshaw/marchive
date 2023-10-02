@@ -204,9 +204,12 @@ class BlogArticleDataProvider extends BaseDataProvider {
       await source.save()
     }
 
-    // We don't want to create a 'simplified' Mozilla Readability version of the URL if it is likely a homepage instead of an article
+    /**
+     * We don't want to create a 'simplified' Mozilla Readability version of the URL if it is likely a homepage instead of an article
+     * Stupidly, Wikipedia miss use the 'website' og:type for their articles, so we can include them regardless
+     */
     let shouldCaptureReadability = true;
-    if (firstPageMetadata?.ogType === 'website')
+    if (firstPageMetadata?.ogType === 'website' && source.url.includes('wikipedia.org/') === false)
       shouldCaptureReadability = false;
 
     if (shouldCaptureReadability) {

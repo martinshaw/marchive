@@ -97,7 +97,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
   async determineAllLinks(
     page: Page,
   ): Promise<BlogArticleDataProviderLinkType[]> {
-    const linkHandles = await page.$$('a')
+    const linkHandles = await page.$$('.mw-body-content a')
 
     const articleLinks: BlogArticleDataProviderLinkType[] = await Promise.all(
       linkHandles
