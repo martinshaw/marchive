@@ -17,7 +17,6 @@
       overflow-x: hidden;
       overflow-y: scroll;
 
-
       .blog-article-capture-show-fragment__left__toggle-buttons {
         display: flex;
         flex-direction: row;
@@ -42,11 +41,12 @@
         .blog-article-capture-show-fragment__left__media__readability-byline {
           font-size: 1.2rem;
           line-height: 1.75rem;
-          opacity: .825;
+          opacity: 0.825;
         }
 
         .blog-article-capture-show-fragment__left__media__readability-content {
-          &, & * {
+          &,
+          & * {
             // width: 100%;
             max-width: 100%;
           }
@@ -102,7 +102,10 @@
       }
 
       .blog-article-capture-show-fragment__left__media .react-json-view {
-        background-color: transparent !important;;
+        &,
+        & > ul {
+          background-color: transparent !important;
+        }
       }
 
       .blog-article-capture-show-fragment__left__media__overflow-gradient {
@@ -131,7 +134,7 @@
     border-radius: 7px;
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
 
     &:hover {
       filter: brightness(1.05);
@@ -177,7 +180,7 @@
     .blog-article-capture-show-fragment__left__details {
       display: flex;
       flex-direction: column;
-      gap: .4rem;
+      gap: 0.4rem;
       padding: 5px 5px;
 
       .blog-article-capture-show-fragment__left__details__title {
@@ -189,13 +192,13 @@
       .blog-article-capture-show-fragment__left__details__description {
         font-size: 1.2rem;
         line-height: 1.75rem;
-        opacity: .825;
+        opacity: 0.825;
         font-weight: 400;
       }
 
       .blog-article-capture-show-fragment__left__details__link {
         font-style: italic;
-        opacity: .6;
+        opacity: 0.6;
         padding-top: 1.2rem;
       }
     }
@@ -211,7 +214,7 @@
     .blog-article-capture-show-fragment__right__related-heading {
       padding: 0 20px;
       font-weight: 700;
-      opacity: .7;
+      opacity: 0.7;
     }
 
     .blog-article-capture-show-fragment__right__list {
@@ -237,7 +240,12 @@
   }
 
   .blog-article-capture-show-fragment__left__media__overflow-gradient {
-    background-image: linear-gradient(to bottom, transparent 0%, #1e1e1ecc 90%, #1e1e1e 100%);
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #1e1e1ecc 90%,
+      #1e1e1e 100%
+    );
   }
 }
 
@@ -257,6 +265,11 @@
   }
 
   .blog-article-capture-show-fragment__left__media__overflow-gradient {
-    background-image: linear-gradient(to bottom, transparent 0%, #f6f7f9cc 90%, #f6f7f9 100%);
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #f6f7f9cc 90%,
+      #f6f7f9 100%
+    );
   }
 }

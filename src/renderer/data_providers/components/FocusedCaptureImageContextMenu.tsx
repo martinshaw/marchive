@@ -22,19 +22,18 @@ import { Capture } from '../../../main/database';
 import { CaptureAttributes } from '../../../main/database/models/Capture';
 
 type FocusedCaptureImageContextMenuPropsType = {
-  capture: Capture | CaptureAttributes,
-  downloadLocation: string,
-  imagePath: string,
-  fileBrowserName: string,
-  contextMenuProps?: Omit<ContextMenuProps, 'content' | 'children'>,
-  children: ReactNode,
+  capture: Capture | CaptureAttributes;
+  downloadLocation: string;
+  imagePath: string;
+  fileBrowserName: string;
+  toggleButtonsClassName: string;
+  contextMenuProps?: Omit<ContextMenuProps, 'content' | 'children'>;
+  children: ReactNode;
 };
 
 const FocusedCaptureImageContextMenu: (
   props: FocusedCaptureImageContextMenuPropsType
-) => ReactNode = (
-  props
-) => {
+) => ReactNode = (props) => {
   const navigate = useNavigate();
 
   const imageMediaContextMenu = (menuProps: ContextMenuContentProps) => (
@@ -65,7 +64,7 @@ const FocusedCaptureImageContextMenu: (
         text="Go to Top"
         onClick={() => {
           const toggleButtons = document.querySelectorAll(
-            '.blog-article-capture-show-fragment__left__toggle-buttons'
+            props.toggleButtonsClassName
           );
           if (Array.from(toggleButtons).length < 1) return;
 
@@ -85,7 +84,10 @@ const FocusedCaptureImageContextMenu: (
   );
 
   return (
-    <ContextMenu {...props.contextMenuProps ?? {}} content={imageMediaContextMenu}>
+    <ContextMenu
+      {...(props.contextMenuProps ?? {})}
+      content={imageMediaContextMenu}
+    >
       {props.children}
     </ContextMenu>
   );

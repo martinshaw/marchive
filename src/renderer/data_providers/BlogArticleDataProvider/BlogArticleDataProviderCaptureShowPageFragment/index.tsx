@@ -37,8 +37,12 @@ import FocusedCaptureImageContextMenu from '../../components/FocusedCaptureImage
 
 import './index.scss';
 
+type BlogArticleDataProviderCaptureShowPageFragmentPropsType = {
+  relatedHeadingCaption: string
+} & DataProvidersRendererComponentCaptureShowPageFragmentPropsType;
+
 const BlogArticleDataProviderCaptureShowPageFragment = (
-  props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType
+  props: BlogArticleDataProviderCaptureShowPageFragmentPropsType
 ) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
@@ -49,19 +53,12 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
     | 'snapshot'
     | 'metadata';
 
-  const mediaIsFocused = location.searchParams?.focused != null;
-  const displayedMediaType =
-    (location.searchParams
-      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? 'readability';
-
-  const {
-    focusedCapturePart,
-    focusedCaptureOrCapturePartDownloadLocation,
-  } = useFocusedCapturePartFromLocation(
-    location,
-    props.capture,
-    props.capture.captureParts ?? []
-  );
+  const { focusedCapturePart, focusedCaptureOrCapturePartDownloadLocation } =
+    useFocusedCapturePartFromLocation(
+      location,
+      props.capture,
+      props.capture.captureParts ?? []
+    );
 
   const captureReadabilityObject = useCaptureReadability(
     props.capture,
@@ -77,6 +74,11 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
     props.capture,
     focusedCapturePart
   );
+
+  const mediaIsFocused = location.searchParams?.focused != null;
+  const displayedMediaType =
+    (location.searchParams
+      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? (captureReadabilityObject != null ? 'readability' : 'screenshot');
 
   const { captureMetadataObject, titleText, descriptionText } =
     useCaptureMetadata(props.capture, focusedCapturePart);
@@ -332,9 +334,12 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
               <div className="blog-article-capture-show-fragment__left__media__image">
                 <FocusedCaptureImageContextMenu
                   capture={props.capture}
-                  downloadLocation={focusedCaptureOrCapturePartDownloadLocation ?? ''}
+                  downloadLocation={
+                    focusedCaptureOrCapturePartDownloadLocation ?? ''
+                  }
                   imagePath="screenshot.jpg"
                   fileBrowserName={fileBrowserName}
+                  toggleButtonsClassName='.blog-article-capture-show-fragment__left__toggle-buttons'
                 >
                   <img
                     className="blog-article-capture-show-fragment__left__media__image__inner"
@@ -422,13 +427,15 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
           {captureMetadataObject != null &&
             mediaIsFocused &&
             displayedMediaType === 'metadata' && (
-              <JSONTree
-                data={captureMetadataObject || {}}
-                theme={brightBase16}
-                invertTheme={!usingDarkTheme}
-                hideRoot={true}
-                shouldExpandNodeInitially={() => true}
-              />
+              <div className="react-json-view">
+                <JSONTree
+                  data={captureMetadataObject || {}}
+                  theme={brightBase16}
+                  invertTheme={!usingDarkTheme}
+                  hideRoot={true}
+                  shouldExpandNodeInitially={() => true}
+                />
+              </div>
             )}
 
           {mediaIsFocused !== true && (
@@ -479,7 +486,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
 
       <div className="blog-article-capture-show-fragment__right">
         <H4 className="blog-article-capture-show-fragment__right__related-heading font-serif">
-          Related Articles and Posts...
+          {props.relatedHeadingCaption}
         </H4>
 
         <div className="blog-article-capture-show-fragment__right__list">

@@ -9,15 +9,19 @@ Modified: 2023-09-12T01:00:58.365Z
 Description: description
 */
 
-import { DataProvidersRendererDetailsType } from "..";
-import PodcastRssFeedDataProviderCapturePreviewThumbnail from "./PodcastRssFeedDataProviderCapturePreviewThumbnail";
-import PodcastRssFeedDataProviderCaptureShowPageFragment from "./PodcastRssFeedDataProviderCaptureShowPageFragment";
+import { DataProvidersRendererDetailsType } from '..';
+import PodcastRssFeedDataProviderCapturePreviewThumbnail from './PodcastRssFeedDataProviderCapturePreviewThumbnail';
+import PodcastRssFeedDataProviderCaptureShowPageFragment from './PodcastRssFeedDataProviderCaptureShowPageFragment';
 
 const rendererDetails: DataProvidersRendererDetailsType = {
   components: {
-    capturePreviewThumbnail: (props) => <PodcastRssFeedDataProviderCapturePreviewThumbnail {...props} />,
-    captureShowPageFragment: (props) => <PodcastRssFeedDataProviderCaptureShowPageFragment {...props} />,
+    capturePreviewThumbnail: (props) => (
+      <PodcastRssFeedDataProviderCapturePreviewThumbnail {...props} />
+    ),
+    captureShowPageFragment: (props) => (
+      <PodcastRssFeedDataProviderCaptureShowPageFragment {...props} />
+    ),
   },
-}
+};
 
 export default rendererDetails;

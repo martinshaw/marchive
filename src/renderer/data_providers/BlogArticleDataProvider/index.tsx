@@ -9,15 +9,22 @@ Modified: 2023-09-12T01:00:58.365Z
 Description: description
 */
 
-import { DataProvidersRendererDetailsType } from "..";
-import BlogArticleDataProviderCapturePreviewThumbnail from "./BlogArticleDataProviderCapturePreviewThumbnail";
-import BlogArticleDataProviderCaptureShowPageFragment from "./BlogArticleDataProviderCaptureShowPageFragment";
+import { DataProvidersRendererDetailsType } from '..';
+import BlogArticleDataProviderCapturePreviewThumbnail from './BlogArticleDataProviderCapturePreviewThumbnail';
+import BlogArticleDataProviderCaptureShowPageFragment from './BlogArticleDataProviderCaptureShowPageFragment';
 
 const rendererDetails: DataProvidersRendererDetailsType = {
   components: {
-    capturePreviewThumbnail: (props) => <BlogArticleDataProviderCapturePreviewThumbnail {...props} />,
-    captureShowPageFragment: (props) => <BlogArticleDataProviderCaptureShowPageFragment {...props} />,
+    capturePreviewThumbnail: (props) => (
+      <BlogArticleDataProviderCapturePreviewThumbnail {...props} />
+    ),
+    captureShowPageFragment: (props) => (
+      <BlogArticleDataProviderCaptureShowPageFragment
+        {...props}
+        relatedHeadingCaption="Related Articles and Posts..."
+      />
+    ),
   },
-}
+};
 
 export default rendererDetails;

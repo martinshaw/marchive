@@ -9,15 +9,19 @@ Modified: 2023-10-01T03:39:45.781Z
 Description: description
 */
 
-import { DataProvidersRendererDetailsType } from "..";
-import SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail from "./SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail";
-import SimpleWebpageScreenshotDataProviderCaptureShowPageFragment from "./SimpleWebpageScreenshotDataProviderCaptureShowPageFragment";
+import { DataProvidersRendererDetailsType } from '..';
+import SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail from './SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail';
+import SimpleWebpageScreenshotDataProviderCaptureShowPageFragment from './SimpleWebpageScreenshotDataProviderCaptureShowPageFragment';
 
 const rendererDetails: DataProvidersRendererDetailsType = {
   components: {
-    capturePreviewThumbnail: (props) => <SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail {...props} />,
-    captureShowPageFragment: (props) => <SimpleWebpageScreenshotDataProviderCaptureShowPageFragment {...props} />,
+    capturePreviewThumbnail: (props) => (
+      <SimpleWebpageScreenshotDataProviderCapturePreviewThumbnail {...props} />
+    ),
+    captureShowPageFragment: (props) => (
+      <SimpleWebpageScreenshotDataProviderCaptureShowPageFragment {...props} />
+    ),
   },
-}
+};
 
 export default rendererDetails;

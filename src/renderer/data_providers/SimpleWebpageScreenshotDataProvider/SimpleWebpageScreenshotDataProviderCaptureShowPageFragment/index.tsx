@@ -146,6 +146,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                   downloadLocation={props.capture.downloadLocation ?? ''}
                   imagePath="screenshot.jpg"
                   fileBrowserName={fileBrowserName}
+                  toggleButtonsClassName='.simple-webpage-screenshot-show-fragment__toggle-buttons'
                 >
                   <img
                     className="simple-webpage-screenshot-show-fragment__media__image__inner"
@@ -206,13 +207,15 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
 
           {captureMetadataObject != null &&
             displayedMediaType === 'metadata' && (
-              <JSONTree
-                data={captureMetadataObject || {}}
-                theme={brightBase16}
-                invertTheme={!usingDarkTheme}
-                hideRoot={true}
-                shouldExpandNodeInitially={() => true}
-              />
+              <div className="react-json-view">
+                <JSONTree
+                  data={captureMetadataObject || {}}
+                  theme={brightBase16}
+                  invertTheme={!usingDarkTheme}
+                  hideRoot={true}
+                  shouldExpandNodeInitially={() => true}
+                />
+              </div>
             )}
         </div>
       </div>
