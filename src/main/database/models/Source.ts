@@ -20,6 +20,7 @@ export type SourceAttributes = {
   id: number
   dataProviderIdentifier: string
   url: string
+  name: string | null
   currentStartCursorUrl: string | null
   currentEndCursorUrl: string | null
   useStartOrEndCursor: SourceUseStartOrEndCursorValueType
@@ -61,6 +62,13 @@ class Source extends Model<
     allowNull: false,
   })
   url!: string
+
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null,
+  })
+  name!: string
 
   @Column({
     type: DataTypes.STRING,

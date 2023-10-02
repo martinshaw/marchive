@@ -8,45 +8,50 @@ Modified: 2023-08-02T02:29:08.035Z
 
 Description: description
 */
-import {Capture, CapturePart, Schedule, Source} from '../../database'
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../repositories/LocalFileRepository'
+import { Capture, CapturePart, Schedule, Source } from '../../database';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../repositories/LocalFileRepository';
 
 export type DataProviderSerializedType = {
-  identifier: string
-  name: string
-  description: string
-  iconInformation: BaseDataProviderIconInformationReturnType
-}
+  identifier: string;
+  name: string;
+  description: string;
+  iconInformation: BaseDataProviderIconInformationReturnType;
+};
+
+export type SourceDomainInformationReturnType = {
+  siteName: string | null;
+  // TODO: Add site favicon using more time-effective method in future, see commented code in SourceDomainRepository.ts
+};
 
 export type AllowedScheduleIntervalReturnType = {
-  onlyRunOnce?: boolean
-}
+  onlyRunOnce?: boolean;
+};
 
 export type BaseDataProviderIconInformationReturnType = {
-  filePath: string
-  shouldInvertOnDarkMode: boolean
-}
+  filePath: string;
+  shouldInvertOnDarkMode: boolean;
+};
 
 abstract class BaseDataProvider {
   /**
    * The unique identifier for this Data Provider in kebab-case
    */
-  abstract getIdentifier(): string
+  abstract getIdentifier(): string;
 
   /**
    * The name of this Data Provider in human-readable sentence case
    */
-  abstract getName(): string
+  abstract getName(): string;
 
   /**
    * A short description of what information is archived, analysed, searchable and visualised by this Data Provider
    */
-  abstract getDescription(): string
+  abstract getDescription(): string;
 
   /**
    * Relative path to the visual icon file for this Data Provider
    */
-  abstract getIconInformation(): BaseDataProviderIconInformationReturnType
+  abstract getIconInformation(): BaseDataProviderIconInformationReturnType;
 
   /**
    * Determine whether this Data Provider is suitable to capture useful information from the provided URL
@@ -57,7 +62,7 @@ abstract class BaseDataProvider {
    *
    * @param {string} url
    */
-  abstract validateUrlPrompt(url: string): Promise<boolean>
+  abstract validateUrlPrompt(url: string): Promise<boolean>;
 
   /**
    * Determine whether this Data Provider is suitable to be captured more than once per schedule configured.
@@ -67,7 +72,31 @@ abstract class BaseDataProvider {
    *
    * However, it is not ideal to allow a podcast episode or news article to be captured multiple times
    */
-  abstract allowedScheduleInterval(): Promise<AllowedScheduleIntervalReturnType>
+  abstract allowedScheduleInterval(): Promise<AllowedScheduleIntervalReturnType>;
+
+  /**
+   * When creating a new Source with a root URL which is not in common with any previously added Sources,
+   *   we need to quickly retrieve basic information about the website (like the Site Name and
+   *   (in the future) the Site Favicon)
+   *
+   * Data Providers which accept URLs for HTML websites should retrieve the content of the HTML <title> tag,
+   *   and for RSS feed should retrieve the podcast network's name from the XML, etc...
+   */
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    let rootUrl = url;
+
+    try {
+      rootUrl = (new URL(url)).hostname;
+    } catch (error) {
+      rootUrl = rootUrl.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0];
+    }
+
+    return {
+      siteName: rootUrl,
+    };
+  }
 
   /**
    * This event is fired when a user has a Schedule which is due to be captured using this Data Provider.
@@ -96,8 +125,8 @@ abstract class BaseDataProvider {
   abstract performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source,
-  ): Promise<boolean | never>
+    source: Source
+  ): Promise<boolean | never>;
 
   /**
    * This event is fired when one of the CapturePart models queued for capture by the `performCapture`
@@ -116,7 +145,7 @@ abstract class BaseDataProvider {
    * @param {CapturePart} capturePart
    * @throws {Error}
    */
-  abstract processPart(capturePart: CapturePart): Promise<boolean | never>
+  abstract processPart(capturePart: CapturePart): Promise<boolean | never>;
 
   /**
    * This function should not be overridden in child classes.
@@ -124,8 +153,10 @@ abstract class BaseDataProvider {
    * @returns {DataProviderSerializedType}
    */
   async toJSON(): Promise<DataProviderSerializedType> {
-    const {filePath: iconFilePath, shouldInvertOnDarkMode} = this.getIconInformation()
-    let iconDataUrl: string = await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath) ?? ''
+    const { filePath: iconFilePath, shouldInvertOnDarkMode } =
+      this.getIconInformation();
+    let iconDataUrl: string =
+      (await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath)) ?? '';
 
     return {
       identifier: this.getIdentifier(),
@@ -135,8 +166,8 @@ abstract class BaseDataProvider {
         filePath: iconDataUrl,
         shouldInvertOnDarkMode,
       },
-    }
+    };
   }
 }
 
-export default BaseDataProvider
+export default BaseDataProvider;

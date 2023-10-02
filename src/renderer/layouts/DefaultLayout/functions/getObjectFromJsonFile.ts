@@ -14,18 +14,15 @@ import { JSONObject } from "types-json";
 export type GetObjectFromJsonFileReturnType = JSONObject | null | undefined
 export type GetObjectFromJsonFilePropsType = {
   if: boolean;
-  filePath: string;
+  filePath: string | (() => string);
 };
 
 const getObjectFromJsonFile: (props: GetObjectFromJsonFilePropsType) => Promise<GetObjectFromJsonFileReturnType> = async (props) => {
   return props.if ?
-    fetch(props.filePath)
+    fetch(typeof props.filePath === 'string' ? props.filePath : props.filePath())
       .then(response => response.json())
       .then(data => data as JSONObject)
-      .catch(error => {
-        console.log(error)
-        return null
-      }) :
+      .catch(error => null) :
     null
 };
 

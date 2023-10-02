@@ -14,7 +14,7 @@ import path from 'node:path'
 import puppeteer from 'puppeteer-extra'
 import {Browser, Page} from 'puppeteer-core'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import { internalNodeModulesPath } from '../../../../paths'
+import { internalBrowserExtensionsPath } from '../../../../paths'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import {Options, scrollPageToBottom} from 'puppeteer-autoscroll-down'
 import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository'
@@ -32,16 +32,16 @@ export const createPuppeteerBrowser = async (
   let browserArguments: string[] = []
   const extensionFileNames = [
 
-    // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
-    withPopUpOffExtension ? path.join(internalNodeModulesPath, 'popupoff-headless') : null,
+    // For handling removal of overlays, cookie banners, etc... using my own PopUpOFF-headless forked extension
+    withPopUpOffExtension ? path.join(internalBrowserExtensionsPath, 'PopUpOFF-headless') : null,
 
   ].filter(filename => filename !== null)
 
-  const listOfExtensionfileNames = extensionFileNames.join(',')
-  if (listOfExtensionfileNames.length > 0) {
+  const listOfExtensionFileNames = extensionFileNames.join(',')
+  if (listOfExtensionFileNames.length > 0) {
     browserArguments = [
-      `--disable-extensions-except=${listOfExtensionfileNames}`,
-      `--load-extension=${listOfExtensionfileNames}`,
+      `--disable-extensions-except=${listOfExtensionFileNames}`,
+      `--load-extension=${listOfExtensionFileNames}`,
     ]
   }
 
@@ -134,20 +134,20 @@ export const generatePageReadability = async (
     return true;
   }
 
-  if (article.content == null) {
-    logger.warn("Readability HTML content is null, skipping silently...");
-    return true;
-  }
+  // if (article.content == null) {
+  //   logger.warn("Readability HTML content is null, skipping silently...");
+  //   return true;
+  // }
 
-  article.content = DOMPurify.sanitize(article.content);
+  // article.content = DOMPurify.sanitize(article.content);
 
-  const readabilityHtmlFileName = path.join(captureDownloadDirectory, 'readability.html')
-  fs.writeFileSync(readabilityHtmlFileName, article.content)
+  // const readabilityHtmlFileName = path.join(captureDownloadDirectory, 'readability.html')
+  // fs.writeFileSync(readabilityHtmlFileName, article.content)
 
-  if (fs.existsSync(readabilityHtmlFileName) !== true) {
-    logger.warn("Readability HTML file doesn't exist, skipping silently...");
-    return true
-  }
+  // if (fs.existsSync(readabilityHtmlFileName) !== true) {
+  //   logger.warn("Readability HTML file doesn't exist, skipping silently...");
+  //   return true
+  // }
 
   return true;
 }
@@ -161,7 +161,7 @@ export const generatePageScreenshot = async (
   await page.screenshot({
     fullPage: true,
     path: screenshotFileName,
-    quality: 85,
+    quality: 90,
     type: 'jpeg',
   })
 
@@ -206,13 +206,13 @@ export const generatePageSnapshot = async (
 export const generatePageMetadata = async (
   page: Page,
   captureDownloadDirectory: string,
-): Promise<boolean> => {
+): Promise<false | PageHeadMetadata> => {
   const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
 
   const metadata = await retrievePageHeadMetadata(page)
   fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
 
-  return fs.existsSync(metadataFileName)
+  return fs.existsSync(metadataFileName) ? metadata : false
 }
 
 export type PageHeadMetadata = {

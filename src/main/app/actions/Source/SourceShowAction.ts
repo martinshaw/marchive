@@ -8,10 +8,10 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import {Capture, Schedule, Source, SourceDomain} from '../../../database'
-import logger from '../../log'
-import { Includeable } from 'sequelize'
-import { SourceAttributes } from '../../../database/models/Source'
+import { Capture, Schedule, Source, SourceDomain } from '../../../database';
+import logger from '../../log';
+import { Includeable } from 'sequelize';
+import { SourceAttributes } from '../../../database/models/Source';
 
 const SourceShowAction = async (
   sourceId: number | null = null,
@@ -20,40 +20,54 @@ const SourceShowAction = async (
   withCaptures: boolean = false
 ): Promise<SourceAttributes> => {
   if (sourceId == null) {
-    logger.info('No source ID provided')
-    throw new Error('No source ID provided')
+    logger.info('No source ID provided');
+    throw new Error('No source ID provided');
   }
 
-  let include: Includeable[] = []
+  let include: Includeable[] = [];
   if (withSchedules) {
-    const includeSchedules: Includeable = { model: Schedule, separate: true, order: [['createdAt', 'DESC']] }
-    if (withCaptures) includeSchedules.include = [{ model: Capture, separate: true, order: [['createdAt', 'DESC']] }]
+    const includeSchedules: Includeable = {
+      model: Schedule,
+      separate: true,
+      order: [['createdAt', 'DESC']],
+    };
+    if (withCaptures)
+      includeSchedules.include = [
+        {
+          model: Capture,
+          separate: true,
+          order: [['createdAt', 'DESC']],
+        },
+      ];
 
-    include.push(includeSchedules)
+    include.push(includeSchedules);
   }
 
   if (withSourceDomain) {
-    const includeSourceDomain: Includeable = { model: SourceDomain }
-    include.push(includeSourceDomain)
+    const includeSourceDomain: Includeable = { model: SourceDomain };
+    include.push(includeSourceDomain);
   }
 
-  let source: Source | null = null
+  let source: Source | null = null;
   try {
-    source = await Source.findByPk(sourceId, { include })
+    source = await Source.findByPk(sourceId, { include });
   } catch (error) {
-    logger.error(`A DB error occurred when attempting to retrieve a source with ID ${sourceId}`)
-    logger.error(error)
-    throw error
+    logger.error(
+      `A DB error occurred when attempting to retrieve a source with ID ${sourceId}`
+    );
+    logger.error(error);
+    throw error;
   }
 
   if (source == null) {
-    logger.info(`Source with ID ${sourceId} not found`)
+    logger.info(`Source with ID ${sourceId} not found`);
 
-    const friendlyInfoMessage = 'We couldn\'t find the source you were looking for. Maybe it was deleted?'
-    throw new Error(friendlyInfoMessage)
+    const friendlyInfoMessage =
+      "We couldn't find the source you were looking for. Maybe it was deleted?";
+    throw new Error(friendlyInfoMessage);
   }
 
-  return source.toJSON()
-}
+  return source.toJSON();
+};
 
-export default SourceShowAction
+export default SourceShowAction;

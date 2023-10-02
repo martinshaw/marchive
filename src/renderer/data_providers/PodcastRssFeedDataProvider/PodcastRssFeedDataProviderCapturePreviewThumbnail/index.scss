@@ -1,0 +1,28 @@
+.podcast-rss-feed-data-provider-capture-preview-thumbnail__warning {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: start;
+  justify-content: center;
+
+  & > div:nth-child(2) {
+    flex: 1;
+  }
+}
+
+.podcast-rss-feed-data-provider-capture-preview-thumbnail__container {
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+  position: relative;
+
+  .podcast-rss-feed-data-provider-capture-preview-thumbnail__date-caption {
+    text-align: center;
+    padding-bottom: 15px;
+  }
+
+  .podcast-rss-feed-data-provider-capture-preview-thumbnail__operation-caption {
+    text-align: center;
+    padding-bottom: 15px;
+  }
+}

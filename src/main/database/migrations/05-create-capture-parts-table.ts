@@ -9,34 +9,34 @@ Modified: 2023-09-04T04:51:56.084Z
 Description: description
 */
 
-import { DataTypes } from "sequelize";
-import { Migration } from "..";
+import { DataTypes } from 'sequelize';
+import { Migration } from '..';
 
 const up: Migration = async ({ context }) => {
-	await context.createTable('capture_parts', {
-		id: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-			primaryKey: true
-		},
-		status: {
+  await context.createTable('capture_parts', {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'pending',
-		},
-		url: {
+    },
+    url: {
       type: DataTypes.STRING,
       allowNull: false,
-		},
-		dataProviderPartIdentifier: {
+    },
+    dataProviderPartIdentifier: {
       type: DataTypes.STRING,
       allowNull: false,
-		},
-		payload: {
+    },
+    payload: {
       type: DataTypes.JSON,
       allowNull: false,
       defaultValue: '{}',
-		},
+    },
     downloadLocation: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -56,23 +56,23 @@ const up: Migration = async ({ context }) => {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-		createdAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			allowNull: false
-		},
-		deletedAt: {
-			type: DataTypes.DATE,
-			allowNull: true
-		}
-	});
-}
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  });
+};
 
 const down: Migration = async ({ context }) => {
-	await context.dropTable('capture_parts');
-}
+  await context.dropTable('capture_parts');
+};
 
 module.exports = { up, down };

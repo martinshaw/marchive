@@ -133,9 +133,12 @@ const tick = async (): Promise<{processedSuccessfully: boolean, hadPendingCaptur
 const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvider): Promise<boolean> => {
   lastCapturePart = capturePart
 
-  logger.info(`Processing Capture Part ${capturePart.id} ${capturePart.url}...`)
+  let schedule: Schedule | undefined = capturePart.capture?.schedule
+  if (schedule != null) await schedule.update({status: 'processing'})
 
   await capturePart.update({status: 'processing' as CapturePartStatus})
+
+  logger.info(`Processing Capture Part ${capturePart.id} ${capturePart.url}...`)
 
   let processRanSuccessfully: boolean
   try {
@@ -152,6 +155,9 @@ const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvi
       currentRetryCount: capturePart.currentRetryCount + 1,
     })
 
+    schedule = capturePart.capture?.schedule
+    if (schedule != null) await schedule.update({status: 'pending'})
+
     return false
   }
 
@@ -161,6 +167,9 @@ const processPart = async (capturePart: CapturePart, dataProvider: BaseDataProvi
     status: 'completed' as CapturePartStatus,
     currentRetryCount: capturePart.currentRetryCount + 1,
   })
+
+  schedule = capturePart.capture?.schedule
+  if (schedule != null) await schedule.update({status: 'pending'})
 
   return true
 }

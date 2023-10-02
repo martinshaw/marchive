@@ -11,7 +11,7 @@ Description: description
 import { useMemo } from 'react';
 import AppToaster from '../../toaster';
 import getCapture from './functions/getCapture';
-import { Button, Card, Text } from '@blueprintjs/core';
+import { Button, Card, ContextMenu, MenuItem, Menu, Text } from '@blueprintjs/core';
 import { SourceAttributes } from '../../../main/database/models/Source';
 import { CaptureAttributes } from '../../../main/database/models/Capture';
 import { ScheduleAttributes } from '../../../main/database/models/Schedule';
@@ -19,8 +19,9 @@ import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
 import CaptureShowPageFragment from './components/CaptureShowPageFragment';
 import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import openExternalUrlInBrowser from 'renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
+import openExternalUrlInBrowser from '../../../renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';
 
@@ -107,15 +108,18 @@ const CaptureShowPage = () => {
     [source]
   )
 
+  let sourceNameText: string = source?.sourceDomain?.name ?? '';
+  if (source?.name != null && source?.name !== '') sourceNameText = source.name;
+
   return (
     <>
       <div className="capture__source-domain">
         <div className="capture__source-domain__title">
           {source?.sourceDomain?.faviconImage != null && source?.sourceDomain?.faviconImage !== '' && <img src={source?.sourceDomain?.faviconImage ?? undefined} alt={source?.sourceDomain?.name} /> }
-          <Text ellipsize>{source?.sourceDomain?.name}</Text>
+          <Text ellipsize>{sourceNameText}</Text>
         </div>
         <div className="capture__source-domain__url">
-          <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
+          {source?.url != null && <CopyableExternalUrlLinkText url={source.url} />}
         </div>
       </div>
 
@@ -123,7 +127,7 @@ const CaptureShowPage = () => {
         <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'capture__provider-row__image--invert' : ''} />
         <Text>{dataProvider?.name}</Text>
         <div className="capture__provider-row__schedule">
-          <SourceIndexPageListItemCardScheduleCaption source={source} />
+          <SourceIndexPageListItemCardScheduleCaption schedule={schedule} />
         </div>
       </div>
 
@@ -132,7 +136,7 @@ const CaptureShowPage = () => {
           <Text>
             {capturePartsCount} Capture Part{capturePartsCount > 1 ? 's' : ''}
             <span className="capture__buttons__hint">
-              Right-click a source's capture part to edit or delete it.
+              Right-click a source's capture part to {/*edit or */}delete it.
             </span>
           </Text>
           {/* <Button intent="success" icon="add" text="Add a new Source" /> */}

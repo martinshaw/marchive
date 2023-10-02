@@ -2,6 +2,7 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "EditorConfig.EditorConfig",
+    "streetsidesoftware.code-spell-checker",
 
     // From martinshaw/.vscode
     "epivision.vscode-file-header",
@@ -20,7 +21,7 @@
     "syler.sass-indented",
     "tomoki1207.pdf",
     "planbcoding.vscode-react-refactor",
-
     "george-alisson.html-preview-vscode",
+    "esbenp.prettier-vscode",
   ],
 }

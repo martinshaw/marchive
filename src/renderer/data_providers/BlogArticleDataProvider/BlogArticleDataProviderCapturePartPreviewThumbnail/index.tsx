@@ -11,7 +11,7 @@ Description: description
 
 import { useMemo } from "react";
 import { ReactNode } from "react";
-import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
+import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import { SourceAttributes } from "../../../../main/database/models/Source";
 import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
 import { CaptureAttributes } from "../../../../main/database/models/Capture";
@@ -39,7 +39,7 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     filePath: 'marchive-downloads:///capture-part/'+props.capturePart.id + '/metadata.json',
   });
 
-  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
+  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt, true);
 
   const {
     titleElement,
@@ -112,6 +112,18 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     </div>
   );
 
+  const captureMetadataNotFoundPart = (
+    <div
+      className="blog-article-data-provider-capture-part-preview-thumbnail__not-found"
+      onClick={() => {
+        navigate('/captures/'+props.capture.id+'?focused=capture-part:'+props.capturePart.id)
+      }}
+    >
+      <Icon icon='diagnosis' size={IconSize.STANDARD}/>
+      <Text>Metadata File is Missing: {props.capturePart.url}</Text>
+    </div>
+  );
+
   const completedCapturePart = (
     <div
       className="blog-article-data-provider-capture-part-preview-thumbnail__container"
@@ -139,7 +151,7 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     case 'processing':
       return processingCapturePart;
     case 'completed':
-      return completedCapturePart;
+      return metadata == null ? captureMetadataNotFoundPart : completedCapturePart;
     case 'failed':
       return failedCapturePart;
     case 'cancelled':

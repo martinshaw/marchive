@@ -14,12 +14,11 @@
  */
 import path from 'path';
 import logger from './app/log';
-import createTray from './tray';
-import MenuBuilder from './menu';
+import WindowMenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';
-import resolveHtmlPath from './utilties/resolveHtmlPath';
-import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron';
+import resolveHtmlPath from './utilities/resolveHtmlPath';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, nativeTheme, shell, TitleBarOverlay } from 'electron';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
@@ -30,8 +29,11 @@ import './ipc/Sources';
 import './ipc/SourceDomains';
 import './ipc/Utilities';
 import './ipc/Processes';
+import './ipc/Renderers';
 
 import './protocols';
+
+import createTray from './tray';
 
 // class AppUpdater {
 //   constructor() {
@@ -108,7 +110,25 @@ export const createWindow = async () => {
     defaultHeight: 800
   });
 
+  const windowBackgroundColor: () => string = () => nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
+
+  const windowControlsTitleBarOverlay: () => TitleBarOverlay = () => ({
+    color: nativeTheme.shouldUseDarkColors ? '#383e47' : '#ffffff',
+    symbolColor: '#eeeeee',
+  })
+
+  let windowControlsAdditions: Partial<BrowserWindowConstructorOptions> = { titleBarStyle: 'default' }
+  if (process.platform === 'darwin') windowControlsAdditions = {
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 15, y: 17 },
+  }
+  if (process.platform === 'win32') windowControlsAdditions = {
+    titleBarStyle: 'hidden',
+    titleBarOverlay: windowControlsTitleBarOverlay(),
+  }
+
   windows[mainWindowId] = new BrowserWindow({
+    ...windowControlsAdditions,
     show: false,
     width: mainWindowState.width,
     height: mainWindowState.height,
@@ -116,8 +136,6 @@ export const createWindow = async () => {
     y: mainWindowState.y,
     minWidth: 364,
     minHeight: 600,
-    titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 15, y: 17 },
     title: 'Marchive',
     center: true,
     icon: getAssetPath('icon.png'),
@@ -126,15 +144,17 @@ export const createWindow = async () => {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
       spellcheck: true,
     },
-    backgroundColor: nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor,
+    backgroundColor: windowBackgroundColor(),
   });
 
   mainWindowState.manage(windows[mainWindowId]);
 
   nativeTheme.on('updated', () => {
     if (mainWindowId == null) return;
-    const backgroundColor = nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
-    windows[mainWindowId].setBackgroundColor(backgroundColor);
+
+    windows[mainWindowId].setBackgroundColor(windowBackgroundColor());
+
+    if (process.platform !== 'darwin') windows[mainWindowId].setTitleBarOverlay(windowControlsTitleBarOverlay());
   });
 
   windows[mainWindowId].on('focus', () => {
@@ -151,8 +171,6 @@ export const createWindow = async () => {
     windows[mainWindowId].webContents.send('renderer.focused-window.is-blurred');
   })
 
-  windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
-
   windows[mainWindowId].on('ready-to-show', () => {
     if (mainWindowId == null) return;
     if (windows[mainWindowId] == null) return;
@@ -160,13 +178,14 @@ export const createWindow = async () => {
     if (!windows[mainWindowId]) {
       throw new Error('"mainWindow" is not defined');
     }
+
     if (process.env.START_MINIMIZED) {
       windows[mainWindowId].minimize();
     } else {
       windows[mainWindowId].show();
     }
 
-    app.dock.show();
+    if (app.dock != null) app.dock.show();
   });
 
   windows[mainWindowId].on('closed', () => {
@@ -176,8 +195,28 @@ export const createWindow = async () => {
     delete windows[mainWindowId];
   });
 
-  const menuBuilder = new MenuBuilder(windows[mainWindowId]);
-  menuBuilder.buildMenu();
+  // Mainly to resolve issue with hyperlinks in rendered Mozilla Readability causing the whole app to become the linked URL
+  windows[mainWindowId].webContents.on('will-navigate', (event, url) => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    const allowedTemplateFiles = ['index.html'];
+
+    if (
+      url.indexOf('http://localhost') === 0 ||
+      allowedTemplateFiles.some((templateFile) => url.indexOf(templateFile) > -1 && url.indexOf('://') < 0)
+    ) return;
+
+    event.preventDefault();
+    shell.openExternal(url);
+
+    return false;
+  });
+
+  windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
+
+  const windowMenuBuilder = new WindowMenuBuilder(windows[mainWindowId]);
+  windowMenuBuilder.buildMenu();
 
   // Open urls in the user's browser
   windows[mainWindowId].webContents.setWindowOpenHandler((edata) => {
@@ -207,7 +246,7 @@ app.on('window-all-closed', () => {
   //   cleanupAndQuit();
   // }
 
-  app.dock.hide();
+  if (app.dock != null) app.dock.hide();
 });
 
 app
