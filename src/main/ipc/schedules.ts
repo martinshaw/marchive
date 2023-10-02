@@ -34,7 +34,7 @@ ipcMain.on('schedules.create', async (event, sourceId: number, intervalInSeconds
     .catch(error => { event.reply('schedules.create', null, error) })
 })
 
-ipcMain.on('schedules.update', async (event, scheduleId: number, requestedChanges: ScheduleAttributes) => {
+ipcMain.on('schedules.update', async (event, scheduleId: number, requestedChanges: Partial<ScheduleAttributes>) => {
   return ScheduleUpdateAction(scheduleId, requestedChanges)
     .then(schedule => { event.reply('schedules.update', schedule, null) })
     .catch(error => { event.reply('schedules.update', null, error) })

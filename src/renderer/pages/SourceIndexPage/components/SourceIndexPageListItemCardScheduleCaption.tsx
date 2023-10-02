@@ -13,6 +13,7 @@ import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import Schedule, { ScheduleAttributes } from "../../../../main/database/models/Schedule";
 import Source, { SourceAttributes } from "../../../../main/database/models/Source";
 import { ReactNode } from "react";
+import scheduleIntervalToCaption from "../functions/scheduleIntervalToCaption";
 
 export type SourceIndexPageListItemCardScheduleCaptionPropsType = {
   schedule: Schedule | ScheduleAttributes;
@@ -24,6 +25,8 @@ const SourceIndexPageListItemCardScheduleCaption = (
   let scheduleCaption: ReactNode = null;
 
   if (props.schedule == null) return null;
+
+  console.log('SourceIndexPageListItemCardScheduleCaption', props.schedule, props.schedule.status, props.schedule.interval, props.schedule.lastRunAt, props.schedule.nextRunAt)
 
   if (props.schedule.status === 'pending') {
     if (props.schedule.interval == null) {
@@ -43,7 +46,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
           </>
         );
       }
-      else if (props.schedule.lastRunAt == null && props.schedule.nextRunAt != null) {
+      else if (props.schedule.nextRunAt != null) {
         scheduleCaption = (
           <>
             <Icon icon="time" />
@@ -53,13 +56,7 @@ const SourceIndexPageListItemCardScheduleCaption = (
       }
     }
     else {
-      let timeCaption = Math.ceil(props.schedule.interval / 60) + ' mins.'
-      if ((Math.ceil(props.schedule.interval / 60)) > 120) timeCaption = Math.ceil(props.schedule.interval / 3600) + ' hrs.';
-      if ((Math.ceil(props.schedule.interval / 3600)) > 48) timeCaption = Math.ceil(props.schedule.interval / 86400) + ' days.';
-      if ((Math.ceil(props.schedule.interval / 86400)) > 14) timeCaption = Math.ceil(props.schedule.interval / 604800) + ' weeks.';
-      if ((Math.ceil(props.schedule.interval / 604800)) > 8) timeCaption = Math.ceil(props.schedule.interval / 2419200) + ' months.';
-      if ((Math.ceil(props.schedule.interval / 2419200)) > 12) timeCaption = Math.ceil(props.schedule.interval / 29030400) + ' years.';
-
+      const timeCaption = scheduleIntervalToCaption(props.schedule.interval);
       const nextCaption = props.schedule.nextRunAt != null ? `(next time on ${props.schedule.nextRunAt.toDateString()} ${props.schedule.nextRunAt.toLocaleTimeString()})` : '';
       scheduleCaption = (
         <>

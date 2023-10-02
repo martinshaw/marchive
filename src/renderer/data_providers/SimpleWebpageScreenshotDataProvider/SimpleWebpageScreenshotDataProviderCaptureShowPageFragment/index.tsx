@@ -36,15 +36,12 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
 ) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
-  console.log('location', location);
 
   type CaptureStateDisplayedMediaType = 'screenshot' | 'metadata';
 
   const displayedMediaType =
     (location.searchParams
       ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? 'screenshot';
-
-  console.log('displayedMediaType ', location.searchParams, displayedMediaType);
 
   const { captureImageUrl, imageDimensions } = useCaptureImage(
     props.capture,

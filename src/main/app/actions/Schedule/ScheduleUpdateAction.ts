@@ -21,7 +21,7 @@ import { ScheduleAttributes } from '../../../database/models/Schedule'
  */
 const ScheduleUpdateAction = async (
   scheduleId: number,
-  requestedChanges: ScheduleAttributes
+  requestedChanges: Partial<ScheduleAttributes>,
 ): Promise<ScheduleAttributes> => {
   let schedule: Schedule | null = null
   try {
@@ -81,6 +81,12 @@ const ScheduleUpdateAction = async (
       scheduleChanges.nextRunAt = (new Date(Date.now() + (scheduleChanges.interval * 1000)))
     }
   }
+
+  if ('nextRunAt' in requestedChanges && requestedChanges.nextRunAt == null) {
+    scheduleChanges.nextRunAt = null
+  }
+
+  console.log('scheduleChanges', schedule.id, scheduleChanges.interval, scheduleChanges.nextRunAt)
 
   if (requestedChanges.downloadLocation != null) {
     let downloadLocation = requestedChanges.downloadLocation

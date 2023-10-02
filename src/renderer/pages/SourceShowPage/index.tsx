@@ -31,6 +31,7 @@ import { Capture, Schedule } from '../../../main/database';
 
 import './index.scss';
 import { AutoSizer, Grid } from 'react-virtualized';
+import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 type SourceShowPageLoaderReturnType = {
   source: SourceAttributes | null;
@@ -187,9 +188,17 @@ const SourceShowPage = () => {
         <Text>{dataProvider?.name}</Text>
         <div className="source-captures__provider-row__schedule">
           {(source?.schedules ?? []).length > 0 && (
-            <SourceIndexPageListItemCardScheduleCaption
-              schedule={source.schedules[0]}
-            />
+            <>
+              <SourceIndexPageListItemCardScheduleCaption
+                schedule={source.schedules[0]}
+              />
+              {(source.schedules ?? []).length >= 1 && (
+                <SourceIndexPageChangeIntervalDropdownButton
+                  source={source}
+                  schedule={source.schedules[0]}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
@@ -197,10 +206,10 @@ const SourceShowPage = () => {
       {sourceCapturesCount > 1 && (
         <div className="source-captures__buttons">
           <Text>
-            {sourceCapturesCount} Source Capture
+            {sourceCapturesCount} Source Save
             {sourceCapturesCount > 1 ? 's' : ''}
             <span className="source-captures__buttons__hint">
-              Right-click a source's capture to {/*edit or */}delete it.
+              Right-click a source's save to {/*edit or */}delete it.
             </span>
           </Text>
           {/* <Button intent="success" icon="add" text="Add a new Source" /> */}
