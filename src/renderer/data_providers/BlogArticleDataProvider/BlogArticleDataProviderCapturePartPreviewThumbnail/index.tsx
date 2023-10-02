@@ -39,7 +39,7 @@ const BlogArticleDataProviderCapturePartPreviewThumbnail = (props: DataProviders
     filePath: 'marchive-downloads:///capture-part/'+props.capturePart.id + '/metadata.json',
   });
 
-  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt);
+  const dateCaption = props?.capturePart?.createdAt == null ? null : useHumanDateCaption(props?.capturePart?.createdAt, true);
 
   const {
     titleElement,

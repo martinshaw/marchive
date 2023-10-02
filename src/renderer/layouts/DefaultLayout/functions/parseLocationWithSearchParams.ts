@@ -17,6 +17,8 @@ export type ParseLocationWithSearchParamsReturnType = Location & {
 }
 
 const parseLocationWithSearchParams = (location: Location) => {
+  console.log('parseLocationWithSearchParams ', location.pathname, location.search, location.hash)
+
   const newLocation = useMemo<ParseLocationWithSearchParamsReturnType>(
     () => {
       const searchParams = new URLSearchParams(location.search);

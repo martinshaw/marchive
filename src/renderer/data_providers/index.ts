@@ -17,6 +17,7 @@ import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDa
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
 import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider'
 import PodcastRssFeedDataProviderRendererDetails from './PodcastRssFeedDataProvider'
+import SimpleWebpageScreenshotDataProviderRendererDetails from './SimpleWebpageScreenshotDataProvider'
 
 export type DataProvidersRendererComponentCapturePreviewThumbnailPropsType = {
   source: SourceAttributes;
@@ -45,6 +46,7 @@ const dataProvidersRendererDetailsList: {[identifier: string]: DataProvidersRend
   'blog-article': BlogArticleDataProviderRendererDetails,
   'wikipedia-article': WikipediaArticleDataProviderRendererDetails,
   'podcast-rss-feed': PodcastRssFeedDataProviderRendererDetails,
+  'simple-webpage-screenshot': SimpleWebpageScreenshotDataProviderRendererDetails,
 }
 
 export default dataProvidersRendererDetailsList;
