@@ -34,21 +34,17 @@ import './index.scss';
 const SimpleWebpageDataProviderCaptureShowPageFragment = (
   props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType
 ) => {
-
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
-  console.log('location', location)
+  console.log('location', location);
 
   type CaptureStateDisplayedMediaType = 'screenshot' | 'metadata';
 
-
   const displayedMediaType =
-  (location.searchParams
-    ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? 'screenshot';
-
+    (location.searchParams
+      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? 'screenshot';
 
   console.log('displayedMediaType ', location.searchParams, displayedMediaType);
-
 
   const { captureImageUrl, imageDimensions } = useCaptureImage(
     props.capture,
@@ -67,19 +63,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
 
   return (
     <div className="simple-webpage-screenshot-show-fragment__container">
-      <div
-        className="simple-webpage-screenshot-show-fragment__inner"
-        onClick={() => {
-          navigate(
-            formatLocationUrlWithChangedSearchParams(
-              {
-                displayedMediaType: 'screenshot',
-              },
-              location
-            )
-          );
-        }}
-      >
+      <div className="simple-webpage-screenshot-show-fragment__inner">
         <div className="simple-webpage-screenshot-show-fragment__toggle-buttons">
           <ButtonGroup>
             <Button
@@ -97,25 +81,11 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
             <Button
               text="Metadata"
               onClick={() => {
-                console.log(
-                  'current location ',
-                  location.pathname,
-                  location.searchParams,
-                  'new location',
-                  formatLocationUrlWithChangedSearchParams(
-                    { displayedMediaType: 'metadata' },
-                    location
-                  )
-                );
-
                 navigate(
                   formatLocationUrlWithChangedSearchParams(
                     { displayedMediaType: 'metadata' },
                     location
-                  ),
-                  {
-                    replace: true,
-                  }
+                  )
                 );
               }}
               active={displayedMediaType === 'metadata'}

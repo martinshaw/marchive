@@ -32,16 +32,16 @@ export const createPuppeteerBrowser = async (
   let browserArguments: string[] = []
   const extensionFileNames = [
 
-    // For handling removal of overlays, cookie banners, etc... using my own popupoff-headless forked extension
+    // For handling removal of overlays, cookie banners, etc... using my own PopUpOFF-headless forked extension
     withPopUpOffExtension ? path.join(internalBrowserExtensionsPath, 'PopUpOFF-headless') : null,
 
   ].filter(filename => filename !== null)
 
-  const listOfExtensionfileNames = extensionFileNames.join(',')
-  if (listOfExtensionfileNames.length > 0) {
+  const listOfExtensionFileNames = extensionFileNames.join(',')
+  if (listOfExtensionFileNames.length > 0) {
     browserArguments = [
-      `--disable-extensions-except=${listOfExtensionfileNames}`,
-      `--load-extension=${listOfExtensionfileNames}`,
+      `--disable-extensions-except=${listOfExtensionFileNames}`,
+      `--load-extension=${listOfExtensionFileNames}`,
     ]
   }
 
