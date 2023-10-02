@@ -137,6 +137,7 @@
 
 .source-captures__grid {
   width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   overflow-x: hidden;
@@ -151,13 +152,14 @@
 .source-captures__grid__item__link {
   color: unset !important;
   text-decoration: none !important;
+  margin: 0 10px;
+  width: calc(100% - 20px);
+  display: block;
 }
 
 .source-captures__grid__item {
   width: 100%;
-  // padding: 20px 5px;
   padding: 20px 20px;
-  padding-bottom: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -181,7 +183,7 @@
   }
 }
 
-#layout:not(.bp5-dark).source-captures__grid__item {
+#layout:not(.bp5-dark) .source-captures__grid__item {
   background-color: rgba(0, 0, 0, 0.02);
 
   &:hover {
