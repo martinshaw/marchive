@@ -151,4 +151,9 @@
   justify-content: start;
   align-items: start;
   gap: 1rem;
+
+  span {
+    padding-left: .75rem;
+    opacity: .75;
+  }
 }

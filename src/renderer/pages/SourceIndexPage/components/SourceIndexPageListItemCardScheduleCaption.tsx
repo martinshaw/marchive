@@ -26,8 +26,6 @@ const SourceIndexPageListItemCardScheduleCaption = (
 
   if (props.schedule == null) return null;
 
-  console.log('SourceIndexPageListItemCardScheduleCaption', props.schedule, props.schedule.status, props.schedule.interval, props.schedule.lastRunAt, props.schedule.nextRunAt)
-
   if (props.schedule.status === 'pending') {
     if (props.schedule.interval == null) {
       if (props.schedule.lastRunAt == null && props.schedule.nextRunAt == null) {
