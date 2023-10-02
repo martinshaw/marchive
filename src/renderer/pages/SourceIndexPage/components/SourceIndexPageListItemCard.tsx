@@ -14,6 +14,7 @@ import { SourceAttributes } from '../../../../main/database/models/Source';
 import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
 import SourceIndexPageListItemCardScheduleCaption from './SourceIndexPageListItemCardScheduleCaption';
 import { NavLink } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 export type SourceIndexPageListItemCardPropsType = {
   source: SourceAttributes;
@@ -36,8 +37,8 @@ const SourceIndexPageListItemCard = (
     return props.source.schedules[0].lastRunAt == null;
   })();
 
-  let nameAndUrlCaption = props.source.url;
-  if (props.source.name != null) nameAndUrlCaption = props.source.name + ' - ' + nameAndUrlCaption;
+  let nameAndUrlCaption: ReactNode | string = props.source.url;
+  if (props.source.name != null) nameAndUrlCaption = <>{props.source.name} <span>{nameAndUrlCaption}</span></>;
 
   return (
     <NavLink

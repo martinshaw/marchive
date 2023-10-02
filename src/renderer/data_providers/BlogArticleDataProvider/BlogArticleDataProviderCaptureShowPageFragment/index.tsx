@@ -499,7 +499,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                 rowCount={(props?.capture?.captureParts ?? []).length}
                 rowHeight={200}
                 rowRenderer={({ key, index, style }) => {
-                  const capturePart = props?.capture?.captureParts?.[index];
+                  const capturePart = props?.capture?.captureParts[index];
+                  if (capturePart == null) return null;
 
                   return (
                     <div
@@ -508,7 +509,6 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                       className="blog-article-capture-show-fragment__right__list__item"
                     >
                       <BlogArticleDataProviderCapturePartPreviewThumbnail
-                        key={key}
                         source={props.source}
                         schedule={props.schedule}
                         capture={props.capture}
