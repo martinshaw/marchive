@@ -23,7 +23,7 @@ const CapturePromptForDeletionAction = async (captureId: number): Promise<boolea
     type: 'warning',
     message: "Are you sure you want to delete this saved capture?",
     detail: "You can remove the capture from your Marchive without deleting the saved files from your computer.",
-    buttons: ['Never Mind', 'Just Remove from Marchive', 'Remove from Marchive and Delete All Saved Files'],
+    buttons: ['Never Mind', 'Just Remove from Your Marchive', 'Remove from Your Marchive and Delete All Saved Files'],
     defaultId: 0,
     cancelId: 0,
   };
