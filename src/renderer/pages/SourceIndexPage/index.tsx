@@ -19,8 +19,9 @@ import { SourceDomainAttributes } from '../../../main/database/models/SourceDoma
 import { SourceAttributes } from '../../../main/database/models/Source';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 import AutoAnimated from '../../components/AutoAnimated';
-import promptForSourceDeletion from '../../../renderer/layouts/DefaultLayout/functions/promptForSourceDeletion';
-import AppToaster from '../../../renderer/toaster';
+import promptForSourceDeletion from '../../layouts/DefaultLayout/functions/promptForSourceDeletion';
+import AppToaster from '../../toaster';
+import { CopyableExternalLinkCopyLinkMenuItem } from '../../layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';
 
@@ -117,6 +118,7 @@ const SourceIndexPage = () => {
                     style={{width: '100%'}}
                     content={
                       <Menu>
+                        <CopyableExternalLinkCopyLinkMenuItem text={source.name} url={source.url} />
                         <MenuItem
                           icon="trash"
                           text="Delete Source"
