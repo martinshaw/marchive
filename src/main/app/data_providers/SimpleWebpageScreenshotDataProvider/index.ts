@@ -9,55 +9,110 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import fs from 'node:fs'
-import path from 'node:path'
-import logger from '../../../app/log'
-import {Browser, Page} from 'puppeteer-core'
-import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import BaseDataProvider, { AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType } from '../BaseDataProvider'
-import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import path from 'node:path';
+import logger from '../../../app/log';
+import { Browser, Page } from 'puppeteer-core';
+import { Capture, CapturePart, Schedule, Source } from '../../../database';
+import BaseDataProvider, {
+  AllowedScheduleIntervalReturnType,
+  BaseDataProviderIconInformationReturnType,
+  SourceDomainInformationReturnType,
+} from '../BaseDataProvider';
+import {
+  createPuppeteerBrowser,
+  generatePageMetadata,
+  generatePageScreenshot,
+  loadPageByUrl,
+} from '../helper_functions/PuppeteerDataProviderHelperFunctions';
+import entities from 'entities';
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
-    return 'simple-webpage-screenshot'
+    return 'simple-webpage-screenshot';
   }
 
   getName(): string {
-    return 'Simple Webpage Screenshot'
+    return 'Simple Webpage Screenshot';
   }
 
   getDescription(): string {
-    return 'Captures a simple screenshot of a webpage'
+    return 'Captures a simple screenshot of a webpage';
   }
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
       filePath: path.join(__dirname, 'page-layout.svg'),
       shouldInvertOnDarkMode: true,
-    }
+    };
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {
-    if ((url.startsWith('http://') || url.startsWith('https://')) === false) url = `https://${url}`
+    if ((url.startsWith('http://') || url.startsWith('https://')) === false)
+      url = `https://${url}`;
 
-    let request: Response | null = null
+    let request: Response | null = null;
     try {
-      request = await fetch(url)
-      if (request === null) return false
-      if (request.status !== 200) return false
+      request = await fetch(url);
+      if (request === null) return false;
+      if (request.status !== 200) return false;
 
-      const contents = await request.text()
-      if (!contents) return false
-      if (contents.includes('<body ') === false && contents.includes('<body>') === false) return false
+      const contents = await request.text();
+      if (!contents) return false;
+      if (
+        contents.includes('<body') === false &&
+        contents.includes('<body>') === false
+      )
+        return false;
     } catch (error) {
-      return false
+      return false;
     }
 
-    return true
+    return true;
   }
 
   async allowedScheduleInterval(): Promise<AllowedScheduleIntervalReturnType> {
-    return {}
+    return {};
+  }
+
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    return super.getSourceDomainInformation(url);
+
+    /**
+     * TODO: @see https://www.notion.so/codeatlas/Build-UI-etc-for-podcast-DP-2b11d20d72ec4c91be3033217034f020?pvs=4#de488f21490d4c6cb2ba70d0aa6a7970
+     */
+    // let request: Response | null = null;
+    // try {
+    //   request = await fetch(url);
+    //   if (request === null) return super.getSourceDomainInformation(url);
+    //   if (request.status !== 200) return super.getSourceDomainInformation(url);
+
+    //   const contents = await request.text();
+    //   if (!contents) return super.getSourceDomainInformation(url);
+    //   if (
+    //     contents.includes('<title ') === false &&
+    //     contents.includes('<title>') === false
+    //   ) {
+    //     return super.getSourceDomainInformation(url);
+    //   }
+
+    //   let titleMatches;
+    //   if ((titleMatches = /<title>([^<\/]*)<\/title>/iu.exec(contents)) !== null) {
+    //     if (titleMatches.length < 2) return super.getSourceDomainInformation(url);
+
+    //     const unescapedTitle = titleMatches[1];
+    //     const title = entities.decodeHTML(unescapedTitle);
+
+    //     return {
+    //       siteName: title,
+    //     }
+    //   }
+    // } catch (error) {
+    //   return super.getSourceDomainInformation(url);
+    // }
+
+    // return super.getSourceDomainInformation(url);
   }
 
   /**
@@ -66,77 +121,54 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   async performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source,
+    source: Source
   ): Promise<boolean | never> {
-    const browser = await createPuppeteerBrowser()
-    const page = await loadPageByUrl(source.url, browser)
+    const browser = await createPuppeteerBrowser();
+    const page = await loadPageByUrl(source.url, browser);
 
-    const firstPageScreenshot = await this.generatePageScreenshot(page, capture.downloadLocation)
+    const firstPageScreenshot = await generatePageScreenshot(
+      page,
+      capture.downloadLocation
+    );
     if (firstPageScreenshot === false) {
-      const errorMessage = 'The first page screenshot could not be generated'
-      logger.error(errorMessage)
+      const errorMessage = 'The first page screenshot could not be generated';
+      logger.error(errorMessage);
 
-      await page.close()
-      await browser.close()
-      throw new Error(errorMessage)
+      await page.close();
+      await browser.close();
+      throw new Error(errorMessage);
     }
 
-    const firstPageMetadata = await this.generatePageMetadata(page, capture.downloadLocation)
+    const firstPageMetadata = await generatePageMetadata(
+      page,
+      capture.downloadLocation
+    );
     if (firstPageMetadata === false) {
-      const errorMessage = 'The first page metadata could not be generated'
-      logger.error(errorMessage)
+      const errorMessage = 'The first page metadata could not be generated';
+      logger.error(errorMessage);
 
-      await page.close()
-      await browser.close()
-      throw new Error(errorMessage)
+      await page.close();
+      await browser.close();
+      throw new Error(errorMessage);
     }
 
-    await page.close()
-    await browser.close()
+    if (firstPageMetadata.title != null && firstPageMetadata.title !== '') {
+      source.name = firstPageMetadata.title.toString();
+      await source.save();
+    }
 
-    return true
-  }
+    await page.close();
+    await browser.close();
 
-  async generatePageScreenshot(
-    page: Page,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
-    await scrollPageToTop(page)
-    await smoothlyScrollPageToBottom(page, {})
-    await scrollPageToTop(page)
-
-    const indexPageDownloadFileName = path.join(
-      captureDownloadDirectory,
-      'screenshot.jpg',
-    )
-
-    await page.screenshot({
-      fullPage: true,
-      path: indexPageDownloadFileName,
-      quality: 85,
-    })
-
-    return fs.existsSync(indexPageDownloadFileName)
-  }
-
-  async generatePageMetadata(
-    page: Page,
-    captureDownloadDirectory: string,
-  ): Promise<boolean> {
-    const metadataFileName = path.join(captureDownloadDirectory, 'metadata.json')
-
-    const metadata = await retrievePageHeadMetadata(page)
-    fs.writeFileSync(metadataFileName, JSON.stringify(metadata))
-
-    return fs.existsSync(metadataFileName)
+    return true;
   }
 
   /**
    * @throws {Error}
    */
   async processPart(capturePart: CapturePart): Promise<boolean | never> {
-    return true
+    return true;
   }
 }
 
-export default SimpleWebpageScreenshotDataProvider
+export default SimpleWebpageScreenshotDataProvider;

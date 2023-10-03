@@ -13,10 +13,10 @@ import url from 'node:url';
 import path from 'node:path';
 import logger from "./app/log";
 import { ModelStatic } from "sequelize";
-import { app, net, protocol } from "electron";
+import { app, dialog, net, protocol } from "electron";
 import { Capture, CapturePart } from "./database";
 
-const marchiveRegisteredProtocolSchemes = [ 'marchive-downloads' ] as const;
+const marchiveRegisteredProtocolSchemes = [ 'marchive-downloads', 'marchive' ] as const;
 export type MarchiveRegisteredProtocolSchemesType = typeof marchiveRegisteredProtocolSchemes[number]
 
 const parseMarchiveCaptureOrCapturePartDownloadProtocolUrl: (url: string) => {
@@ -99,6 +99,24 @@ const handleDownloadsProtocolRequest: (request: Request) => Promise<Response> = 
   return absolutePath == null ? new Response(null, {status: statusCode}) : net.fetch(url.pathToFileURL(absolutePath).toString())
 }
 
+const handleProtocolRequest: (request: Request) => Promise<Response> = async (request) => {
+  dialog.showMessageBox({
+    title: 'Protocol Request',
+    message: 'Protocol Request ' + request.url,
+    buttons: ['OK'],
+  })
+
+  /**
+   * TODO: Need to implement a handler here, which takes the URL, parses it by removing the scheme part,
+   *   de-url-encoding the rest, then open a window if needed, navigate to 'Create Source' page,
+   *   add the url to the input and display Data Provider options
+   */
+
+  return new Response('<h1>hello, world</h1>', {
+    headers: { 'content-type': 'text/html' }
+  })
+}
+
 protocol.registerSchemesAsPrivileged([
   {
     scheme: 'marchive-downloads',
@@ -111,6 +129,14 @@ protocol.registerSchemesAsPrivileged([
       stream: true,
     },
   },
+  {
+    scheme: 'marchive',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true
+    }
+  }
 ])
 
 app.whenReady().then(() => {
@@ -118,6 +144,11 @@ app.whenReady().then(() => {
   protocol.handle(
     'marchive-downloads',
     handleDownloadsProtocolRequest,
+  )
+
+  protocol.handle(
+    'marchive',
+    handleProtocolRequest,
   )
 
 })

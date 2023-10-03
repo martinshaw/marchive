@@ -13,11 +13,15 @@ import { ipcMain } from "electron";
 import CaptureListAction from "../app/actions/Capture/CaptureListAction";
 import CaptureShowAction from "../app/actions/Capture/CaptureShowAction";
 import CaptureRunAction from "../app/actions/Capture/CaptureRunAction";
+import CaptureDeleteAction from "../app/actions/Capture/CaptureDeleteAction";
+import CapturePromptForDeletionAction from "../app/actions/Capture/CapturePromptForDeletionAction";
 
 export type CapturesChannels =
   | 'captures.list'
   | 'captures.show'
   | 'captures.run'
+  | 'captures.delete'
+  | 'captures.prompt-for-deletion'
 
 ipcMain.on('captures.list', async (event) => {
   return CaptureListAction()
@@ -42,4 +46,16 @@ ipcMain.on('captures.run', async (event, scheduleId: number) => {
   return CaptureRunAction(scheduleId)
     .then(() => { event.reply('captures.run', null, null) })
     .catch(error => { event.reply('captures.run', null, error) })
+})
+
+ipcMain.on('captures.delete', async (event, captureId: number) => {
+  return CaptureDeleteAction(captureId)
+    .then(capture => { event.reply('captures.delete', capture, null) })
+    .catch(error => { event.reply('captures.delete', null, error) })
+})
+
+ipcMain.on('captures.prompt-for-deletion', async (event, captureId: number) => {
+  return CapturePromptForDeletionAction(captureId)
+    .then(deleted => { event.reply('captures.prompt-for-deletion', deleted, null) })
+    .catch(error => { event.reply('captures.prompt-for-deletion', null, error) })
 })

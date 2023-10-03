@@ -58,7 +58,17 @@
   "powerHeader.update.content": [
       "Modified:\\s+(.+)=!modified_date!"
   ],
-  "editor.stickyScroll.enabled": true,
+
   "git.autofetch": true,
   "extensions.ignoreRecommendations": false,
+  "editor.stickyScroll.enabled": true,
+  "editor.tabSize": 4,
+  "editor.detectIndentation": true,
+
+  "cSpell.words": [
+    "Adblocker",
+    "ellipsize",
+    "Includeable",
+    "Marchive"
+  ],
 }

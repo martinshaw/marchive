@@ -9,13 +9,15 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { Schedule, Source } from "../../../database"
+import { Capture, CapturePart, Schedule, Source } from "../../../database"
 import logger from "../../log"
+import fs from 'node:fs'
+import { rimraf, rimrafSync } from 'rimraf'
 
 /**
  * @throws {Error}
  */
-const SourceDeleteAction = async (sourceId: number): Promise<void> => {
+const SourceDeleteAction = async (sourceId: number, alsoDeleteFiles: boolean = false): Promise<void> => {
   let originalSource: Source | null = null
   try {
     originalSource = await Source.findByPk(sourceId, {include: [Schedule]})
@@ -31,9 +33,31 @@ const SourceDeleteAction = async (sourceId: number): Promise<void> => {
   }
 
   if (originalSource.schedules?.length > 0) {
-    const errorMessage = 'The Source has associated Schedules and cannot be deleted'
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    originalSource.schedules.forEach(async (schedule) => {
+      logger.info('Deleting Schedule with ID ' + schedule.id);
+
+      const captures = await Capture.findAll({where: {scheduleId: schedule.id}})
+
+      captures.forEach(async (capture) => {
+        logger.info('Deleting Capture with ID ' + capture.id);
+
+        const captureParts = await CapturePart.findAll({where: {captureId: capture.id}})
+
+        captureParts.forEach(async (capturePart) => {
+          logger.info('Deleting Capture Part with ID ' + capturePart.id);
+
+          await capturePart.destroy()
+        })
+
+        await capture.destroy()
+      })
+
+      if (alsoDeleteFiles === true && schedule.downloadLocation != null && fs.existsSync(schedule.downloadLocation)) {
+        await rimraf(schedule.downloadLocation)
+      }
+
+      await schedule.destroy()
+    })
   }
 
   logger.info('Deleting Source with ID ' + originalSource.id)

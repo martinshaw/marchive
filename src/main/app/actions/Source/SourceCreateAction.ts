@@ -41,7 +41,6 @@ const SourceCreateAction = async (url: string, dataProviderIdentifier: string): 
     throw new Error(friendlyInfoMessage)
   }
 
-
   let validDataProvidersForUrl = await validateUrlWithDataProviders(url)
   if (validDataProvidersForUrl.length === 0) {
     const errorMessage = `No Data Providers available for ${url}`
@@ -59,7 +58,7 @@ const SourceCreateAction = async (url: string, dataProviderIdentifier: string): 
     throw new Error(errorMessage)
   }
 
-  const sourceDomain = await findOrCreateSourceDomainForUrl(url)
+  const sourceDomain = await findOrCreateSourceDomainForUrl(url, chosenDataProvider)
 
   let source: Source | null = null
   try {

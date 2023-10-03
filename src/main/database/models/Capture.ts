@@ -10,8 +10,9 @@ Description: description
 */
 
 import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, ForeignKey, BelongsTo, HasMany} from 'sequelize-typescript'
+import {Table, Model, Column, ForeignKey, BelongsTo, HasMany, Sequelize} from 'sequelize-typescript'
 import {Schedule, CapturePart} from '..'
+import logger from '../../app/log'
 
 export type CaptureAttributes = {
   id: number
@@ -31,7 +32,7 @@ export type CaptureAttributes = {
   modelName: 'Capture',
   timestamps: true,
   paranoid: true,
-  })
+})
 class Capture extends Model<
   CaptureAttributes,
   Optional<

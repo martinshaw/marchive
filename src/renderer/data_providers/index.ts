@@ -16,6 +16,8 @@ import { CaptureAttributes } from "../../main/database/models/Capture";
 import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDataProvider";
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
 import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider'
+import PodcastRssFeedDataProviderRendererDetails from './PodcastRssFeedDataProvider'
+import SimpleWebpageScreenshotDataProviderRendererDetails from './SimpleWebpageScreenshotDataProvider'
 
 export type DataProvidersRendererComponentCapturePreviewThumbnailPropsType = {
   source: SourceAttributes;
@@ -43,6 +45,8 @@ export type DataProvidersRendererDetailsType = {
 const dataProvidersRendererDetailsList: {[identifier: string]: DataProvidersRendererDetailsType} = {
   'blog-article': BlogArticleDataProviderRendererDetails,
   'wikipedia-article': WikipediaArticleDataProviderRendererDetails,
+  'podcast-rss-feed': PodcastRssFeedDataProviderRendererDetails,
+  'simple-webpage-screenshot': SimpleWebpageScreenshotDataProviderRendererDetails,
 }
 
 export default dataProvidersRendererDetailsList;

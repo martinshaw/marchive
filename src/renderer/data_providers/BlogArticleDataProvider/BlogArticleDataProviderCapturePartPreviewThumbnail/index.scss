@@ -1,10 +1,17 @@
 .blog-article-data-provider-capture-part-preview-thumbnail__warning {
+  width: calc(100% - 10px);
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  margin-right: -10px;
+  padding: 10px 20px;
+  transition: filter 250ms, background-color 250ms;
+  border-radius: 7px;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  align-items: start;
   justify-content: center;
-  height: 200px;
+  align-items: center;
+  gap: 1rem;
 
   & > div:nth-child(2) {
     flex: 1;
@@ -18,6 +25,26 @@
   }
 }
 
+.blog-article-data-provider-capture-part-preview-thumbnail__not-found {
+  width: calc(100% - 10px);
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  margin-right: -10px;
+  padding: 10px 20px;
+  transition: filter 250ms, background-color 250ms;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
 .blog-article-data-provider-capture-part-preview-thumbnail__container {
   width: calc(100% - 10px);
   height: 200px;
@@ -26,14 +53,13 @@
   margin-right: -10px;
   padding: 10px 20px;
   transition: filter 250ms, background-color 250ms;
-  border-radius: 0px;
+  border-radius: 7px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   &:hover {
     filter: brightness(1.05);
-    border-radius: 7px;
   }
 
   .blog-article-data-provider-capture-part-preview-thumbnail__date-caption {
@@ -57,6 +83,7 @@
       padding-top: 0;
       font-size: 1.7rem;
       line-height: 2.1rem !important;
+      font-weight: 500;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -79,10 +106,18 @@
   }
 }
 
-#layout.bp5-dark .blog-article-data-provider-capture-part-preview-thumbnail__container:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+#layout.bp5-dark .blog-article-data-provider-capture-part-preview-thumbnail__container, #layout.bp5-dark .blog-article-data-provider-capture-part-preview-thumbnail__not-found {
+  background-color: rgba(255, 255, 255, 0.02);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
 }
 
-#layout:not(.bp5-dark) .blog-article-data-provider-capture-part-preview-thumbnail__container:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+#layout:not(.bp5-dark) .blog-article-data-provider-capture-part-preview-thumbnail__container, #layout:not(.bp5-dark) .blog-article-data-provider-capture-part-preview-thumbnail__not-found {
+  background-color: rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }

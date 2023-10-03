@@ -4,9 +4,9 @@ import { DataProvidersChannels } from './ipc/DataProviders';
 import { SchedulesChannels } from './ipc/Schedules';
 import { SourcesChannels } from './ipc/Sources';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
-import { UtilitiesChannels } from './ipc/Utilities';
 import { ProcessesChannels } from './ipc/Processes';
 import { RenderersChannels } from './ipc/Renderers';
+import { UtilitiesChannels } from './ipc/Utilities';
 
 require('events').EventEmitter.defaultMaxListeners = 15
 
