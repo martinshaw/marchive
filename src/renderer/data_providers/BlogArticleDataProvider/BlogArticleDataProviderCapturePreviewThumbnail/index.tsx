@@ -16,8 +16,8 @@ import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHu
 import './index.scss'
 
 const BlogArticleDataProviderCapturePreviewThumbnail = (props: DataProvidersRendererComponentCapturePreviewThumbnailPropsType) => {
-  const imageDataUrl = 'marchive-downloads:///capture/'+props.capture.id + '/index.jpg';
-  const dateCaption = props?.capture?.createdAt == null ? null : useHumanDateCaption(props.capture.createdAt);
+  const imageDataUrl = 'marchive-downloads:///capture/'+props.capture.id + '/screenshot.jpg';
+  const dateCaption = props?.capture?.createdAt == null ? null : useHumanDateCaption(props.capture.createdAt, true);
 
   return (
     <div className="blog-article-data-provider-capture-preview-thumbnail__container">

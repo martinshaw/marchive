@@ -36,7 +36,12 @@
     height: auto;
     object-fit: contain;
     object-position: center;
-    border-radius: 3px;
+    border-radius: 5px;
+
+    height: 500px;
+    overflow: hidden;
+    object-fit: cover;
+    object-position: top left;
   }
 
   .blog-article-data-provider-capture-preview-thumbnail__image__placeholder {

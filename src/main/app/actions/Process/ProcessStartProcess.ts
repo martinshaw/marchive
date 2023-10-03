@@ -52,12 +52,15 @@ const ProcessStartProcess = async (
 
     logger.info('ProcessStartProcess: Has the script file', {exists: fs.existsSync(processDetail.path)})
 
+    let tsNodeExecutablePath = path.join(internalRootPath, 'node_modules', '.bin', 'ts-node')
+    if (process.platform === 'win32') tsNodeExecutablePath = tsNodeExecutablePath + '.cmd'
+
     const childProcess = fork(
       processDetail.path,
       [],
       {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-        execPath: path.join(internalRootPath, 'node_modules', '.bin', 'ts-node'),
+        execPath: tsNodeExecutablePath,
         cwd: internalRootPath,
         env: {
           ...process.env,
@@ -65,49 +68,9 @@ const ProcessStartProcess = async (
           DOWNLOADS_PATH: downloadsPath,
           APP_LOGS_PATH: appLogsPath,
         },
-
-        // execPath?: string | undefined;
-        // execArgv?: string[] | undefined;
-        // silent?: boolean | undefined;
-        // /**
-        //  * Can be set to 'pipe', 'inherit', 'overlapped', or 'ignore', or an array of these strings.
-        //  * If passed as an array, the first element is used for `stdin`, the second for
-        //  * `stdout`, and the third for `stderr`. A fourth element can be used to
-        //  * specify the `stdio` behavior beyond the standard streams. See
-        //  * {@link ChildProcess.stdio} for more information.
-        //  *
-        //  * @default 'pipe'
-        //  */
-        // stdio?: StdioOptions | undefined;
-        // detached?: boolean | undefined;
-        // windowsVerbatimArguments?: boolean | undefined;
-
-        // uid?: number | undefined;
-        // gid?: number | undefined;
-        // cwd?: string | URL | undefined;
-        // env?: NodeJS.ProcessEnv | undefined;
-
-        // /**
-        //  * Specify the kind of serialization used for sending messages between processes.
-        //  * @default 'json'
-        //  */
-        // serialization?: SerializationType | undefined;
-        // /**
-        //  * The signal value to be used when the spawned process will be killed by the abort signal.
-        //  * @default 'SIGTERM'
-        //  */
-        // killSignal?: NodeJS.Signals | number | undefined;
-        // /**
-        //  * In milliseconds the maximum amount of time the process is allowed to run.
-        //  */
-        // timeout?: number | undefined;
-
-        // /**
-        //  * When provided the corresponding `AbortController` can be used to cancel an asynchronous action.
-        //  */
-        // signal?: AbortSignal | undefined;
       }
     );
+
     process?.stdin?.resume();
 
     childProcess.stderr?.on('data', async (buffer) => {

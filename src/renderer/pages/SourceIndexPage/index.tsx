@@ -9,8 +9,8 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 import { useMemo } from 'react';
-import { Button, Text } from '@blueprintjs/core';
-import { NavLink, useLoaderData } from 'react-router-dom';
+import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
+import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourceDomains from './functions/getSourceDomains';
@@ -19,6 +19,9 @@ import { SourceDomainAttributes } from '../../../main/database/models/SourceDoma
 import { SourceAttributes } from '../../../main/database/models/Source';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 import AutoAnimated from '../../components/AutoAnimated';
+import promptForSourceDeletion from '../../layouts/DefaultLayout/functions/promptForSourceDeletion';
+import AppToaster from '../../toaster';
+import { CopyableExternalLinkCopyLinkMenuItem } from '../../layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';
 
@@ -70,6 +73,8 @@ const SourceIndexPage = () => {
     dataProvidersError
   } = useLoaderData() as SourceIndexPageLoaderReturnType
 
+  const navigate = useNavigate();
+
   const sourcesCount = useMemo(
     () => sourcesGroupedBySourceDomain == null ?
       0 :
@@ -78,13 +83,15 @@ const SourceIndexPage = () => {
     [sourcesGroupedBySourceDomain]
   )
 
+  if (sourcesCount === 0) return <Navigate to="/sources/create" replace={true} />;
+
   return (
     <>
       <div className="sources__buttons">
         <Text>
           {sourcesCount} Source{sourcesCount > 1 ? 's' : ''}
           <span className="sources__buttons__hint">
-            Right-click a source to edit or delete it.
+            Right-click a source to {/*edit or */}delete it.
           </span>
         </Text>
         <NavLink to="/sources/create">
@@ -95,23 +102,52 @@ const SourceIndexPage = () => {
       </div>
 
       <AutoAnimated additionalClassNames="sources__list">
-        {(sourcesGroupedBySourceDomain ?? []).map(sourceDomain =>
-          <div key={sourceDomain.id} className="sources__list__source-domain">
-            <div className="sources__list__source-domain__title">
-              {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
-              <Text ellipsize={false}>{sourceDomain.name}</Text>
-            </div>
+        {(sourcesGroupedBySourceDomain ?? [])
+          .filter(sourceDomain => sourceDomain.sources != null && sourceDomain.sources.length > 0)
+          .map(sourceDomain =>
+            <div key={sourceDomain.id} className="sources__list__source-domain">
+              <div className="sources__list__source-domain__title">
+                {sourceDomain.faviconImage != null && sourceDomain.faviconImage !== '' && <img src={sourceDomain.faviconImage ?? undefined} alt={sourceDomain.name} /> }
+                <Text ellipsize={false}>{sourceDomain.name}</Text>
+              </div>
 
-            {(sourceDomain.sources ?? []).map(source => (
-              source == null ? null :
-                <SourceIndexPageListItemCard
-                  key={source.id}
-                  source={source}
-                  dataProviders={dataProviders}
-                />
-            ))}
-          </div>
-        )}
+              {(sourceDomain.sources ?? []).map(source => (
+                source == null ? null :
+                  <ContextMenu
+                    key={source.id}
+                    style={{width: '100%'}}
+                    content={
+                      <Menu>
+                        <CopyableExternalLinkCopyLinkMenuItem text={source.name} url={source.url} />
+                        <MenuItem
+                          icon="trash"
+                          text="Delete Source"
+                          disabled={source.schedules.every(schedule => schedule.status === 'processing')}
+                          onClick={() => {
+                            promptForSourceDeletion(source)
+                              .then(() => {
+                                navigate(0);
+                              })
+                              .catch(() => {
+                                AppToaster.show({
+                                  message: 'An error occurred while deleting the source.',
+                                  intent: 'danger',
+                                })
+                              });
+                          }}
+                        />
+                      </Menu>
+                    }
+                  >
+                    <SourceIndexPageListItemCard
+                      key={source.id}
+                      source={source}
+                      dataProviders={dataProviders}
+                    />
+                  </ContextMenu>
+              ))}
+            </div>
+          )}
 
         {(sourcesWithoutSourceDomain ?? []).map(source => (
           source == null ? null :

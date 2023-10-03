@@ -18,7 +18,7 @@ import Downloader from 'nodejs-file-downloader'
 import {JSONObject, JSONValue} from 'types-json'
 import {CapturePartStatus} from '../../../database/models/CapturePart'
 import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType} from '../BaseDataProvider'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType, SourceDomainInformationReturnType} from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
 import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
@@ -66,7 +66,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
       const contents = await request.text()
       if (!contents) return false
-      if (contents.includes('<body ') === false && contents.includes('<body>') === false) return false
+      if (contents.includes('<body') === false && contents.includes('<body>') === false) return false
     } catch (error) {
       return false
     }
@@ -81,6 +81,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     }
   }
 
+  async getSourceDomainInformation(
+    url: string
+  ): Promise<SourceDomainInformationReturnType> {
+    return {
+      siteName: 'Behance Projects'
+    }
+  }
+
   /**
    * @throws {Error}
    */
@@ -92,10 +100,6 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     const browser = await createPuppeteerBrowser()
     const page = await loadPageByUrl(source.url, browser)
 
-    await scrollPageToTop(page)
-    await smoothlyScrollPageToBottom(page, {})
-    await scrollPageToTop(page)
-
     const indexPageDownloadFileName = path.join(
       capture.downloadLocation,
       'screenshot.jpg',
@@ -104,12 +108,23 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     await page.screenshot({
       fullPage: true,
       path: indexPageDownloadFileName,
-      quality: 85,
+      quality: 90,
+      type: 'jpeg',
     })
 
     await this.generatePageHeadMetadata(page, capture.downloadLocation)
 
-    await this.generatePageProjectMetadata(page, capture.downloadLocation)
+    const projectMetadata = await this.generatePageProjectMetadata(page, capture.downloadLocation)
+    if (projectMetadata === false) {
+      await page.close()
+      await browser.close()
+
+      throw new Error('Failed to generate project metadata')
+    }
+    if (projectMetadata.title != null && projectMetadata.title !== '') {
+      source.name = projectMetadata.title.toString()
+      await source.save()
+    }
 
     const pageImages = await this.determineAllImages(page)
 
@@ -148,7 +163,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   async generatePageProjectMetadata(
     page: Page,
     captureDownloadDirectory: string,
-  ): Promise<boolean> {
+  ): Promise<false | JSONObject> {
     const projectMetadataFileName = path.join(captureDownloadDirectory, 'project.json')
 
     const projectMetadata: JSONObject = {}
@@ -231,7 +246,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     fs.writeFileSync(projectMetadataFileName, JSON.stringify(projectMetadata))
 
-    return fs.existsSync(projectMetadataFileName)
+    return fs.existsSync(projectMetadataFileName) ? projectMetadata : false
   }
 
   async determineAllImages(
@@ -332,8 +347,11 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       return true
     }
 
-    // Reminder: returning false will cancel loop, returning true will continue loop
-    images.every(async (image, index) => await addCapturePart(image, index))
+    for (let index = 0; index < images.length; index++) {
+      const image = images[index]
+      const shouldContinue = await addCapturePart(image, index)
+      if (shouldContinue === false) break
+    }
 
     if (source.useStartOrEndCursor === 'start') source.currentStartCursorUrl = images[0].url
     if (source.useStartOrEndCursor === 'end') source.currentEndCursorUrl = images[images.length - 1].url

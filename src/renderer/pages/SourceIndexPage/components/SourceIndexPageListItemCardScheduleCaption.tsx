@@ -10,12 +10,13 @@ Description: description
 */
 
 import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { ScheduleAttributes } from "main/database/models/Schedule";
-import { SourceAttributes } from "main/database/models/Source";
+import Schedule, { ScheduleAttributes } from "../../../../main/database/models/Schedule";
+import Source, { SourceAttributes } from "../../../../main/database/models/Source";
 import { ReactNode } from "react";
+import scheduleIntervalToCaption from "../functions/scheduleIntervalToCaption";
 
 export type SourceIndexPageListItemCardScheduleCaptionPropsType = {
-  source: SourceAttributes;
+  schedule: Schedule | ScheduleAttributes;
 };
 
 const SourceIndexPageListItemCardScheduleCaption = (
@@ -23,69 +24,53 @@ const SourceIndexPageListItemCardScheduleCaption = (
 ) => {
   let scheduleCaption: ReactNode = null;
 
-  if (props.source?.schedules == null) return null;
+  if (props.schedule == null) return null;
 
-  if (props.source.schedules.length > 1) {
-    scheduleCaption = (
-      <>
-        <Icon icon="time" />
-        <Text>{props.source.schedules.length} schedules</Text>
-      </>
-    );
-  }
-  else if (props.source.schedules.length === 1) {
-    if (props.source.schedules[0].status === 'pending') {
-      if (props.source.schedules[0].interval == null) {
-        if (props.source.schedules[0].lastRunAt == null && props.source.schedules[0].nextRunAt == null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Not scheduled to save</Text>
-            </>
-          );
-        }
-        else if (props.source.schedules[0].lastRunAt != null && props.source.schedules[0].nextRunAt == null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Saved on {props.source.schedules[0].lastRunAt.toDateString()} {props.source.schedules[0].lastRunAt.toLocaleTimeString()}</Text>
-            </>
-          );
-        }
-        else if (props.source.schedules[0].lastRunAt == null && props.source.schedules[0].nextRunAt != null) {
-          scheduleCaption = (
-            <>
-              <Icon icon="time" />
-              <Text>Will save on {props.source.schedules[0].nextRunAt.toDateString()} {props.source.schedules[0].nextRunAt.toLocaleTimeString()}</Text>
-            </>
-          );
-        }
-      }
-      else {
-        let timeCaption = Math.ceil(props.source.schedules[0].interval / 60) + ' mins.'
-        if ((Math.ceil(props.source.schedules[0].interval / 60)) > 120) timeCaption = Math.ceil(props.source.schedules[0].interval / 3600) + ' hrs.';
-        if ((Math.ceil(props.source.schedules[0].interval / 3600)) > 48) timeCaption = Math.ceil(props.source.schedules[0].interval / 86400) + ' days.';
-        if ((Math.ceil(props.source.schedules[0].interval / 86400)) > 14) timeCaption = Math.ceil(props.source.schedules[0].interval / 604800) + ' weeks.';
-        if ((Math.ceil(props.source.schedules[0].interval / 604800)) > 8) timeCaption = Math.ceil(props.source.schedules[0].interval / 2419200) + ' months.';
-        if ((Math.ceil(props.source.schedules[0].interval / 2419200)) > 12) timeCaption = Math.ceil(props.source.schedules[0].interval / 29030400) + ' years.';
-
-        const nextCaption = props.source.schedules[0].nextRunAt != null ? `(next time on ${props.source.schedules[0].nextRunAt.toDateString()} ${props.source.schedules[0].nextRunAt.toLocaleTimeString()})` : '';
+  if (props.schedule.status === 'pending') {
+    if (props.schedule.interval == null) {
+      if (props.schedule.lastRunAt == null && props.schedule.nextRunAt == null) {
         scheduleCaption = (
           <>
             <Icon icon="time" />
-            <Text>Saves every {timeCaption} {nextCaption}</Text>
+            <Text>Not scheduled to save</Text>
+          </>
+        );
+      }
+      else if (props.schedule.lastRunAt != null && props.schedule.nextRunAt == null) {
+        scheduleCaption = (
+          <>
+            <Icon icon="time" />
+            <Text>Saved on {props.schedule.lastRunAt.toDateString()} {props.schedule.lastRunAt.toLocaleTimeString()}</Text>
+          </>
+        );
+      }
+      else if (props.schedule.nextRunAt != null) {
+        scheduleCaption = (
+          <>
+            <Icon icon="time" />
+            <Text>Will save on {props.schedule.nextRunAt.toDateString()} {props.schedule.nextRunAt.toLocaleTimeString()}</Text>
           </>
         );
       }
     }
-    else if (props.source.schedules[0].status === 'processing') {
+    else {
+      const timeCaption = scheduleIntervalToCaption(props.schedule.interval);
+      const nextCaption = props.schedule.nextRunAt != null ? `(next time on ${props.schedule.nextRunAt.toDateString()} ${props.schedule.nextRunAt.toLocaleTimeString()})` : '';
       scheduleCaption = (
         <>
-          <Spinner size={SpinnerSize.SMALL} />
-          <Text>Saving now...</Text>
+          <Icon icon="time" />
+          <Text>Saves every {timeCaption} {nextCaption}</Text>
         </>
       );
     }
+  }
+  else if (props.schedule.status === 'processing') {
+    scheduleCaption = (
+      <>
+        <Spinner size={SpinnerSize.SMALL} />
+        <Text>Saving now...</Text>
+      </>
+    );
   }
 
   return scheduleCaption;

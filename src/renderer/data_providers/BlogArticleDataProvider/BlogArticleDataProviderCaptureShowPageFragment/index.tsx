@@ -9,322 +9,377 @@ Modified: 2023-09-14T02:42:40.042Z
 Description: description
 */
 
-import ReactJson from 'react-json-view'
-import { useAsyncMemo } from "use-async-memo";
 import List from 'react-virtualized/dist/commonjs/List';
-import { Location, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from "../..";
-import { Button, ButtonGroup, ContextMenu, ContextMenuContentProps, H1, H4, Menu, MenuDivider, MenuItem, NonIdealState, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import parseLocationWithSearchParams from "../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams";
-import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
-import BlogArticleDataProviderCapturePartPreviewThumbnail from "../BlogArticleDataProviderCapturePartPreviewThumbnail";
-import getObjectFromJsonFile, { GetObjectFromJsonFileReturnType } from "../../../../renderer/layouts/DefaultLayout/functions/getObjectFromJsonFile";
-import formatLocationUrlWithChangedSearchParams from "renderer/layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams";
+import { JSONTree } from 'react-json-tree';
+import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from '../..';
+import {
+  Button,
+  ButtonGroup,
+  H1,
+  H4,
+  NonIdealState,
+  Spinner,
+  SpinnerSize,
+  Text,
+} from '@blueprintjs/core';
+import parseLocationWithSearchParams from '../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams';
+import BlogArticleDataProviderCapturePartPreviewThumbnail from '../BlogArticleDataProviderCapturePartPreviewThumbnail';
+import formatLocationUrlWithChangedSearchParams from '../../../../renderer/layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams';
+import brightBase16 from '../../../../renderer/utilities/base16_themes/bright.base16';
+import useFocusedCapturePartFromLocation from '../../hooks/useFocusedCapturePartFromLocation';
+import useCaptureReadability from '../../hooks/useCaptureReadability';
+import useCaptureImage from '../../hooks/useCaptureImage';
+import useCaptureSnapshot from '../../hooks/useCaptureSnapshot';
+import useCaptureMetadata from '../../hooks/useCaptureMetadata';
+import FocusedCaptureImageContextMenu from '../../components/FocusedCaptureImageContextMenu';
 
-import './index.scss'
+import './index.scss';
 
-const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType) => {
+type BlogArticleDataProviderCaptureShowPageFragmentPropsType = {
+  relatedHeadingCaption: string
+} & DataProvidersRendererComponentCaptureShowPageFragmentPropsType;
+
+const BlogArticleDataProviderCaptureShowPageFragment = (
+  props: BlogArticleDataProviderCaptureShowPageFragmentPropsType
+) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
 
-  type CaptureStateDisplayedMediaType = 'simplified' | 'screenshot' | 'snapshot' | 'metadata';
+  type CaptureStateDisplayedMediaType =
+    | 'readability'
+    | 'screenshot'
+    | 'snapshot'
+    | 'metadata';
 
-  type CaptureStateValueReturnType = {
-    captureImageUrl: string | null;
-    captureSnapshotUrl: string | null;
-    metadata: GetObjectFromJsonFileReturnType;
-    titleText: string | null;
-    descriptionText: string | null;
-    mediaIsFocused: boolean;
-    displayedMediaType: CaptureStateDisplayedMediaType;
-    imageDimensions: {w: null | number, h: null | number};
-  }
+  const { focusedCapturePart, focusedCaptureOrCapturePartDownloadLocation } =
+    useFocusedCapturePartFromLocation(
+      location,
+      props.capture,
+      props.capture.captureParts ?? []
+    );
 
-  const {
-    captureImageUrl,
-    captureSnapshotUrl,
-    metadata,
-    titleText,
-    descriptionText,
-    mediaIsFocused,
-    displayedMediaType,
-    imageDimensions,
-  } = useAsyncMemo<CaptureStateValueReturnType>(
-    () => {
-      return new Promise(async (resolve, reject) => {
-        let returnValue: CaptureStateValueReturnType = {
-          captureImageUrl: null,
-          captureSnapshotUrl: null,
-          metadata: null,
-          titleText: null,
-          descriptionText: null,
-          mediaIsFocused: false,
-          displayedMediaType: 'simplified',
-          imageDimensions: {w: null, h: null},
-        };
-
-        const afterMetadataFileLoadCallback = async (metadata: CaptureStateValueReturnType['metadata']) => {
-          if (returnValue.captureSnapshotUrl != null) {
-            let captureSnapshotUrl = await fetch(returnValue.captureSnapshotUrl);
-            let captureSnapshotHtml = await captureSnapshotUrl.text();
-            let captureSnapshotBlob = new Blob([captureSnapshotHtml], { type: "multipart/related" });
-            if (captureSnapshotBlob != null) returnValue.captureSnapshotUrl = URL.createObjectURL(captureSnapshotBlob);
-          }
-
-          returnValue.metadata = metadata;
-          if (returnValue.metadata == null) {
-            resolve(returnValue);
-            return returnValue;
-          }
-
-          returnValue.titleText = (returnValue.metadata?.title as string | null) || null;
-          if (returnValue.titleText?.includes(' - ')) {
-            const titleTextParts = returnValue.titleText.split(' - ');
-            titleTextParts.pop()
-            returnValue.titleText = titleTextParts.join(' - ');
-          }
-          if (returnValue.titleText?.includes(' | ')) {
-            const titleTextParts = returnValue.titleText.split(' | ');
-            titleTextParts.pop()
-            returnValue.titleText = titleTextParts.join(' - ');
-          }
-          if (typeof returnValue.titleText === 'string') returnValue.titleText = returnValue.titleText.trim();
-
-          returnValue.descriptionText = (returnValue.metadata?.description as string | null) || null;
-          if (typeof returnValue.descriptionText === 'string') returnValue.descriptionText = returnValue.descriptionText.trim();
-
-          const preloadImage = new Image();
-          preloadImage.src = returnValue.captureImageUrl as string;
-          preloadImage.onload = () => {
-            returnValue.imageDimensions.w = preloadImage.width;
-            returnValue.imageDimensions.h = preloadImage.height;
-            resolve(returnValue);
-          };
-        }
-
-        returnValue.displayedMediaType = location.searchParams?.displayedMediaType as CaptureStateDisplayedMediaType ?? 'simplified';
-
-        if (location.searchParams == null || Object.values(location?.searchParams || {}).length === 0) {
-          returnValue.mediaIsFocused = false;
-
-          returnValue.captureImageUrl = 'marchive-downloads:///capture/' + props.capture.id + '/index.jpg';
-          returnValue.captureSnapshotUrl = 'marchive-downloads:///capture/' + props.capture.id + '/snapshot.mhtml';
-
-          getObjectFromJsonFile({
-            if: props.capture != null && props?.capture?.schedule?.status === 'pending',
-            filePath: 'marchive-downloads:///capture/' + props.capture.id + '/metadata.json',
-          })
-            .then(afterMetadataFileLoadCallback)
-        } else if (location.searchParams?.focused === 'capture') {
-          returnValue.mediaIsFocused = true;
-
-          returnValue.captureImageUrl = 'marchive-downloads:///capture/' + props.capture.id + '/index.jpg';
-          returnValue.captureSnapshotUrl = 'marchive-downloads:///capture/' + props.capture.id + '/snapshot.mhtml';
-
-          getObjectFromJsonFile({
-            if: props.capture != null && props?.capture?.schedule?.status === 'pending',
-            filePath: 'marchive-downloads:///capture/' + props.capture.id + '/metadata.json',
-          })
-            .then(afterMetadataFileLoadCallback)
-        } else if (location.searchParams?.focused != null && Array.isArray(location.searchParams?.focused) && location.searchParams?.focused?.[0] === 'capture-part' && typeof location.searchParams?.focused?.[1] === 'number') {
-          returnValue.mediaIsFocused = true;
-
-          if (props?.capture?.captureParts == null || (props?.capture?.captureParts || []).length < 1) return returnValue;
-          const focusedIdSearchParam = location.searchParams.focused[1];
-
-          const capturePart = props.capture.captureParts.find((capturePart) => capturePart.id === focusedIdSearchParam);
-          if (capturePart == null) return returnValue;
-
-          returnValue.captureImageUrl = 'marchive-downloads:///capture-part/' + capturePart.id + '/index.jpg';
-          returnValue.captureSnapshotUrl = 'marchive-downloads:///capture-part/' + capturePart.id + '/snapshot.mhtml';
-
-          getObjectFromJsonFile({
-            if: props.capture != null && props?.capture?.schedule?.status === 'pending',
-            filePath: 'marchive-downloads:///capture-part/' + capturePart.id + '/metadata.json',
-          })
-            .then(afterMetadataFileLoadCallback)
-        }
-      })
-    },
-    [location.pathname, location.search, props.capture],
-    {
-      captureImageUrl: null,
-      captureSnapshotUrl: null,
-      metadata: null,
-      titleText: null,
-      descriptionText: null,
-      mediaIsFocused: false,
-      displayedMediaType: 'simplified',
-      imageDimensions: {w: null, h: null},
-    },
+  const captureReadabilityObject = useCaptureReadability(
+    props.capture,
+    focusedCapturePart
   );
 
-  const usingDarkTheme = document.querySelector('#layout')?.classList?.contains('bp5-dark') || false;
-  const metadataViewerTheme = usingDarkTheme ? 'bright' : 'bright:inverted';
+  const { captureImageUrl, imageDimensions } = useCaptureImage(
+    props.capture,
+    focusedCapturePart
+  );
 
-  const className = 'blog-article-capture-show-fragment__container ' +
-    (mediaIsFocused ? 'blog-article-capture-show-fragment__container--has-focused-media ' : '');
+  const captureSnapshotUrl = useCaptureSnapshot(
+    props.capture,
+    focusedCapturePart
+  );
 
-  const getAbsoluteDownloadLocationForFocusedCaptureOrCapturePart = () => {
-    let absolutePath = props.capture.downloadLocation;
+  const mediaIsFocused = location.searchParams?.focused != null;
+  const displayedMediaType =
+    (location.searchParams
+      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? (captureReadabilityObject != null ? 'readability' : 'screenshot');
 
-    const locationFocusedSearchParam = location.searchParams.focused;
-    if (Array.isArray(locationFocusedSearchParam) && locationFocusedSearchParam[0] === 'capture-part' && typeof locationFocusedSearchParam[1] === 'number') {
-      const capturePart = props.capture.captureParts.find((capturePart) => capturePart.id === locationFocusedSearchParam[1]);
-      if (capturePart != null) absolutePath = capturePart.downloadLocation;
-    }
+  const { captureMetadataObject, titleText, descriptionText } =
+    useCaptureMetadata(props.capture, focusedCapturePart);
 
-    return absolutePath;
-  }
+  const usingDarkTheme =
+    document.querySelector('#layout')?.classList?.contains('bp5-dark') || false;
 
-  const imageMediaContextMenu = (menuProps: ContextMenuContentProps) => {
-    if (mediaIsFocused === false) return undefined;
-    if (displayedMediaType !== 'screenshot') return undefined;
+  const className =
+    'blog-article-capture-show-fragment__container ' +
+    (mediaIsFocused
+      ? 'blog-article-capture-show-fragment__container--has-focused-media '
+      : '');
 
-    const backButton = <MenuItem
-      icon="arrow-left"
-      text="Back"
-      onClick={() => {
-        navigate(formatLocationUrlWithChangedSearchParams({focused: false}, location))
-      }}
-    />;
+  let fileBrowserName = 'Your File Browser';
+  if (window.electron.platform === 'darwin') fileBrowserName = 'Finder';
+  if (window.electron.platform === 'win32') fileBrowserName = 'Explorer';
 
-    const openImageButton = <MenuItem
-      icon="select"
-      text="Open in Your Image Viewer"
-      onClick={() => {
-        window.electron.ipcRenderer.sendMessage(
-          'utilities.open-internal-path-in-default-program',
-          getAbsoluteDownloadLocationForFocusedCaptureOrCapturePart() + '/index.jpg',
-        )
-      }}
-    />;
-
-    let fileBrowserName = 'Your File Browser';
-    if (window.electron.platform === 'darwin') fileBrowserName = 'Finder';
-    if (window.electron.platform === 'win32') fileBrowserName = 'File Explorer';
-    const openDownloadLocationButton = <MenuItem
-      icon="folder-open"
-      text={"See Saved Files in " + fileBrowserName}
-      onClick={() => {
-        window.electron.ipcRenderer.sendMessage(
-          'utilities.open-internal-path-in-default-program',
-          getAbsoluteDownloadLocationForFocusedCaptureOrCapturePart(),
-        )
-      }}
-    />;
-
-    return <Menu>
-      {typeof captureImageUrl === 'string' && openImageButton}
-      {typeof captureImageUrl === 'string' && openDownloadLocationButton}
-      {typeof captureImageUrl === 'string' && props.capture.captureParts.length > 1 && <MenuDivider />}
-      {props.capture.captureParts.length > 1 && backButton}
-    </Menu>
-  };
-
-  if (props.capture.captureParts == null || (props.capture.captureParts || []).length < 1 && location?.searchParams?.focused !== 'capture') {
-    return <Navigate to={'/captures/' + props.capture.id + '?focused=capture'} replace={true}/>
+  if (
+    props.capture.captureParts == null ||
+    ((props.capture.captureParts || []).length < 1 &&
+      location?.searchParams?.focused !== 'capture')
+  ) {
+    return (
+      <Navigate
+        to={'/captures/' + props.capture.id + '?focused=capture'}
+        replace={true}
+      />
+    );
   }
 
   return (
     <div className={className}>
-
-      <div className="blog-article-capture-show-fragment__left">
-
-        {mediaIsFocused &&
+      <div
+        className="blog-article-capture-show-fragment__left"
+        onClick={() => {
+          if (mediaIsFocused === true) return;
+          navigate(
+            formatLocationUrlWithChangedSearchParams(
+              {
+                focused: 'capture',
+                displayedMediaType:
+                  captureReadabilityObject != null
+                    ? 'readability'
+                    : 'screenshot',
+              },
+              location
+            )
+          );
+        }}
+      >
+        {mediaIsFocused && (
           <div className="blog-article-capture-show-fragment__left__toggle-buttons">
             <ButtonGroup>
-              <Button
-                text="Simplified"
-                onClick={() => {
-                  navigate(formatLocationUrlWithChangedSearchParams(
-                    {displayedMediaType: 'simplified'},
-                    location,
-                  ))
-                }}
-                active={displayedMediaType === 'simplified'}
-              />
+              {captureReadabilityObject != null && (
+                <Button
+                  text="Simplified"
+                  onClick={() => {
+                    navigate(
+                      formatLocationUrlWithChangedSearchParams(
+                        { displayedMediaType: 'readability' },
+                        location
+                      )
+                    );
+                  }}
+                  active={displayedMediaType === 'readability'}
+                />
+              )}
               <Button
                 text="Screenshot"
-                onClick={() => navigate(formatLocationUrlWithChangedSearchParams(
-                  {displayedMediaType: 'screenshot'},
-                  location,
-                ))}
+                onClick={() => {
+                  navigate(
+                    formatLocationUrlWithChangedSearchParams(
+                      { displayedMediaType: 'screenshot' },
+                      location
+                    )
+                  );
+                }}
                 active={displayedMediaType === 'screenshot'}
               />
               <Button
                 text="Snapshot"
-                onClick={() => navigate(formatLocationUrlWithChangedSearchParams(
-                  {displayedMediaType: 'snapshot'},
-                  location,
-                ))}
+                onClick={() => {
+                  navigate(
+                    formatLocationUrlWithChangedSearchParams(
+                      { displayedMediaType: 'snapshot' },
+                      location
+                    )
+                  );
+                }}
                 active={displayedMediaType === 'snapshot'}
               />
               <Button
                 text="Metadata"
-                onClick={() => navigate(formatLocationUrlWithChangedSearchParams(
-                  {displayedMediaType: 'metadata'},
-                  location,
-                ))}
+                onClick={() => {
+                  navigate(
+                    formatLocationUrlWithChangedSearchParams(
+                      { displayedMediaType: 'metadata' },
+                      location
+                    )
+                  );
+                }}
                 active={displayedMediaType === 'metadata'}
               />
             </ButtonGroup>
+
+            <Button
+              icon="folder-open"
+              text={'See Saved Files in ' + fileBrowserName}
+              onClick={() => {
+                window.electron.ipcRenderer.sendMessage(
+                  'utilities.open-internal-path-in-default-program',
+                  focusedCaptureOrCapturePartDownloadLocation
+                );
+              }}
+            />
+
+            {props.capture.captureParts.length > 0 && (
+              <Button
+                icon="cross"
+                text={'See Other Articles'}
+                onClick={() => {
+                  navigate('/captures/' + props.capture.id);
+                }}
+              />
+            )}
           </div>
-        }
+        )}
 
         <div className="blog-article-capture-show-fragment__left__media">
-          {captureImageUrl == null && <div className="blog-article-capture-show-fragment__left__media__placeholder"><Spinner size={SpinnerSize.STANDARD} /></div>}
-          {(captureImageUrl != null && mediaIsFocused === false) &&
+          {captureImageUrl == null && (
+            <div className="blog-article-capture-show-fragment__left__media__placeholder">
+              <Spinner size={SpinnerSize.STANDARD} />
+            </div>
+          )}
+          {captureImageUrl != null && mediaIsFocused === false && (
             <div
               className="blog-article-capture-show-fragment__left__media__image"
               style={{
-                backgroundImage: 'url('+captureImageUrl+')',
-                maxWidth: imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
+                backgroundImage: 'url(' + captureImageUrl + ')',
+                maxWidth:
+                  imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
               }}
               onClick={() => {
-                navigate(formatLocationUrlWithChangedSearchParams(
-                  {focused: 'capture', displayedMediaType: 'simplified'},
-                  location,
-                ))
+                navigate(
+                  formatLocationUrlWithChangedSearchParams(
+                    {
+                      focused: 'capture',
+                      displayedMediaType:
+                        captureReadabilityObject != null
+                          ? 'readability'
+                          : 'screenshot',
+                    },
+                    location
+                  )
+                );
               }}
             />
-          }
+          )}
 
-          {/* TODO: ADD ERROR HANDLING WHEN THERE IS NO IMAGE HERE */}
-
-          {(captureImageUrl != null && mediaIsFocused && displayedMediaType === 'screenshot') &&
-            <ContextMenu content={imageMediaContextMenu}>
-              <img
-                className="blog-article-capture-show-fragment__left__media__image"
-                style={{
-                  maxWidth: imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
-                }}
-                src={captureImageUrl}
-              />
-            </ContextMenu>
-          }
-
-          {/* TODO: ADD ERROR HANDLING WHEN THERE IS NO SNAPSHOT HERE */}
-
-          {(captureSnapshotUrl != null && mediaIsFocused && displayedMediaType === 'snapshot') &&
-              // <webview
-              //   // className="blog-article-capture-show-fragment__left__media__image"
-              //   style={{
-              //     width: '100%',
-              //     minHeight: imageDimensions.h == null ? '100%' : imageDimensions.h + 'px',
-              //     maxWidth: imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
-              //   }}
-              //   src={captureSnapshotUrl}
-              // >
-              // </webview>
+          {captureReadabilityObject != null &&
+            mediaIsFocused &&
+            displayedMediaType === 'readability' && (
               <div
-                className="blog-article-capture-show-fragment__left__media__snapshot_placeholder"
+                className="blog-article-capture-show-fragment__left__media__readability"
+                style={{
+                  width: '100%',
+                  maxWidth:
+                    imageDimensions.w == null
+                      ? '100%'
+                      : imageDimensions.w + 'px',
+                }}
               >
+                <H1
+                  className="blog-article-capture-show-fragment__left__media__readability-title font-serif"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      typeof captureReadabilityObject.title === 'string'
+                        ? captureReadabilityObject.title
+                        : '',
+                  }}
+                ></H1>
+
+                <H4
+                  className="blog-article-capture-show-fragment__left__media__readability-byline font-serif"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      typeof captureReadabilityObject.byline === 'string'
+                        ? captureReadabilityObject.byline
+                        : '',
+                  }}
+                ></H4>
+
+                <div
+                  className="blog-article-capture-show-fragment__left__media__readability-content font-serif"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      typeof captureReadabilityObject.content === 'string'
+                        ? captureReadabilityObject.content
+                        : '',
+                  }}
+                ></div>
+
+                <div className="blog-article-capture-show-fragment__left__media__to-top-button">
+                  <Button
+                    icon="arrow-up"
+                    onClick={() => {
+                      const toggleButtons = document.querySelectorAll(
+                        '.blog-article-capture-show-fragment__left__toggle-buttons'
+                      );
+                      if (Array.from(toggleButtons).length < 1) return;
+
+                      toggleButtons[0].scrollIntoView({
+                        behavior: 'smooth',
+                      });
+                    }}
+                    text="Go to Top"
+                  />
+                </div>
+              </div>
+            )}
+
+          {captureImageUrl == 'error' &&
+            mediaIsFocused &&
+            displayedMediaType === 'screenshot' && (
+              <div className="blog-article-capture-show-fragment__left__media__image-not-found">
                 <NonIdealState
-                  icon='page-layout'
-                  title='In-App Snapshots Coming Soon'
-                  description='A simple and powerful interface for viewing snapshot files is coming soon. For now, you can open the snapshot in your browser...'
+                  icon="diagnosis"
+                  title="The Saved Screenshot File for This Article Cannot Be Found"
+                  description={
+                    'It may have been moved or deleted. Click below to open the saved files in ' +
+                    fileBrowserName
+                  }
+                  action={
+                    <Button
+                      icon="folder-open"
+                      text={'Open the Saved Files in ' + fileBrowserName}
+                      onClick={() => {
+                        window.electron.ipcRenderer.sendMessage(
+                          'utilities.open-internal-path-in-default-program',
+                          focusedCaptureOrCapturePartDownloadLocation
+                        );
+                      }}
+                    />
+                  }
+                />
+              </div>
+            )}
+
+          {captureImageUrl != null &&
+            captureImageUrl !== 'error' &&
+            mediaIsFocused &&
+            displayedMediaType === 'screenshot' && (
+              <div className="blog-article-capture-show-fragment__left__media__image">
+                <FocusedCaptureImageContextMenu
+                  capture={props.capture}
+                  downloadLocation={
+                    focusedCaptureOrCapturePartDownloadLocation ?? ''
+                  }
+                  imagePath="screenshot.jpg"
+                  fileBrowserName={fileBrowserName}
+                  toggleButtonsClassName='.blog-article-capture-show-fragment__left__toggle-buttons'
+                >
+                  <img
+                    className="blog-article-capture-show-fragment__left__media__image__inner"
+                    style={{
+                      maxWidth:
+                        imageDimensions.w == null
+                          ? '100%'
+                          : imageDimensions.w + 'px',
+                    }}
+                    src={captureImageUrl}
+                  />
+                </FocusedCaptureImageContextMenu>
+
+                <div className="blog-article-capture-show-fragment__left__media__to-top-button">
+                  <Button
+                    icon="arrow-up"
+                    onClick={() => {
+                      const toggleButtons = document.querySelectorAll(
+                        '.blog-article-capture-show-fragment__left__toggle-buttons'
+                      );
+                      if (Array.from(toggleButtons).length < 1) return;
+
+                      toggleButtons[0].scrollIntoView({
+                        behavior: 'smooth',
+                      });
+                    }}
+                    text="Go to Top"
+                  />
+                </div>
+              </div>
+            )}
+
+          {captureSnapshotUrl != null &&
+            mediaIsFocused &&
+            displayedMediaType === 'snapshot' && (
+              <div className="blog-article-capture-show-fragment__left__media__snapshot_placeholder">
+                <NonIdealState
+                  icon="page-layout"
+                  title="In-App Snapshots Coming Soon"
+                  description="A simple and powerful interface for viewing snapshot files is coming soon. For now, you can open the snapshot in your browser..."
                   action={
                     <Button
                       icon="globe"
@@ -332,95 +387,144 @@ const BlogArticleDataProviderCaptureShowPageFragment = (props: DataProvidersRend
                       onClick={() => {
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
-                          getAbsoluteDownloadLocationForFocusedCaptureOrCapturePart() + '/snapshot.mhtml',
+                          focusedCaptureOrCapturePartDownloadLocation +
+                            '/snapshot.mhtml'
                         );
                       }}
                     />
                   }
                 />
               </div>
-          }
+            )}
 
-          {/* TODO: ADD ERROR HANDLING WHEN THERE IS NO METADATA HERE */}
+          {captureMetadataObject == null &&
+            mediaIsFocused &&
+            displayedMediaType === 'metadata' && (
+              <div className="blog-article-capture-show-fragment__left__media__metadata-not-found">
+                <NonIdealState
+                  icon="diagnosis"
+                  title="The Saved Metadata File for This Article Cannot Be Found"
+                  description={
+                    'It may have been moved or deleted. Click below to open the saved files in ' +
+                    fileBrowserName
+                  }
+                  action={
+                    <Button
+                      icon="folder-open"
+                      text={'Open the Saved Files in ' + fileBrowserName}
+                      onClick={() => {
+                        window.electron.ipcRenderer.sendMessage(
+                          'utilities.open-internal-path-in-default-program',
+                          focusedCaptureOrCapturePartDownloadLocation
+                        );
+                      }}
+                    />
+                  }
+                />
+              </div>
+            )}
 
-          {(metadata != null && mediaIsFocused && displayedMediaType === 'metadata') &&
-            <ReactJson
-             src={metadata}
-             theme={metadataViewerTheme}
-             enableClipboard={true}
-             displayObjectSize={false}
-             displayDataTypes={false}
-             quotesOnKeys={false}
-            />
-          }
+          {captureMetadataObject != null &&
+            mediaIsFocused &&
+            displayedMediaType === 'metadata' && (
+              <div className="react-json-view">
+                <JSONTree
+                  data={captureMetadataObject || {}}
+                  theme={brightBase16}
+                  invertTheme={!usingDarkTheme}
+                  hideRoot={true}
+                  shouldExpandNodeInitially={() => true}
+                />
+              </div>
+            )}
 
-          {mediaIsFocused !== true &&
+          {mediaIsFocused !== true && (
             <div
               className="blog-article-capture-show-fragment__left__media__overflow-gradient"
               style={{
-                maxWidth: imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
+                maxWidth:
+                  imageDimensions.w == null ? '100%' : imageDimensions.w + 'px',
               }}
               onClick={() => {
-                if (mediaIsFocused) return;
-                navigate(formatLocationUrlWithChangedSearchParams(
-                  {focused: 'capture', displayedMediaType: 'simplified'},
-                  location,
-                ))
+                navigate(
+                  formatLocationUrlWithChangedSearchParams(
+                    {
+                      focused: 'capture',
+                      displayedMediaType:
+                        captureReadabilityObject != null
+                          ? 'readability'
+                          : 'screenshot',
+                    },
+                    location
+                  )
+                );
               }}
-            >&nbsp;</div>
-          }
+            >
+              &nbsp;
+            </div>
+          )}
         </div>
 
         <div className="blog-article-capture-show-fragment__left__details">
-          {titleText != null && <H1 className="blog-article-capture-show-fragment__left__details__title font-serif">
-            {titleText as string | null}
-          </H1>}
+          {titleText != null && (
+            <H1 className="blog-article-capture-show-fragment__left__details__title font-serif">
+              {titleText as string | null}
+            </H1>
+          )}
 
-          {descriptionText != null && <Text className="blog-article-capture-show-fragment__left__details__description font-serif">
-            {descriptionText as string | null}
-          </Text>}
+          {descriptionText != null && (
+            <Text className="blog-article-capture-show-fragment__left__details__description font-serif">
+              {descriptionText as string | null}
+            </Text>
+          )}
 
-          <Text className="blog-article-capture-show-fragment__left__details__link">Click here to view the page's screenshot, snapshot and metadata...</Text>
+          <Text className="blog-article-capture-show-fragment__left__details__link">
+            Click here to view the page's screenshot, snapshot and metadata...
+          </Text>
         </div>
       </div>
 
       <div className="blog-article-capture-show-fragment__right">
-        <H4 className="blog-article-capture-show-fragment__right__related-heading">
-          Related Articles and Posts...
+        <H4 className="blog-article-capture-show-fragment__right__related-heading font-serif">
+          {props.relatedHeadingCaption}
         </H4>
 
         <div className="blog-article-capture-show-fragment__right__list">
           <AutoSizer>
-            {({height, width}) => (
+            {({ height, width }) => (
               <List
-                style={{paddingBottom: '50px'}}
+                style={{ paddingBottom: '50px' }}
                 width={width}
                 height={height}
                 rowCount={(props?.capture?.captureParts ?? []).length}
                 rowHeight={200}
-                rowRenderer={({key, index, style}) => {
-                  const capturePart = props?.capture?.captureParts?.[index];
+                rowRenderer={({ key, index, style }) => {
+                  const capturePart = props?.capture?.captureParts[index];
+                  if (capturePart == null) return null;
 
-                  return <div key={key} style={style} className="blog-article-capture-show-fragment__right__list__item">
-                    <BlogArticleDataProviderCapturePartPreviewThumbnail
+                  return (
+                    <div
                       key={key}
-                      source={props.source}
-                      schedule={props.schedule}
-                      capture={props.capture}
-                      capturePart={capturePart}
-                      dataProvider={props.dataProvider}
-                    />
-                  </div>
+                      style={style}
+                      className="blog-article-capture-show-fragment__right__list__item"
+                    >
+                      <BlogArticleDataProviderCapturePartPreviewThumbnail
+                        source={props.source}
+                        schedule={props.schedule}
+                        capture={props.capture}
+                        capturePart={capturePart}
+                        dataProvider={props.dataProvider}
+                      />
+                    </div>
+                  );
                 }}
               />
             )}
           </AutoSizer>
         </div>
       </div>
-
     </div>
-  )
-
-}
+  );
+};
 
 export default BlogArticleDataProviderCaptureShowPageFragment;

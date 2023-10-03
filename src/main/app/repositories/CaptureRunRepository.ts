@@ -16,8 +16,8 @@ import {ScheduleAttributes, ScheduleStatus} from '../../database/models/Schedule
 import {getDataProviderByIdentifier} from './DataProviderRepository'
 import {downloadCapturesPath} from '../../../paths'
 import logger from '../log'
-import { safeSanitizeFileName } from '../../util'
 import { v4 } from 'uuid'
+import safeSanitizeFileName from '../../utilities/safeSanitizeFileName'
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   logger.info('Found Schedule with ID: ' + schedule.id)

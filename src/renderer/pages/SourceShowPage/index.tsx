@@ -10,7 +10,12 @@ Description: description
 */
 import { useMemo } from 'react';
 import { Button, Card, Text } from '@blueprintjs/core';
-import { LoaderFunction, NavLink, Navigate, useLoaderData } from 'react-router-dom';
+import {
+  LoaderFunction,
+  NavLink,
+  Navigate,
+  useLoaderData,
+} from 'react-router-dom';
 import { useCallback } from 'react';
 import SourceShowPageGridItemPreview from './components/SourceShowPageGridItemPreview';
 import { SourceAttributes } from '../../../main/database/models/Source';
@@ -21,8 +26,12 @@ import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/compo
 import AppToaster from '../../toaster';
 import AutoAnimated from '../../components/AutoAnimated';
 import openExternalUrlInBrowser from '../../layouts/DefaultLayout/functions/openExternalUrlInBrowser';
+import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
+import { Capture, Schedule } from '../../../main/database';
 
 import './index.scss';
+import { AutoSizer, Grid } from 'react-virtualized';
+import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 type SourceShowPageLoaderReturnType = {
   source: SourceAttributes | null;
@@ -31,44 +40,50 @@ type SourceShowPageLoaderReturnType = {
   dataProvidersError: Error | false;
 };
 
-export const SourceShowPageLoader: LoaderFunction = async ({params}): Promise<SourceShowPageLoaderReturnType> => {
+export const SourceShowPageLoader: LoaderFunction = async ({
+  params,
+}): Promise<SourceShowPageLoaderReturnType> => {
   let source: SourceAttributes | null = null;
   let sourceError: Error | false = false;
   let dataProviders: DataProviderSerializedType[] = [];
   let dataProvidersError: Error | false = false;
 
-  if (params.sourceId == null) return {
-    source,
-    sourceError: new Error('No source was specified.'),
-    dataProviders,
-    dataProvidersError,
-  }
+  if (params.sourceId == null)
+    return {
+      source,
+      sourceError: new Error('No source was specified.'),
+      dataProviders,
+      dataProvidersError,
+    };
   const sourceId = parseInt(params.sourceId.toString());
 
-  try { source = await getSource(sourceId, true, true, true); }
-  catch (error) { sourceError = error as Error; }
+  try {
+    source = await getSource(sourceId, true, true, true);
+  } catch (error) {
+    sourceError = error as Error;
+  }
 
-  try { dataProviders = await getDataProviders(); }
-  catch (error) { dataProvidersError = error as Error; }
+  try {
+    dataProviders = await getDataProviders();
+  } catch (error) {
+    dataProvidersError = error as Error;
+  }
 
   return {
     source,
     sourceError,
     dataProviders,
     dataProvidersError,
-  }
-}
+  };
+};
 
 const SourceShowPage = () => {
-  const {
-    source,
-    sourceError,
-    dataProviders,
-    dataProvidersError,
-  } = useLoaderData() as SourceShowPageLoaderReturnType
+  const { source, sourceError, dataProviders, dataProvidersError } =
+    useLoaderData() as SourceShowPageLoaderReturnType;
 
   if (source == null) {
-    let errorMessage = 'An error occurred when we tried to find the chosen source.';
+    let errorMessage =
+      'An error occurred when we tried to find the chosen source.';
     if (typeof sourceError === 'string') errorMessage = sourceError;
     if (sourceError instanceof Error) errorMessage = sourceError.message;
 
@@ -78,14 +93,21 @@ const SourceShowPage = () => {
       intent: 'danger',
     });
 
-    return <Navigate to='/sources' replace={true} />
+    return <Navigate to="/sources" replace={true} />;
   }
 
-  const dataProvider: DataProviderSerializedType | null = dataProviders.find(dataProvider => dataProvider.identifier === source?.dataProviderIdentifier) || null;
+  const dataProvider: DataProviderSerializedType | null =
+    dataProviders.find(
+      (dataProvider) =>
+        dataProvider.identifier === source?.dataProviderIdentifier
+    ) || null;
   if (dataProvider == null) {
-    let errorMessage = 'The data provider which captured this source could not be found.';
-    if (typeof dataProvidersError === 'string') errorMessage = dataProvidersError;
-    if (dataProvidersError instanceof Error) errorMessage = dataProvidersError.message;
+    let errorMessage =
+      'The data provider which captured this source could not be found.';
+    if (typeof dataProvidersError === 'string')
+      errorMessage = dataProvidersError;
+    if (dataProvidersError instanceof Error)
+      errorMessage = dataProvidersError.message;
 
     AppToaster.clear();
     AppToaster.show({
@@ -93,69 +115,140 @@ const SourceShowPage = () => {
       intent: 'danger',
     });
 
-    return <Navigate to='/sources' replace={true} />
+    return <Navigate to="/sources" replace={true} />;
   }
 
-  if ((source?.schedules ?? []).length === 1 && (source.schedules[0]?.captures ?? []).length === 1) {
-    return <Navigate to={`/captures/${source.schedules[0]?.captures[0]?.id}`} replace={true} />
+  if (
+    (source?.schedules ?? []).length === 1 &&
+    (source.schedules[0]?.captures ?? []).length === 1
+  ) {
+    return (
+      <Navigate
+        to={`/captures/${source.schedules[0]?.captures[0]?.id}`}
+        replace={true}
+      />
+    );
   }
 
   const sourceCapturesCount = useMemo(
-    () => source?.schedules == null ?
-      0 :
-      (source?.schedules || []).reduce((c, schedule) => (c + (schedule.captures ?? []).length), 0)
-    ,
+    () =>
+      source?.schedules == null
+        ? 0
+        : (source?.schedules || []).reduce(
+            (c, schedule) => c + (schedule.captures ?? []).length,
+            0
+          ),
     [source]
-  )
+  );
+
+  let sourceNameText: string = source?.sourceDomain?.name ?? '';
+  if (source?.name != null && source?.name !== '') sourceNameText = source.name;
+
+  const amalgamatedCaptures = useMemo<[Schedule, Capture][]>(
+    () =>
+      source.schedules.reduce<[Schedule, Capture][]>(
+        (carry, schedule) =>
+          carry.concat(schedule.captures.map((capture) => [schedule, capture])),
+        []
+      ),
+    [source]
+  );
+  const columnCount = 3;
 
   return (
     <>
       <div className="source-captures__source-domain">
         <div className="source-captures__source-domain__title">
-          {source?.sourceDomain?.faviconImage != null && source?.sourceDomain?.faviconImage !== '' && <img src={source?.sourceDomain?.faviconImage ?? undefined} alt={source?.sourceDomain?.name} /> }
-          <Text ellipsize>{source?.sourceDomain?.name}</Text>
+          {source?.sourceDomain?.faviconImage != null &&
+            source?.sourceDomain?.faviconImage !== '' && (
+              <img
+                src={source?.sourceDomain?.faviconImage ?? undefined}
+                alt={source?.sourceDomain?.name}
+              />
+            )}
+          <Text ellipsize>{sourceNameText}</Text>
         </div>
         <div className="source-captures__source-domain__url">
-          <Text ellipsize onClick={() => {openExternalUrlInBrowser(source.url)}}>{source?.url}</Text>
+          {source?.url != null && (
+            <CopyableExternalUrlLinkText url={source.url} />
+          )}
         </div>
       </div>
 
       <div className="source-captures__provider-row">
-        <img src={dataProvider?.iconInformation?.filePath} alt={dataProvider?.name} className={dataProvider.iconInformation.shouldInvertOnDarkMode ? 'source-captures__provider-row__image--invert' : ''} />
+        <img
+          src={dataProvider?.iconInformation?.filePath}
+          alt={dataProvider?.name}
+          className={
+            dataProvider.iconInformation.shouldInvertOnDarkMode
+              ? 'source-captures__provider-row__image--invert'
+              : ''
+          }
+        />
         <Text>{dataProvider?.name}</Text>
         <div className="source-captures__provider-row__schedule">
-          <SourceIndexPageListItemCardScheduleCaption source={source} />
+          {(source?.schedules ?? []).length > 0 && (
+            <>
+              <SourceIndexPageListItemCardScheduleCaption
+                schedule={source.schedules[0]}
+              />
+              {(source.schedules ?? []).length >= 1 && (
+                <SourceIndexPageChangeIntervalDropdownButton
+                  source={source}
+                  schedule={source.schedules[0]}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
 
-      {sourceCapturesCount > 1 &&
+      {sourceCapturesCount > 1 && (
         <div className="source-captures__buttons">
           <Text>
-            {sourceCapturesCount} Source Capture{sourceCapturesCount > 1 ? 's' : ''}
+            {sourceCapturesCount} Source Save
+            {sourceCapturesCount > 1 ? 's' : ''}
             <span className="source-captures__buttons__hint">
-              Right-click a source's capture to edit or delete it.
+              Right-click a source's save to {/*edit or */}delete it.
             </span>
           </Text>
           {/* <Button intent="success" icon="add" text="Add a new Source" /> */}
         </div>
-      }
+      )}
 
-      <AutoAnimated additionalClassNames="source-captures__grid">
-        {(source?.schedules ?? []).map((schedule, scheduleIndex) => (
-          (schedule?.captures ?? []).map((capture, captureIndex) => (
-            <NavLink key={capture.id} to={`/captures/${capture.id}`} className="source-captures__grid__item__link">
-              <Card className="source-captures__grid__item" interactive>
-                <SourceShowPageGridItemPreview
-                  source={source}
-                  schedule={schedule}
-                  capture={capture}
-                  dataProvider={dataProvider}
-                />
-              </Card>
-            </NavLink>
-          ))
-        ))}
-      </AutoAnimated>
+      <div className="source-captures__grid">
+        <AutoSizer>
+          {({ height, width }) => (
+            <Grid
+              style={{ paddingBottom: '50px' }}
+              width={width}
+              height={height}
+              rowCount={Math.ceil(
+                (amalgamatedCaptures ?? []).length / columnCount
+              )}
+              rowHeight={560}
+              columnCount={columnCount}
+              columnWidth={width / columnCount - 10}
+              cellRenderer={({ key, style, columnIndex, rowIndex }) => {
+                const index = rowIndex * columnCount + columnIndex;
+                if (index >= (amalgamatedCaptures ?? []).length) return null;
+
+                return (
+                  <div key={key} style={style}>
+                    <SourceShowPageGridItemPreview
+                      key={amalgamatedCaptures[index][1].id}
+                      source={source}
+                      schedule={amalgamatedCaptures[index][0]}
+                      capture={amalgamatedCaptures[index][1]}
+                      dataProvider={dataProvider}
+                    />
+                  </div>
+                );
+              }}
+            />
+          )}
+        </AutoSizer>
+      </div>
     </>
   );
 };

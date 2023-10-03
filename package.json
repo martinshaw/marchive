@@ -32,7 +32,7 @@
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "package": "ts-node ./.erb/scripts/clean.js dist && yarn run build && electron-builder build --publish never",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
-    "start": "ts-node ./.erb/scripts/check-port-in-use.js && yarn run start:renderer",
+    "start": "ts-node ./src/build/close_windows_processes.ts && ts-node ./.erb/scripts/check-port-in-use.js && yarn run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
@@ -89,10 +89,12 @@
     "@blueprintjs/core": "^5.2.1",
     "@blueprintjs/icons": "^5.1.5",
     "@formkit/auto-animate": "^0.8.0",
+    "@microlink/react-json-view": "^1.22.2",
     "@mozilla/readability": "^0.4.4",
     "@rauschma/stringio": "^1.4.0",
     "@uidotdev/usehooks": "^2.1.1",
     "change-case": "^4.1.2",
+    "compress-image": "^0.0.1",
     "electron-context-menu": "^3.6.1",
     "electron-debug": "^3.2.0",
     "electron-is": "^3.0.0",
@@ -100,12 +102,16 @@
     "electron-prompt": "^1.7.0",
     "electron-updater": "^5.3.0",
     "electron-window-state": "^5.0.3",
+    "entities": "^4.5.0",
+    "filesize.js": "^2.0.0",
     "generate-template-files": "^3.2.1",
     "get-website-favicon": "^0.0.7",
     "image-type": "^4.1.0",
+    "imageinfo": "^1.0.4",
+    "jsdom": "^22.1.0",
     "node-html-parser": "^6.1.6",
     "nodejs-file-downloader": "^4.12.1",
-    "popupoff-headless": "github:martinshaw/PopUpOFF-headless#3dd5a72",
+    "pngquant": "^4.2.0",
     "puppeteer": "^21.1.1",
     "puppeteer-autoscroll-down": "^1.1.2",
     "puppeteer-core": "^21.1.1",
@@ -115,16 +121,18 @@
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-json-view": "^1.21.3",
+    "react-json-tree": "^0.18.0",
     "react-router-dom": "^6.15.0",
     "react-virtualized": "^9.22.5",
     "resolve-relative-url": "^1.0.0",
     "rss-parser": "^3.13.0",
     "sanitize-filename": "^1.6.3",
+    "sanitize-html": "^2.11.0",
     "sequelize": "^6.32.1",
     "sequelize-typescript": "^2.1.5",
     "slugify": "^1.6.6",
     "standard-slugify": "^3.1.1",
+    "tinify": "^1.7.1",
     "types-json": "^4.0.1",
     "umzug": "^3.3.1",
     "use-async-memo": "^1.2.4",
@@ -251,7 +259,9 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "assets/icon.ico",
+      "legalTrademarks": "All Rights Reserved, (c) 2023 CodeAtlas LTD. (Martin Shaw)"
     },
     "linux": {
       "target": [
@@ -271,7 +281,15 @@
       "provider": "github",
       "owner": "martinshaw",
       "repo": "marchive"
-    }
+    },
+    "protocols": [
+      {
+        "name": "marchive",
+        "schemes": [
+          "marchive"
+        ]
+      }
+    ]
   },
   "collective": {
     "url": "https://martinshaw.co"
