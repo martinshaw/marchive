@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { ChildProcess } from 'node:child_process';
 import { fork } from 'child_process';
-import { appLogsPath, downloadsPath, internalRootPath, userAppDataPath } from '../../../../paths';
+import { appLogsPath, downloadsPath, readOnlyInternalRootPath, userAppDataPath } from '../../../../paths';
 import { ProcessDetailsNameType, processDetails } from '../../processes'
 import logger from '../../log';
 import { webContents } from 'electron';
@@ -52,7 +52,7 @@ const ProcessStartProcess = async (
 
     logger.info('ProcessStartProcess: Has the script file', {exists: fs.existsSync(processDetail.path)})
 
-    let tsNodeExecutablePath = path.join(internalRootPath, 'node_modules', '.bin', 'ts-node')
+    let tsNodeExecutablePath = path.join(readOnlyInternalRootPath, 'node_modules', '.bin', 'ts-node')
     if (process.platform === 'win32') tsNodeExecutablePath = tsNodeExecutablePath + '.cmd'
 
     const childProcess = fork(
@@ -61,7 +61,7 @@ const ProcessStartProcess = async (
       {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
         execPath: tsNodeExecutablePath,
-        cwd: internalRootPath,
+        cwd: readOnlyInternalRootPath,
         env: {
           ...process.env,
           USER_APP_DATA_PATH: userAppDataPath,

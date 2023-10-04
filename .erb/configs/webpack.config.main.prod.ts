@@ -40,6 +40,12 @@ const configuration: webpack.Configuration = {
     minimizer: [
       new TerserPlugin({
         parallel: true,
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
       }),
     ],
   },

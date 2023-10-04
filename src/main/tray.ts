@@ -11,7 +11,7 @@ import {
   nativeImage,
   nativeTheme,
 } from 'electron';
-import { internalRootPath } from '../paths';
+import { readOnlyInternalRootPath } from '../paths';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from './app/repositories/LocalFileRepository';
 import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 import {
@@ -24,7 +24,7 @@ const isDarkMode = nativeTheme.shouldUseDarkColors;
 
 const createWin32TrayIcon: () => string = () => {
   const iconFileName = isDarkMode ? 'tray-dark.ico' : 'tray-light.ico';
-  const iconPath = path.join(internalRootPath, 'assets', iconFileName);
+  const iconPath = path.join(readOnlyInternalRootPath, 'assets', iconFileName);
   if (fs.existsSync(iconPath) === false)
     throw new Error(`Tray icon could not be found ${iconPath}`);
 
@@ -33,7 +33,7 @@ const createWin32TrayIcon: () => string = () => {
 
 const createGenericTrayIcon: () => NativeImage = () => {
   const iconFileName = isDarkMode ? 'tray-dark.png' : 'tray-light.png';
-  const iconPath = path.join(internalRootPath, 'assets', iconFileName);
+  const iconPath = path.join(readOnlyInternalRootPath, 'assets', iconFileName);
   if (fs.existsSync(iconPath) === false)
     throw new Error(`Tray icon could not be found ${iconPath}`);
 

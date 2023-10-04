@@ -11,7 +11,7 @@ Description: description
 
 import { ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
 import openExternalUrlInBrowser from '../functions/openExternalUrlInBrowser';
-import AppToaster from 'renderer/toaster';
+import AppToaster from '../../../../renderer/toaster';
 
 export type CopyableExternalUrlLinkTextPropsType = {
   url: string;

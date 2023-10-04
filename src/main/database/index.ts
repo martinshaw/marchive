@@ -12,6 +12,7 @@ Description: description
 import path from 'node:path'
 import logger from '../app/log'
 import { Umzug, SequelizeStorage } from 'umzug'
+import { readOnlyInternalDatabaseMigrationsPath } from '../../paths'
 import convertCrossPlatformSlashPathToNodePath from '../utilities/convertCrossPlatformSlashPathToNodePath'
 
 import sequelize from './connection'
@@ -58,8 +59,10 @@ sequelize.addModels([
 // Capture.sync()
 // CapturePart.sync()
 
+logger.info('---> DB migrations path: '+ convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')))
+
 const umzug = new Umzug({
-  migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(__dirname, 'migrations', '*')) },
+  migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')) },
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
   logger: {

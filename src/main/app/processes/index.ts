@@ -9,8 +9,10 @@
  * Description: description
  */
 
+import logger from '../log'
 import path from 'node:path'
-import { processesScriptsPath } from '../../../paths'
+import { app } from 'electron'
+import { readOnlyInternalChildProcessesPath } from '../../../paths'
 
 export type ProcessDetailsType = {
   name: string
@@ -20,13 +22,15 @@ export type ProcessDetailsType = {
 export const processDetails = [
   {
     name: 'CapturePartRunProcess',
-    path: path.join(processesScriptsPath, 'CapturePartRunProcess.ts'),
+    path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess' + (app.isPackaged ? '.js' : '.ts')),
   },
   {
     name: 'ScheduleRunProcess',
-    path: path.join(processesScriptsPath, 'ScheduleRunProcess.ts'),
+    path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess' + (app.isPackaged ? '.js' : '.ts')),
   },
 ] as const
+
+logger.info('----> processDetails', processDetails)
 
 export type ProcessDetailsNameType = typeof processDetails[number]['name']
 export type ProcessDetailsPathType = typeof processDetails[number]['path']
