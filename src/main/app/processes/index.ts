@@ -9,7 +9,6 @@
  * Description: description
  */
 
-import logger from '../log'
 import path from 'node:path'
 import { readOnlyInternalChildProcessesPath } from '../../../paths'
 
@@ -28,8 +27,6 @@ export const processDetails = [
     path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
   },
 ] as const
-
-logger.info('----> processDetails', processDetails)
 
 export type ProcessDetailsNameType = typeof processDetails[number]['name']
 export type ProcessDetailsPathType = typeof processDetails[number]['path']
