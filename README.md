@@ -20,7 +20,7 @@ Clone the repo and install dependencies:
 ```bash
 git clone https://github.com/martinshaw/marchive.git marchive
 cd marchive
-yarn
+pnpm install
 ```
 
 ## Starting Development
@@ -28,7 +28,7 @@ yarn
 Start the app in the `dev` environment:
 
 ```bash
-yarn run start
+pnpm run start
 ```
 
 ## Packaging for Production
@@ -36,5 +36,5 @@ yarn run start
 To package apps for the local platform:
 
 ```bash
-yarn run package
+pnpm run package
 ```

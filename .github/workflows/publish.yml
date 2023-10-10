@@ -25,13 +25,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: npm
+          cache: pnpm
 
       - name: Install and build
         run: |
-          npm install
-          npm run postinstall
-          npm run build
+          pnpm install
+          pnpm run postinstall
+          pnpm run build
 
       - name: Publish releases
         env:
@@ -43,4 +43,4 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm exec electron-builder -- --publish always --win --mac --linux
+          pnpm exec electron-builder -- --publish always --win --mac --linux
