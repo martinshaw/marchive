@@ -1,13 +1,13 @@
-import { MemoryRouter as Router, Routes, Route, RouterProvider, createMemoryRouter, createBrowserRouter, createHashRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
-import YesterdayPage from './pages/YesterdayPage';
 import TodayPage from './pages/TodayPage';
-import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
-import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
-import OnboardingIndexPage from './pages/OnboardingIndexPage';
+import YesterdayPage from './pages/YesterdayPage';
 import DefaultLayout from './layouts/DefaultLayout';
+import OnboardingIndexPage from './pages/OnboardingIndexPage';
 import SourceShowPage, { SourceShowPageLoader } from './pages/SourceShowPage';
+import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
 import CaptureShowPage, { CaptureShowPageLoader } from './pages/CaptureShowPage';
+import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
 
 const App = () => {
   return (

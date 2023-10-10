@@ -10,11 +10,11 @@ Description: description
 */
 
 import { ipcMain } from 'electron'
-import ScheduleCreateAction from '../app/actions/Schedule/ScheduleCreateAction'
-import ScheduleDeleteAction from '../app/actions/Schedule/ScheduleDeleteAction'
+import { ScheduleAttributes } from 'database/src/models/Schedule'
 import ScheduleListAction from '../app/actions/Schedule/ScheduleListAction'
+import ScheduleCreateAction from '../app/actions/Schedule/ScheduleCreateAction'
 import ScheduleUpdateAction from '../app/actions/Schedule/ScheduleUpdateAction'
-import { ScheduleAttributes } from 'database/models/Schedule'
+import ScheduleDeleteAction from '../app/actions/Schedule/ScheduleDeleteAction'
 
 export type SchedulesChannels =
   | 'schedules.list'

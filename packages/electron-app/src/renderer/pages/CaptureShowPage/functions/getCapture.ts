@@ -8,7 +8,8 @@ Modified: 2023-09-11T12:35:33.900Z
 
 Description: description
 */
-import { CaptureAttributes } from "../../../../main/database/models/Capture";
+
+import { CaptureAttributes } from "database/src/models/Capture";
 
 /**
  * @throws {string}

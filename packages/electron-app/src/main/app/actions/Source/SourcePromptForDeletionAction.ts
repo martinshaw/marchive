@@ -9,10 +9,8 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { BrowserWindow, MessageBoxOptions, dialog } from "electron"
-import { Schedule, Source } from "../../../database"
-import logger from 'logger';"
 import SourceDeleteAction from "./SourceDeleteAction"
+import { BrowserWindow, MessageBoxOptions, dialog } from "electron"
 
 /**
  * @throws {Error}

@@ -9,17 +9,16 @@ Modified: 2023-09-12T01:01:50.638Z
 Description: description
 */
 
-import { useMemo } from "react";
-import { ReactNode } from "react";
+import { useMemo, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { SourceAttributes } from "database/src/models/Source";
+import { CaptureAttributes } from "database/src/models/Capture";
+import { ScheduleAttributes } from "database/src/models/Schedule";
+import { CapturePartAttributes } from "database/src/models/CapturePart";
 import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { SourceAttributes } from "../../../../main/database/models/Source";
-import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
-import { CaptureAttributes } from "../../../../main/database/models/Capture";
-import { CapturePartAttributes } from "../../../../main/database/models/CapturePart";
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
 import useGetObjectFromJsonFile from "../../../../renderer/layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
-import { useNavigate } from "react-router-dom";
 
 import './index.scss'
 

@@ -1,12 +1,12 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { CapturesChannels } from './ipc/Captures';
-import { DataProvidersChannels } from './ipc/DataProviders';
-import { SchedulesChannels } from './ipc/Schedules';
 import { SourcesChannels } from './ipc/Sources';
-import { SourceDomainsChannels } from './ipc/SourceDomains';
+import { CapturesChannels } from './ipc/Captures';
+import { SchedulesChannels } from './ipc/Schedules';
 import { ProcessesChannels } from './ipc/Processes';
 import { RenderersChannels } from './ipc/Renderers';
 import { UtilitiesChannels } from './ipc/Utilities';
+import { DataProvidersChannels } from './ipc/DataProviders';
+import { SourceDomainsChannels } from './ipc/SourceDomains';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 require('events').EventEmitter.defaultMaxListeners = 15
 

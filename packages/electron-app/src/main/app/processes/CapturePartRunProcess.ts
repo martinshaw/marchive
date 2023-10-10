@@ -8,13 +8,13 @@ Modified: 2023-09-06T04:58:17.096Z
 
 Description: description
 */
-import { Capture, CapturePart, Schedule, Source } from "../../database"
-import logger from 'logger';"
-import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
+
+import logger from 'logger';
 import BaseDataProvider from "../data_providers/BaseDataProvider"
-import { CapturePartStatus } from "../../database/models/CapturePart"
+import { CapturePartStatus } from "database/src/models/CapturePart"
+import { Capture, CapturePart, Schedule, Source, Op } from "database"
 import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
-import { Op } from "sequelize"
+import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
 
 let lastCapturePart: CapturePart | null = null;
 

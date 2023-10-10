@@ -10,6 +10,7 @@ Description: description
 */
 
 import { Navigate } from 'react-router-dom';
+
 import './index.scss';
 
 const TodayPage = () => {

@@ -8,6 +8,7 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
+
 import fs from 'node:fs'
 import path from 'node:path'
 import { Schedule, Source } from 'database'
@@ -15,8 +16,8 @@ import { downloadCapturesPath as defaultDownloadCapturesPath } from '../../../..
 import { getDataProviderByIdentifier } from '../../repositories/DataProviderRepository'
 import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
 import logger from 'logger';
-import { ScheduleAttributes } from 'database/Schedule'
-import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName'
+import { ScheduleAttributes } from 'database/src/models/Schedule'
+import { safeSanitizeFileName } from 'utilities'
 
 /**
  * @throws {Error}

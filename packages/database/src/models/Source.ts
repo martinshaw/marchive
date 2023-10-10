@@ -43,6 +43,7 @@ class Source extends Model<
   Optional<
     SourceAttributes,
     'id' |
+    'name' |
     'schedules' |
     'useStartOrEndCursor' |
     'sourceDomainId' |

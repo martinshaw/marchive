@@ -11,9 +11,7 @@ Description: description
 
 import path from 'node:path';
 
-const isNotChildProcess =
-  typeof process.versions['electron'] !== 'undefined' &&
-  ['renderer', 'browser'].includes(process.type);
+const isNotChildProcess = typeof process.versions['electron'] !== 'undefined' && ['renderer', 'browser'].includes(process.type);
 
 /**
  * Do not use `readOnlyInternalRootPath` nor any path prefixed `readOnly` for any write operations.

@@ -16,15 +16,14 @@ import {
   MenuItem,
   Popover,
 } from '@blueprintjs/core';
-import { Schedule, Source } from '../../../../main/database';
-import { SourceAttributes } from '../../../../main/database/models/Source';
-import { ScheduleAttributes } from '../../../../main/database/models/Schedule';
-import { ReactNode } from 'react';
-import updateSchedule from '../functions/updateSchedule';
 import AppToaster from '../../../toaster';
+import { Schedule, Source } from 'database';
 import { useNavigate } from 'react-router-dom';
+import { ReactNode, useCallback } from 'react';
+import updateSchedule from '../functions/updateSchedule';
+import { SourceAttributes } from 'database/src/models/Source';
+import { ScheduleAttributes } from 'database/src/models/Schedule';
 import scheduleIntervalToCaption from '../functions/scheduleIntervalToCaption';
-import { useCallback } from 'react';
 
 type SourceIndexPageChangeIntervalDropdownButtonPropsType = {
   source: Source | SourceAttributes;

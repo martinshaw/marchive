@@ -9,8 +9,8 @@ Modified: 2023-09-06T18:28:58.314Z
 Description: description
 */
 
-import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
 import processListeners from "./processListeners";
+import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
 
 const scheduleRunProcessListeners = (
   onConnected: (connectionInfo: ProcessStartProcessConnectionInfoReturnType) => void,

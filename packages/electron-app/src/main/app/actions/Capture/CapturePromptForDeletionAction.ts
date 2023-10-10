@@ -10,8 +10,6 @@ Description: description
 */
 
 import { BrowserWindow, MessageBoxOptions, dialog } from "electron"
-import { Schedule, Capture } from "../../../database"
-import logger from 'logger';
 import CaptureDeleteAction from "./CaptureDeleteAction"
 
 /**

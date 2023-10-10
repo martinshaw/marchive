@@ -8,10 +8,11 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
+
 import { Capture, CapturePart, Schedule, Source, SourceDomain } from 'database'
 import logger from 'logger';
-import { Includeable } from 'sequelize'
-import { CaptureAttributes } from 'database/models/Capture'
+import { Includeable } from 'database'
+import { CaptureAttributes } from 'database/src/models/Capture'
 
 const CaptureShowAction = async (
   captureId: number | null = null,

@@ -9,10 +9,10 @@ Modified: 2023-09-14T02:42:40.042Z
 Description: description
 */
 
-import List from 'react-virtualized/dist/commonjs/List';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { JSONTree } from 'react-json-tree';
+import List from 'react-virtualized/dist/commonjs/List';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from '../..';
 import {
   Button,

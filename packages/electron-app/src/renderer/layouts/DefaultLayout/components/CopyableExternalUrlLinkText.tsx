@@ -9,9 +9,9 @@ Modified: 2023-09-20T01:16:40.920Z
 Description: description
 */
 
+import AppToaster from '../../../../renderer/toaster';
 import { ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
 import openExternalUrlInBrowser from '../functions/openExternalUrlInBrowser';
-import AppToaster from '../../../../renderer/toaster';
 
 export type CopyableExternalUrlLinkTextPropsType = {
   url: string;

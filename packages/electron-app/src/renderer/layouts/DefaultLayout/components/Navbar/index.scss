@@ -5,7 +5,7 @@
   justify-content: space-between;
   -webkit-app-region: drag;
 
-  & * {
+  & *:not(.navbar--draggable) {
     -webkit-app-region: no-drag;
     user-select: none !important;
   }

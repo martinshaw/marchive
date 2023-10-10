@@ -9,10 +9,9 @@ Modified: 2023-09-05T13:47:27.688Z
 Description: description
 */
 
-import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import Schedule, { ScheduleAttributes } from "../../../../main/database/models/Schedule";
-import Source, { SourceAttributes } from "../../../../main/database/models/Source";
 import { ReactNode } from "react";
+import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
+import Schedule, { ScheduleAttributes } from "database/src/models/Schedule";
 import scheduleIntervalToCaption from "../functions/scheduleIntervalToCaption";
 
 export type SourceIndexPageListItemCardScheduleCaptionPropsType = {

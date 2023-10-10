@@ -8,35 +8,27 @@ Modified: 2023-08-01T19:43:12.647Z
 
 Description: description
 */
-import { useMemo } from 'react';
-import AppToaster from '../../toaster';
-import getCapture from './functions/getCapture';
+
 import {
-  Button,
-  Card,
-  ContextMenu,
-  MenuItem,
-  Menu,
-  Text,
-} from '@blueprintjs/core';
-import { SourceAttributes } from '../../../main/database/models/Source';
-import { CaptureAttributes } from '../../../main/database/models/Capture';
-import { ScheduleAttributes } from '../../../main/database/models/Schedule';
-import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
-import CaptureShowPageFragment from './components/CaptureShowPageFragment';
-import {
-  LoaderFunction,
-  NavLink,
   Navigate,
   useLoaderData,
+  LoaderFunction,
 } from 'react-router-dom';
+import { useMemo } from 'react';
+import AppToaster from '../../toaster';
+import { Text } from '@blueprintjs/core';
+import getCapture from './functions/getCapture';
+import { SourceAttributes } from 'database/src/models/Source';
+import { CaptureAttributes } from 'database/src/models/Capture';
+import { ScheduleAttributes } from 'database/src/models/Schedule';
+import CaptureShowPageFragment from './components/CaptureShowPageFragment';
+import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
 import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import openExternalUrlInBrowser from '../../../renderer/layouts/DefaultLayout/functions/openExternalUrlInBrowser';
-import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
+import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 import './index.scss';
-import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 type CaptureShowPageLoaderReturnType = {
   capture: CaptureAttributes | null;

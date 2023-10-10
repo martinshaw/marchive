@@ -11,6 +11,7 @@ Description: description
 
 import path from 'node:path'
 import logger from 'logger'
+import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'
 import { Umzug, SequelizeStorage } from 'umzug'
 import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
 import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
@@ -77,6 +78,7 @@ type Migration = typeof umzug._types.migration;
 
 export {
   sequelize,
+
   umzug,
   Migration,
 
@@ -86,4 +88,10 @@ export {
   Schedule,
   Capture,
   CapturePart,
+
+  Op,
+  Includeable,
+  Attributes,
+  WhereOptions,
+  ModelStatic,
 }

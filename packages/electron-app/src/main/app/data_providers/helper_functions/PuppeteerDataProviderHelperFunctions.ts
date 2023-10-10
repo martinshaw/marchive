@@ -17,10 +17,10 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { readOnlyInternalBrowserExtensionsPath } from '../../../../paths';
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker';
 import { Options, scrollPageToBottom } from 'puppeteer-autoscroll-down';
-import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository';
+import { GetWebsiteFaviconResultIconTypeWithNonUnknownSrc } from '../../../app/repositories/SourceDomainRepository';
 import { Readability } from '@mozilla/readability';
 import { JSDOM } from 'jsdom';
-import logger from 'logger';';
+import logger from 'logger';
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,
@@ -405,7 +405,7 @@ export const retrievePageHeadMetadata = async (
 
 export const retrieveFaviconsFromUrl = async (
   url: string
-): Promise<GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]> => {
+): Promise<GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[]> => {
   const browser = await createPuppeteerBrowser();
   const page = await loadPageByUrl(url, browser, 'networkidle0');
   const favicons = await retrieveFaviconsFromPage(page);
@@ -418,11 +418,11 @@ export const retrieveFaviconsFromUrl = async (
 
 export const retrieveFaviconsFromPage = async (
   page: Page
-): Promise<GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]> => {
+): Promise<GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[]> => {
   await page.waitForSelector('body');
 
   return page.evaluate(() => {
-    let favicons: GetWebsiteFaviconResultIconTypeWithNonunknownSrc[] = [];
+    let favicons: GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[] = [];
 
     const linkTags = [
       'link[rel="apple-touch-icon"]',

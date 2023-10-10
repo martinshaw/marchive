@@ -14,7 +14,7 @@ import path from 'node:path';
 import logger from 'logger';;
 import { v4 as uuidV4 } from 'uuid';
 import { Browser, Page } from 'puppeteer-core';
-import { CapturePartStatus } from 'database/models/CapturePart';
+import { CapturePartStatus } from 'database/src/models/CapturePart';
 import { Capture, Schedule, Source, CapturePart } from 'database';
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
@@ -29,13 +29,8 @@ import {
   generatePageScreenshot,
   generatePageSnapshot,
   loadPageByUrl,
-  retrievePageHeadMetadata,
-  scrollPageToTop,
-  smoothlyScrollPageToBottom,
 } from '../helper_functions/PuppeteerDataProviderHelperFunctions';
-import { compressImageSimple } from '../../../utilities/compressImage';
-import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName';
-import entities from "entities";
+import { safeSanitizeFileName } from 'utilities'
 
 export type BlogArticleDataProviderLinkType = {
   url: string;

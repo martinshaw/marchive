@@ -9,16 +9,15 @@ Modified: 2023-09-11T13:04:19.598Z
 Description: description
 */
 
-import { useMemo } from 'react';
-import { ReactNode } from 'react';
-import dataProvidersRendererDetailsList from '../../../data_providers';
-import { SourceAttributes } from '../../../../main/database/models/Source';
-import { CaptureAttributes } from '../../../../main/database/models/Capture';
-import { ScheduleAttributes } from '../../../../main/database/models/Schedule';
-import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Card, ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
 import AppToaster from '../../../toaster';
+import { useMemo, ReactNode } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { SourceAttributes } from 'database/src/models/Source';
+import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
+import { CaptureAttributes } from 'database/src/models/Capture';
+import { ScheduleAttributes } from 'database/src/models/Schedule';
+import dataProvidersRendererDetailsList from '../../../data_providers';
+import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
 import promptForCaptureDeletion from '../../../layouts/DefaultLayout/functions/promptForCaptureDeletion';
 
 export type SourceShowPageGridItemPreviewPropsType = {

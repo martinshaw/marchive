@@ -9,8 +9,8 @@ Modified: 2023-09-05T23:48:52.522Z
 Description: description
 */
 
-import { DataTypes } from 'sequelize';
 import { Migration } from '..';
+import { DataTypes } from 'sequelize';
 
 const up: Migration = async ({ context }) => {
   await context.addColumn('sources', 'name', {

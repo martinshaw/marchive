@@ -9,10 +9,10 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { Capture, CapturePart, Schedule, Source } from "../../../database"
-import logger from 'logger';"
+import { Capture, CapturePart, Schedule, Source } from "database"
+import logger from 'logger'
 import fs from 'node:fs'
-import { rimraf, rimrafSync } from 'rimraf'
+import { rimraf } from 'rimraf'
 
 /**
  * @throws {Error}

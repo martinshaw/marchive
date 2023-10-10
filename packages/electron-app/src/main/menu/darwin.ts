@@ -8,6 +8,7 @@ Modified: 2023-09-26T18:05:49.535Z
 
 Description: description
 */
+
 import { BrowserWindow, MenuItemConstructorOptions } from 'electron';
 import { cleanupAndQuit } from '../main';
 import {

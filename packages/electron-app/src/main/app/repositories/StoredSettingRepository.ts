@@ -11,7 +11,7 @@ Description: description
 
 import logger from 'logger';
 import { StoredSetting } from 'database'
-import { StoredSettingKeyType, StoredSettingTypeType } from 'database/models/StoredSetting'
+import { StoredSettingKeyType, StoredSettingTypeType } from 'database/src/models/StoredSetting'
 
 const determineStoredSettingValueType = (value: string | number | boolean): StoredSettingTypeType => {
   if (value === true || value === false || value === 'true' || value === 'false') return 'boolean'

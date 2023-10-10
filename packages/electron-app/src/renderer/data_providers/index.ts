@@ -10,9 +10,9 @@ Description: description
 */
 
 import { ReactNode } from "react";
-import { SourceAttributes } from "../../main/database/models/Source";
-import { ScheduleAttributes } from "../../main/database/models/Schedule";
-import { CaptureAttributes } from "../../main/database/models/Capture";
+import { SourceAttributes } from "database/src/models/Source";
+import { ScheduleAttributes } from "database/src/models/Schedule";
+import { CaptureAttributes } from "database/src/models/Capture";
 import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDataProvider";
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
 import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider'

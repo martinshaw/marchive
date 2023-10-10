@@ -9,12 +9,12 @@ Modified: 2023-09-27T02:07:17.719Z
 Description: description
 */
 
-import { useAsyncMemo } from 'use-async-memo';
-import { Capture, CapturePart } from '../../../../../main/database';
-import { CaptureAttributes } from '../../../../../main/database/models/Capture';
-import { CapturePartAttributes } from '../../../../../main/database/models/CapturePart';
-import getObjectFromJsonFile from '../../../../layouts/DefaultLayout/functions/getObjectFromJsonFile';
 import Parser from 'rss-parser';
+import { useAsyncMemo } from 'use-async-memo';
+import { Capture, CapturePart } from 'database';
+import { CaptureAttributes } from 'database/src/models/Capture';
+import { CapturePartAttributes } from 'database/src/models/CapturePart';
+import getObjectFromJsonFile from '../../../../layouts/DefaultLayout/functions/getObjectFromJsonFile';
 
 type PodcastRssFeedDataProviderPartPayloadType = {
   index: number;

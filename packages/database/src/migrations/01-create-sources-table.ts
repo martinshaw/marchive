@@ -9,8 +9,8 @@ Modified: 2023-09-04T04:51:56.084Z
 Description: description
 */
 
-import { DataTypes } from 'sequelize';
 import { Migration } from '..';
+import { DataTypes } from 'sequelize';
 
 const up: Migration = async ({ context }) => {
   await context.createTable('sources', {

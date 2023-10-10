@@ -8,30 +8,27 @@ Modified: 2023-08-01T19:43:12.647Z
 
 Description: description
 */
-import { useMemo } from 'react';
-import { Button, Card, Text } from '@blueprintjs/core';
+
 import {
   LoaderFunction,
-  NavLink,
   Navigate,
   useLoaderData,
 } from 'react-router-dom';
-import { useCallback } from 'react';
-import SourceShowPageGridItemPreview from './components/SourceShowPageGridItemPreview';
-import { SourceAttributes } from '../../../main/database/models/Source';
-import getSource from './functions/getSource';
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
-import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import { useMemo } from 'react';
 import AppToaster from '../../toaster';
-import AutoAnimated from '../../components/AutoAnimated';
-import openExternalUrlInBrowser from '../../layouts/DefaultLayout/functions/openExternalUrlInBrowser';
+import { Text } from '@blueprintjs/core';
+import { Capture, Schedule } from 'database';
+import getSource from './functions/getSource';
+import { AutoSizer, Grid } from 'react-virtualized';
+import { SourceAttributes } from 'database/src/models/Source';
+import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
+import SourceShowPageGridItemPreview from './components/SourceShowPageGridItemPreview';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
-import { Capture, Schedule } from '../../../main/database';
+import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
+import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 import './index.scss';
-import { AutoSizer, Grid } from 'react-virtualized';
-import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 type SourceShowPageLoaderReturnType = {
   source: SourceAttributes | null;

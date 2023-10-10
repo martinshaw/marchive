@@ -10,8 +10,8 @@ Description: description
 */
 
 import { useCallback, useState } from 'react'
-import { Schedule } from '../../../../main/database'
-import { ScheduleAttributes } from '../../../../main/database/models/Schedule'
+import { Schedule } from 'database'
+import { ScheduleAttributes } from 'database/src/models/Schedule'
 
 const useCreateNewSchedule = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false)

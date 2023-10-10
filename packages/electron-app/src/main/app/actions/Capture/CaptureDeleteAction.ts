@@ -12,7 +12,7 @@ Description: description
 import { Capture, CapturePart } from "database"
 import logger from 'logger';
 import fs from 'node:fs'
-import { rimraf, rimrafSync } from 'rimraf'
+import { rimraf } from 'rimraf'
 
 /**
  * @throws {Error}

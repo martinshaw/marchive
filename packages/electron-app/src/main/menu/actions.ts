@@ -10,21 +10,16 @@ Description: description
 */
 
 import {
-  app,
-  Menu,
   shell,
   BrowserWindow,
-  MenuItemConstructorOptions,
   dialog,
   clipboard,
-  ipcMain,
 } from 'electron';
 import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
 import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
 import prompt from 'electron-prompt';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../app/repositories/LocalFileRepository';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
 import { cleanupAndQuit } from '../main';
-import process from 'node:process'
 
 export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
   dialog

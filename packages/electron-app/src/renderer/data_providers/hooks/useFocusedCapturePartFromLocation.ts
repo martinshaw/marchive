@@ -10,10 +10,10 @@ Description: description
 */
 
 import { useMemo } from 'react';
+import { Capture, CapturePart } from 'database';
+import { CaptureAttributes } from 'database/src/models/Capture';
+import { CapturePartAttributes } from 'database/src/models/CapturePart';
 import { ParseLocationWithSearchParamsReturnType } from '../../layouts/DefaultLayout/functions/parseLocationWithSearchParams';
-import { Capture, CapturePart } from '../../../main/database';
-import { CaptureAttributes } from '../../../main/database/models/Capture';
-import { CapturePartAttributes } from '../../../main/database/models/CapturePart';
 
 type UseFocusedCapturePartFromLocationReturnType = {
   focusedCapture: Capture | CaptureAttributes | null;

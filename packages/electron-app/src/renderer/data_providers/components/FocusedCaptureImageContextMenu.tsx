@@ -8,6 +8,7 @@ Modified: 2023-09-27T04:34:41.076Z
 
 Description: description
 */
+
 import { ReactNode } from 'react';
 import {
   ContextMenuContentProps,
@@ -18,8 +19,8 @@ import {
   ContextMenu,
 } from '@blueprintjs/core';
 import { useNavigate } from 'react-router-dom';
-import { Capture } from '../../../main/database';
-import { CaptureAttributes } from '../../../main/database/models/Capture';
+import { Capture } from 'database';
+import { CaptureAttributes } from 'database/src/models/Capture';
 
 type FocusedCaptureImageContextMenuPropsType = {
   capture: Capture | CaptureAttributes;

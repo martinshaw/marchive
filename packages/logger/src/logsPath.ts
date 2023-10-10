@@ -10,10 +10,9 @@ Description: description
 */
 
 import path from "node:path";
-import userAppDataPath from "utilities";
+import { userAppDataPath } from "utilities";
 
 // Alternative to the convenient Electron method `app.getPath('logs')` which is not available in non-Electron processes.
 
-let logPath: string = path.join(userAppDataPath, 'Logs'); 
-
+const logPath = path.join(userAppDataPath, 'Logs'); 
 export default logPath;

@@ -18,7 +18,7 @@ import {
 import SourceCreatePageExampleSourceGalleryGridItem, {
   SourceCreatePageExampleSourceGalleryGridItemPropsType,
 } from './SourceCreatePageExampleSourceGalleryGridItem';
-import { Schedule, Source } from '../../../../main/database';
+import { Schedule, Source } from 'database';
 import AutoAnimated from '../../../components/AutoAnimated';
 
 export type SourceCreatePageExampleSourceGalleryPropsType = {

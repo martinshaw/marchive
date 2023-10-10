@@ -8,8 +8,9 @@ Modified: 2023-08-02T02:29:08.035Z
 
 Description: description
 */
+
 import { Capture, CapturePart, Schedule, Source } from 'database';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../repositories/LocalFileRepository';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
 
 export type DataProviderSerializedType = {
   identifier: string;
@@ -44,7 +45,7 @@ abstract class BaseDataProvider {
   abstract getName(): string;
 
   /**
-   * A short description of what information is archived, analysed, searchable and visualised by this Data Provider
+   * A short description of what information is archived, analyzed, searchable and visualized by this Data Provider
    */
   abstract getDescription(): string;
 

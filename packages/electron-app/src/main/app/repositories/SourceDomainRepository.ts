@@ -11,17 +11,17 @@ Description: description
 
 import fs from 'node:fs';
 import { v4 } from "uuid";
+import logger from 'logger';
 import path from 'node:path';
-import logger from 'logger';";
-import { SourceDomain } from "../../database";
+import { SourceDomain } from "database";
 import Downloader from "nodejs-file-downloader";
+import { safeSanitizeFileName } from 'utilities';
 import resolveRelative from 'resolve-relative-url';
+import BaseDataProvider from "../data_providers/BaseDataProvider";
 import { downloadSourceDomainFaviconsPath } from "../../../paths";
 // // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`
 // import getFavicons from 'get-website-favicon'
 import { createPuppeteerBrowser, loadPageByUrl, retrieveFaviconsFromUrl as retrieveFaviconsFromUrlUsingPuppeteer, retrievePageHeadMetadata } from "../data_providers/helper_functions/PuppeteerDataProviderHelperFunctions";
-import BaseDataProvider from "../data_providers/BaseDataProvider";
-import safeSanitizeFileName from '../../utilities/safeSanitizeFileName';
 
 export const findOrCreateSourceDomainForUrl = async (url: string, dataProvider: BaseDataProvider): Promise<SourceDomain | null> => {
   let urlDomainName: string | null = null;
@@ -67,7 +67,7 @@ export const findOrCreateSourceDomainForUrl = async (url: string, dataProvider: 
     name,
     url: urlDomainName,
     faviconPath,
-  }).catch(error => {
+  }).catch((error: Error | string) => {
     logger.error(`A DB error occurred when attempting to create SourceDomain with URL ${urlDomainName}:`)
     logger.error(error)
     return null
@@ -82,7 +82,7 @@ type GetWebsiteFaviconResultIconType = {
   rank?: number;
 }
 
-export type GetWebsiteFaviconResultIconTypeWithNonunknownSrc = GetWebsiteFaviconResultIconType & {
+export type GetWebsiteFaviconResultIconTypeWithNonUnknownSrc = GetWebsiteFaviconResultIconType & {
   src: string;
 }
 
@@ -145,7 +145,7 @@ export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<strin
    */
   // const result = await getFavicons(url) as GetWebsiteFaviconResultType
 
-  let icons: GetWebsiteFaviconResultIconTypeWithNonunknownSrc[] = []
+  let icons: GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[] = []
   // if (result.icons == null || result.icons.length === 0) {
     /**
      * The `get-website-favicon` package doesn't seem to be able to find favicons for some sites
@@ -156,7 +156,7 @@ export const retrieveAndStoreFaviconFromUrl = async (url: string): Promise<strin
     icons = await retrieveFaviconsFromUrlUsingPuppeteer(url)
     if (icons.length === 0) return null
   // } else {
-  //   icons = result.icons.filter(i => i?.src != null && i?.src !== '') as GetWebsiteFaviconResultIconTypeWithNonunknownSrc[]
+  //   icons = result.icons.filter(i => i?.src != null && i?.src !== '') as GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[]
   // }
 
   // Prefer PNGs, then JPEGs, then SVGs, then ICOs

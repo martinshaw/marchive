@@ -8,13 +8,12 @@ Modified: 2023-09-06T04:58:02.055Z
 
 Description: description
 */
+
 import logger from 'logger';
-import process from 'node:process'
 import { Schedule } from 'database'
 import performCaptureRun from "../repositories/CaptureRunRepository"
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
 import { getStoredSettingValue } from '../repositories/StoredSettingRepository'
-import { ScheduleStatus } from 'database/models/Schedule'
 
 let lastSchedule: Schedule | null = null;
 

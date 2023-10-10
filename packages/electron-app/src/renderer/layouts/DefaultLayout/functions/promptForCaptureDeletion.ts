@@ -9,8 +9,8 @@ Modified: 2023-09-19T22:43:35.375Z
 Description: description
 */
 
-import { CaptureAttributes } from "../../../../main/database/models/Capture";
-import { Capture } from "../../../../main/database";
+import { Capture } from "database";
+import { CaptureAttributes } from "database/src/models/Capture";
 
 const promptForCaptureDeletion = async (capture: Capture | CaptureAttributes): Promise<boolean> => {
   return new Promise<boolean>((resolve, reject) => {

@@ -8,9 +8,9 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import { SourceAttributes } from 'database/models/Source'
-import { Schedule, Source } from 'database'
-import { WhereOptions } from 'sequelize'
+
+import { SourceAttributes } from 'database/src/models/Source'
+import { Schedule, Source, WhereOptions } from 'database'
 
 const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {
   return Source

@@ -11,18 +11,18 @@ Description: description
 
 import { useMemo } from "react";
 import { ReactNode } from "react";
-import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { SourceAttributes } from "../../../../main/database/models/Source";
-import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
-import { CaptureAttributes } from "../../../../main/database/models/Capture";
-import { CapturePartAttributes } from "../../../../main/database/models/CapturePart";
-import useHumanDateCaption from "../../hooks/useHumanDateCaption";
-import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
-import useGetObjectFromJsonFile from "../../../layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
-import { useNavigate } from "react-router-dom";
-import { PodcastRssFeedDataProviderPartPayloadType } from "../../../../main/app/data_providers/PodcastRssFeedDataProvider";
 // @ts-ignore
 import sanitizeHtml from 'sanitize-html';
+import { useNavigate } from "react-router-dom";
+import { SourceAttributes } from "database/src/models/Source";
+import { CaptureAttributes } from "database/src/models/Capture";
+import { ScheduleAttributes } from "database/src/models/Schedule";
+import useHumanDateCaption from "../../hooks/useHumanDateCaption";
+import { CapturePartAttributes } from "database/src/models/CapturePart";
+import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
+import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import useGetObjectFromJsonFile from "../../../layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
+import { PodcastRssFeedDataProviderPartPayloadType } from "../../../../main/app/data_providers/PodcastRssFeedDataProvider";
 
 import './index.scss'
 

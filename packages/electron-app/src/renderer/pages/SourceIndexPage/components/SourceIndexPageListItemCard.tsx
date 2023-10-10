@@ -9,12 +9,12 @@ Modified: 2023-08-31T16:13:47.844Z
 Description: description
 */
 
-import { Card, Icon, Text } from '@blueprintjs/core';
-import { SourceAttributes } from '../../../../main/database/models/Source';
+import { ReactNode } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Card, Text } from '@blueprintjs/core';
+import { SourceAttributes } from 'database/src/models/Source';
 import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
 import SourceIndexPageListItemCardScheduleCaption from './SourceIndexPageListItemCardScheduleCaption';
-import { NavLink } from 'react-router-dom';
-import { ReactNode } from 'react';
 
 export type SourceIndexPageListItemCardPropsType = {
   source: SourceAttributes;

@@ -12,7 +12,7 @@ import {
   nativeTheme,
 } from 'electron';
 import { readOnlyInternalRootPath } from '../paths';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from './app/repositories/LocalFileRepository';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
 import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 import {
   getStoredSettingValue,

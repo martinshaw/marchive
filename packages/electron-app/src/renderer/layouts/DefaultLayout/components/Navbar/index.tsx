@@ -9,7 +9,6 @@ Modified: 2023-09-12T16:06:40.138Z
 Description: description
 */
 
-import { useCallback, MouseEvent as ReactMouseEvent } from 'react';
 import {
   Button,
   Navbar as BlueprintNavBar,
@@ -20,6 +19,7 @@ import {
   Menu,
   ContextMenu,
   Tooltip,
+  Text,
 } from '@blueprintjs/core';
 import {
   NavLink,
@@ -27,6 +27,7 @@ import {
   useNavigate,
   useNavigation,
 } from 'react-router-dom';
+import { useCallback, MouseEvent as ReactMouseEvent } from 'react';
 import { toggleMaximize } from '../../functions/focusedWindowControls';
 import NavbarProcessesPausedIndicator from './NavbarProcessesPausedIndicator';
 
@@ -179,9 +180,9 @@ const Navbar = (props: NavbarPropsType) => {
           </NavbarGroup>
         </>
       ) : (
-        <div style={{ textAlign: 'center', width: '100%' }}>
+        <Text className="navbar--draggable" style={{ textAlign: 'center', width: '100%' }}>
           {locationCaptions[location.pathname] || ''}
-        </div>
+        </Text>
       )}
     </BlueprintNavBar>
   );

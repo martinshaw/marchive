@@ -9,10 +9,9 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { Alignment, Button, Navbar, Text } from '@blueprintjs/core';
+import { Navigate } from 'react-router-dom';
 
 import './index.scss';
-import { Navigate } from 'react-router-dom';
 
 const YesterdayPage = () => {
 

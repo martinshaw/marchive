@@ -9,9 +9,8 @@ Modified: 2023-09-12T10:59:19.263Z
 Description: description
 */
 
-import { Op } from "sequelize";
-import logger from 'logger';";
-import { Capture, CapturePart, Schedule } from "../../../database";
+import logger from 'logger';
+import { Capture, CapturePart, Schedule } from "database";
 
 /**
  * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,

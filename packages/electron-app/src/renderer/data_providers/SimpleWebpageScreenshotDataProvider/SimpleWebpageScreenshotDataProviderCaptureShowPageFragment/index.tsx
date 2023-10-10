@@ -9,25 +9,22 @@ Modified: 2023-09-14T02:42:40.042Z
 Description: description
 */
 
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { JSONTree } from 'react-json-tree';
-import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from '../..';
 import {
   Button,
   ButtonGroup,
-  H1,
-  H4,
   NonIdealState,
   Spinner,
   SpinnerSize,
-  Text,
 } from '@blueprintjs/core';
-import parseLocationWithSearchParams from '../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams';
-import formatLocationUrlWithChangedSearchParams from '../../../layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams';
-import brightBase16 from '../../../utilities/base16_themes/bright.base16';
+import { JSONTree } from 'react-json-tree';
 import useCaptureImage from '../../hooks/useCaptureImage';
 import useCaptureMetadata from '../../hooks/useCaptureMetadata';
+import { useLocation, useNavigate } from 'react-router-dom';
+import brightBase16 from '../../../utilities/base16_themes/bright.base16';
+import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from '../..';
 import FocusedCaptureImageContextMenu from '../../components/FocusedCaptureImageContextMenu';
+import parseLocationWithSearchParams from '../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams';
+import formatLocationUrlWithChangedSearchParams from '../../../layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams';
 
 import './index.scss';
 

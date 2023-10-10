@@ -8,7 +8,8 @@ Modified: 2023-08-29T21:25:45.800Z
 
 Description: description
 */
-import { StoredSettingKeyType } from 'database/models/StoredSetting'
+
+import { StoredSettingKeyType } from 'database/src/models/StoredSetting'
 import { unsetStoredSetting } from '../../../repositories/StoredSettingRepository'
 import logger from 'logger';
 

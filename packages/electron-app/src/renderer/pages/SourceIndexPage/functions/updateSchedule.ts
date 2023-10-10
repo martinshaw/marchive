@@ -9,8 +9,8 @@ Modified: 2023-10-02T14:52:01.459Z
 Description: description
 */
 
-import { ScheduleAttributes } from "../../../../main/database/models/Schedule";
-import { Schedule } from "../../../../main/database";
+import { Schedule } from "database";
+import { ScheduleAttributes } from "database/src/models/Schedule";
 
 const updateSchedule = async (schedule: Schedule | ScheduleAttributes, changes: Partial<ScheduleAttributes>) => {
   return new Promise((resolve, reject) => {

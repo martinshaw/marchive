@@ -9,7 +9,7 @@ Modified: 2023-09-19T22:43:35.375Z
 Description: description
 */
 
-import { Source } from "../../../../main/database";
+import { Source } from "database";
 
 const promptForSourceDeletion = async (source: Source): Promise<boolean> => {
   return new Promise<boolean>((resolve, reject) => {

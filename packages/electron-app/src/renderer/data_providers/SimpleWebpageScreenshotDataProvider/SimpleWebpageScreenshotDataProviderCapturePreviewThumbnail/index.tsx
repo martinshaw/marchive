@@ -10,8 +10,8 @@ Description: description
 */
 
 import { Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { DataProvidersRendererComponentCapturePreviewThumbnailPropsType } from "../..";
 import useHumanDateCaption from "../../hooks/useHumanDateCaption";
+import { DataProvidersRendererComponentCapturePreviewThumbnailPropsType } from "../..";
 
 import './index.scss'
 

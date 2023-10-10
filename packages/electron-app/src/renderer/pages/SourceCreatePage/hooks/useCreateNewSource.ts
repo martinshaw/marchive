@@ -10,8 +10,8 @@ Description: description
 */
 
 import { useCallback, useState } from 'react'
-import { Source } from '../../../../main/database'
-import { SourceAttributes } from '../../../../main/database/models/Source'
+import { Source } from 'database'
+import { SourceAttributes } from 'database/src/models/Source'
 
 const useCreateNewSource = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false)

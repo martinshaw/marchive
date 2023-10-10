@@ -8,19 +8,20 @@ Modified: 2023-08-01T19:43:12.647Z
 
 Description: description
 */
+
 import { useMemo } from 'react';
-import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
-import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
-import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
+import AppToaster from '../../toaster';
+import AutoAnimated from '../../components/AutoAnimated';
 import getSourceDomains from './functions/getSourceDomains';
 import getDataProviders from './functions/getDataProviders';
-import { SourceDomainAttributes } from '../../../main/database/models/SourceDomain';
-import { SourceAttributes } from '../../../main/database/models/Source';
+import { SourceAttributes } from 'database/src/models/Source';
+import { SourceDomainAttributes } from 'database/src/models/SourceDomain';
+import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
+import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
-import AutoAnimated from '../../components/AutoAnimated';
+import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
 import promptForSourceDeletion from '../../layouts/DefaultLayout/functions/promptForSourceDeletion';
-import AppToaster from '../../toaster';
 import { CopyableExternalLinkCopyLinkMenuItem } from '../../layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 
 import './index.scss';

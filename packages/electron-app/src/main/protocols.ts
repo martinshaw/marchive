@@ -10,11 +10,10 @@ Description: description
 */
 
 import url from 'node:url';
-import path from 'node:path';
 import logger from 'logger';
-import { ModelStatic } from "sequelize";
+import path from 'node:path';
 import { app, dialog, net, protocol } from "electron";
-import { Capture, CapturePart } from "./database";
+import { Capture, CapturePart, ModelStatic } from "database";
 
 const marchiveRegisteredProtocolSchemes = [ 'marchive-downloads', 'marchive' ] as const;
 export type MarchiveRegisteredProtocolSchemesType = typeof marchiveRegisteredProtocolSchemes[number]

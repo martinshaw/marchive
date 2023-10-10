@@ -16,7 +16,7 @@ import SourceShowAction from '../app/actions/Source/SourceShowAction'
 import SourceCreateAction from '../app/actions/Source/SourceCreateAction'
 import SourceDeleteAction from '../app/actions/Source/SourceDeleteAction'
 import SourcePromptForDeletionAction from '../app/actions/Source/SourcePromptForDeletionAction'
-import { Op } from 'sequelize'
+import { Op } from 'database'
 
 export type SourcesChannels =
   | 'sources.list'
