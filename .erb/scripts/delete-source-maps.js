@@ -15,14 +15,4 @@ export default function deleteSourceMaps() {
       glob: true,
     });
 
-  if (fs.existsSync(webpackPaths.distDatabaseMigrationsPath))
-    rimrafSync(path.join(webpackPaths.distDatabaseMigrationsPath, '*.js.map'), {
-      glob: true,
-    });
-
-  if (fs.existsSync(webpackPaths.distChildProcessesPath))
-    rimrafSync(path.join(webpackPaths.distChildProcessesPath, '*.js.map'), {
-      glob: true,
-    });
-
 }
