@@ -10,7 +10,7 @@ Description: description
 */
 
 import { URL } from 'url';
-import path from 'path';
+import path from 'node:path';
 
 const resolveHtmlPath = (htmlFileName: string) => {
   if (process.env.NODE_ENV === 'development') {

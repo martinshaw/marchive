@@ -25,11 +25,9 @@
   },
   "main": "./src/main/main.ts",
   "scripts": {
-    "build": "concurrently \"yarn run build:main\" \"yarn run build:renderer\" \"yarn run build:database-migrations\" \"yarn run build:child-processes\"",
+    "build": "concurrently \"yarn run build:main\" \"yarn run build:renderer\"",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
-    "build:database-migrations": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.database-migrations.prod.ts",
-    "build:child-processes": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.child-processes.prod.ts",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "package": "ts-node ./.erb/scripts/clean.js dist && yarn run build && electron-builder build --publish never",
@@ -203,7 +201,7 @@
     "prettier": "^2.8.8",
     "react-refresh": "^0.14.0",
     "react-test-renderer": "^18.2.0",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.5",
     "sass": "^1.62.1",
     "sass-loader": "^13.3.1",
     "style-loader": "^3.3.3",
@@ -224,7 +222,9 @@
     "productName": "Marchive",
     "appId": "co.martinshaw.marchive",
     "asar": true,
-    "asarUnpack": "**\\*.{node,dll}",
+    "asarUnpack": [
+      "**\\*.{node,dll}"
+    ],
     "files": [
       "dist",
       "node_modules",

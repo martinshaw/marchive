@@ -11,7 +11,6 @@
 
 import logger from '../log'
 import path from 'node:path'
-import { app } from 'electron'
 import { readOnlyInternalChildProcessesPath } from '../../../paths'
 
 export type ProcessDetailsType = {
@@ -22,11 +21,11 @@ export type ProcessDetailsType = {
 export const processDetails = [
   {
     name: 'CapturePartRunProcess',
-    path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess' + (app.isPackaged ? '.js' : '.ts')),
+    path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess.ts'),
   },
   {
     name: 'ScheduleRunProcess',
-    path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess' + (app.isPackaged ? '.js' : '.ts')),
+    path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
   },
 ] as const
 

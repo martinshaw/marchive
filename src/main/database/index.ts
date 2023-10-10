@@ -59,8 +59,6 @@ sequelize.addModels([
 // Capture.sync()
 // CapturePart.sync()
 
-logger.info('---> DB migrations path: '+ convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')))
-
 const umzug = new Umzug({
   migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')) },
   context: sequelize.getQueryInterface(),

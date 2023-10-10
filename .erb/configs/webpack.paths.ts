@@ -21,13 +21,6 @@ const distRendererPath = path.join(distPath, 'renderer');
 
 const buildPath = path.join(releasePath, 'build');
 
-// Paths used by custom Webpack configuration files for non-standard compilation of Marchive source code
-const srcDatabaseMigrationsPath = path.join(srcMainPath, 'database', 'migrations');
-const distDatabaseMigrationsPath = path.join(distMainPath, 'database', 'migrations');
-
-const srcChildProcessesPath = path.join(srcMainPath, 'app', 'processes');
-const distChildProcessesPath = path.join(distMainPath, 'app', 'processes');
-
 export default {
   rootPath,
 
@@ -48,10 +41,4 @@ export default {
   distRendererPath,
 
   buildPath,
-
-  srcDatabaseMigrationsPath,
-  distDatabaseMigrationsPath,
-
-  srcChildProcessesPath,
-  distChildProcessesPath,
 }

@@ -3,7 +3,7 @@
  */
 
 import webpack from 'webpack';
-import path from 'path';
+import path from 'node:path';
 import { merge } from 'webpack-merge';
 import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';

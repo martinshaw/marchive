@@ -11,7 +11,7 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import { ChildProcess } from 'node:child_process';
-import { fork } from 'child_process';
+import { fork } from 'node:child_process';
 import { appLogsPath, downloadsPath, readOnlyInternalRootPath, userAppDataPath } from '../../../../paths';
 import { ProcessDetailsNameType, processDetails } from '../../processes'
 import logger from '../../log';

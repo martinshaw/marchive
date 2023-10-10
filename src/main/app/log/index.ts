@@ -26,9 +26,8 @@ let logger: winston.Logger | typeof console = console;
  *   user-land renderer process.
  */
 
-if (typeof process.versions['electron'] !== 'undefined' && ['renderer', 'browser'].includes(process.type))
+if (typeof process.versions['electron'] !== 'undefined' && ['renderer', 'browser'].includes(process.type)) {
   logger = require('./winston').createWinstonLogger(process.type === 'browser' ? 'main' : process.type)
-
-logger.info('----> Logger is working in log/indfex.ts')
+}
 
 export default logger
