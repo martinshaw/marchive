@@ -8,8 +8,8 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import { SourceAttributes } from '../../../database/models/Source'
-import {Schedule, Source} from '../../../database'
+import { SourceAttributes } from 'database/models/Source'
+import { Schedule, Source } from 'database'
 import { WhereOptions } from 'sequelize'
 
 const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {

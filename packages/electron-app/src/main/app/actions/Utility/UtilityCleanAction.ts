@@ -9,9 +9,9 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import fs from 'node:fs'
-import {sequelize, umzug} from '../../../database'
+import { sequelize, umzug } from 'database'
 import { downloadCapturesPath, downloadSourceDomainFaviconsPath } from '../../../../paths'
-import logger from '../../log'
+import logger from 'logger';
 
 const UtilityCleanAction = async (
   database: boolean = false,

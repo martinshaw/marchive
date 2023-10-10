@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Op } from "sequelize";
-import logger from "../../../app/log";
+import logger from 'logger';";
 import { Capture, CapturePart, Schedule } from "../../../database";
 
 /**

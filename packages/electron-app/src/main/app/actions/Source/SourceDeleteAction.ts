@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Capture, CapturePart, Schedule, Source } from "../../../database"
-import logger from "../../log"
+import logger from 'logger';"
 import fs from 'node:fs'
 import { rimraf, rimrafSync } from 'rimraf'
 

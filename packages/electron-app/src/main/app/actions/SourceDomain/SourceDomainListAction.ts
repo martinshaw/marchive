@@ -9,8 +9,8 @@ Modified: 2023-09-04T18:56:21.693Z
 Description: description
 */
 import { Includeable } from 'sequelize'
-import { Schedule, Source } from '../../../database'
-import SourceDomain, { SourceDomainAttributes } from '../../../database/models/SourceDomain'
+import { Schedule, Source } from 'database'
+import SourceDomain, { SourceDomainAttributes } from 'database/models/SourceDomain'
 
 const SourceDomainListAction = async (withSources: boolean, withSourceSchedules: boolean): Promise<SourceDomainAttributes[]> => {
   /**

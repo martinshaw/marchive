@@ -8,7 +8,7 @@ Modified: 2023-08-02T02:29:08.035Z
 
 Description: description
 */
-import { Capture, CapturePart, Schedule, Source } from '../../database';
+import { Capture, CapturePart, Schedule, Source } from 'database';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from '../repositories/LocalFileRepository';
 
 export type DataProviderSerializedType = {

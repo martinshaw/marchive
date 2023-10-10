@@ -9,11 +9,11 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import { Capture, CapturePart, Schedule, Source } from '../../../database';
+import { Capture, CapturePart, Schedule, Source } from 'database';
 import Parser from 'rss-parser';
 import path from 'node:path';
 import fs from 'node:fs';
-import { CapturePartStatus } from '../../../database/models/CapturePart';
+import { CapturePartStatus } from 'database/models/CapturePart';
 import { v4 } from 'uuid';
 import Downloader from 'nodejs-file-downloader';
 import BaseDataProvider, {
@@ -21,7 +21,7 @@ import BaseDataProvider, {
   BaseDataProviderIconInformationReturnType,
   SourceDomainInformationReturnType,
 } from '../BaseDataProvider';
-import logger from '../../log';
+import logger from 'logger';;
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
 import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName';
 

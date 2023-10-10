@@ -31,18 +31,15 @@ let readOnlyInternalAssetsPath = path.join(readOnlyInternalRootPath, 'assets');
 
 let userAppDataPath: string = process?.env?.USER_APP_DATA_PATH ?? '';
 let downloadsPath: string = process?.env?.DOWNLOADS_PATH ?? '';
-let appLogsPath: string = process?.env?.APP_LOGS_PATH ?? '';
 
 if (isNotChildProcess) {
   const { app } = require('electron');
 
   userAppDataPath = app.getPath('userData');
   downloadsPath = app.getPath('downloads');
-  appLogsPath = app.getPath('logs');
 } else {
   if (userAppDataPath === '' || userAppDataPath == null) throw new Error("When forking a child process, you must pass the USER_APP_DATA_PATH environment variable containing the path to the user's app data directory from the main process.");
   if (downloadsPath === '' || downloadsPath == null) throw new Error("When forking a child process, you must pass the DOWNLOADS_PATH environment variable containing the path to the user's downloads directory from the main process.");
-  if (appLogsPath === '' || appLogsPath == null) throw new Error("When forking a child process, you must pass the APP_LOGS_PATH environment variable containing the path to the user's app logs directory from the main process.");
 }
 
 /**
@@ -51,21 +48,17 @@ if (isNotChildProcess) {
  *   paths as strings in the main process.
  */
 
-let readOnlyInternalDatabaseMigrationsPath: string = path.join(readOnlyInternalRootPath, 'src', 'main', 'database', 'migrations');
 let readOnlyInternalChildProcessesPath: string = path.join(readOnlyInternalRootPath, 'src', 'main', 'app', 'processes');
 
 /**
  * Other exports
  */
 
-export { readOnlyInternalRootPath,  readOnlyInternalBrowserExtensionsPath,  readOnlyInternalAssetsPath };
-export { userAppDataPath, downloadsPath, appLogsPath };
-
-export const userAppDataDatabasesPath = path.join(userAppDataPath, 'databases');
-export const userAppDataDatabaseFilePath = path.join(userAppDataDatabasesPath, 'marchive-desktop.db');
+export { readOnlyInternalRootPath, readOnlyInternalBrowserExtensionsPath, readOnlyInternalAssetsPath };
+export { userAppDataPath, downloadsPath };
 
 export const downloadsAppPath = path.join(downloadsPath, process.env.APP_NAME || 'Marchive');
 export const downloadCapturesPath = path.join(downloadsAppPath, 'captures');
 export const downloadSourceDomainFaviconsPath = path.join(downloadsAppPath, 'favicons');
 
-export { readOnlyInternalDatabaseMigrationsPath, readOnlyInternalChildProcessesPath };
+export { readOnlyInternalChildProcessesPath };

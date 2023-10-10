@@ -9,10 +9,9 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, ForeignKey, BelongsTo, HasMany, Sequelize} from 'sequelize-typescript'
-import {Schedule, CapturePart} from '..'
-import logger from '../../app/log'
+import { DataTypes, Optional } from 'sequelize'
+import { Table, Model, Column, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript'
+import { Schedule, CapturePart } from '..'
 
 export type CaptureAttributes = {
   id: number

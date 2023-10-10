@@ -11,11 +11,11 @@ Description: description
 
 import fs from 'node:fs';
 import path from 'node:path';
-import logger from '../../log';
+import logger from 'logger';;
 import { v4 as uuidV4 } from 'uuid';
 import { Browser, Page } from 'puppeteer-core';
-import { CapturePartStatus } from '../../../database/models/CapturePart';
-import { Capture, Schedule, Source, CapturePart } from '../../../database';
+import { CapturePartStatus } from 'database/models/CapturePart';
+import { Capture, Schedule, Source, CapturePart } from 'database';
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
   BaseDataProviderIconInformationReturnType,

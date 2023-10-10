@@ -9,8 +9,8 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import { Op } from 'sequelize'
-import { Capture, Schedule } from '../../../database'
-import { ScheduleAttributes } from '../../../database/models/Schedule'
+import { Capture, Schedule } from 'database'
+import { ScheduleAttributes } from 'database/models/Schedule'
 
 const ScheduleListAction = async (sourceId: number | null = null, withCaptures = false): Promise<ScheduleAttributes[]> => {
   let where = {}

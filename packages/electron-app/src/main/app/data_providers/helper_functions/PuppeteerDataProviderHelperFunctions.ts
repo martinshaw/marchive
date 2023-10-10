@@ -20,7 +20,7 @@ import { Options, scrollPageToBottom } from 'puppeteer-autoscroll-down';
 import { GetWebsiteFaviconResultIconTypeWithNonunknownSrc } from '../../../app/repositories/SourceDomainRepository';
 import { Readability } from '@mozilla/readability';
 import { JSDOM } from 'jsdom';
-import logger from '../../../app/log';
+import logger from 'logger';';
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,

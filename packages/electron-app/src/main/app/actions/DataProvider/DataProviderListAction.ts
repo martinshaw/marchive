@@ -9,7 +9,7 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import BaseDataProvider, { DataProviderSerializedType } from '../../data_providers/BaseDataProvider'
-import {getDataProviders} from '../../repositories/DataProviderRepository'
+import { getDataProviders } from '../../repositories/DataProviderRepository'
 
 const DataProviderListAction = async (): Promise<DataProviderSerializedType[]> =>
   getDataProviders()

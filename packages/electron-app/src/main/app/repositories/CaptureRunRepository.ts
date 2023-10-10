@@ -11,11 +11,11 @@ Description: description
 
 import path from 'node:path'
 import fs from 'node:fs'
-import {Capture, Schedule, Source} from '../../database'
-import {ScheduleAttributes, ScheduleStatus} from '../../database/models/Schedule'
-import {getDataProviderByIdentifier} from './DataProviderRepository'
-import {downloadCapturesPath} from '../../../paths'
-import logger from '../log'
+import { Capture, Schedule, Source } from 'database'
+import { ScheduleAttributes, ScheduleStatus } from 'database/models/Schedule'
+import { getDataProviderByIdentifier } from './DataProviderRepository'
+import { downloadCapturesPath } from '../../../paths'
+import logger from 'logger';
 import { v4 } from 'uuid'
 import safeSanitizeFileName from '../../utilities/safeSanitizeFileName'
 

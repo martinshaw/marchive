@@ -10,10 +10,10 @@ Description: description
 */
 
 import path from 'node:path'
-import logger from '../app/log'
+import logger from 'logger'
 import { Umzug, SequelizeStorage } from 'umzug'
-import { readOnlyInternalDatabaseMigrationsPath } from '../../paths'
-import convertCrossPlatformSlashPathToNodePath from '../utilities/convertCrossPlatformSlashPathToNodePath'
+import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
+import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
 
 import sequelize from './connection'
 

@@ -9,7 +9,7 @@ Modified: 2023-09-06T04:58:17.096Z
 Description: description
 */
 import { Capture, CapturePart, Schedule, Source } from "../../database"
-import logger from "../log"
+import logger from 'logger';"
 import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "../../database/models/CapturePart"

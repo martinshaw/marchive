@@ -8,7 +8,7 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import { Source } from '../../../database'
+import { Source } from 'database'
 
 const SourceCountAction = async (): Promise<number> => Source.count()
 

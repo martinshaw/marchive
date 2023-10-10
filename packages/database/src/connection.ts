@@ -10,9 +10,9 @@ Description: description
 */
 
 import fs from 'node:fs'
-import logger from '../app/log';
+import logger from 'logger'
 import { Sequelize } from 'sequelize-typescript'
-import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from '../../paths';
+import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from './databasePaths';
 
 if (fs.existsSync(userAppDataDatabasesPath) === false) fs.mkdirSync(userAppDataDatabasesPath, { recursive: true })
 

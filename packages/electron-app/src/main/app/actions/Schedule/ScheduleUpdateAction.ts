@@ -9,12 +9,12 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import fs from 'node:fs'
-import {Schedule, Source} from '../../../database'
-import {Attributes} from 'sequelize'
-import logger from '../../log'
+import { Schedule, Source } from 'database'
+import { Attributes } from 'sequelize'
+import logger from 'logger';
 import { getDataProviderByIdentifier } from '../../../app/repositories/DataProviderRepository'
 import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
-import { ScheduleAttributes } from '../../../database/models/Schedule'
+import { ScheduleAttributes } from 'database/models/Schedule'
 
 /**
  * @throws {Error}

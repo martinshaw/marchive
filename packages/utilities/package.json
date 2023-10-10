@@ -1,5 +1,5 @@
 {
-  "name": "database",
+  "name": "utilities",
   "version": "0.9.1",
   "description": "",
   "main": "./src/index.ts",
@@ -12,11 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.5.9",
-    "logger": "workspace:^",
-    "sequelize": "^6.32.1",
-    "sequelize-typescript": "^2.1.5",
-    "sqlite3": "^5.1.6",
-    "umzug": "^3.3.1",
-    "utilities": "workspace:^"
+    "image-type": "^4.1.0",
+    "sanitize-filename": "^1.6.3"
   }
 }

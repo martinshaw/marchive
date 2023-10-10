@@ -9,8 +9,8 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column} from 'sequelize-typescript'
+import { DataTypes, Optional } from 'sequelize'
+import { Table, Model, Column } from 'sequelize-typescript'
 
 const storedSettingKeys = [
   'MARCHIVE_IS_SETUP',

@@ -9,19 +9,21 @@ Modified: 2023-08-30T23:09:46.570Z
 Description: description
 */
 
+import fs from 'node:fs'
+import appLogsPath from './logsPath'
 import { Logger, createLogger, format, transports } from 'winston'
-import { appLogsPath } from '../../../paths'
-import path from 'node:path'
 import DailyRotateFile, { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file'
 
-export const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
+const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
+  if (fs.existsSync(appLogsPath) === false) fs.mkdirSync(appLogsPath, { recursive: true })
+
   const sharedFileTransportConfig: DailyRotateFileTransportOptions = {
     filename: '%DATE%.log',
     dirname: appLogsPath,
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: true,
     maxSize: '20m',
-    maxFiles: '14d',
+    maxFiles: '7d',
   }
 
   const errorFileTransportConfig: DailyRotateFileTransportOptions = { ...sharedFileTransportConfig, filename: 'error-%DATE%.log', level: 'error' }
@@ -74,3 +76,5 @@ export const createWinstonLogger: (serviceName: string) => Logger = (serviceName
 
   return logger
 }
+
+export default createWinstonLogger

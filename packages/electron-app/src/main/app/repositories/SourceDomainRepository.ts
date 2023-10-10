@@ -12,7 +12,7 @@ Description: description
 import fs from 'node:fs';
 import { v4 } from "uuid";
 import path from 'node:path';
-import logger from "../log";
+import logger from 'logger';";
 import { SourceDomain } from "../../database";
 import Downloader from "nodejs-file-downloader";
 import resolveRelative from 'resolve-relative-url';

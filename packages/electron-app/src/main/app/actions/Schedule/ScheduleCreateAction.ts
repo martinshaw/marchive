@@ -10,12 +10,12 @@ Description: description
 */
 import fs from 'node:fs'
 import path from 'node:path'
-import {Schedule, Source} from '../../../database'
-import {downloadCapturesPath as defaultDownloadCapturesPath} from '../../../../paths'
-import {getDataProviderByIdentifier} from '../../repositories/DataProviderRepository'
-import {AllowedScheduleIntervalReturnType} from '../../data_providers/BaseDataProvider'
-import logger from '../../log'
-import { ScheduleAttributes } from '../../../database/models/Schedule'
+import { Schedule, Source } from 'database'
+import { downloadCapturesPath as defaultDownloadCapturesPath } from '../../../../paths'
+import { getDataProviderByIdentifier } from '../../repositories/DataProviderRepository'
+import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
+import logger from 'logger';
+import { ScheduleAttributes } from 'database/Schedule'
 import safeSanitizeFileName from '../../../utilities/safeSanitizeFileName'
 
 /**

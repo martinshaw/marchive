@@ -1,13 +1,3 @@
-/*
-All Rights Reserved, (c) 2023 CodeAtlas LTD.
-
-Author: Martin Shaw (developer@martinshaw.co)
-File Name: LocalFileRepository.ts
-Created:  2023-09-05T15:21:41.210Z
-Modified: 2023-09-05T15:21:41.211Z
-
-Description: description
-*/
 
 /**
  * When accessing files from the user's file system, we must be careful to only facilitate access to Marchive-related files and
@@ -29,13 +19,14 @@ Description: description
  *   renderer to access a file, but only if it is within a user configured list of download paths.
  *
  * For now, we will use the first option, because it is simpler, but we might change to the second option if
- *   we find that base64 strings cannot handle suffificently large files.
+ *   we find that base64 strings cannot handle sufficiently large files.
+ *
+ * TODO: We have now implemented a protocol for capture and capture part downloads, we will need to remove this file's functionality and replace its use with the protocols
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import imageType, { ImageTypeResult } from 'image-type'
-import logger from '../log'
 
 const imageExtensionsToMimeTypes: {[key: string]: string} = {
   '.png': 'image/png',
@@ -93,12 +84,7 @@ const retrieveFileAsBase64DataUrlFromAbsolutePath = (absolutePath: string | null
   if (fileExtension in audioExtensionsToMimeTypes) return `data:${audioExtensionsToMimeTypes[fileExtension]};base64,${fileBase64Content}`
   if (fileExtension in videoExtensionsToMimeTypes) return `data:${videoExtensionsToMimeTypes[fileExtension]};base64,${fileBase64Content}`
 
-  logger.warn(
-    'retrieveFileAsBase64DataUrlFromAbsolutePath does not support the file\'s extension. This will need to be implemented!',
-    {absolutePath, fileExtension}
-  )
-
   return null
 }
 
-export {retrieveFileAsBase64DataUrlFromAbsolutePath}
+export default retrieveFileAsBase64DataUrlFromAbsolutePath

@@ -11,7 +11,7 @@ Description: description
 
 import url from 'node:url';
 import path from 'node:path';
-import logger from "./app/log";
+import logger from 'logger';
 import { ModelStatic } from "sequelize";
 import { app, dialog, net, protocol } from "electron";
 import { Capture, CapturePart } from "./database";

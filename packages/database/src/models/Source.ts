@@ -9,9 +9,9 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, HasMany, ForeignKey, BelongsTo} from 'sequelize-typescript'
-import {Schedule, SourceDomain} from '..'
+import { DataTypes, Optional } from 'sequelize'
+import { Table, Model, Column, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript'
+import { Schedule, SourceDomain } from '..'
 
 const sourceUseStartOrEndCursorValues = ['start', 'end', null] as const
 export type SourceUseStartOrEndCursorValueType = typeof sourceUseStartOrEndCursorValues[number] | null

@@ -9,10 +9,10 @@ Modified: 2023-08-25T16:47:42.472Z
 Description: description
 */
 
-import {Op} from 'sequelize'
-import {Schedule, Source} from '../../database'
-import {ScheduleStatus} from '../../database/models/Schedule'
-import logger from '../log'
+import { Op } from 'sequelize'
+import { Schedule, Source } from 'database'
+import { ScheduleStatus } from 'database/models/Schedule'
+import logger from 'logger';
 
 export const retrieveDueSchedules = async (): Promise<Schedule[]> => {
   let dueSchedules: Schedule[] = []

@@ -14,7 +14,7 @@ import sanitize from 'sanitize-filename';
 /**
  * The `sanitize` package is awesome for removing illegal characters and bizarre quirks of Windows etc...
  * But two potential issues which are highlighted in the NPM readme are:
- * - That it can return an empty string which would break the expected heirarchy of the resulting path.
+ * - That it can return an empty string which would break the expected hierarchy of the resulting path.
  *     This is easily missed because a string is a string and therefore TypeScript doesn't warn
  *     to check if the string is empty before using it.
  * - It doesn't determine whether the full joined path already exists, this is an issue which should

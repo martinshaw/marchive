@@ -8,8 +8,8 @@ Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
-import logger from '../../log'
-import {Schedule, Source} from '../../../database'
+import logger from 'logger';
+import { Schedule, Source } from 'database'
 
 /**
  * @throws {Error}

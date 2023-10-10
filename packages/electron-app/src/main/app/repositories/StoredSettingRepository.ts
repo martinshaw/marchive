@@ -9,9 +9,9 @@ Modified: 2023-08-01T23:05:48.537Z
 Description: description
 */
 
-import logger from '../log'
-import {StoredSetting} from '../../database'
-import {StoredSettingKeyType, StoredSettingTypeType} from '../../database/models/StoredSetting'
+import logger from 'logger';
+import { StoredSetting } from 'database'
+import { StoredSettingKeyType, StoredSettingTypeType } from 'database/models/StoredSetting'
 
 const determineStoredSettingValueType = (value: string | number | boolean): StoredSettingTypeType => {
   if (value === true || value === false || value === 'true' || value === 'false') return 'boolean'

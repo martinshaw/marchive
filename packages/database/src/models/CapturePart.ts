@@ -9,9 +9,9 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import {DataTypes, Optional} from 'sequelize'
-import {Table, Model, Column, ForeignKey, BelongsTo} from 'sequelize-typescript'
-import {Capture, Schedule} from '..'
+import { DataTypes, Optional } from 'sequelize'
+import { Table, Model, Column, ForeignKey, BelongsTo } from 'sequelize-typescript'
+import { Capture } from '..'
 
 const capturePartStatuses = ['pending', 'processing', 'completed', 'failed', 'cancelled'] as const
 export type CapturePartStatus = typeof capturePartStatuses[number]

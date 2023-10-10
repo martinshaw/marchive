@@ -11,16 +11,16 @@ Description: description
 
 import fs from 'node:fs'
 import path from 'node:path'
-import logger from '../../log'
-import {v4 as uuidV4} from 'uuid'
-import {Browser, Page} from 'puppeteer-core'
+import logger from 'logger';
+import { v4 as uuidV4 } from 'uuid'
+import { Browser, Page } from 'puppeteer-core'
 import Downloader from 'nodejs-file-downloader'
-import {JSONObject, JSONValue} from 'types-json'
-import {CapturePartStatus} from '../../../database/models/CapturePart'
-import {Capture, CapturePart, Schedule, Source} from '../../../database'
-import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType, SourceDomainInformationReturnType} from '../BaseDataProvider'
+import { JSONObject, JSONValue } from 'types-json'
+import { CapturePartStatus } from 'database/models/CapturePart'
+import { Capture, CapturePart, Schedule, Source } from 'database'
+import BaseDataProvider, {AllowedScheduleIntervalReturnType, BaseDataProviderIconInformationReturnType, SourceDomainInformationReturnType } from '../BaseDataProvider'
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions'
-import {createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom} from '../helper_functions/PuppeteerDataProviderHelperFunctions'
+import { createPuppeteerBrowser, loadPageByUrl, retrievePageHeadMetadata, scrollPageToTop, smoothlyScrollPageToBottom } from '../helper_functions/PuppeteerDataProviderHelperFunctions'
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;

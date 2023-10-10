@@ -9,8 +9,8 @@ Modified: 2023-08-23T10:48:34.236Z
 Description: description
 */
 
-import {downloadCapturesPath} from '../../../../paths'
-import {Schedule, Source} from '../../../database'
+import { downloadCapturesPath } from '../../../../paths'
+import { Schedule, Source } from 'database'
 import fs from 'node:fs'
 import path from 'node:path'
 

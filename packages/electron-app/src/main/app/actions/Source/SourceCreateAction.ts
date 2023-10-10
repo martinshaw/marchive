@@ -9,11 +9,11 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 import { validateUrlWithDataProviders } from '../../../app/repositories/DataProviderRepository'
-import {Source} from '../../../database'
-import logger from '../../log'
+import { Source } from 'database'
+import logger from 'logger';
 import BaseDataProvider from '../../data_providers/BaseDataProvider'
 import { Attributes, Op } from 'sequelize'
-import { SourceAttributes, SourceUseStartOrEndCursorValueType } from '../../../database/models/Source'
+import { SourceAttributes, SourceUseStartOrEndCursorValueType } from 'database/models/Source'
 import { findOrCreateSourceDomainForUrl } from '../../../app/repositories/SourceDomainRepository'
 
 const SourceCreateAction = async (url: string, dataProviderIdentifier: string): Promise<SourceAttributes> => {
