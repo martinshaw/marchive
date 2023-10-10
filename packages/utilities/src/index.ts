@@ -13,10 +13,17 @@ import retrieveFileAsBase64DataUrlFromAbsolutePath from './retrieveFileAsBase64D
 import convertCrossPlatformSlashPathToNodePath from './convertCrossPlatformSlashPathToNodePath'
 import safeSanitizeFileName from './safeSanitizeFileName'
 import userAppDataPath from './userAppDataPath'
+import compressImage, { compressImageSimple } from './compressImages'
 
 export { 
     retrieveFileAsBase64DataUrlFromAbsolutePath,
+    
     convertCrossPlatformSlashPathToNodePath,
+    
     safeSanitizeFileName,
+    
     userAppDataPath,
+    
+    compressImage,
+    compressImageSimple,
 }

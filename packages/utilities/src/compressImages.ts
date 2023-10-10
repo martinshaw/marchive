@@ -2,14 +2,14 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: compressImage.ts
+File Name: compressImages.ts
 Created:  2023-09-18T18:53:44.141Z
 Modified: 2023-09-18T18:53:44.141Z
 
 Description: description
 */
 
-import compressImageUntyped from 'compress-image'
+import compressImageUntyped from 'compress-images'
 import { JSONObject } from 'types-json'
 
 type CompressImageFunctionCallbackFunctionType = (error: string | JSONObject | null, completed: boolean, statistic: string | JSONObject) => void;

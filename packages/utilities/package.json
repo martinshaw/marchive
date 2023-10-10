@@ -12,7 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.5.9",
+    "compress-images": "^2.0.5",
     "image-type": "^4.1.0",
-    "sanitize-filename": "^1.6.3"
+    "imageinfo": "^1.0.4",
+    "pngquant": "^4.2.0",
+    "sanitize-filename": "^1.6.3",
+    "tinify": "^1.7.1",
+    "types-json": "^4.0.1"
   }
 }
