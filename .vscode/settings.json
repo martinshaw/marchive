@@ -65,11 +65,12 @@
   "editor.tabSize": 4,
   "editor.detectIndentation": true,
 
-  "cSpell.words": [
-    "Adblocker",
-    "ellipsize",
-    "Includeable",
-    "Marchive",
-    "umzug"
-  ],
+  "cSpell.customDictionaries": {
+    "custom-dictionary-workspace": {
+      "name": "custom-dictionary-workspace",
+      "path": "${workspaceFolder:marchive}/.cspell/custom-dictionary-workspace.txt",
+      "addWords": true,
+      "scope": "workspace"
+    }
+  },
 }
