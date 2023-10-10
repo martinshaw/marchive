@@ -1,5 +1,6 @@
 const path = require('path');
 
+// Paths used by Webpack configurations which were included in the ERB boilerplate
 const rootPath = path.join(__dirname, '../..');
 
 const dllPath = path.join(__dirname, '../dll');
@@ -22,17 +23,22 @@ const buildPath = path.join(releasePath, 'build');
 
 export default {
   rootPath,
+
   dllPath,
+
   srcPath,
   srcMainPath,
   srcRendererPath,
+
   releasePath,
   appPath,
   appPackagePath,
   appNodeModulesPath,
   srcNodeModulesPath,
+
   distPath,
   distMainPath,
   distRendererPath,
+
   buildPath,
-};
+}

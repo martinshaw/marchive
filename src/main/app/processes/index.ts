@@ -10,7 +10,7 @@
  */
 
 import path from 'node:path'
-import { processesScriptsPath } from '../../../paths'
+import { readOnlyInternalChildProcessesPath } from '../../../paths'
 
 export type ProcessDetailsType = {
   name: string
@@ -20,11 +20,11 @@ export type ProcessDetailsType = {
 export const processDetails = [
   {
     name: 'CapturePartRunProcess',
-    path: path.join(processesScriptsPath, 'CapturePartRunProcess.ts'),
+    path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess.ts'),
   },
   {
     name: 'ScheduleRunProcess',
-    path: path.join(processesScriptsPath, 'ScheduleRunProcess.ts'),
+    path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
   },
 ] as const
 

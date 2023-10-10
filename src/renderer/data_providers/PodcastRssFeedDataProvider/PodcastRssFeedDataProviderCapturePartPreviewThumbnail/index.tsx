@@ -20,7 +20,7 @@ import useHumanDateCaption from "../../hooks/useHumanDateCaption";
 import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
 import useGetObjectFromJsonFile from "../../../layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
 import { useNavigate } from "react-router-dom";
-import { PodcastRssFeedDataProviderPartPayloadType } from "main/app/data_providers/PodcastRssFeedDataProvider";
+import { PodcastRssFeedDataProviderPartPayloadType } from "../../../../main/app/data_providers/PodcastRssFeedDataProvider";
 // @ts-ignore
 import sanitizeHtml from 'sanitize-html';
 

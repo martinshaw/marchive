@@ -43,7 +43,7 @@ import formatLocationUrlWithChangedSearchParams from '../../../../renderer/layou
 
 import './index.scss';
 import { JSONTree } from 'react-json-tree';
-import brightBase16 from 'renderer/utilities/base16_themes/bright.base16';
+import brightBase16 from '../../../../renderer/utilities/base16_themes/bright.base16';
 import usePodcastItemMetadataAndMediaUrl from './hooks/usePodcastItemMetadataAndMediaUrl';
 
 const PodcastRssFeedDataProviderCaptureShowPageFragment = (
