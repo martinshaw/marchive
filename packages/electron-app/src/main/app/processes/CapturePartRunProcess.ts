@@ -9,7 +9,8 @@ Modified: 2023-09-06T04:58:17.096Z
 Description: description
 */
 
-import logger from 'logger';
+import logger from 'logger'
+import 'database'
 import BaseDataProvider from "../data_providers/BaseDataProvider"
 import { CapturePartStatus } from "database/src/models/CapturePart"
 import { Capture, CapturePart, Schedule, Source, Op } from "database"

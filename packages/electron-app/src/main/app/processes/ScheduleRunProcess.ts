@@ -10,6 +10,7 @@ Description: description
 */
 
 import logger from 'logger';
+import 'database'
 import { Schedule } from 'database'
 import performCaptureRun from "../repositories/CaptureRunRepository"
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
