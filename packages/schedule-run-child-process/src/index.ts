@@ -2,9 +2,9 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: ScheduleRunProcess.ts
-Created:  2023-09-06T04:58:02.055Z
-Modified: 2023-09-06T04:58:02.055Z
+File Name: index.ts
+Created:  2023-10-11T02:59:44.724Z
+Modified: 2023-10-11T02:59:44.724Z
 
 Description: description
 */
@@ -12,7 +12,7 @@ Description: description
 import logger from 'logger';
 import 'database'
 import { Schedule } from 'database'
-import performCaptureRun from "../repositories/CaptureRunRepository"
+import performCaptureRun from "./performCaptureRun"
 import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
 import { getStoredSettingValue } from '../repositories/StoredSettingRepository'
 

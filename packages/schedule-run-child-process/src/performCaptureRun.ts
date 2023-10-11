@@ -2,9 +2,9 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: CaptureRunRepository.ts
-Created:  2023-08-26T08:58:39.281Z
-Modified: 2023-08-26T08:58:39.281Z
+File Name: performCaptureRun.ts
+Created:  2023-10-11T03:58:35.385Z
+Modified: 2023-10-11T03:58:35.385Z
 
 Description: description
 */
@@ -13,9 +13,8 @@ import fs from 'node:fs'
 import { v4 } from 'uuid'
 import logger from 'logger'
 import path from 'node:path'
-import { safeSanitizeFileName } from 'utilities'
+import { safeSanitizeFileName, userDownloadsCapturesPath } from 'utilities'
 import { Capture, Schedule, Source } from 'database'
-import { downloadCapturesPath } from '../../../paths'
 import { getDataProviderByIdentifier } from './DataProviderRepository'
 import { ScheduleAttributes, ScheduleStatus } from 'database/src/models/Schedule'
 
@@ -131,11 +130,11 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
 }
 
 const ensureDownloadsDirectoryExists = (): boolean => {
-  if (fs.existsSync(downloadCapturesPath) === false) {
-    fs.mkdirSync(downloadCapturesPath, {recursive: true})
+  if (fs.existsSync(userDownloadsCapturesPath) === false) {
+    fs.mkdirSync(userDownloadsCapturesPath, {recursive: true})
   }
 
-  return fs.lstatSync(downloadCapturesPath).isDirectory()
+  return fs.lstatSync(userDownloadsCapturesPath).isDirectory()
 }
 
 const ensureScheduleDownloadLocationExists = (schedule: Schedule): boolean => {

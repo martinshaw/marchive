@@ -13,6 +13,9 @@ import retrieveFileAsBase64DataUrlFromAbsolutePath from './retrieveFileAsBase64D
 import convertCrossPlatformSlashPathToNodePath from './convertCrossPlatformSlashPathToNodePath'
 import safeSanitizeFileName from './safeSanitizeFileName'
 import userAppDataPath from './userAppDataPath'
+import userDownloadsPath from './userDownloadsPath'
+import userDownloadsCapturesPath from './userDownloadsCapturesPath'
+import userDownloadsSourceDomainFaviconsPath from './userDownloadsSourceDomainFaviconsPath'
 import compressImage, { compressImageSimple } from './compressImages'
 
 export { 
@@ -23,6 +26,9 @@ export {
     safeSanitizeFileName,
     
     userAppDataPath,
+    userDownloadsPath,
+    userDownloadsCapturesPath,
+    userDownloadsSourceDomainFaviconsPath,
     
     compressImage,
     compressImageSimple,
