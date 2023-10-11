@@ -12,7 +12,7 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import logger from 'logger';
-import { v4 as uuidV4 } from 'uuid'
+import { v4 } from 'uuid'
 import { Browser, Page } from 'puppeteer-core'
 import Downloader from 'nodejs-file-downloader'
 import { JSONObject, JSONValue } from 'types-json'
@@ -319,7 +319,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
       if (shouldAddImage) {
         const payload: BehanceGalleryItemImagesDataProviderImagePayloadType = {index, ...image};
-        const downloadLocation = path.join(capture.downloadLocation, uuidV4())
+        const downloadLocation = path.join(capture.downloadLocation, v4())
 
         let capturePart: CapturePart | null = null
         try {

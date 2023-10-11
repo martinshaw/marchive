@@ -1,12 +1,11 @@
 {
-  "name": "schedule-run-child-process",
+  "name": "data-providers",
   "version": "0.9.1",
   "private": true,
   "packageManager": "pnpm@8.9.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "echo \"Error: no build specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -17,7 +17,7 @@ import { SourceDomain } from "database";
 import Downloader from "nodejs-file-downloader";
 import { safeSanitizeFileName } from 'utilities';
 import resolveRelative from 'resolve-relative-url';
-import BaseDataProvider from "../data_providers/BaseDataProvider";
+import BaseDataProvider from "../../../../../data-providers/src/BaseDataProvider";
 import { downloadSourceDomainFaviconsPath } from "../../../paths";
 // // Uses my own type definitions below `GetWebsiteFaviconResultType` and `GetWebsiteFaviconResultIconType`
 // import getFavicons from 'get-website-favicon'

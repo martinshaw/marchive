@@ -12,6 +12,27 @@ importers:
         specifier: ^2.26.2
         version: 2.26.2
 
+  packages/data-providers:
+    dependencies:
+      '@types/node':
+        specifier: ^20.5.9
+        version: 20.8.4
+      '@types/uuid':
+        specifier: ^9.0.3
+        version: 9.0.5
+      database:
+        specifier: workspace:^
+        version: link:../database
+      logger:
+        specifier: workspace:^
+        version: link:../logger
+      utilities:
+        specifier: workspace:^
+        version: link:../utilities
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+
   packages/database:
     dependencies:
       '@types/node':
@@ -387,6 +408,9 @@ importers:
       '@types/node':
         specifier: ^20.5.9
         version: 20.8.4
+      '@types/uuid':
+        specifier: ^9.0.3
+        version: 9.0.5
       database:
         specifier: workspace:^
         version: link:../database
@@ -396,6 +420,9 @@ importers:
       utilities:
         specifier: workspace:^
         version: link:../utilities
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
 
   packages/utilities:
     dependencies:
@@ -3365,7 +3392,6 @@ packages:
 
   /@types/uuid@9.0.5:
     resolution: {integrity: sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==}
-    dev: true
 
   /@types/validator@13.11.2:
     resolution: {integrity: sha512-nIKVVQKT6kGKysnNt+xLobr+pFJNssJRi2s034wgWeFBUx01fI8BeHTW2TcRp7VcFu9QCYG8IlChTuovcm0oKQ==}
