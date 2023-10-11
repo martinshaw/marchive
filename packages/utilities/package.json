@@ -1,15 +1,13 @@
 {
   "name": "utilities",
   "version": "0.9.1",
-  "description": "",
+  "private": true,
+  "packageManager": "pnpm@8.9.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@types/node": "^20.5.9",
     "compress-images": "^2.0.5",

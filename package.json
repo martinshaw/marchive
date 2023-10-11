@@ -1,0 +1,31 @@
+{
+  "name": "marchive",
+  "version": "0.9.1",
+  "description": "The Ultimate Information, News and Media Archiver and Aggregator",
+  "keywords": [
+    "electron",
+    "marchive",
+    "archiver",
+    "downloader",
+    "archive"
+  ],
+  "homepage": "https://github.com/martinshaw/marchive#readme",
+  "bugs": {
+    "url": "https://github.com/martinshaw/marchive/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martinshaw/marchive.git"
+  },
+  "private": true,
+  "author": {
+    "name": "Martin Shaw",
+    "email": "developer@martinshaw.co",
+    "url": "https://martinshaw.co"
+  },
+  "packageManager": "pnpm@8.9.0",
+  "scripts": {
+    "start": "cd packages/electron-app && pnpm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
