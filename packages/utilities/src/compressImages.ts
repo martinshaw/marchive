@@ -12,9 +12,10 @@ Description: description
 // TODO: For some stupid fucking reason, the dts-gen generated type declaration file for this isn't working
 // @ts-ignore
 import compressImageUntyped from 'compress-images'
-import { JSONObject } from 'types-json'
+// import { JSONObject } from 'types-json'
 
-type CompressImageFunctionCallbackFunctionType = (error: string | JSONObject | null, completed: boolean, statistic: string | JSONObject) => void;
+// type CompressImageFunctionCallbackFunctionType = (error: string | JSONObject | null, completed: boolean, statistic: string | JSONObject) => void;
+type CompressImageFunctionCallbackFunctionType = (error: string | any | null, completed: boolean, statistic: string | any) => void;
 
 /**
  * @see https://github.com/Yuriy-Svetlov/compress-images#api for schema

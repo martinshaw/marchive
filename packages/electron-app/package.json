@@ -91,12 +91,10 @@
     "react-json-tree": "^0.18.0",
     "react-router-dom": "^6.15.0",
     "react-virtualized": "^9.22.5",
-    "types-json": "^4.0.1",
     "use-async-memo": "^1.2.4",
     "use-state-with-callback": "^3.0.2",
     "utilities": "workspace:^",
-    "uuid": "^9.0.0",
-    "webpack-node-externals": "^3.0.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@electron/notarize": "^1.2.3",
@@ -155,7 +153,8 @@
     "webpack-bundle-analyzer": "^4.9.0",
     "webpack-cli": "^5.1.1",
     "webpack-dev-server": "^4.15.0",
-    "webpack-merge": "^5.9.0"
+    "webpack-merge": "^5.9.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "build": {
     "productName": "Marchive",

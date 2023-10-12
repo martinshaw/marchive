@@ -19,7 +19,7 @@ import BaseDataProvider, {
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
 import { Page } from "puppeteer-core";
-import { JSONObject } from "types-json";
+// import { JSONObject } from "types-json";
 import Downloader from "nodejs-file-downloader";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import {
@@ -186,13 +186,15 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   async generatePageProjectMetadata(
     page: Page,
     captureDownloadDirectory: string
-  ): Promise<false | JSONObject> {
+  // ): Promise<false | JSONObject> {
+  ): Promise<false | any> {
     const projectMetadataFileName = path.join(
       captureDownloadDirectory,
       "project.json"
     );
 
-    const projectMetadata: JSONObject = {};
+    // const projectMetadata: JSONObject = {};
+    const projectMetadata: any = {};
 
     const textContentSelectors = [
       {

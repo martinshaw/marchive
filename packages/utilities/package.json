@@ -16,7 +16,6 @@
     "pngquant": "^4.2.0",
     "resolve-relative-url": "^1.0.0",
     "sanitize-filename": "^1.6.3",
-    "tinify": "^1.7.1",
-    "types-json": "^4.0.1"
+    "tinify": "^1.7.1"
   }
 }

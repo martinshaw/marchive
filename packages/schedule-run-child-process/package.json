@@ -5,7 +5,9 @@
   "packageManager": "pnpm@8.9.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "bin": "./dist/index.js",
   "scripts": {
+    "tsc": "rollup -c --bundleConfigAsCjs && pkg .",
     "build": "echo \"Error: no build specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +17,22 @@
     "data-providers": "workspace:^",
     "database": "workspace:^",
     "logger": "workspace:^",
+    "ts-loader": "^9.4.3",
     "utilities": "workspace:^",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/webpack-node-externals": "^3.0.2",
+    "webpack": "^5.85.0",
+    "webpack-cli": "^5.1.1",
+    "webpack-merge": "^5.9.0",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "pkg": {
+    "scripts": "dist/index.js",
+    "nodeRange": "node16",
+    "assets": [],
+    "outputPath": "compile"
   }
 }
