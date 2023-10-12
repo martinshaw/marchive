@@ -13,14 +13,13 @@ import logger from 'logger';
 import 'database'
 import { Schedule } from 'database'
 import performCaptureRun from "./performCaptureRun"
-import { retrieveDueSchedules } from "../repositories/ScheduleRepository"
-import { getStoredSettingValue } from '../repositories/StoredSettingRepository'
+import { retrieveDueSchedules } from "database/src/repositories/ScheduleRepository"
+import { getStoredSettingValue } from 'database/src/repositories/StoredSettingRepository'
 
 let lastSchedule: Schedule | null = null;
 
 const ScheduleRunProcess = async (): Promise<void | never> => {
-  // const currentDelayBetweenTicks = (60 * 1000) * 1 // 1 minute
-  const currentDelayBetweenTicks = 15 * 1000 // 15 seconds
+  const currentDelayBetweenTicks = 13 * 1000 // 13 seconds
 
   while (true) {
     let scheduleRunProcessIsPaused = await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED') === true

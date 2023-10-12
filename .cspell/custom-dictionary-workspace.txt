@@ -10,6 +10,7 @@ areequal
 argparse
 arrayish
 arrify
+ARTICLENAME
 asar
 asynckit
 autoscroll
@@ -21,6 +22,7 @@ bcoe
 Behance
 behaviour
 bidi
+bientôt
 bigints
 blueprintjs
 boolbase
@@ -71,6 +73,7 @@ domutils
 dotall
 dotenv
 eastasianwidth
+edata
 electronmon
 ellipsize
 emittery
@@ -216,6 +219,7 @@ punycode
 querystring
 querystringify
 quickjs
+quidelines
 randombytes
 rauschma
 readdirp
@@ -263,6 +267,7 @@ tarbz
 targz
 teamsupercell
 tempfile
+textareas
 thunky
 tinify
 tldts
@@ -283,6 +288,7 @@ undici
 uniqby
 universalify
 unixify
+unmaximize
 unpipe
 urlpattern
 usehooks

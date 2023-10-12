@@ -1,24 +1,24 @@
+import {
+  app,
+  Menu,
+  Tray,
+  dialog,
+  NativeImage,
+  nativeImage,
+  nativeTheme,
+  webContents,
+} from 'electron';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
-import {
-  Menu,
-  NativeImage,
-  Tray,
-  app,
-  dialog,
-  nativeImage,
-  nativeTheme,
-} from 'electron';
 import { readOnlyInternalRootPath } from '../paths';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
-import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 import {
   getStoredSettingValue,
   setStoredSettingValue,
-} from './app/repositories/StoredSettingRepository';
-import { webContents } from 'electron';
+} from 'database/src/repositories/StoredSettingRepository';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
+import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 
 const isDarkMode = nativeTheme.shouldUseDarkColors;
 

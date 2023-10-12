@@ -10,7 +10,7 @@ Description: description
 */
 
 import processListeners from "./processListeners";
-import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
+import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcessAction";
 
 const capturePartRunProcessListeners = (
   onConnected: (connectionInfo: ProcessStartProcessConnectionInfoReturnType) => void,

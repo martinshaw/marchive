@@ -9,18 +9,11 @@ Modified: 2023-08-01T20:04:09.893Z
 Description: description
 */
 
-import {
-  BrowserWindow,
-  Menu,
-  dialog,
-  ipcMain,
-  nativeTheme,
-  shell,
-} from 'electron';
+import { Menu, shell, ipcMain, nativeTheme, BrowserWindow } from 'electron';
 import {
   getStoredSettingValue,
   setStoredSettingValue,
-} from '../app/repositories/StoredSettingRepository';
+} from 'database/src/repositories/StoredSettingRepository';
 
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'
@@ -45,23 +38,33 @@ ipcMain.on('utilities.marchive-is-setup', async (event, newValue) => {
   );
 });
 
-ipcMain.on('utilities.schedule-run-process-is-paused', async (event, newValue) => {
-  if (newValue != null)
-    await setStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED', newValue);
-  event.reply(
-    'utilities.schedule-run-process-is-paused',
-    (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) ?? false
-  );
-});
+ipcMain.on(
+  'utilities.schedule-run-process-is-paused',
+  async (event, newValue) => {
+    if (newValue != null)
+      await setStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED', newValue);
+    event.reply(
+      'utilities.schedule-run-process-is-paused',
+      (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) ?? false
+    );
+  }
+);
 
-ipcMain.on('utilities.capture-part-run-process-is-paused', async (event, newValue) => {
-  if (newValue != null)
-    await setStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED', newValue);
-  event.reply(
-    'utilities.capture-part-run-process-is-paused',
-    (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) ?? false
-  );
-});
+ipcMain.on(
+  'utilities.capture-part-run-process-is-paused',
+  async (event, newValue) => {
+    if (newValue != null)
+      await setStoredSettingValue(
+        'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
+        newValue
+      );
+    event.reply(
+      'utilities.capture-part-run-process-is-paused',
+      (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) ??
+        false
+    );
+  }
+);
 
 ipcMain.on('utilities.open-external-url-in-browser', async (event, url) => {
   if (url == null) return;

@@ -9,24 +9,24 @@
  * Description: description
  */
 
-import path from 'node:path'
-import { readOnlyInternalChildProcessesPath } from '../../../paths'
+// import path from 'node:path'
+// import { readOnlyInternalChildProcessesPath } from '../../../paths'
 
 export type ProcessDetailsType = {
   name: string
   path: string
 }
 
-export const processDetails = [
-  {
-    name: 'CapturePartRunProcess',
-    path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess.ts'),
-  },
-  {
-    name: 'ScheduleRunProcess',
-    path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
-  },
-] as const
+export const processDetails: ProcessDetailsType[] = [
+  // {
+  //   name: 'CapturePartRunProcess',
+  //   path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess.ts'),
+  // },
+  // {
+  //   name: 'ScheduleRunProcess',
+  //   path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
+  // },
+]
 
 export type ProcessDetailsNameType = typeof processDetails[number]['name']
 export type ProcessDetailsPathType = typeof processDetails[number]['path']

@@ -1,12 +1,9 @@
-import {
-  Menu,
-  BrowserWindow,
-  MenuItemConstructorOptions,
-} from 'electron';
 import buildDarwinTemplate from './darwin';
 import buildDefaultTemplate from './default';
+import { Menu, BrowserWindow, MenuItemConstructorOptions } from 'electron';
 
-export interface WindowMenuItemConstructorOptions extends MenuItemConstructorOptions {
+export interface WindowMenuItemConstructorOptions
+  extends MenuItemConstructorOptions {
   selector?: string;
   submenu?: WindowMenuItemConstructorOptions[] | Menu;
 }

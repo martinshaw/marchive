@@ -9,13 +9,13 @@ Modified: 2023-09-26T18:09:24.211Z
 Description: description
 */
 
-import { Menu, BrowserWindow, MenuItemConstructorOptions } from 'electron';
 import {
-  clearDatabaseAndDeleteDownloadsMenuAction,
   clearDatabaseMenuAction,
   needMoreSpaceMenuAction,
   retrieveIconForWebsiteMenuAction,
+  clearDatabaseAndDeleteDownloadsMenuAction,
 } from './actions';
+import { BrowserWindow } from 'electron';
 import { WindowMenuItemConstructorOptions } from '.';
 
 const buildDefaultTemplate: (

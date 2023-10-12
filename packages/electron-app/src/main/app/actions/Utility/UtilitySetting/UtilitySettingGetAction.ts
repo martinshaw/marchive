@@ -10,7 +10,7 @@ Description: description
 */
 
 import logger from 'logger';
-import { getOrSetStoredSetting } from '../../../repositories/StoredSettingRepository'
+import { getOrSetStoredSetting } from 'database/src/repositories/StoredSettingRepository';
 import { StoredSettingAttributes, StoredSettingKeyType } from 'database/src/models/StoredSetting'
 
 /**

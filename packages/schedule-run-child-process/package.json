@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/node": "^20.5.9",
     "@types/uuid": "^9.0.3",
+    "data-providers": "workspace:^",
     "database": "workspace:^",
     "logger": "workspace:^",
     "utilities": "workspace:^",

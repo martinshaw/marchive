@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Channels } from "../../../../main/preload";
-import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcess";
+import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcessAction";
 
 const processListeners = (
   processConnectedChannelName: Channels,

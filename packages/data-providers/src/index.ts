@@ -9,12 +9,15 @@ Modified: 2023-10-11T18:10:49.687Z
 Description: description
 */
 
+import findOrCreateSourceDomainForUrl from './findOrCreateSourceDomainForUrl'
+import retrieveAndStoreFaviconFromUrl, { FaviconIconType } from './retrieveAndStoreFaviconFromUrl'
+
 import BaseDataProvider from './BaseDataProvider'
-import BehanceGalleryItemImagesDataProvider from './BehanceGalleryItemImagesDataProvider'
 import BlogArticleDataProvider from './BlogArticleDataProvider'
 import PodcastRssFeedDataProvider from './PodcastRssFeedDataProvider'
-import SimpleWebpageScreenshotDataProvider from './SimpleWebpageScreenshotDataProvider'
 import WikipediaArticleDataProvider from './WikipediaArticleDataProvider'
+import SimpleWebpageScreenshotDataProvider from './SimpleWebpageScreenshotDataProvider'
+import BehanceGalleryItemImagesDataProvider from './BehanceGalleryItemImagesDataProvider'
 
 /**
  * These Data Provider Classes should be ordered in increasing order of specificity
@@ -37,11 +40,11 @@ const dataProvidersClasses: BaseDataProvider[] = [
   new WikipediaArticleDataProvider(),
 ]
 
-export const getDataProviders = async (): Promise<BaseDataProvider[]> => {
+const getDataProviders = async (): Promise<BaseDataProvider[]> => {
   return dataProvidersClasses
 }
 
-export const getDataProviderByIdentifier: (
+const getDataProviderByIdentifier: (
   identifier: string
 ) => Promise<BaseDataProvider | undefined> = async (identifier: string) => {
   return dataProvidersClasses.find(dataProvider => {
@@ -49,7 +52,7 @@ export const getDataProviderByIdentifier: (
   })
 }
 
-export const validateUrlWithDataProviders: (
+const validateUrlWithDataProviders: (
   url: string
 ) => Promise<BaseDataProvider[]> = async (url: string) => {
   const dataProviders = await getDataProviders()
@@ -65,4 +68,15 @@ export const validateUrlWithDataProviders: (
   }
 
   return validDataProviderIdentifiers
+}
+
+export {
+  getDataProviders,
+  getDataProviderByIdentifier,
+  validateUrlWithDataProviders,
+  
+  FaviconIconType,
+  retrieveAndStoreFaviconFromUrl,
+  
+  findOrCreateSourceDomainForUrl,
 }

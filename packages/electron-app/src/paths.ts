@@ -17,11 +17,10 @@ import path from 'node:path';
  */
 
 let readOnlyInternalRootPath = path.join(__dirname, '..');
-let readOnlyInternalBrowserExtensionsPath = path.join(readOnlyInternalRootPath, 'src', 'main', 'browser_extensions');
 let readOnlyInternalAssetsPath = path.join(readOnlyInternalRootPath, 'assets');
 
 /**
  * Other exports
  */
 
-export { readOnlyInternalRootPath, readOnlyInternalBrowserExtensionsPath, readOnlyInternalAssetsPath };
+export { readOnlyInternalRootPath, readOnlyInternalAssetsPath };

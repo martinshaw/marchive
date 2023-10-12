@@ -9,17 +9,12 @@ Modified: 2023-09-26T18:25:17.171Z
 Description: description
 */
 
-import {
-  shell,
-  BrowserWindow,
-  dialog,
-  clipboard,
-} from 'electron';
+import prompt from 'electron-prompt';
+import { cleanupAndQuit } from '../main';
+import { shell, BrowserWindow, dialog, clipboard } from 'electron';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
 import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
 import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
-import prompt from 'electron-prompt';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
-import { cleanupAndQuit } from '../main';
 
 export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
   dialog
@@ -37,19 +32,24 @@ export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
         await UtilityCleanAction(true, false);
         // mainWindow.reload();
 
-        dialog.showMessageBox(mainWindow, {
-          type: 'info',
-          message: 'Your Marchive will now quit. Reopen it for a fresh start...',
-          buttons: ['Cool!'],
-          defaultId: 0,
-        }).then(() => {
-          cleanupAndQuit();
-        })
+        dialog
+          .showMessageBox(mainWindow, {
+            type: 'info',
+            message:
+              'Your Marchive will now quit. Reopen it for a fresh start...',
+            buttons: ['Cool!'],
+            defaultId: 0,
+          })
+          .then(() => {
+            cleanupAndQuit();
+          });
       }
     });
-}
+};
 
-export const clearDatabaseAndDeleteDownloadsMenuAction = async (mainWindow: BrowserWindow) => {
+export const clearDatabaseAndDeleteDownloadsMenuAction = async (
+  mainWindow: BrowserWindow
+) => {
   dialog
     .showMessageBox(mainWindow, {
       type: 'warning',
@@ -66,19 +66,24 @@ export const clearDatabaseAndDeleteDownloadsMenuAction = async (mainWindow: Brow
         await UtilityCleanAction(true, true);
         // mainWindow.reload();
 
-        dialog.showMessageBox(mainWindow, {
-          type: 'info',
-          message: 'Your Marchive will now quit. Reopen it for a fresh start...',
-          buttons: ['Cool!'],
-          defaultId: 0,
-        }).then(() => {
-          cleanupAndQuit();
-        })
+        dialog
+          .showMessageBox(mainWindow, {
+            type: 'info',
+            message:
+              'Your Marchive will now quit. Reopen it for a fresh start...',
+            buttons: ['Cool!'],
+            defaultId: 0,
+          })
+          .then(() => {
+            cleanupAndQuit();
+          });
       }
     });
-}
+};
 
-export const retrieveIconForWebsiteMenuAction = async (mainWindow: BrowserWindow) => {
+export const retrieveIconForWebsiteMenuAction = async (
+  mainWindow: BrowserWindow
+) => {
   prompt(
     {
       label: 'Enter a link ...',
@@ -123,9 +128,7 @@ export const retrieveIconForWebsiteMenuAction = async (mainWindow: BrowserWindow
                 if (result.response === 3) {
                   try {
                     const base64Url =
-                      retrieveFileAsBase64DataUrlFromAbsolutePath(
-                        pathToFile
-                      );
+                      retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile);
                     if (base64Url == null) throw new Error();
                     clipboard.writeText(base64Url);
                   } catch (error) {
@@ -156,7 +159,7 @@ export const retrieveIconForWebsiteMenuAction = async (mainWindow: BrowserWindow
         defaultId: 0,
       });
     });
-}
+};
 
 export const needMoreSpaceMenuAction = async (mainWindow: BrowserWindow) => {
   const links: [string, string | null][] = [
@@ -186,6 +189,4 @@ export const needMoreSpaceMenuAction = async (mainWindow: BrowserWindow) => {
 
       shell.openExternal(link[1]);
     });
-}
-
-
+};

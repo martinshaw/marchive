@@ -19,7 +19,7 @@ import mainToRendererListeners from './functions/mainToRendererListeners';
 import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
 import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
 import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
-import { ProcessesReplyOngoingEventDataType } from '../../../main/app/actions/Process/ProcessStartProcess';
+import { ProcessesReplyOngoingEventDataType } from '../../../main/app/actions/Process/ProcessStartProcessAction';
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';

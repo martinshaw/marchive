@@ -11,6 +11,7 @@ Description: description
 
 import { ipcMain } from 'electron'
 import { ScheduleAttributes } from 'database/src/models/Schedule'
+
 import ScheduleListAction from '../app/actions/Schedule/ScheduleListAction'
 import ScheduleCreateAction from '../app/actions/Schedule/ScheduleCreateAction'
 import ScheduleUpdateAction from '../app/actions/Schedule/ScheduleUpdateAction'

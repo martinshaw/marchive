@@ -9,13 +9,13 @@ Modified: 2023-09-06T04:58:17.096Z
 Description: description
 */
 
-import logger from 'logger'
 import 'database'
-import BaseDataProvider from "../data_providers/BaseDataProvider"
+import logger from 'logger'
+import { getDataProviderByIdentifier } from "data-providers"
+import BaseDataProvider from "data-providers/src/BaseDataProvider"
 import { CapturePartStatus } from "database/src/models/CapturePart"
 import { Capture, CapturePart, Schedule, Source, Op } from "database"
-import { getStoredSettingValue } from "../repositories/StoredSettingRepository"
-import { getDataProviderByIdentifier } from "../repositories/DataProviderRepository"
+import { getStoredSettingValue } from "database/src/repositories/StoredSettingRepository"
 
 let lastCapturePart: CapturePart | null = null;
 

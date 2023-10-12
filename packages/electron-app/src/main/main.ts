@@ -1,7 +1,7 @@
 import 'database'
 
-import path from 'node:path';
 import logger from 'logger';
+import path from 'node:path';
 import WindowMenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';

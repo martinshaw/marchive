@@ -10,17 +10,17 @@ Description: description
 */
 
 import fs from 'node:fs';
+import logger from 'logger';
 import path from 'node:path';
+import { JSDOM } from 'jsdom';
+import { FaviconIconType } from '..';
 import puppeteer from 'puppeteer-extra';
 import { Browser, Page } from 'puppeteer-core';
+import { Readability } from '@mozilla/readability';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { readOnlyInternalBrowserExtensionsPath } from '../../../electron-app/src/paths';
+import { readOnlyBrowserExtensionsPath } from './../paths';
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker';
 import { Options, scrollPageToBottom } from 'puppeteer-autoscroll-down';
-import { GetWebsiteFaviconResultIconTypeWithNonUnknownSrc } from '../../../electron-app/src/main/app/repositories/SourceDomainRepository';
-import { Readability } from '@mozilla/readability';
-import { JSDOM } from 'jsdom';
-import logger from 'logger';
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,
@@ -32,7 +32,7 @@ export const createPuppeteerBrowser = async (
   const extensionFileNames = [
     // For handling removal of overlays, cookie banners, etc... using my own PopUpOFF-headless forked extension
     withPopUpOffExtension
-      ? path.join(readOnlyInternalBrowserExtensionsPath, 'PopUpOFF-headless')
+      ? path.join(readOnlyBrowserExtensionsPath, 'PopUpOFF-headless')
       : null,
   ].filter((filename) => filename !== null);
 
@@ -405,7 +405,7 @@ export const retrievePageHeadMetadata = async (
 
 export const retrieveFaviconsFromUrl = async (
   url: string
-): Promise<GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[]> => {
+): Promise<FaviconIconType[]> => {
   const browser = await createPuppeteerBrowser();
   const page = await loadPageByUrl(url, browser, 'networkidle0');
   const favicons = await retrieveFaviconsFromPage(page);
@@ -418,11 +418,11 @@ export const retrieveFaviconsFromUrl = async (
 
 export const retrieveFaviconsFromPage = async (
   page: Page
-): Promise<GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[]> => {
+): Promise<FaviconIconType[]> => {
   await page.waitForSelector('body');
 
   return page.evaluate(() => {
-    let favicons: GetWebsiteFaviconResultIconTypeWithNonUnknownSrc[] = [];
+    let favicons: FaviconIconType[] = [];
 
     const linkTags = [
       'link[rel="apple-touch-icon"]',

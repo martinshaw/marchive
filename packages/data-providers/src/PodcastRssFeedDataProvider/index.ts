@@ -9,21 +9,21 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import { Capture, CapturePart, Schedule, Source } from 'database';
-import Parser from 'rss-parser';
-import path from 'node:path';
-import fs from 'node:fs';
-import { CapturePartStatus } from 'database/src/models/CapturePart';
-import { v4 } from 'uuid';
-import Downloader from 'nodejs-file-downloader';
+import fs from "node:fs";
+import logger from "logger";
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
   BaseDataProviderIconInformationReturnType,
   SourceDomainInformationReturnType,
-} from '../BaseDataProvider';
-import logger from 'logger';
-import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
-import { safeSanitizeFileName } from 'utilities'
+} from "../BaseDataProvider";
+import path from "node:path";
+import Parser from "rss-parser";
+import { v4 as uuidV4 } from "uuid";
+import Downloader from "nodejs-file-downloader";
+import { safeSanitizeFileName } from "utilities";
+import { Capture, CapturePart, Schedule, Source } from "database";
+import { CapturePartStatus } from "database/src/models/CapturePart";
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 
 export type RssParserFeedType = {
   [key: string]: any;
@@ -37,85 +37,85 @@ export type PodcastRssFeedDataProviderPartPayloadType = {
   [key: string]: any;
 } & Parser.Item;
 
-type PodcastRssFeedDataProviderPartIdentifierType = 'audio-item' | 'video-item';
+type PodcastRssFeedDataProviderPartIdentifierType = "audio-item" | "video-item";
 
 export const audioFileExtensions = [
-  '.mp3',
-  '.m4a',
-  '.wav',
-  '.ogg',
-  '.aac',
-  '.flac',
-  '.wma',
-  '.alac',
+  ".mp3",
+  ".m4a",
+  ".wav",
+  ".ogg",
+  ".aac",
+  ".flac",
+  ".wma",
+  ".alac",
 ];
 export const videoFileExtensions = [
-  '.mp4',
-  '.m4v',
-  '.mov',
-  '.wmv',
-  '.avi',
-  '.avchd',
-  '.flv',
-  '.f4v',
-  '.swf',
-  '.mkv',
-  '.webm',
-  '.vob',
-  '.ogv',
-  '.drc',
-  '.gif',
-  '.gifv',
-  '.mng',
-  '.mts',
-  '.m2ts',
-  '.ts',
-  '.mov',
-  '.qt',
-  '.wmv',
-  '.yuv',
-  '.rm',
-  '.rmvb',
-  '.asf',
-  '.amv',
-  '.mpg',
-  '.mp2',
-  '.mpeg',
-  '.mpe',
-  '.mpv',
-  '.mpg',
-  '.mpeg',
-  '.m2v',
-  '.m4v',
-  '.svi',
-  '.3gp',
-  '.3g2',
-  '.mxf',
-  '.roq',
-  '.nsv',
-  '.flv',
-  '.f4v',
-  '.f4p',
-  '.f4a',
-  '.f4b',
+  ".mp4",
+  ".m4v",
+  ".mov",
+  ".wmv",
+  ".avi",
+  ".avchd",
+  ".flv",
+  ".f4v",
+  ".swf",
+  ".mkv",
+  ".webm",
+  ".vob",
+  ".ogv",
+  ".drc",
+  ".gif",
+  ".gifv",
+  ".mng",
+  ".mts",
+  ".m2ts",
+  ".ts",
+  ".mov",
+  ".qt",
+  ".wmv",
+  ".yuv",
+  ".rm",
+  ".rmvb",
+  ".asf",
+  ".amv",
+  ".mpg",
+  ".mp2",
+  ".mpeg",
+  ".mpe",
+  ".mpv",
+  ".mpg",
+  ".mpeg",
+  ".m2v",
+  ".m4v",
+  ".svi",
+  ".3gp",
+  ".3g2",
+  ".mxf",
+  ".roq",
+  ".nsv",
+  ".flv",
+  ".f4v",
+  ".f4p",
+  ".f4a",
+  ".f4b",
 ];
 
 class PodcastRssFeedDataProvider extends BaseDataProvider {
   getIdentifier(): string {
-    return 'podcast-rss-feed';
+    return "podcast-rss-feed";
   }
 
   getName(): string {
-    return 'Podcast RSS Feed';
+    return "Podcast RSS Feed";
   }
 
   getDescription(): string {
-    return 'Download each media file in this podcast feed and capture metadata';
+    return "Download each media file in this podcast feed and capture metadata";
   }
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, 'microphone.svg'),
+      filePath: path.join(__dirname, "microphone.svg"),
       shouldInvertOnDarkMode: true,
     };
   }
@@ -128,24 +128,24 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     let url: string | null = null;
 
-    if (feedItem.link != null && feedItem.link !== '')
+    if (feedItem.link != null && feedItem.link !== "")
       url = feedItem.link.trim();
 
     if (
       feedItem.enclosure != null &&
       feedItem.enclosure.url != null &&
-      feedItem.enclosure.url !== ''
+      feedItem.enclosure.url !== ""
     )
       url = feedItem.enclosure.url.trim();
 
     if (url == null) {
-      logger.error('Could not find a URL for podcast feed item', { feedItem });
+      logger.error("Could not find a URL for podcast feed item", { feedItem });
       return null;
     }
 
-    const urlExtension = url.split('?')[0].split('.').pop()?.trim() ?? null;
+    const urlExtension = url.split("?")[0].split(".").pop()?.trim() ?? null;
     if (urlExtension == null) {
-      logger.warn('Podcast feed item URL has no extension', {
+      logger.warn("Podcast feed item URL has no extension", {
         feedItem,
         url,
         urlExtension,
@@ -156,7 +156,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     if (audioFileExtensions.includes(`.${urlExtension}`)) return url;
     if (videoFileExtensions.includes(`.${urlExtension}`)) return url;
 
-    logger.warn('Podcast feed item URL has an invalid extension', {
+    logger.warn("Podcast feed item URL has an invalid extension", {
       feedItem,
       url,
       urlExtension,
@@ -165,7 +165,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {
-    if ((url.startsWith('http://') || url.startsWith('https://')) === false)
+    if ((url.startsWith("http://") || url.startsWith("https://")) === false)
       url = `https://${url}`;
 
     try {
@@ -195,7 +195,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async getSourceDomainInformation(
     url: string
   ): Promise<SourceDomainInformationReturnType> {
-    let authorName = (await super.getSourceDomainInformation(url)).siteName
+    let authorName = (await super.getSourceDomainInformation(url)).siteName;
 
     try {
       const feed: RssParserFeedType | null = await this.determinePodcastContent(
@@ -203,15 +203,15 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       );
       if (feed == null) return super.getSourceDomainInformation(url);
 
-      if (feed.itunes?.author != null) authorName = feed.itunes.author
-      if (feed.itunes?.owner?.name != null) authorName = feed.itunes.owner.name
+      if (feed.itunes?.author != null) authorName = feed.itunes.author;
+      if (feed.itunes?.owner?.name != null) authorName = feed.itunes.owner.name;
     } catch (error) {
       return super.getSourceDomainInformation(url);
     }
 
     return {
       siteName: authorName,
-    }
+    };
   }
 
   async determinePodcastContent(
@@ -224,8 +224,8 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     const contents = await request.text();
     if (!contents) return null;
     if (
-      contents.includes('<rss') === false &&
-      contents.includes('<rss>') === false
+      contents.includes("<rss") === false &&
+      contents.includes("<rss>") === false
     )
       return null;
 
@@ -247,26 +247,26 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     if (feed == null) return false;
 
-    if (feed.title != null && feed.title !== '') {
-      source.name = feed.title.toString()
-      await source.save()
+    if (feed.title != null && feed.title !== "") {
+      source.name = feed.title.toString();
+      await source.save();
     }
 
     if ((await this.generatePodcastMetadataFile(capture, feed)) === false) {
-      const errorMessage = 'Failed to generate podcast metadata file';
+      const errorMessage = "Failed to generate podcast metadata file";
       logger.error(errorMessage);
       throw new Error(errorMessage);
     }
 
     if ((await this.generatePodcastLogoImageFile(capture, feed)) === false) {
       const warningMessage =
-        'Podcast feed does not have a logo image file to be downloaded';
+        "Podcast feed does not have a logo image file to be downloaded";
       logger.warn(warningMessage, { feed, captureId: capture.id });
     }
 
     if ((await this.generatePodcastItunesImageFile(capture, feed)) === false) {
       const warningMessage =
-        'Podcast feed does not have a iTunes image file to be downloaded';
+        "Podcast feed does not have a iTunes image file to be downloaded";
       logger.warn(warningMessage, { feed, captureId: capture.id });
     }
 
@@ -278,7 +278,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         feed
       )) === false
     ) {
-      const errorMessage = 'Failed to create Capture Parts for podcast items';
+      const errorMessage = "Failed to create Capture Parts for podcast items";
       logger.error(errorMessage);
       throw new Error(errorMessage);
     }
@@ -297,7 +297,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     const feedMetadataFilePath = path.join(
       capture.downloadLocation,
-      'metadata.json'
+      "metadata.json"
     );
 
     try {
@@ -324,13 +324,13 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     const logoImageDownloader = new Downloader({
       url: podcastLogoImageUrl,
       directory: capture.downloadLocation,
-      fileName: 'logo-image.jpg',
+      fileName: "logo-image.jpg",
     });
 
     try {
       await logoImageDownloader.download();
     } catch (error) {
-      logger.error('Unable to download podcast feed logo image due to error', {
+      logger.error("Unable to download podcast feed logo image due to error", {
         feed,
         captureId: capture.id,
       });
@@ -354,14 +354,14 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     const itunesImageDownloader = new Downloader({
       url: podcastItunesImageUrl,
       directory: capture.downloadLocation,
-      fileName: 'itunes-image.jpg',
+      fileName: "itunes-image.jpg",
     });
 
     try {
       await itunesImageDownloader.download();
     } catch (error) {
       logger.error(
-        'Unable to download podcast feed iTunes image due to error',
+        "Unable to download podcast feed iTunes image due to error",
         { feed, captureId: capture.id }
       );
       logger.error(error);
@@ -379,7 +379,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   ): Promise<boolean> {
     let shouldAddFeedItems = true;
     if (
-      source.useStartOrEndCursor === 'start' &&
+      source.useStartOrEndCursor === "start" &&
       source.currentStartCursorUrl != null
     )
       shouldAddFeedItems = false;
@@ -404,7 +404,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       }
 
       if (
-        source.useStartOrEndCursor === 'start' &&
+        source.useStartOrEndCursor === "start" &&
         source?.currentStartCursorUrl === feedItemFileUrl
       ) {
         shouldAddFeedItems = false;
@@ -412,7 +412,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       }
 
       if (
-        source.useStartOrEndCursor === 'end' &&
+        source.useStartOrEndCursor === "end" &&
         source?.currentEndCursorUrl === feedItemFileUrl
       ) {
         shouldAddFeedItems = true;
@@ -420,11 +420,15 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       }
 
       if (shouldAddFeedItems) {
-        const urlExtension = feedItemFileUrl.split('?')[0].split('.').pop()?.trim() ?? null;
+        const urlExtension =
+          feedItemFileUrl.split("?")[0].split(".").pop()?.trim() ?? null;
 
-        let dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType | null = null;
-        if (audioFileExtensions.includes('.' + urlExtension)) dataProviderPartIdentifier = 'audio-item';
-        if (videoFileExtensions.includes('.' + urlExtension)) dataProviderPartIdentifier = 'video-item';
+        let dataProviderPartIdentifier: PodcastRssFeedDataProviderPartIdentifierType | null =
+          null;
+        if (audioFileExtensions.includes("." + urlExtension))
+          dataProviderPartIdentifier = "audio-item";
+        if (videoFileExtensions.includes("." + urlExtension))
+          dataProviderPartIdentifier = "video-item";
 
         if (dataProviderPartIdentifier == null) return true;
 
@@ -434,14 +438,14 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         };
 
         let capturePartDownloadDirectoryName = safeSanitizeFileName(
-          payload.title ?? ''
+          payload.title ?? ""
         );
         if (
-          capturePartDownloadDirectoryName === '' ||
+          capturePartDownloadDirectoryName === "" ||
           capturePartDownloadDirectoryName == null ||
           capturePartDownloadDirectoryName === false
         ) {
-          capturePartDownloadDirectoryName = v4();
+          capturePartDownloadDirectoryName = uuidV4();
         }
         const downloadLocation = path.join(
           capture.downloadLocation,
@@ -451,7 +455,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         let capturePart: CapturePart | null = null;
         try {
           capturePart = await CapturePart.create({
-            status: 'pending' as CapturePartStatus,
+            status: "pending" as CapturePartStatus,
             url: feedItemFileUrl,
             dataProviderPartIdentifier,
             payload: JSON.stringify(payload),
@@ -460,7 +464,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
           });
         } catch (error) {
           logger.error(
-            'A DB error occurred when trying to create a new Capture Part'
+            "A DB error occurred when trying to create a new Capture Part"
           );
           logger.error(error);
         }
@@ -473,7 +477,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
           return true;
         }
 
-        logger.info('Created Capture Part', {
+        logger.info("Created Capture Part", {
           capturePartId: capturePart.id,
           capturePartDownloadLocation: capturePart.downloadLocation,
           capturePartUrl: capturePart.url,
@@ -492,12 +496,12 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     }
 
     const startUrl = this.getUrlForFeedItem(feed.items[0]);
-    if (source.useStartOrEndCursor === 'start' && startUrl != null) {
+    if (source.useStartOrEndCursor === "start" && startUrl != null) {
       source.currentStartCursorUrl = startUrl ?? null;
     }
 
     const endUrl = this.getUrlForFeedItem(feed.items[feed.items.length - 1]);
-    if (source.useStartOrEndCursor === 'end' && endUrl != null) {
+    if (source.useStartOrEndCursor === "end" && endUrl != null) {
       source.currentEndCursorUrl = endUrl ?? null;
     }
 
@@ -513,7 +517,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
    */
   async processPart(capturePart: CapturePart): Promise<boolean | never> {
     if (
-      ['audio-item', 'video-item'].includes(
+      ["audio-item", "video-item"].includes(
         capturePart.dataProviderPartIdentifier as PodcastRssFeedDataProviderPartIdentifierType
       )
     )
@@ -536,9 +540,9 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     if (
       capturePart?.capture?.downloadLocation == null ||
-      capturePart?.capture?.downloadLocation === '' ||
+      capturePart?.capture?.downloadLocation === "" ||
       capturePart.downloadLocation == null ||
-      capturePart.downloadLocation === ''
+      capturePart.downloadLocation === ""
     ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`;
       logger.error(errorMessage);
@@ -584,7 +588,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   ): Promise<boolean> {
     const itemMetadataFilePath = path.join(
       capturePart.downloadLocation,
-      'metadata.json'
+      "metadata.json"
     );
 
     try {

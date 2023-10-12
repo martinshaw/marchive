@@ -10,6 +10,7 @@ Description: description
 */
 
 import { ipcMain } from 'electron'
+
 import SourceDomainListAction from '../app/actions/SourceDomain/SourceDomainListAction'
 
 export type SourceDomainsChannels =

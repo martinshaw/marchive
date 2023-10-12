@@ -10,18 +10,16 @@ Description: description
 */
 
 import fs from 'node:fs';
-import path from 'node:path';
-import logger from 'logger';;
-import { v4 as uuidV4 } from 'uuid';
-import { Browser, Page } from 'puppeteer-core';
-import { CapturePartStatus } from 'database/src/models/CapturePart';
-import { Capture, Schedule, Source, CapturePart } from 'database';
+import logger from 'logger';
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
   BaseDataProviderIconInformationReturnType,
   SourceDomainInformationReturnType,
 } from '../BaseDataProvider';
-import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
+import path from 'node:path';
+import { v4 as uuidV4 } from 'uuid';
+import { Page } from 'puppeteer-core';
+import { safeSanitizeFileName } from 'utilities'
 import {
   createPuppeteerBrowser,
   generatePageMetadata,
@@ -30,7 +28,9 @@ import {
   generatePageSnapshot,
   loadPageByUrl,
 } from '../helper_functions/PuppeteerDataProviderHelperFunctions';
-import { safeSanitizeFileName } from 'utilities'
+import { Capture, Schedule, Source, CapturePart } from 'database';
+import { CapturePartStatus } from 'database/src/models/CapturePart';
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
 
 export type BlogArticleDataProviderLinkType = {
   url: string;

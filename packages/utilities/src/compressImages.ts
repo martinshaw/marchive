@@ -9,6 +9,8 @@ Modified: 2023-09-18T18:53:44.141Z
 Description: description
 */
 
+// TODO: For some stupid fucking reason, the dts-gen generated type declaration file for this isn't working
+// @ts-ignore
 import compressImageUntyped from 'compress-images'
 import { JSONObject } from 'types-json'
 

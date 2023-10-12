@@ -9,8 +9,8 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { SourceAttributes } from 'database/src/models/Source'
 import { Schedule, Source, WhereOptions } from 'database'
+import { SourceAttributes } from 'database/src/models/Source'
 
 const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {
   return Source
