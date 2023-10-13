@@ -15,7 +15,7 @@ import BlogArticleDataProvider, {
   CountMapOfCommonParentDirectoriesType,
 } from "../BlogArticleDataProvider";
 import { Page } from "puppeteer-core";
-import { sentenceCase } from "change-case";
+import { sentenceCase } from 'change-case';
 import { parse as parseHtml } from "node-html-parser";
 import { BaseDataProviderIconInformationReturnType } from "../BaseDataProvider";
 

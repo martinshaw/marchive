@@ -9,20 +9,25 @@ Modified: 2023-10-12T04:41:37.954Z
 Description: description
 */
 
-import typescript from '@rollup/plugin-typescript';
+import typescript from "@rollup/plugin-typescript";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 export default {
-  input: 'src/index.ts',
+  input: "src/index.ts",
   output: {
-    dir: 'dist',
-    format: 'cjs'
+    dir: "dist",
+    format: "cjs",
   },
-  sourceMap: true,
-  plugins: [typescript({
-    sourceMap: true,
-    inlineSources: true,
-    declaration: true,
-    declarationDir: 'dist/ts/dec',
-    outDir: 'dist/ts'
-  })]
+  plugins: [
+    nodeResolve({
+      extensions: [".js", ".ts"],
+    }),
+    typescript({
+      sourceMap: true,
+      inlineSources: true,
+      declaration: true,
+      declarationDir: "dist/ts/dec",
+      outDir: "dist/ts",
+    }),
+  ],
 };

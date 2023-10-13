@@ -26,7 +26,7 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import imageType, { ImageTypeResult } from 'image-type'
+import imageType from 'image-type'
 
 const imageExtensionsToMimeTypes: {[key: string]: string} = {
   '.png': 'image/png',

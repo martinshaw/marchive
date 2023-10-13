@@ -2,3 +2,5 @@ dist/*
 !dist/.gitkeep
 compile/*
 !compile/.gitkeep
+.rollup.cache
+node_modules

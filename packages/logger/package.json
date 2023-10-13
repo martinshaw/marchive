@@ -5,13 +5,22 @@
   "packageManager": "pnpm@8.9.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "type": "module",
+  "exports": {
+    "./": "./src/"
+  },
   "scripts": {
+    "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@types/node": "^20.5.9",
+    "utilities": "workspace:^",
     "winston": "^3.10.0",
-    "winston-daily-rotate-file": "^4.7.1",
-    "utilities": "workspace:^"
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "tslib": "^2.6.2",
+    "typescript": "^5.1.3"
   }
 }
