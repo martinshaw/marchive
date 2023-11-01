@@ -52,7 +52,7 @@ abstract class BaseDataProvider {
   /**
    * Relative path to the visual icon file for this Data Provider
    */
-  abstract getIconInformation(): BaseDataProviderIconInformationReturnType;
+  abstract getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType;
 
   /**
    * Determine whether this Data Provider is suitable to capture useful information from the provided URL
@@ -155,7 +155,7 @@ abstract class BaseDataProvider {
    */
   async toJSON(): Promise<DataProviderSerializedType> {
     const { filePath: iconFilePath, shouldInvertOnDarkMode } =
-      this.getIconInformation();
+      this.getIconInformation(__dirname);
     let iconDataUrl: string =
       (await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath)) ?? '';
 

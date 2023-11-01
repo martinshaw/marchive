@@ -65,14 +65,15 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
     ],
   })
 
-  if (process.env.NODE_ENV !== 'production') {
+  // TODO: Uncomment or keep comments ???
+  // if (process.env.NODE_ENV !== 'production') {
     logger.add(new transports.Console({
       format: format.combine(
         format.colorize(),
         format.simple()
       )
     }));
-  }
+  // }
 
   return logger
 }

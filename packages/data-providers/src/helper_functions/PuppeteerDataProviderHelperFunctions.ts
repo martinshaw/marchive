@@ -182,29 +182,7 @@ export const generatePageScreenshot = async (
     quality: 90,
     type: 'jpeg',
   });
-
-  /**
-   * TODO: We need to find out why we are getting an error which causes the process to return
-   * @see https://www.notion.so/codeatlas/Need-to-do-something-about-files-taking-so-much-space-Fix-issue-with-image-compression-8a5d2749ce53481a8847506377a65834?pvs=4
-   */
-
-  // const compressedScreenshotsDirectory = path.join(captureDownloadDirectory, 'compressed')
-  // if (fs.existsSync(compressedScreenshotsDirectory) !== true) {
-  //   fs.mkdirSync(compressedScreenshotsDirectory, {recursive: true})
-  // }
-
-  // compressImageSimple(
-  //   screenshotFileName,
-  //   compressedScreenshotsDirectory,
-  //   function (error, completed, statistic) {
-  //     logger.error("-------------");
-  //     logger.error(error);
-  //     logger.error(completed);
-  //     logger.error(statistic);
-  //     logger.error("-------------");
-  //   }
-  // );
-
+  
   return fs.existsSync(screenshotFileName);
 };
 

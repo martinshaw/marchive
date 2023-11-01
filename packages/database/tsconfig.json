@@ -7,8 +7,8 @@
     "jsx": "react-jsx",
     "strict": true,
     "sourceMap": true,
-    "baseUrl": "./src",
-    "outDir": "./lib",
+    "baseUrl": "src",
+    "outDir": "lib",
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -16,9 +16,9 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
   },
   "include": [
-    "./src"
+    "src"
   ]
 }

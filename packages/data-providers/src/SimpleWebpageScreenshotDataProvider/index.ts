@@ -38,9 +38,9 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     return "Captures a simple screenshot of a webpage";
   }
 
-  getIconInformation(): BaseDataProviderIconInformationReturnType {
+  getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, "page-layout.svg"),
+      filePath: path.join(parentPath, "page-layout.svg"),
       shouldInvertOnDarkMode: true,
     };
   }

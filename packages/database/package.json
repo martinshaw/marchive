@@ -2,25 +2,21 @@
   "name": "database",
   "version": "0.9.1",
   "private": true,
-  "packageManager": "pnpm@8.9.0",
+  "packageManager": "pnpm@8.10.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "type": "module",
-  "exports": {
-    ".": "./src",
-    "./": "./src"
-  },
   "scripts": {
     "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "logger": "workspace:^",
-    "sequelize": "^6.32.1",
     "sequelize-typescript": "^2.1.5",
+    "utilities": "workspace:^",
+    "sequelize": "^6.32.1",
     "sqlite3": "^5.1.6",
-    "umzug": "^3.3.1",
-    "utilities": "workspace:^"
+    "logger": "workspace:^",
+    "umzug": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.5.9",

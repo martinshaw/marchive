@@ -13,13 +13,17 @@ import logger from 'logger';
 import 'database'
 import { Schedule } from 'database'
 import performCaptureRun from "./performCaptureRun"
-import { retrieveDueSchedules } from "database/src/repositories/ScheduleRepository"
-import { getStoredSettingValue } from 'database/src/repositories/StoredSettingRepository'
+import { getStoredSettingValue } from "database"
+import { retrieveDueSchedules } from "database"
 
 let lastSchedule: Schedule | null = null;
 
 const ScheduleRunProcess = async (): Promise<void | never> => {
   const currentDelayBetweenTicks = 13 * 1000 // 13 seconds
+
+  // TODO: Keep these or remove them ???
+  logger.info('ScheduleRunProcess started (using Winston)') // delete me
+  console.log('ScheduleRunProcess started (using console.log)') // delete me
 
   while (true) {
     let scheduleRunProcessIsPaused = await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED') === true
@@ -48,7 +52,7 @@ const ScheduleRunProcess = async (): Promise<void | never> => {
 const tick = async (): Promise<void> => {
   const dueSchedules = await retrieveDueSchedules()
 
-  if (dueSchedules.length === 0) logger.debug('No Schedules due to be run')
+  if (dueSchedules.length === 0) logger.info('No Schedules due to be run')
 
   dueSchedules.forEach(async schedule => {
     lastSchedule = schedule

@@ -2,29 +2,18 @@
   "name": "data-providers",
   "version": "0.9.1",
   "private": true,
-  "packageManager": "pnpm@8.9.0",
+  "packageManager": "pnpm@8.10.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "type": "module",
-  "exports": {
-    ".": "./src",
-    "./": "./src"
-  },
   "scripts": {
     "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@mozilla/readability": "^0.4.4",
-    "@types/jsdom": "^21.1.3",
-    "@types/node": "^20.5.9",
-    "@types/uuid": "^9.0.3",
-    "@types/xml2js": "^0.4.12",
+    "utilities": "workspace:^",
     "database": "workspace:^",
-    "jsdom": "^22.1.0",
     "logger": "workspace:^",
-    "node-html-parser": "^6.1.10",
-    "nodejs-file-downloader": "^4.12.1",
     "puppeteer": "^21.3.8",
     "puppeteer-autoscroll-down": "^1.1.2",
     "puppeteer-core": "^21.3.8",
@@ -32,18 +21,28 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-adblocker": "^2.13.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "rss-parser": "^3.13.0",
-    "sanitize-html": "^2.11.0",
-    "slugify": "^1.6.6",
+    "nodejs-file-downloader": "^4.12.1",
+    "@mozilla/readability": "^0.4.4",
+    "node-html-parser": "^6.1.10",
+    "reflect-metadata": "^0.1.13",
     "standard-slugify": "^3.1.1",
-    "utilities": "workspace:^",
-    "uuid": "^9.0.0",
+    "sanitize-html": "^2.11.0",
+    "change-case": "^4.1.2",
+    "rss-parser": "^3.13.0",
+    "types-json": "^4.0.1",
+    "dompurify": "^3.0.5",
+    "slugify": "^1.6.6",
     "xml2js": "^0.6.2",
-    "zod": "^3.22.4",
-    "change-case": "^4.1.2"
+    "jsdom": "^22.1.0",
+    "uuid": "^9.0.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.2",
+    "@types/xml2js": "^0.4.12",
+    "@types/jsdom": "^21.1.3",
     "@types/node": "^20.5.9",
+    "@types/uuid": "^9.0.3",
     "tslib": "^2.6.2"
   }
 }

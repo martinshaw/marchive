@@ -32,9 +32,9 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
     return "Screenshots and snapshots this Wikipedia article and each of its related articles.";
   }
 
-  getIconInformation(): BaseDataProviderIconInformationReturnType {
+  getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, "wikipedia.png"),
+      filePath: path.join(parentPath, "wikipedia.png"),
       shouldInvertOnDarkMode: true,
     };
   }

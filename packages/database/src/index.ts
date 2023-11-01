@@ -11,6 +11,10 @@ Description: description
 
 import path from 'node:path'
 import logger from 'logger'
+
+import { retrieveDueSchedules } from './repositories/ScheduleRepository'
+import { getStoredSettingValue } from './repositories/StoredSettingRepository'
+
 import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'
 import { Umzug, SequelizeStorage } from 'umzug'
 import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
@@ -77,6 +81,9 @@ const umzug = new Umzug({
 type Migration = typeof umzug._types.migration;
 
 export {
+  retrieveDueSchedules,
+  getStoredSettingValue,
+  
   sequelize,
 
   umzug,

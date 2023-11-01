@@ -16,7 +16,6 @@ import userAppDataPath from "./userAppDataPath";
 import userDownloadsPath from "./userDownloadsPath";
 import userDownloadsCapturesPath from "./userDownloadsCapturesPath";
 import userDownloadsSourceDomainFaviconsPath from "./userDownloadsSourceDomainFaviconsPath";
-import compressImage, { compressImageSimple } from "./compressImages";
 // TODO: For some stupid fucking reason, the dts-gen generated type declaration file for this isn't working
 // @ts-ignore 
 import resolveRelative from "resolve-relative-url";
@@ -29,7 +28,5 @@ export {
   userDownloadsPath,
   userDownloadsCapturesPath,
   userDownloadsSourceDomainFaviconsPath,
-  compressImage,
-  compressImageSimple,
   resolveRelative,
 };
