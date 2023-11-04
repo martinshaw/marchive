@@ -1,5 +1,5 @@
 {
-  "name": "schedule-run-child-process",
+  "name": "capture-part-run-child-process",
   "version": "0.9.1",
   "private": true,
   "packageManager": "pnpm@8.10.1",

@@ -12,29 +12,198 @@ importers:
         specifier: ^2.26.2
         version: 2.26.2
 
-  packages/data-providers:
+  packages/capture-part-run-child-process:
     dependencies:
-      '@mozilla/readability':
-        specifier: ^0.4.4
-        version: 0.4.4
-      '@types/jsdom':
-        specifier: ^21.1.3
-        version: 21.1.3
+      bufferutil:
+        specifier: ^4.0.8
+        version: 4.0.8
+      canvas:
+        specifier: ^2.11.2
+        version: 2.11.2
+      data-providers:
+        specifier: workspace:^
+        version: link:../data-providers
+      database:
+        specifier: workspace:^
+        version: link:../database
+      is-plain-object:
+        specifier: ^5.0.0
+        version: 5.0.0
+      jsdom:
+        specifier: ^22.1.0
+        version: 22.1.0(bufferutil@4.0.8)(canvas@2.11.2)(utf-8-validate@6.0.3)
+      logger:
+        specifier: workspace:^
+        version: link:../logger
+      pg-hstore:
+        specifier: ^2.3.4
+        version: 2.3.4
+      puppeteer-extra:
+        specifier: ^3.3.6
+        version: 3.3.6(puppeteer-core@21.3.8)(puppeteer@21.3.8)
+      puppeteer-extra-plugin-adblocker:
+        specifier: ^2.13.6
+        version: 2.13.6(puppeteer-core@21.3.8)(puppeteer-extra@3.3.6)(puppeteer@21.3.8)
+      puppeteer-extra-plugin-stealth:
+        specifier: ^2.11.2
+        version: 2.11.2(puppeteer-extra@3.3.6)
+      sequelize:
+        specifier: ^6.32.1
+        version: 6.33.0(pg-hstore@2.3.4)(sqlite3@5.1.6)
+      sequelize-typescript:
+        specifier: ^2.1.5
+        version: 2.1.5(@types/node@20.8.4)(@types/validator@13.11.2)(reflect-metadata@0.1.13)(sequelize@6.33.0)
+      sqlite3:
+        specifier: ^5.1.6
+        version: 5.1.6
+      umzug:
+        specifier: ^3.3.1
+        version: 3.3.1
+      utf-8-validate:
+        specifier: ^6.0.3
+        version: 6.0.3
+      utilities:
+        specifier: workspace:^
+        version: link:../utilities
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+    devDependencies:
+      '@svgr/webpack':
+        specifier: ^8.0.1
+        version: 8.1.0(typescript@5.2.2)
+      '@teamsupercell/typings-for-css-modules-loader':
+        specifier: ^2.5.2
+        version: 2.5.2
+      '@types/blake2':
+        specifier: ^4.0.1
+        version: 4.0.2
       '@types/node':
         specifier: ^20.5.9
         version: 20.8.4
       '@types/uuid':
         specifier: ^9.0.3
         version: 9.0.5
-      '@types/xml2js':
-        specifier: ^0.4.12
-        version: 0.4.12
+      '@types/validator':
+        specifier: ^13.11.1
+        version: 13.11.2
+      '@types/webpack-bundle-analyzer':
+        specifier: ^4.6.0
+        version: 4.6.1(webpack-cli@5.1.4)
+      '@types/webpack-node-externals':
+        specifier: ^3.0.2
+        version: 3.0.2(webpack-cli@5.1.4)
+      browserslist-config-erb:
+        specifier: ^0.0.3
+        version: 0.0.3(electron@25.9.0)
+      chalk:
+        specifier: ^4.1.2
+        version: 4.1.2
+      concurrently:
+        specifier: ^8.1.0
+        version: 8.2.1
+      core-js:
+        specifier: ^3.30.2
+        version: 3.33.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      css-loader:
+        specifier: ^6.8.1
+        version: 6.8.1(webpack@5.88.2)
+      css-minimizer-webpack-plugin:
+        specifier: ^5.0.0
+        version: 5.0.1(webpack@5.88.2)
+      detect-port:
+        specifier: ^1.5.1
+        version: 1.5.1
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.88.2)
+      generate-template-files:
+        specifier: ^3.2.1
+        version: 3.2.1
+      html-webpack-plugin:
+        specifier: ^5.5.1
+        version: 5.5.3(webpack@5.88.2)
+      identity-obj-proxy:
+        specifier: ^3.0.0
+        version: 3.0.0
+      mini-css-extract-plugin:
+        specifier: ^2.7.6
+        version: 2.7.6(webpack@5.88.2)
+      node-loader:
+        specifier: ^2.0.0
+        version: 2.0.0(webpack@5.88.2)
+      prettier:
+        specifier: ^2.8.8
+        version: 2.8.8
+      rimraf:
+        specifier: ^5.0.5
+        version: 5.0.5
+      sass:
+        specifier: ^1.62.1
+        version: 1.69.1
+      sass-loader:
+        specifier: ^13.3.1
+        version: 13.3.2(sass@1.69.1)(webpack@5.88.2)
+      style-loader:
+        specifier: ^3.3.3
+        version: 3.3.3(webpack@5.88.2)
+      terser-webpack-plugin:
+        specifier: ^5.3.9
+        version: 5.3.9(webpack@5.88.2)
+      ts-loader:
+        specifier: ^9.4.3
+        version: 9.5.0(typescript@5.2.2)(webpack@5.88.2)
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(@types/node@20.8.4)(typescript@5.2.2)
+      tsconfig-paths-webpack-plugin:
+        specifier: ^4.0.1
+        version: 4.1.0
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
+      typescript:
+        specifier: ^5.1.3
+        version: 5.2.2
+      url-loader:
+        specifier: ^4.1.1
+        version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
+      webpack:
+        specifier: ^5.85.0
+        version: 5.88.2(webpack-cli@5.1.4)
+      webpack-bundle-analyzer:
+        specifier: ^4.9.0
+        version: 4.9.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+      webpack-cli:
+        specifier: ^5.1.1
+        version: 5.1.4(webpack-bundle-analyzer@4.9.1)(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-server:
+        specifier: ^4.15.0
+        version: 4.15.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)(webpack-cli@5.1.4)(webpack@5.88.2)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.9.0
+      webpack-node-externals:
+        specifier: ^3.0.0
+        version: 3.0.0
+
+  packages/data-providers:
+    dependencies:
+      '@mozilla/readability':
+        specifier: ^0.4.4
+        version: 0.4.4
       change-case:
         specifier: ^4.1.2
         version: 4.1.2
       database:
         specifier: workspace:^
         version: link:../database
+      dompurify:
+        specifier: ^3.0.5
+        version: 3.0.6
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0(bufferutil@4.0.8)(canvas@2.11.2)(utf-8-validate@6.0.3)
@@ -68,6 +237,9 @@ importers:
       puppeteer-extra-plugin-stealth:
         specifier: ^2.11.2
         version: 2.11.2(puppeteer-extra@3.3.6)
+      reflect-metadata:
+        specifier: ^0.1.13
+        version: 0.1.13
       rss-parser:
         specifier: ^3.13.0
         version: 3.13.0
@@ -80,6 +252,9 @@ importers:
       standard-slugify:
         specifier: ^3.1.1
         version: 3.1.1
+      types-json:
+        specifier: ^4.0.1
+        version: 4.0.1
       utilities:
         specifier: workspace:^
         version: link:../utilities
@@ -93,6 +268,21 @@ importers:
         specifier: ^3.22.4
         version: 3.22.4
     devDependencies:
+      '@types/dompurify':
+        specifier: ^3.0.2
+        version: 3.0.4
+      '@types/jsdom':
+        specifier: ^21.1.3
+        version: 21.1.3
+      '@types/node':
+        specifier: ^20.5.9
+        version: 20.8.4
+      '@types/uuid':
+        specifier: ^9.0.3
+        version: 9.0.5
+      '@types/xml2js':
+        specifier: ^0.4.12
+        version: 0.4.12
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -142,9 +332,6 @@ importers:
       '@rauschma/stringio':
         specifier: ^1.4.0
         version: 1.4.0
-      '@types/jsdom':
-        specifier: ^21.1.3
-        version: 21.1.3
       '@uidotdev/usehooks':
         specifier: ^2.1.1
         version: 2.3.1(react-dom@18.2.0)(react@18.2.0)
@@ -242,6 +429,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.2
         version: 29.5.5
+      '@types/jsdom':
+        specifier: ^21.1.3
+        version: 21.1.3
       '@types/node':
         specifier: ^20.5.9
         version: 20.8.4
@@ -3233,6 +3423,12 @@ packages:
     dependencies:
       '@types/ms': 0.7.32
 
+  /@types/dompurify@3.0.4:
+    resolution: {integrity: sha512-1Jk8S/IRzNSbwQRbuGuLFHviwxQ8pX81ZEW3INY9432Cwb4VedkBYan8gSIXVLOLHBtimOmUTEYphjRVmo+30g==}
+    dependencies:
+      '@types/trusted-types': 2.0.5
+    dev: true
+
   /@types/electron-prompt@1.6.2:
     resolution: {integrity: sha512-G2nGIes4W0tKZEepvuX3Jbstg0f1P2VwNv6y8PIwMlrmTgom2UmmVcjp7mknV37d1oOHPSISeGeXgkijfwS+dQ==}
     dependencies:
@@ -3372,7 +3568,7 @@ packages:
       '@types/node': 20.8.4
       '@types/tough-cookie': 4.0.3
       parse5: 7.1.2
-    dev: false
+    dev: true
 
   /@types/json-schema@7.0.13:
     resolution: {integrity: sha512-RbSSoHliUbnXj3ny0CNFOoxrIDV6SUGyStHsvDqosw6CkdPV8TtWGlfecuK4ToyMEAql6pzNxgCFKanovUzlgQ==}
@@ -3542,13 +3738,19 @@ packages:
 
   /@types/tough-cookie@4.0.3:
     resolution: {integrity: sha512-THo502dA5PzG/sfQH+42Lw3fvmYkceefOspdCwpHRul8ik2Jv1K8I5OZz1AT3/rs46kwgMCe9bSBmDLYkkOMGg==}
+    dev: true
 
   /@types/triple-beam@1.3.3:
     resolution: {integrity: sha512-6tOUG+nVHn0cJbVp25JFayS5UE6+xlbcNF9Lo9mU7U0zk3zeUShZied4YEQZjy1JBF043FSkdXw8YkUJuVtB5g==}
     dev: false
 
+  /@types/trusted-types@2.0.5:
+    resolution: {integrity: sha512-I3pkr8j/6tmQtKV/ZzHtuaqYSQvyjGRKH4go60Rr0IDLlFxuRT5V32uvB1mecM5G1EVAUyF/4r4QZ1GHgz+mxA==}
+    dev: true
+
   /@types/uuid@9.0.5:
     resolution: {integrity: sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==}
+    dev: true
 
   /@types/validator@13.11.2:
     resolution: {integrity: sha512-nIKVVQKT6kGKysnNt+xLobr+pFJNssJRi2s034wgWeFBUx01fI8BeHTW2TcRp7VcFu9QCYG8IlChTuovcm0oKQ==}
@@ -3594,7 +3796,7 @@ packages:
     resolution: {integrity: sha512-CZPpQKBZ8db66EP5hCjwvYrLThgZvnyZrPXK2W+UI1oOaWezGt34iOaUCX4Jah2X8+rQqjvl9VKEIT8TR1I0rA==}
     dependencies:
       '@types/node': 20.8.4
-    dev: false
+    dev: true
 
   /@types/yargs-parser@21.0.1:
     resolution: {integrity: sha512-axdPBuLuEJt0c4yI5OZssC19K2Mq1uKdrfZBzuxLvaztgqUtFYZUNw7lETExPYJR9jdEoIg4mb7RQKRQzOkeGQ==}
@@ -5710,6 +5912,10 @@ packages:
     dependencies:
       domelementtype: 2.3.0
 
+  /dompurify@3.0.6:
+    resolution: {integrity: sha512-ilkD8YEnnGh1zJ240uJsW7AzE+2qpbOUYjacomn3AvJ6J4JhKGSZ2nh4wUIXPZrEPppaCLx5jFe8T89Rk8tQ7w==}
+    dev: false
+
   /domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
     dependencies:
@@ -7553,6 +7759,13 @@ packages:
     dependencies:
       is-docker: 2.2.1
     dev: true
+
+  /is-zod@1.0.0:
+    resolution: {integrity: sha512-4oD+C0gj1bQN7fhc4NNELdnIUSzpHQfQiwWjl3V42/J7JZMhRyzKzvbjl+EyWm5Khj+KfsNw9hhQDPLoZBWJIg==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dependencies:
+      zod: 3.22.4
+    dev: false
 
   /isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
@@ -12099,6 +12312,14 @@ packages:
     resolution: {integrity: sha512-g/KzbYKbH5C2vPkaXGu8DJlHrGKHLsM25Zg9WuC9pMGfuvT+X25tZQWo5fK1BjBm8+UrVE9LDCvaY0CQk+fXDA==}
     optionalDependencies:
       rxjs: 7.8.1
+    dev: false
+
+  /types-json@4.0.1:
+    resolution: {integrity: sha512-9+AppL1qvC55sW478UnNxTzoaB4m7atMQ5jTNih35BWrNcdNtBZELfferS0ON8jypALgTVeVehaFsVJCPM4dgw==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dependencies:
+      is-zod: 1.0.0
+      zod: 3.22.4
     dev: false
 
   /typescript@4.9.5:

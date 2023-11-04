@@ -22,6 +22,7 @@ import { getDataProviderByIdentifier } from "data-providers";
 import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
+  // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
   logger.info("Found Schedule with ID: " + schedule.id);
 
   schedule = await schedule.update({ status: "processing" as ScheduleStatus });
