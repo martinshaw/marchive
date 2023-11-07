@@ -10,13 +10,13 @@ Description: description
 */
 
 import { Channels } from "../../../../main/preload";
-import { ProcessStartProcessConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcessAction";
+import { ProcessStartProcessActionConnectionInfoReturnType, ProcessesReplyOngoingEventDataType } from "../../../../main/app/actions/Process/ProcessStartProcessAction";
 
 const processListeners = (
   processConnectedChannelName: Channels,
   processOngoingEventChannelName: Channels,
   processConnectionErrorChannelName: Channels,
-  onConnected: (connectionInfo: ProcessStartProcessConnectionInfoReturnType) => void,
+  onConnected: (connectionInfo: ProcessStartProcessActionConnectionInfoReturnType) => void,
   onOngoingEvent: (ongoingEvent: ProcessesReplyOngoingEventDataType) => void,
   onConnectionError: (errorMessage: string) => void,
 ): {
@@ -25,7 +25,7 @@ const processListeners = (
   const connectedEventRemoveListener = window.electron.ipcRenderer.on(
     processConnectedChannelName,
     (connectionInfo) => {
-      onConnected(connectionInfo as ProcessStartProcessConnectionInfoReturnType);
+      onConnected(connectionInfo as ProcessStartProcessActionConnectionInfoReturnType);
     }
   );
 

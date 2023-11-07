@@ -9,14 +9,11 @@ Modified: 2023-10-12T01:42:54.182Z
 Description: description
 */
 
-import path from "node:path";
-import process from "node:process";
-import webpack from "webpack";
-import nodeExternals from "webpack-node-externals";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const path = require("node:path");
+const process = require("node:process");
+const webpack = require("webpack");
+const nodeExternals = require("webpack-node-externals");
+const { fileURLToPath } = require("node:url");
 
 const configuration = {
   target: "node",
@@ -71,4 +68,4 @@ const configuration = {
   },
 };
 
-export default configuration;
+module.exports = configuration;

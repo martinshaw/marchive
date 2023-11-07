@@ -10,7 +10,7 @@ Description: description
 */
 
 import { Card, Text } from "@blueprintjs/core"
-import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider"
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider"
 import { useState } from "react"
 import AutoAnimated from '../../../components/AutoAnimated';
 

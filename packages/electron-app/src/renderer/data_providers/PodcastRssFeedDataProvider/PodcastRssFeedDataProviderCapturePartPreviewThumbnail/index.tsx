@@ -20,9 +20,9 @@ import { ScheduleAttributes } from "database/src/models/Schedule";
 import useHumanDateCaption from "../../hooks/useHumanDateCaption";
 import { CapturePartAttributes } from "database/src/models/CapturePart";
 import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import useGetObjectFromJsonFile from "../../../layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
-import { PodcastRssFeedDataProviderPartPayloadType } from "../../../../main/app/data_providers/PodcastRssFeedDataProvider";
+import { PodcastRssFeedDataProviderPartPayloadType } from "data-providers/src/PodcastRssFeedDataProvider";
 
 import './index.scss'
 

@@ -9,42 +9,28 @@ Modified: 2023-09-14T02:42:40.042Z
 Description: description
 */
 
-import { useMemo } from 'react';
-import { useCallback } from 'react';
 import { Grid } from 'react-virtualized';
-import { useAsyncMemo } from 'use-async-memo';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import { Location, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { DataProvidersRendererComponentCaptureShowPageFragmentPropsType } from '../..';
-import { RssParserFeedType } from '../../../../main/app/data_providers/PodcastRssFeedDataProvider';
 import parseLocationWithSearchParams from '../../../layouts/DefaultLayout/functions/parseLocationWithSearchParams';
 import PodcastRssFeedDataProviderCapturePartPreviewThumbnail from '../PodcastRssFeedDataProviderCapturePartPreviewThumbnail';
-import getObjectFromJsonFile, {
-  GetObjectFromJsonFileReturnType,
-} from '../../../layouts/DefaultLayout/functions/getObjectFromJsonFile';
 import {
   Button,
   ButtonGroup,
-  ContextMenu,
-  ContextMenuContentProps,
   H1,
   H4,
-  Menu,
-  MenuDivider,
-  MenuItem,
   NonIdealState,
-  Spinner,
-  SpinnerSize,
   Text,
 } from '@blueprintjs/core';
 import useFocusedCapturePartFromLocation from '../../../../renderer/data_providers/hooks/useFocusedCapturePartFromLocation';
 import useCaptureMetadata from '../../../../renderer/data_providers/hooks/useCaptureMetadata';
 import formatLocationUrlWithChangedSearchParams from '../../../../renderer/layouts/DefaultLayout/functions/formatLocationUrlWithChangedSearchParams';
-
-import './index.scss';
 import { JSONTree } from 'react-json-tree';
 import brightBase16 from '../../../../renderer/utilities/base16_themes/bright.base16';
 import usePodcastItemMetadataAndMediaUrl from './hooks/usePodcastItemMetadataAndMediaUrl';
+
+import './index.scss';
 
 const PodcastRssFeedDataProviderCaptureShowPageFragment = (
   props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType

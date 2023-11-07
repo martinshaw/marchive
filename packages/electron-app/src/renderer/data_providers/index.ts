@@ -13,7 +13,7 @@ import { ReactNode } from "react";
 import { SourceAttributes } from "database/src/models/Source";
 import { ScheduleAttributes } from "database/src/models/Schedule";
 import { CaptureAttributes } from "database/src/models/Capture";
-import { DataProviderSerializedType } from "../../main/app/data_providers/BaseDataProvider";
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider'
 import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider'
 import PodcastRssFeedDataProviderRendererDetails from './PodcastRssFeedDataProvider'

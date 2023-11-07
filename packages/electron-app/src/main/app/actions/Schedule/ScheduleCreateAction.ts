@@ -12,9 +12,8 @@ Description: description
 import fs from 'node:fs'
 import path from 'node:path'
 import { Schedule, Source } from 'database'
-import { downloadCapturesPath as defaultDownloadCapturesPath } from '../../../../paths'
-import { getDataProviderByIdentifier } from '../../repositories/DataProviderRepository'
-import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
+import { userDownloadsCapturesPath } from 'utilities'
+import { getDataProviderByIdentifier, type AllowedScheduleIntervalReturnType } from 'data-providers'
 import logger from 'logger';
 import { ScheduleAttributes } from 'database/src/models/Schedule'
 import { safeSanitizeFileName } from 'utilities'
@@ -67,7 +66,7 @@ const ScheduleCreateAction = async (
   }
 
   downloadLocation = path.join(
-    downloadLocation == null ? defaultDownloadCapturesPath : downloadLocation,
+    downloadLocation == null ? userDownloadsCapturesPath : downloadLocation,
     downloadDirectory,
   )
 

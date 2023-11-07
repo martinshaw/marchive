@@ -23,7 +23,7 @@ import { CaptureAttributes } from 'database/src/models/Capture';
 import { ScheduleAttributes } from 'database/src/models/Schedule';
 import CaptureShowPageFragment from './components/CaptureShowPageFragment';
 import getDataProviders from '../SourceIndexPage/functions/getDataProviders';
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';

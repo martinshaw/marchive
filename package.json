@@ -23,7 +23,12 @@
     "email": "developer@martinshaw.co",
     "url": "https://martinshaw.co"
   },
-  "packageManager": "pnpm@8.10.1",
+  "packageManager": "pnpm@8.10.2",
+  "engines" : { 
+    "pnpm" : ">=8.0.0",
+    "npm" : ">=10.0.0",
+    "node" : ">=21.0.0"
+  },
   "scripts": {
     "start": "cd packages/electron-app && pnpm run start",
     "test": "echo \"Error: no test specified\" && exit 1"

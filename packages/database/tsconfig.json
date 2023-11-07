@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "es2021",
-    "module": "es2020",
+    "module": "CommonJS",
     "lib": ["dom", "es2021"],
     "jsx": "react-jsx",
     "strict": true,

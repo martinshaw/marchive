@@ -10,15 +10,9 @@ Description: description
 */
 
 import { useCallback, useState } from 'react';
-import { Tab, TabId, Tabs } from '@blueprintjs/core';
-import {
-  BaseDataProviderIconInformationReturnType,
-  DataProviderSerializedType,
-} from '../../../../main/app/data_providers/BaseDataProvider';
-import SourceCreatePageExampleSourceGalleryGridItem, {
-  SourceCreatePageExampleSourceGalleryGridItemPropsType,
-} from './SourceCreatePageExampleSourceGalleryGridItem';
-import { Schedule, Source } from 'database';
+import { Tab, Tabs } from '@blueprintjs/core';
+import { BaseDataProviderIconInformationReturnType, DataProviderSerializedType } from 'data-providers/src/BaseDataProvider';
+import SourceCreatePageExampleSourceGalleryGridItem from './SourceCreatePageExampleSourceGalleryGridItem';
 import AutoAnimated from '../../../components/AutoAnimated';
 
 export type SourceCreatePageExampleSourceGalleryPropsType = {

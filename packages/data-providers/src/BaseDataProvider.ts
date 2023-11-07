@@ -9,8 +9,8 @@ Modified: 2023-08-02T02:29:08.035Z
 Description: description
 */
 
-import { Capture, CapturePart, Schedule, Source } from 'database';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
+import { Capture, CapturePart, Schedule, Source } from "database";
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "utilities";
 
 export type DataProviderSerializedType = {
   identifier: string;
@@ -52,7 +52,7 @@ abstract class BaseDataProvider {
   /**
    * Relative path to the visual icon file for this Data Provider
    */
-  abstract getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType;
+  abstract getIconInformation(): BaseDataProviderIconInformationReturnType;
 
   /**
    * Determine whether this Data Provider is suitable to capture useful information from the provided URL
@@ -89,9 +89,11 @@ abstract class BaseDataProvider {
     let rootUrl = url;
 
     try {
-      rootUrl = (new URL(url)).hostname;
+      rootUrl = new URL(url).hostname;
     } catch (error) {
-      rootUrl = rootUrl.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0];
+      rootUrl = rootUrl
+        .replace(/^(?:https?:\/\/)?(?:www\.)?/i, "")
+        .split("/")[0];
     }
 
     return {
@@ -155,9 +157,9 @@ abstract class BaseDataProvider {
    */
   async toJSON(): Promise<DataProviderSerializedType> {
     const { filePath: iconFilePath, shouldInvertOnDarkMode } =
-      this.getIconInformation(__dirname);
+      this.getIconInformation();
     let iconDataUrl: string =
-      (await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath)) ?? '';
+      (await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath)) ?? "";
 
     return {
       identifier: this.getIdentifier(),

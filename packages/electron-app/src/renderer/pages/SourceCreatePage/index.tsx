@@ -9,11 +9,11 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { Button, Card, Icon, InputGroup, Text } from '@blueprintjs/core'
+import { InputGroup } from '@blueprintjs/core'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import useValidateUrlWithDataProviders from './hooks/useValidateUrlWithDataProviders'
 import useCreateNewSource from './hooks/useCreateNewSource'
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider'
+import { DataProviderSerializedType } from 'data-providers/src/BaseDataProvider'
 import useCreateNewSchedule from './hooks/useCreateNewSchedule'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import SourceCreatePageExampleSourceGallery from './components/SourceCreatePageExampleSourceGallery'

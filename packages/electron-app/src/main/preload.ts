@@ -8,7 +8,9 @@ import { DataProvidersChannels } from './ipc/DataProviders';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-require('events').EventEmitter.defaultMaxListeners = 15
+(async () => {
+  (await import('events')).EventEmitter.defaultMaxListeners = 15
+})
 
 export type Channels =
   | CapturesChannels

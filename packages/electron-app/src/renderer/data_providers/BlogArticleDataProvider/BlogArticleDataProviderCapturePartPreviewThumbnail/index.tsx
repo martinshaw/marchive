@@ -17,7 +17,7 @@ import { ScheduleAttributes } from "database/src/models/Schedule";
 import { CapturePartAttributes } from "database/src/models/CapturePart";
 import { Icon, IconSize, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
 import useHumanDateCaption from "../../../../renderer/data_providers/hooks/useHumanDateCaption";
-import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import useGetObjectFromJsonFile from "../../../../renderer/layouts/DefaultLayout/hooks/useGetObjectFromJsonFile";
 
 import './index.scss'

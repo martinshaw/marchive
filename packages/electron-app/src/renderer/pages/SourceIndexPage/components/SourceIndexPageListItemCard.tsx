@@ -13,7 +13,7 @@ import { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Card, Text } from '@blueprintjs/core';
 import { SourceAttributes } from 'database/src/models/Source';
-import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import SourceIndexPageListItemCardScheduleCaption from './SourceIndexPageListItemCardScheduleCaption';
 
 export type SourceIndexPageListItemCardPropsType = {

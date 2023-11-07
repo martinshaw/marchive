@@ -17,7 +17,7 @@ import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
 import { CaptureAttributes } from 'database/src/models/Capture';
 import { ScheduleAttributes } from 'database/src/models/Schedule';
 import dataProvidersRendererDetailsList from '../../../data_providers';
-import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider';
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import promptForCaptureDeletion from '../../../layouts/DefaultLayout/functions/promptForCaptureDeletion';
 
 export type SourceShowPageGridItemPreviewPropsType = {

@@ -1,3 +1,4 @@
+// Need to import database (by effect setting up and migrating database connection) before importing other modules
 import 'database'
 
 import logger from 'logger';
@@ -32,16 +33,22 @@ import createTray from './tray';
 // }
 
 if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
+  (async () => {
+    const sourceMapSupport = await import('source-map-support');
+    sourceMapSupport.install();
+  })
 }
 
 const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-if (isDebug) require('electron-debug')();
+if (isDebug) {
+  (async () => {
+    (await import('electron-debug')).default();
+  })
+}
 
 // const installExtensions = async () => {
-//   const installer = require('electron-devtools-installer');
+//   const installer = requ___('electron-devtools-installer');
 //   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
 //   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
@@ -238,8 +245,9 @@ app
   .whenReady()
   .then(() => {
 
-    ipcMain.emit('processes.schedule-run-process.start');
-    ipcMain.emit('processes.capture-part-run-process.start');
+    // TODO: Uncomment me when I have finished refactoring Child Process handling
+    // ipcMain.emit('processes.schedule-run-process.start');
+    // ipcMain.emit('processes.capture-part-run-process.start');
 
     createTray()
 

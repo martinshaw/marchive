@@ -11,7 +11,7 @@ Description: description
 
 import { useEffect, useState } from 'react'
 import { useDebounce } from '@uidotdev/usehooks'
-import { DataProviderSerializedType } from '../../../../main/app/data_providers/BaseDataProvider'
+import { DataProviderSerializedType } from 'data-providers/src/BaseDataProvider'
 
 const useValidateUrlWithDataProviders = (url: string) => {
   const debouncedUrlValue = useDebounce(url, 700)

@@ -113,9 +113,9 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     return "Download each media file in this podcast feed and capture metadata";
   }
 
-  getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType {
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(parentPath, "microphone.svg"),
+      filePath: path.join(__dirname, "microphone.svg"),
       shouldInvertOnDarkMode: true,
     };
   }

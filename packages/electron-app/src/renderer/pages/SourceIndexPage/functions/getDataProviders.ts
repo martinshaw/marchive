@@ -9,7 +9,7 @@ Modified: 2023-09-04T01:23:53.527Z
 Description: description
 */
 
-import { DataProviderSerializedType } from "../../../../main/app/data_providers/BaseDataProvider";
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 
 /**
  * @throws {string}

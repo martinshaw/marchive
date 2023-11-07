@@ -13,8 +13,7 @@ import fs from 'node:fs'
 import logger from 'logger';
 import { Schedule, Source } from 'database'
 import { ScheduleAttributes } from 'database/src/models/Schedule'
-import { AllowedScheduleIntervalReturnType } from '../../data_providers/BaseDataProvider'
-import { getDataProviderByIdentifier } from '../../../app/repositories/DataProviderRepository'
+import { getDataProviderByIdentifier, type AllowedScheduleIntervalReturnType } from 'data-providers'
 
 /**
  * @throws {Error}

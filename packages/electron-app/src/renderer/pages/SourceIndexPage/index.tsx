@@ -20,7 +20,7 @@ import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
 import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
-import { DataProviderSerializedType } from '../../../main/app/data_providers/BaseDataProvider';
+import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 import promptForSourceDeletion from '../../layouts/DefaultLayout/functions/promptForSourceDeletion';
 import { CopyableExternalLinkCopyLinkMenuItem } from '../../layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 

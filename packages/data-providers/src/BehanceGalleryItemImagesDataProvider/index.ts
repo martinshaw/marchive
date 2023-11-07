@@ -54,9 +54,9 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     return "Captures all images, tags, comments and metadata from a Behance gallery project page";
   }
 
-  getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType {
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(parentPath, "icon.png"),
+      filePath: path.join(__dirname, "icon.png"),
       shouldInvertOnDarkMode: false,
     };
   }

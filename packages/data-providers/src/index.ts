@@ -12,7 +12,7 @@ Description: description
 import findOrCreateSourceDomainForUrl from './findOrCreateSourceDomainForUrl'
 import retrieveAndStoreFaviconFromUrl, { FaviconIconType } from './retrieveAndStoreFaviconFromUrl'
 
-import BaseDataProvider from './BaseDataProvider'
+import BaseDataProvider, { type AllowedScheduleIntervalReturnType } from './BaseDataProvider'
 import BlogArticleDataProvider from './BlogArticleDataProvider'
 import PodcastRssFeedDataProvider from './PodcastRssFeedDataProvider'
 import WikipediaArticleDataProvider from './WikipediaArticleDataProvider'
@@ -79,4 +79,7 @@ export {
   retrieveAndStoreFaviconFromUrl,
   
   findOrCreateSourceDomainForUrl,
+
+  BaseDataProvider,
+  type AllowedScheduleIntervalReturnType,
 }

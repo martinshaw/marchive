@@ -68,9 +68,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
     return 'Screenshots and snapshots this blog or news article and each of its related articles.';
   }
 
-  getIconInformation(parentPath: string): BaseDataProviderIconInformationReturnType {
+  getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(parentPath, 'list-columns.svg'),
+      filePath: path.join(__dirname, 'list-columns.svg'),
       shouldInvertOnDarkMode: true,
     };
   }
