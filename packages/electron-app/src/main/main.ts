@@ -11,20 +11,31 @@ import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, nativeThe
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
-import './ipc/Captures';
-import './ipc/DataProviders';
-import './ipc/Schedules';
-import './ipc/Sources';
-import './ipc/SourceDomains';
-import './ipc/Utilities';
-import './ipc/Processes';
-import './ipc/Renderers';
+// import './ipc/Captures';
+// import './ipc/DataProviders';
+// import './ipc/Schedules';
+// import './ipc/Sources';
+// import './ipc/SourceDomains';
+// import './ipc/Utilities';
+// import './ipc/Processes';
+// import './ipc/Renderers';
 
-import './protocols';
+// import './protocols';
 
-import createTray from './tray';
+// import createTray from './tray';
 
-// class AppUpdater {
+
+
+let cleanupAndQuit: any = null;
+let closeAllWindows: any = null;
+let createWindow: any = null;
+
+
+try {
+
+
+
+  // class AppUpdater {
 //   constructor() {
 //     log.transports.file.level = 'info';
 //     autoUpdater.logger = log;
@@ -32,23 +43,21 @@ import createTray from './tray';
 //   }
 // }
 
-if (process.env.NODE_ENV === 'production') {
-  (async () => {
-    const sourceMapSupport = await import('source-map-support');
-    sourceMapSupport.install();
-  })
-}
-
 const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-if (isDebug) {
-  (async () => {
-    (await import('electron-debug')).default();
-  })
-}
+// if (isDebug) {
+//   (async () => {
+//     (await import('electron-debug')).default();
+//   })
+// } else {
+//   (async () => {
+//     const sourceMapSupport = await import('source-map-support');
+//     sourceMapSupport.install();
+//   })
+// }
 
 // const installExtensions = async () => {
-//   const installer = requ___('electron-devtools-installer');
+//   const installer = __req_uire('electron-devtools-installer');
 //   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
 //   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
@@ -76,7 +85,7 @@ const generateNewWindowId: () => string = () => {
   return newWindowId;
 };
 
-export const createWindow = async () => {
+createWindow = async () => {
   // if (isDebug) {
   //   await installExtensions();
   // }
@@ -245,11 +254,11 @@ app
   .whenReady()
   .then(() => {
 
+    ipcMain.emit('processes.schedule-run-process.start');
     // TODO: Uncomment me when I have finished refactoring Child Process handling
-    // ipcMain.emit('processes.schedule-run-process.start');
     // ipcMain.emit('processes.capture-part-run-process.start');
 
-    createTray()
+    // createTray()
 
     /**
      * Electron doesn't offer a usual context menu for input boxes, link etc...
@@ -280,7 +289,7 @@ app
     logger.error(error);
   });
 
-export const cleanupAndQuit = () => {
+cleanupAndQuit = () => {
   logger.info('Cleaning up and quitting...');
 
   // TODO: Kill child processes gracefully
@@ -291,7 +300,7 @@ export const cleanupAndQuit = () => {
   app.quit()
 }
 
-export const closeAllWindows = () => {
+closeAllWindows = () => {
   logger.info('Closing all windows...');
 
   Object.keys(windows).forEach((windowId) => {
@@ -299,4 +308,19 @@ export const closeAllWindows = () => {
 
     windows[windowId].close();
   });
+}
+
+} catch (error) {
+  logger.error('Electron app error occurred');
+  logger.error(error);
+  console.error(error);
+  console.log(error)
+
+}
+
+
+export {
+  createWindow,
+  cleanupAndQuit,
+  closeAllWindows,
 }

@@ -36,6 +36,15 @@ const configuration: webpack.Configuration = {
     },
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.node$/,
+        loader: "node-loader",
+      },
+    ],
+  },
+
   optimization: {
     minimizer: [
       new TerserPlugin({

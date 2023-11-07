@@ -16,7 +16,7 @@ import { webContents } from 'electron';
 import { ChildProcess, fork } from 'node:child_process';
 import { readOnlyInternalRootPath } from '../../../../paths';
 import { chunksToLinesAsync, chomp } from '@rauschma/stringio';
-import { ProcessDetailsNameType, processDetails } from '../../processes';
+import { ProcessDetailsNameType, getProcessDetailPath, processDetails } from '../../processes';
 
 export type ProcessStartProcessActionConnectionInfoReturnType = {
   connected: boolean;
@@ -61,10 +61,21 @@ const ProcessStartProcessAction = async (
       );
     }
 
+    // TODO: Remove or improve when when I have finished testing refactor
+    logger.info('ProcessStartProcessAction: Starting Process: ', {
+      processDetailName,
+      processDetails,
+    });
+
     const processDetail = processDetails.find(
       (processDetail) => processDetail.name === processDetailName
     );
     if (typeof processDetail === 'undefined' || processDetail == null) {
+      // TODO: Remove when when I have finished testing refactor
+      logger.error('ProcessStartProcessAction: Could not find process: ', {
+        processDetailName,
+      })
+
       return reject(
         new Error(
           `Could not find the detail for a process with the name ${processDetailName} when attempting to start it.`
@@ -77,23 +88,27 @@ const ProcessStartProcessAction = async (
       processDetail,
     });
 
-    logger.info('ProcessStartProcessAction: Has the script file', {
-      exists: fs.existsSync(processDetail.path),
-    });
-
-    let tsNodeExecutablePath = path.join(
+    let processDetailExecutablePath = path.join(
       readOnlyInternalRootPath,
       'node_modules',
       '.bin',
-      'ts-node'
+      'ts-node' + (process.platform === 'win32' ? '.cmd' : '')
     );
-    if (process.platform === 'win32')
-      tsNodeExecutablePath = tsNodeExecutablePath + '.cmd';
 
-    const childProcess = fork(processDetail.path, [], {
+    const [processDetailScriptPath, processDetailWorkingDirectoryPath] = getProcessDetailPath(processDetail)
+
+    logger.info('ProcessStartProcessAction: Has the script file', {
+      root: processDetailWorkingDirectoryPath,
+      path: processDetailScriptPath,
+      pathExists: fs.existsSync(processDetailScriptPath),
+      executablePath: processDetailExecutablePath,
+      executablePathExists: fs.existsSync(processDetailExecutablePath),
+    });
+
+    const childProcess = fork(processDetailScriptPath, [], {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      execPath: tsNodeExecutablePath,
-      cwd: readOnlyInternalRootPath,
+      execPath: processDetailExecutablePath,
+      cwd: processDetailWorkingDirectoryPath,
       env: { ...process.env },
     });
 

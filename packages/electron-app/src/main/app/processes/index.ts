@@ -9,27 +9,56 @@
  * Description: description
  */
 
-// import path from 'node:path'
-// import { readOnlyInternalChildProcessesPath } from '../../../paths'
+import path from 'node:path'
 
 export type ProcessDetailsType = {
   name: string
-  path: string
+  paths: {
+    development: [string, string];
+    production: [string, string];
+  }
+}
+
+const monorepoPackageSourceEntryPointAndWorkingDirectoryPath = (packageName: string): [string, string] => {
+  return [
+    path.join(__dirname, '..', '..', '..', '..', '..', packageName, 'src', 'index.ts'),
+    path.join(__dirname, '..', '..', '..', '..', '..', packageName),
+  ];
+}
+
+// TODO: Implement and test
+const asarUnpackedBundleEntryPointAndWorkingDirectoryPath = (packageName: string): [string, string] => {
+  return [
+    path.join(__dirname, '..', '..', '..', '..', 'asar.unpacked', packageName, 'main.cjs'),
+    path.join(__dirname, '..', '..', '..', '..', 'asar.unpacked'),
+  ];
 }
 
 export const processDetails: ProcessDetailsType[] = [
-  // {
-  //   name: 'CapturePartRunProcess',
-  //   path: path.join(readOnlyInternalChildProcessesPath, 'CapturePartRunProcess.ts'),
-  // },
-  // {
-  //   name: 'ScheduleRunProcess',
-  //   path: path.join(readOnlyInternalChildProcessesPath, 'ScheduleRunProcess.ts'),
-  // },
+  {
+    name: 'ScheduleRunProcess',
+    paths: {
+      development: monorepoPackageSourceEntryPointAndWorkingDirectoryPath('schedule-run-child-process'),
+      production: asarUnpackedBundleEntryPointAndWorkingDirectoryPath('schedule-run-child-process'),
+    }
+  },
+  {
+    name: 'CapturePartRunProcess',
+    paths: {
+      development: monorepoPackageSourceEntryPointAndWorkingDirectoryPath('capture-part-run-child-process'),
+      production: asarUnpackedBundleEntryPointAndWorkingDirectoryPath('capture-part-run-child-process'),
+    }
+  },
 ]
 
 export type ProcessDetailsNameType = typeof processDetails[number]['name']
-export type ProcessDetailsPathType = typeof processDetails[number]['path']
+
+export const getProcessDetailPath = (processDetail: ProcessDetailsType): [string, string] => {
+  const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+  const environment = isDebug ? 'development' : 'production';
+
+  return processDetail.paths[environment];
+}
 
 /**
  * Inspired by https://www.matthewslipper.com/2019/09/22/everything-you-wanted-electron-child-process.html and

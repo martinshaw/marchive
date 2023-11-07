@@ -40,6 +40,10 @@ const configuration: webpack.Configuration = {
   module: {
     rules: [
       {
+        test: /\.node$/,
+        loader: "node-loader",
+      },
+      {
         test: /\.s?(a|c)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
