@@ -9,34 +9,34 @@ Modified: 2023-08-17T09:12:39.366Z
 Description: description
 */
 
-import path from 'node:path'
-import logger from 'logger'
+// import path from 'node:path'
+// import logger from 'logger'
 
-import { retrieveDueSchedules } from './repositories/ScheduleRepository'
-import { getStoredSettingValue } from './repositories/StoredSettingRepository'
+// import { retrieveDueSchedules } from './repositories/ScheduleRepository'
+// import { getStoredSettingValue } from './repositories/StoredSettingRepository'
 
-import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'
-import { Umzug, SequelizeStorage } from 'umzug'
-import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
-import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
+// import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'    // <-- Not the problem
+// import { Umzug, SequelizeStorage } from 'umzug'
+// import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
+// import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
 
-import sequelize from './connection'
+import sequelize from './connection'    // <--- Problem seems to be caused by code included by this line (at least)
 
-import StoredSetting from './models/StoredSetting'
-import Source from './models/Source'
-import SourceDomain from './models/SourceDomain'
-import Schedule from './models/Schedule'
-import Capture from './models/Capture'
-import CapturePart from './models/CapturePart'
+// import StoredSetting from './models/StoredSetting'
+// import Source from './models/Source'
+// import SourceDomain from './models/SourceDomain'
+// import Schedule from './models/Schedule'
+// import Capture from './models/Capture'
+// import CapturePart from './models/CapturePart'
 
-sequelize.addModels([
-  StoredSetting,
-  Source,
-  SourceDomain,
-  Schedule,
-  Capture,
-  CapturePart,
-])
+// sequelize.addModels([
+//   StoredSetting,
+//   Source,
+//   SourceDomain,
+//   Schedule,
+//   Capture,
+//   CapturePart,
+// ])
 
 /**
  * I used these calls to .sync on each of the models, to create the table for each model based on the implicit schema of
@@ -64,41 +64,41 @@ sequelize.addModels([
 // Capture.sync()
 // CapturePart.sync()
 
-const umzug = new Umzug({
-  migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')) },
-  context: sequelize.getQueryInterface(),
-  storage: new SequelizeStorage({ sequelize }),
-  logger: {
-    info: (event: Record<string, unknown>) => { logger.info('Sequelize Umzug event', {...event}) },
-    warn: (event: Record<string, unknown>) => { logger.warn('Sequelize Umzug event', {...event}) },
-    error: (event: Record<string, unknown>) => { logger.error('Sequelize Umzug event', {...event}) },
-    debug: (event: Record<string, unknown>) => { logger.debug('Sequelize Umzug event', {...event}) },
-  },
-});
+// const umzug = new Umzug({
+//   migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')) },
+//   context: sequelize.getQueryInterface(),
+//   storage: new SequelizeStorage({ sequelize }),
+//   logger: {
+//     info: (event: Record<string, unknown>) => { logger.info('Sequelize Umzug event', {...event}) },
+//     warn: (event: Record<string, unknown>) => { logger.warn('Sequelize Umzug event', {...event}) },
+//     error: (event: Record<string, unknown>) => { logger.error('Sequelize Umzug event', {...event}) },
+//     debug: (event: Record<string, unknown>) => { logger.debug('Sequelize Umzug event', {...event}) },
+//   },
+// });
 
-(async () => { await umzug.up() })();
+// (async () => { await umzug.up() })();
 
-type Migration = typeof umzug._types.migration;
+// type Migration = typeof umzug._types.migration;
 
 export {
-  retrieveDueSchedules,
-  getStoredSettingValue,
+  // retrieveDueSchedules,
+  // getStoredSettingValue,
   
   sequelize,
 
-  umzug,
-  Migration,
+  // // umzug,
+  // // Migration,
 
-  StoredSetting,
-  Source,
-  SourceDomain,
-  Schedule,
-  Capture,
-  CapturePart,
+  // StoredSetting,
+  // Source,
+  // SourceDomain,
+  // Schedule,
+  // Capture,
+  // CapturePart,
 
-  Op,
-  Includeable,
-  Attributes,
-  WhereOptions,
-  ModelStatic,
+  // Op,
+  // Includeable,
+  // Attributes,
+  // WhereOptions,
+  // ModelStatic,
 }

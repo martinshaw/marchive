@@ -1,5 +1,5 @@
 // Need to import database (by effect setting up and migrating database connection) before importing other modules
-import 'database'
+import 'database';
 
 import logger from 'logger';
 import path from 'node:path';
@@ -7,35 +7,24 @@ import WindowMenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';
 import resolveHtmlPath from './utilities/resolveHtmlPath';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, nativeTheme, shell, TitleBarOverlay } from 'electron';
+import { app, BrowserWindow, BrowserWindowConstructorOptions, nativeTheme, shell, TitleBarOverlay } from 'electron';
 // import { autoUpdater } from 'electron-updater';
 // import log from 'electron-log';
 
-// import './ipc/Captures';
-// import './ipc/DataProviders';
-// import './ipc/Schedules';
-// import './ipc/Sources';
-// import './ipc/SourceDomains';
-// import './ipc/Utilities';
-// import './ipc/Processes';
-// import './ipc/Renderers';
+import './ipc/Captures';
+import './ipc/DataProviders';
+import './ipc/Schedules';
+import './ipc/Sources';
+import './ipc/SourceDomains';
+import './ipc/Utilities';
+import './ipc/Processes';
+import './ipc/Renderers';
 
-// import './protocols';
+import './protocols';
+ 
+import createTray from './tray';
 
-// import createTray from './tray';
-
-
-
-let cleanupAndQuit: any = null;
-let closeAllWindows: any = null;
-let createWindow: any = null;
-
-
-try {
-
-
-
-  // class AppUpdater {
+// class AppUpdater {
 //   constructor() {
 //     log.transports.file.level = 'info';
 //     autoUpdater.logger = log;
@@ -45,19 +34,14 @@ try {
 
 const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
-// if (isDebug) {
-//   (async () => {
-//     (await import('electron-debug')).default();
-//   })
-// } else {
-//   (async () => {
-//     const sourceMapSupport = await import('source-map-support');
-//     sourceMapSupport.install();
-//   })
-// }
+if (isDebug) {
+  require('electron-debug')();
+} else {
+  require('source-map-support').install();
+}
 
 // const installExtensions = async () => {
-//   const installer = __req_uire('electron-devtools-installer');
+//   const installer = require('electron-devtools-installer');
 //   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
 //   const extensions = ['REACT_DEVELOPER_TOOLS'];
 
@@ -85,7 +69,7 @@ const generateNewWindowId: () => string = () => {
   return newWindowId;
 };
 
-createWindow = async () => {
+export const createWindow = async () => {
   // if (isDebug) {
   //   await installExtensions();
   // }
@@ -254,11 +238,11 @@ app
   .whenReady()
   .then(() => {
 
-    ipcMain.emit('processes.schedule-run-process.start');
     // TODO: Uncomment me when I have finished refactoring Child Process handling
+    // ipcMain.emit('processes.schedule-run-process.start');
     // ipcMain.emit('processes.capture-part-run-process.start');
 
-    // createTray()
+    createTray()
 
     /**
      * Electron doesn't offer a usual context menu for input boxes, link etc...
@@ -289,18 +273,16 @@ app
     logger.error(error);
   });
 
-cleanupAndQuit = () => {
+export const cleanupAndQuit = () => {
   logger.info('Cleaning up and quitting...');
 
   // TODO: Kill child processes gracefully
   // TODO: Release / delete locks on processes
 
-  logger.info('À bientôt...');
-
   app.quit()
 }
 
-closeAllWindows = () => {
+export const closeAllWindows = () => {
   logger.info('Closing all windows...');
 
   Object.keys(windows).forEach((windowId) => {
@@ -308,19 +290,4 @@ closeAllWindows = () => {
 
     windows[windowId].close();
   });
-}
-
-} catch (error) {
-  logger.error('Electron app error occurred');
-  logger.error(error);
-  console.error(error);
-  console.log(error)
-
-}
-
-
-export {
-  createWindow,
-  cleanupAndQuit,
-  closeAllWindows,
 }
