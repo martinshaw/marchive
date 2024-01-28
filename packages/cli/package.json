@@ -12,7 +12,7 @@
   "bin": "./lib/index.js",
   "dependencies": {
     "commander": "^11.1.0",
-    "database": "workspace:^",
+    "typeorm-database": "workspace:^",
     "logger": "workspace:^",
     "utilities": "workspace:^"
   },

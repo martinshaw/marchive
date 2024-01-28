@@ -1,22 +1,20 @@
-import commander from 'commander';
-import logger from 'logger';
+import commander from "commander";
+import logger from "logger";
 
-import 'database';
-import { Capture, SourceDomain } from 'database';
+import { SourceDomain, dataSource } from "typeorm-database";
 
-const hello = new commander.Command('hello');
+const hello = new commander.Command("hello");
 
-hello
-    .description('Hello world')
-    .action(async () => {
-        console.log('Hello world');
+hello.description("Hello world").action(async () => {
+  logger.info("Hello world", { ok: dataSource.isInitialized });
 
-        const sourceDomain = await SourceDomain.create({
-            name: 'Example',
-            url: 'https://www.example.com/',
-        });
+  const sourceDomain = SourceDomain.create({
+    name: "Example",
+    url: "https://www.example.com/",
+  });
+  await sourceDomain.save();
 
-        console.log(sourceDomain);
-    });
+  logger.info(sourceDomain);
+});
 
 export default hello;

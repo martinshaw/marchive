@@ -8,7 +8,7 @@
     "npm": ">=10.0.0",
     "node": ">=18.0.0"
   },
-  "main": "./src/index.ts",
+  "main": "./lib/index.js",
   "types": "./src/index.ts",
   "bin": "./dist/main.js",
   "scripts": {

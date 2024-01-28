@@ -1,5 +1,5 @@
 {
-  "name": "utilities",
+  "name": "typeorm-database",
   "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@8.10.2",
@@ -15,12 +15,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "resolve-relative-url": "^1.0.0",
-    "sanitize-filename": "^1.6.3",
-    "image-type": "^4.1.0"
+    "better-sqlite3": "^9.3.0",
+    "logger": "workspace:^",
+    "typeorm": "^0.3.20",
+    "utilities": "workspace:^"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "20.11.6",
+    "reflect-metadata": "^0.2.1",
     "typescript": "^5.1.3"
   }
 }

@@ -1,6 +1,7 @@
 packages:
   # - 'packages/capture-part-run-child-process'
   # - 'packages/data-providers'
+  - 'packages/typeorm-database'
   - 'packages/database'
   # - 'packages/electron-app'
   - 'packages/logger'
