@@ -5,7 +5,7 @@ import hello from './commands/hello';
 const program = new commander.Command();
 
 program
-    .version('0.0.1')
+    .version('0.0.2')
     .description('Marchive CLI')
     .addCommand(hello)
     .parse(process.argv);
