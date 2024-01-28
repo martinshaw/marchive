@@ -16,15 +16,14 @@
   },
   "dependencies": {
     "logger": "workspace:^",
-    "reflect-metadata": "^0.1.13",
+    "utilities": "workspace:^",
     "sequelize": "^6.35.0",
     "sequelize-typescript": "^2.1.5",
     "sqlite3": "^5.1.6",
-    "umzug": "^3.3.1",
-    "utilities": "workspace:^"
+    "umzug": "^3.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
+    "@types/node": "20.11.6",
     "typescript": "^5.1.3"
   }
 }

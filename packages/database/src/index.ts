@@ -9,34 +9,34 @@ Modified: 2023-08-17T09:12:39.366Z
 Description: description
 */
 
-// import path from 'node:path'
-// import logger from 'logger'
+import path from 'node:path'
+import logger from 'logger'
 
-// import { retrieveDueSchedules } from './repositories/ScheduleRepository'
-// import { getStoredSettingValue } from './repositories/StoredSettingRepository'
+import { retrieveDueSchedules } from './repositories/ScheduleRepository'
+import { getStoredSettingValue } from './repositories/StoredSettingRepository'
 
-// import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'    // <-- Not the problem
-// import { Umzug, SequelizeStorage } from 'umzug'
-// import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
-// import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
+import { Op, Includeable, Attributes, WhereOptions, ModelStatic } from 'sequelize'
+import { Umzug, SequelizeStorage } from 'umzug'
+import { readOnlyInternalDatabaseMigrationsPath } from './databasePaths'
+import { convertCrossPlatformSlashPathToNodePath } from 'utilities'
 
-import sequelize from './connection'    // <--- Problem seems to be caused by code included by this line (at least)
+import sequelize from './connection';
 
-// import StoredSetting from './models/StoredSetting'
-// import Source from './models/Source'
-// import SourceDomain from './models/SourceDomain'
-// import Schedule from './models/Schedule'
-// import Capture from './models/Capture'
-// import CapturePart from './models/CapturePart'
+import StoredSetting from './models/StoredSetting'
+import Source from './models/Source'
+import SourceDomain from './models/SourceDomain'
+import Schedule from './models/Schedule'
+import Capture from './models/Capture'
+import CapturePart from './models/CapturePart'
 
-// sequelize.addModels([
-//   StoredSetting,
-//   Source,
-//   SourceDomain,
-//   Schedule,
-//   Capture,
-//   CapturePart,
-// ])
+sequelize.addModels([
+  StoredSetting,
+  Source,
+  SourceDomain,
+  Schedule,
+  Capture,
+  CapturePart,
+])
 
 /**
  * I used these calls to .sync on each of the models, to create the table for each model based on the implicit schema of
@@ -57,12 +57,12 @@ import sequelize from './connection'    // <--- Problem seems to be caused by co
  *   column was expected to exist by a DB query which runs on app startup.
  */
 
-// StoredSetting.sync()
-// Source.sync()
-// SourceDomain.sync()
-// Schedule.sync()
-// Capture.sync()
-// CapturePart.sync()
+StoredSetting.sync()
+Source.sync()
+SourceDomain.sync()
+Schedule.sync()
+Capture.sync()
+CapturePart.sync()
 
 // const umzug = new Umzug({
 //   migrations: { glob: convertCrossPlatformSlashPathToNodePath(path.join(readOnlyInternalDatabaseMigrationsPath, '*.{js,ts}')) },
@@ -81,24 +81,24 @@ import sequelize from './connection'    // <--- Problem seems to be caused by co
 // type Migration = typeof umzug._types.migration;
 
 export {
-  // retrieveDueSchedules,
-  // getStoredSettingValue,
+  retrieveDueSchedules,
+  getStoredSettingValue,
   
   sequelize,
 
-  // // umzug,
-  // // Migration,
+  // umzug,
+  // Migration,
 
-  // StoredSetting,
-  // Source,
-  // SourceDomain,
-  // Schedule,
-  // Capture,
-  // CapturePart,
+  StoredSetting,
+  Source,
+  SourceDomain,
+  Schedule,
+  Capture,
+  CapturePart,
 
-  // Op,
-  // Includeable,
-  // Attributes,
-  // WhereOptions,
-  // ModelStatic,
+  Op,
+  Includeable,
+  Attributes,
+  WhereOptions,
+  ModelStatic,
 }
