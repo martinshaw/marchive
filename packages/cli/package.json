@@ -11,9 +11,10 @@
   "types": "lib/index.d.ts",
   "bin": "./lib/index.js",
   "dependencies": {
+    "better-sqlite3": "^9.3.0",
     "commander": "^11.1.0",
-    "typeorm-database": "workspace:^",
     "logger": "workspace:^",
+    "typeorm-database": "workspace:^",
     "utilities": "workspace:^"
   },
   "devDependencies": {
@@ -43,13 +44,16 @@
     "/lib/**/*.js"
   ],
   "scripts": {
-    "compile": "shx rm -rf lib && tsc"
+    "compile": "shx rm -rf lib && webpack --mode=production",
+    "package": "pkg ."
   },
   "pkg": {
     "scripts": "lib/**/*.js",
-    "assets": "assets/**/*",
+    "assets": [
+      "assets/**/*"
+    ],
     "targets": [
-      "node18-macos-arm64"
+      "node18-macos-x64"
     ],
     "outputPath": "bin"
   }

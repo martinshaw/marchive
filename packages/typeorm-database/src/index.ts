@@ -11,6 +11,7 @@ Description: description
 
 import fs from "node:fs";
 import path from "node:path";
+import { DataSource, Entity, Migration } from "typeorm";
 import logger from "logger";
 import {
   userAppDataDatabaseFilePath,
@@ -27,7 +28,6 @@ import SourceDomain from "./models/SourceDomain";
 // import Capture from './models/Capture'
 // import CapturePart from './models/CapturePart'
 
-import { DataSource, Entity, Migration } from "typeorm";
 if (fs.existsSync(userAppDataDatabasesPath) === false)
   fs.mkdirSync(userAppDataDatabasesPath, { recursive: true });
 
@@ -37,6 +37,7 @@ const dataSource = new DataSource({
   entities: [SourceDomain],
   migrations: [],
   synchronize: true,
+  cache: true,
 });
 
 dataSource
@@ -47,7 +48,6 @@ dataSource
     );
   })
   .catch((error) => {
-    console.log("DATABSE ERROR", error, error?.message);
     logger.error("DB: Unable to connect to the database");
     logger.error(error);
   });

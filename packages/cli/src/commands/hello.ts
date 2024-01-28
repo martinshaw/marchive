@@ -14,7 +14,7 @@ hello.description("Hello world").action(async () => {
   });
   await sourceDomain.save();
 
-  logger.info(sourceDomain);
+  logger.info("SourceDomain", { sourceDomain });
 });
 
 export default hello;

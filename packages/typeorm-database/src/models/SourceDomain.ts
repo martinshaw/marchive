@@ -11,7 +11,15 @@ Description: description
 
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "utilities";
 import logger from "logger";
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from "typeorm";
 
 // const sourceUseStartOrEndCursorValues = ["start", "end", null] as const;
 // export type SourceUseStartOrEndCursorValueType =
@@ -47,6 +55,22 @@ class SourceDomain extends BaseEntity {
     nullable: true,
   })
   faviconPath: string | null = null;
+
+  @CreateDateColumn({
+    type: "date",
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: "date",
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({
+    type: "date",
+    nullable: true,
+  })
+  deletedAt: Date | null;
 }
 
 export default SourceDomain;
