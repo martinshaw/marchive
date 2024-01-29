@@ -73,9 +73,4 @@ module.exports = {
     filename: "index.js",
     path: path.resolve(__dirname, "lib"),
   },
-  devServer: {
-    static: path.join(__dirname, "lib"),
-    compress: true,
-    port: 4000,
-  },
 };
