@@ -18,15 +18,15 @@ import {
   userAppDataDatabasesPath,
 } from "./databasePaths";
 
-// import { readOnlyInternalDatabaseMigrationsPath } from "./databasePaths";
-// import { convertCrossPlatformSlashPathToNodePath } from "utilities";
+import { readOnlyInternalDatabaseMigrationsPath } from "./databasePaths";
+import { convertCrossPlatformSlashPathToNodePath } from "utilities";
 
-// import StoredSetting from './models/StoredSetting'
-// import Source from './models/Source'
-import SourceDomain from "./models/SourceDomain";
-// import Schedule from './models/Schedule'
-// import Capture from './models/Capture'
-// import CapturePart from './models/CapturePart'
+import StoredSetting from "./entities/StoredSetting";
+import Source from "./entities/Source";
+import SourceDomain from "./entities/SourceDomain";
+import Schedule from "./entities/Schedule";
+import Capture from "./entities/Capture";
+import CapturePart from "./entities/CapturePart";
 
 if (fs.existsSync(userAppDataDatabasesPath) === false)
   fs.mkdirSync(userAppDataDatabasesPath, { recursive: true });
@@ -34,7 +34,7 @@ if (fs.existsSync(userAppDataDatabasesPath) === false)
 const dataSource = new DataSource({
   type: "better-sqlite3",
   database: userAppDataDatabaseFilePath,
-  entities: [SourceDomain],
+  entities: [StoredSetting, Source, SourceDomain, Schedule],
   migrations: [],
   synchronize: true,
   cache: true,
@@ -52,19 +52,17 @@ dataSource
     logger.error(error);
   });
 
-// import { retrieveDueSchedules } from './repositories/ScheduleRepository'
-// import { getStoredSettingValue } from './repositories/StoredSettingRepository'
+import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
+import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
 export {
-  // retrieveDueSchedules,
-  // getStoredSettingValue,
-
+  retrieveDueSchedules,
+  getStoredSettingValue,
   dataSource,
-
-  // StoredSetting,
-  // Source,
+  StoredSetting,
+  Source,
   SourceDomain,
-  // Schedule,
-  // Capture,
-  // CapturePart,
+  Schedule,
+  Capture,
+  CapturePart,
 };

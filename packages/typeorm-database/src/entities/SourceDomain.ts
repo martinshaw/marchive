@@ -19,7 +19,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from "typeorm";
+import Source from "./Source";
 
 // const sourceUseStartOrEndCursorValues = ["start", "end", null] as const;
 // export type SourceUseStartOrEndCursorValueType =
@@ -71,6 +73,9 @@ class SourceDomain extends BaseEntity {
     nullable: true,
   })
   deletedAt: Date | null;
+
+  @OneToMany(() => Source, (source) => source.sourceDomain)
+  sources: Source[];
 }
 
 export default SourceDomain;
