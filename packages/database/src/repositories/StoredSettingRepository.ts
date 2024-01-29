@@ -13,7 +13,7 @@ import logger from "logger";
 import {
   StoredSettingKeyType,
   StoredSettingTypeType,
-} from "../models/StoredSetting";
+} from "../entities/StoredSetting";
 import { StoredSetting } from "../..";
 
 const determineStoredSettingValueType = (
@@ -46,36 +46,41 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
   if (existingStoredSetting != null && newValue == null)
     return existingStoredSetting;
 
-  if (existingStoredSetting == null && newValue != null)
-    return StoredSetting.create({
-      key,
-      value: newValue.toString(),
-      type: determineStoredSettingValueType(
-        newValue as string | number | boolean
-      ),
-    }).catch((error) => {
+  if (existingStoredSetting == null && newValue != null) {
+    try {
+      return await StoredSetting.create({
+        key,
+        value: newValue.toString(),
+        type: determineStoredSettingValueType(
+          newValue as string | number | boolean
+        ),
+      });
+    } catch (error) {
       logger.error(
         "A DB error occurred when attempting to create a new StoredSetting"
       );
       logger.error(error);
       return null;
-    });
+    }
+  }
 
-  if (existingStoredSetting != null && newValue != null)
-    return existingStoredSetting
-      .update({
-        value: newValue.toString(),
-        type: determineStoredSettingValueType(
-          newValue as string | number | boolean
-        ),
-      })
-      .catch((error) => {
-        logger.error(
-          "A DB error occurred when attempting to update an existing StoredSetting"
-        );
-        logger.error(error);
-        return null;
-      });
+  if (existingStoredSetting != null && newValue != null) {
+    existingStoredSetting.value = newValue.toString();
+    existingStoredSetting.type = determineStoredSettingValueType(
+      newValue as string | number | boolean
+    );
+
+    try {
+      await existingStoredSetting.save();
+      return existingStoredSetting;
+    } catch (error) {
+      logger.error(
+        "A DB error occurred when attempting to update an existing StoredSetting"
+      );
+      logger.error(error);
+      return null;
+    }
+  }
 
   return null;
 };
@@ -92,7 +97,7 @@ const unsetStoredSetting = async (
   }
 
   if (existingStoredSetting == null) return false;
-  await existingStoredSetting.destroy();
+  await existingStoredSetting.softRemove();
   return true;
 };
 

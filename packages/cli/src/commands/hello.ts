@@ -1,7 +1,7 @@
 import commander from "commander";
 import logger from "logger";
 
-import { SourceDomain, dataSource } from "typeorm-database";
+import { SourceDomain, dataSource } from "database";
 
 const hello = new commander.Command("hello");
 

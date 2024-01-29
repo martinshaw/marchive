@@ -1,7 +1,7 @@
 import commander from "commander";
 import process from "node:process";
 import hello from "./commands/hello";
-import { dataSource } from "typeorm-database";
+import { dataSource } from "database";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();

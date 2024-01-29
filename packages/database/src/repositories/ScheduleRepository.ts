@@ -10,28 +10,25 @@ Description: description
 */
 
 import logger from "logger";
-import { Schedule, Source, Op } from "../..";
-import { ScheduleStatus } from "../models/Schedule";
+import { Schedule, Source } from "../..";
+import { ScheduleStatus } from "../entities/Schedule";
+import { And, IsNull, LessThanOrEqual, Not } from "typeorm";
 
 const retrieveDueSchedules = async (): Promise<Schedule[]> => {
   let dueSchedules: Schedule[] = [];
   try {
-    dueSchedules = await Schedule.findAll({
+    dueSchedules = await Schedule.find({
       where: {
         enabled: true,
-        status: {
-          [Op.eq]: "pending" as ScheduleStatus,
-        },
-        nextRunAt: {
-          [Op.lte]: new Date().toISOString(),
-          [Op.ne]: null,
-        },
+        status: "pending",
+        nextRunAt: And(
+          LessThanOrEqual(new Date().toISOString()),
+          Not(IsNull())
+        ),
       },
-      include: [
-        {
-          model: Source,
-        },
-      ],
+      relations: {
+        source: true,
+      },
     });
   } catch (error) {
     logger.error("A DB error occurred when attempting to find due Schedules");

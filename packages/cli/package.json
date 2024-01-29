@@ -12,9 +12,10 @@
   "bin": "./lib/index.js",
   "dependencies": {
     "logger": "workspace:^",
-    "typeorm-database": "workspace:^",
+    "database": "workspace:^",
     "utilities": "workspace:^",
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "better-sqlite3": "^9.3.0"
   },
   "devDependencies": {
     "@types/node": "20.11.6",

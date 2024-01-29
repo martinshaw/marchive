@@ -15,15 +15,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "better-sqlite3": "^9.3.0",
     "logger": "workspace:^",
-    "utilities": "workspace:^",
-    "sequelize": "^6.35.0",
-    "sequelize-typescript": "^2.1.5",
-    "sqlite3": "^5.1.6",
-    "umzug": "^3.3.1"
+    "typeorm": "^0.3.20",
+    "utilities": "workspace:^"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "20.11.6",
+    "reflect-metadata": "^0.2.1",
     "typescript": "^5.1.3"
   }
 }
