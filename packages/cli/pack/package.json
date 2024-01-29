@@ -1,0 +1,20 @@
+{
+  "name": "cli",
+  "private": true,
+  "bin": "./index.js",
+  "dependencies": {
+    "better-sqlite3": "^9.3.0"
+  },
+  "scripts": {
+    "pack:mac": "npx pkg . --targets node18-macos-x64",
+    "pack:linux": "npx pkg . --targets node18-linux-x64",
+    "pack:win": "npx pkg . --targets node18-win-x64"
+  },
+  "pkg": {
+    "scripts": "**/*.js",
+    "assets": [
+      "node_modules/better-sqlite3/build"
+    ],
+    "outputPath": "."
+  }
+}

@@ -11,7 +11,6 @@
   "types": "lib/index.d.ts",
   "bin": "./lib/index.js",
   "dependencies": {
-    "better-sqlite3": "^9.3.0",
     "commander": "^11.1.0",
     "logger": "workspace:^",
     "typeorm-database": "workspace:^",
@@ -24,7 +23,6 @@
     "@types/node": "20.11.6",
     "babel-jest": "^29.7.0",
     "pg-hstore": "^2.3.4",
-    "pkg": "^5.8.1",
     "reflect-metadata": "^0.2.1",
     "shx": "^0.3.3",
     "ts-loader": "^9.5.1",
@@ -45,7 +43,9 @@
   ],
   "scripts": {
     "compile": "shx rm -rf lib && webpack --mode=production",
-    "package": "pkg ."
+    "pack:mac": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:mac && shx cp cli ../bin && cd ..",
+    "pack:linux": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:linux && shx cp cli ../bin && cd ..",
+    "pack:win": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:win && shx cp cli ../bin && cd .."
   },
   "pkg": {
     "scripts": "lib/**/*.js",
