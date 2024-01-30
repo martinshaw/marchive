@@ -5,7 +5,9 @@
     "marchive-cli": "./index.js"
   },
   "dependencies": {
-    "better-sqlite3": "^9.3.0"
+    "better-sqlite3": "^9.3.0",
+    "jsdom": "^22.1.0",
+    "puppeteer-core": "^21.3.8"
   },
   "scripts": {
     "pack:mac": "npx pkg . --targets node18-macos-x64",
@@ -17,6 +19,6 @@
     "assets": [
       "node_modules/better-sqlite3/build"
     ],
-    "outputPath": "."
+    "outputPath": "../bin"
   }
 }

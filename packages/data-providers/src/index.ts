@@ -9,15 +9,33 @@ Modified: 2023-10-11T18:10:49.687Z
 Description: description
 */
 
-import findOrCreateSourceDomainForUrl from './findOrCreateSourceDomainForUrl'
-import retrieveAndStoreFaviconFromUrl, { FaviconIconType } from './retrieveAndStoreFaviconFromUrl'
+import findOrCreateSourceDomainForUrl from "./findOrCreateSourceDomainForUrl";
+import retrieveAndStoreFaviconFromUrl, {
+  type FaviconIconType,
+} from "./retrieveAndStoreFaviconFromUrl";
 
-import BaseDataProvider, { type AllowedScheduleIntervalReturnType } from './BaseDataProvider'
-import BlogArticleDataProvider from './BlogArticleDataProvider'
-import PodcastRssFeedDataProvider from './PodcastRssFeedDataProvider'
-import WikipediaArticleDataProvider from './WikipediaArticleDataProvider'
-import SimpleWebpageScreenshotDataProvider from './SimpleWebpageScreenshotDataProvider'
-import BehanceGalleryItemImagesDataProvider from './BehanceGalleryItemImagesDataProvider'
+import BaseDataProvider, {
+  type AllowedScheduleIntervalReturnType,
+} from "./BaseDataProvider";
+import BlogArticleDataProvider from "./BlogArticleDataProvider";
+import PodcastRssFeedDataProvider from "./PodcastRssFeedDataProvider";
+import WikipediaArticleDataProvider from "./WikipediaArticleDataProvider";
+import SimpleWebpageScreenshotDataProvider from "./SimpleWebpageScreenshotDataProvider";
+import BehanceGalleryItemImagesDataProvider from "./BehanceGalleryItemImagesDataProvider";
+
+// TODO: Remove these, added for testing
+import { createPuppeteerBrowser } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { loadPageByUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { scrollPageToTop } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { smoothlyScrollPageToBottom } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { generatePageReadability } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { generatePageScreenshot } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { generatePageSnapshot } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { generatePageMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { retrievePageHeadMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { retrieveFaviconsFromUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { retrieveFaviconsFromPage } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import { type PageHeadMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
 
 /**
  * These Data Provider Classes should be ordered in increasing order of specificity
@@ -38,48 +56,59 @@ const dataProvidersClasses: BaseDataProvider[] = [
   new PodcastRssFeedDataProvider(),
   new BehanceGalleryItemImagesDataProvider(),
   new WikipediaArticleDataProvider(),
-]
+];
 
 const getDataProviders = async (): Promise<BaseDataProvider[]> => {
-  return dataProvidersClasses
-}
+  return dataProvidersClasses;
+};
 
 const getDataProviderByIdentifier: (
   identifier: string
 ) => Promise<BaseDataProvider | undefined> = async (identifier: string) => {
-  return dataProvidersClasses.find(dataProvider => {
-    return dataProvider.getIdentifier() === identifier
-  })
-}
+  return dataProvidersClasses.find((dataProvider) => {
+    return dataProvider.getIdentifier() === identifier;
+  });
+};
 
 const validateUrlWithDataProviders: (
   url: string
 ) => Promise<BaseDataProvider[]> = async (url: string) => {
-  const dataProviders = await getDataProviders()
+  const dataProviders = await getDataProviders();
 
-  const validDataProviderIdentifiers: BaseDataProvider[] = []
+  const validDataProviderIdentifiers: BaseDataProvider[] = [];
 
   for (let index = 0; index < dataProviders.length; index += 1) {
-    const currentDataProvider: BaseDataProvider = dataProviders[index]
+    const currentDataProvider: BaseDataProvider = dataProviders[index];
 
     if (await currentDataProvider.validateUrlPrompt(url)) {
-      validDataProviderIdentifiers.push(currentDataProvider)
+      validDataProviderIdentifiers.push(currentDataProvider);
     }
   }
 
-  return validDataProviderIdentifiers
-}
+  return validDataProviderIdentifiers;
+};
 
 export {
   getDataProviders,
   getDataProviderByIdentifier,
   validateUrlWithDataProviders,
-  
   FaviconIconType,
   retrieveAndStoreFaviconFromUrl,
-  
   findOrCreateSourceDomainForUrl,
-
   BaseDataProvider,
   type AllowedScheduleIntervalReturnType,
-}
+
+  // TODO: Remove me, added for testing
+  createPuppeteerBrowser,
+  loadPageByUrl,
+  scrollPageToTop,
+  smoothlyScrollPageToBottom,
+  generatePageReadability,
+  generatePageScreenshot,
+  generatePageSnapshot,
+  generatePageMetadata,
+  retrievePageHeadMetadata,
+  retrieveFaviconsFromUrl,
+  retrieveFaviconsFromPage,
+  type PageHeadMetadata,
+};

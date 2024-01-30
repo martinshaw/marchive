@@ -11,11 +11,15 @@
   "types": "lib/index.d.ts",
   "bin": "./lib/index.js",
   "dependencies": {
-    "better-sqlite3": "^9.3.0",
-    "commander": "^11.1.0",
+    "data-providers": "workspace:^",
     "database": "workspace:^",
     "logger": "workspace:^",
-    "utilities": "workspace:^"
+    "utilities": "workspace:^",
+    "commander": "^11.1.0",
+    "better-sqlite3": "^9.3.0",
+    "jsdom": "^22.1.0",
+    "puppeteer-core": "^21.3.8",
+    "puppeteer-autoscroll-down": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "20.11.6",
@@ -39,8 +43,8 @@
   ],
   "scripts": {
     "compile": "shx rm -rf lib && webpack --mode=production",
-    "pack:mac": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:mac && shx cp cli ../bin && cd ..",
-    "pack:linux": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:linux && shx cp cli ../bin && cd ..",
-    "pack:win": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:win && shx cp cli ../bin && cd .."
+    "pack:mac": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:mac && cd ..",
+    "pack:linux": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:linux && cd ..",
+    "pack:win": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:win && cd .."
   }
 }

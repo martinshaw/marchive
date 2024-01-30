@@ -16,26 +16,30 @@ module.exports = {
   target: "node",
   externals: [
     // Webpack cannot determine that these are not used before runtime, so we will choose not to bundle them knowing that they will never be required at runtime
-    "react-native-sqlite-storage",
-    "@google-cloud/spanner",
-    "mongodb",
-    "@sap/hana-client",
-    "@sap/hana-client/extension/Stream",
-    "hdb-pool",
-    "mysql",
-    "mysql2",
-    "oracledb",
     "pg",
+    "redis",
+    "mysql",
+    "mssql",
+    "mysql2",
+    "sql.js",
+    "mongodb",
+    "ioredis",
+    "hdb-pool",
+    "oracledb",
     "pg-native",
     "pg-query-stream",
+    "@sap/hana-client",
+    "@google-cloud/spanner",
+    "react-native-sqlite-storage",
     "typeorm-aurora-data-api-driver",
-    "redis",
-    "ioredis",
-    "mssql",
-    "sql.js",
+    "@sap/hana-client/extension/Stream",
 
     // I want this but I cannot bundle its native binary into the bundle code file, keep it external and bundle the binary with bindings using pkg
     "better-sqlite3",
+
+    // These Puppeteer related modules require native modules and/or non-statically analyzable modules, I will package them inside the binary like with better-sqlite3 above
+    "jsdom",
+    "puppeteer-core",
   ],
   ignoreWarnings: [
     // Suppresses warnings about Webpack's above mentioned inability to determine that the TypeORM adapters are not used before runtime
