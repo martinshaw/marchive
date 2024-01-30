@@ -9,6 +9,7 @@ Modified: 2024-01-28T13:40:42.119Z
 Description: description
 */
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -68,6 +69,21 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          mangle: true,
+          /**
+           * TypeOrm needs to reflect the class names of the imported migrations, so we need to keep them intact
+           * I would like to mangle all other class names, but I cannot get the regex option to work
+           */
+          keep_classnames: true,
+        },
+      }),
+    ],
   },
   output: {
     filename: "index.js",

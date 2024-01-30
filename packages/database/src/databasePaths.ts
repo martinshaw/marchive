@@ -12,14 +12,14 @@ Description: description
 import path from "node:path";
 import { userAppDataPath } from "utilities";
 
-const readOnlyInternalDatabaseMigrationsPath: string = path.join(__dirname, '..', 'src', 'migrations');
+const userAppDataDatabasesPath = path.join(userAppDataPath, "Databases");
+const userAppDataDatabaseFilePath = path.join(
+  userAppDataDatabasesPath,
+  "marchive.db"
+);
 
-const userAppDataDatabasesPath = path.join(userAppDataPath, 'Databases');
-const userAppDataDatabaseFilePath = path.join(userAppDataDatabasesPath, 'marchive.db');
-
-export { 
-    readOnlyInternalDatabaseMigrationsPath,
-    userAppDataPath,
-    userAppDataDatabasesPath,
-    userAppDataDatabaseFilePath
+export {
+  userAppDataPath,
+  userAppDataDatabasesPath,
+  userAppDataDatabaseFilePath,
 };

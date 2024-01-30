@@ -10,16 +10,14 @@ Description: description
 */
 
 import fs from "node:fs";
-import path from "node:path";
-import { DataSource, Entity, Migration } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import logger from "logger";
 import {
   userAppDataDatabaseFilePath,
   userAppDataDatabasesPath,
 } from "./databasePaths";
-
-import { readOnlyInternalDatabaseMigrationsPath } from "./databasePaths";
-import { convertCrossPlatformSlashPathToNodePath } from "utilities";
+import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
+import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
 import StoredSetting from "./entities/StoredSetting";
 import Source from "./entities/Source";
@@ -28,10 +26,12 @@ import Schedule from "./entities/Schedule";
 import Capture from "./entities/Capture";
 import CapturePart from "./entities/CapturePart";
 
+import migrations from "./migrations";
+
 if (fs.existsSync(userAppDataDatabasesPath) === false)
   fs.mkdirSync(userAppDataDatabasesPath, { recursive: true });
 
-const dataSource = new DataSource({
+const dataSourceConfig: DataSourceOptions = {
   type: "better-sqlite3",
   database: userAppDataDatabaseFilePath,
   entities: [
@@ -42,10 +42,13 @@ const dataSource = new DataSource({
     Capture,
     CapturePart,
   ],
-  migrations: [],
-  synchronize: true,
+  migrations,
+  migrationsRun: true,
+  synchronize: false,
   cache: true,
-});
+};
+
+const dataSource = new DataSource(dataSourceConfig);
 
 dataSource
   .initialize()
@@ -58,9 +61,6 @@ dataSource
     logger.error("DB: Unable to connect to the database");
     logger.error(error);
   });
-
-import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
-import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
 export {
   retrieveDueSchedules,
