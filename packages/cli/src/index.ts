@@ -12,5 +12,11 @@ import { dataSource } from "database";
     .version("0.0.2")
     .description("Marchive CLI")
     .addCommand(hello)
-    .parse(process.argv);
+    .parse(
+      (() => {
+        let args = process.argv;
+        args[0] = "marchive-cli";
+        return args;
+      })()
+    );
 })();

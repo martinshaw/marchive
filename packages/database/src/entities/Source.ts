@@ -84,11 +84,17 @@ class Source extends BaseEntity {
   })
   deletedAt: Date | null;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.source)
-  schedules: Schedule[];
+  @Column({
+    type: "integer",
+    nullable: true,
+  })
+  sourceDomainId: number | null;
 
   @ManyToOne(() => SourceDomain, (sourceDomain) => sourceDomain.sources)
   sourceDomain: SourceDomain;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.source)
+  schedules: Schedule[];
 }
 
 export default Source;

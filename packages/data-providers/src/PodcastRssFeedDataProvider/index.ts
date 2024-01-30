@@ -22,7 +22,7 @@ import { v4 as uuidV4 } from "uuid";
 import Downloader from "nodejs-file-downloader";
 import { safeSanitizeFileName } from "utilities";
 import { Capture, CapturePart, Schedule, Source } from "database";
-import { CapturePartStatus } from "database/src/models/CapturePart";
+import { CapturePartStatus } from "database/src/entities/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 
 export type RssParserFeedType = {
@@ -460,7 +460,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
             dataProviderPartIdentifier,
             payload: JSON.stringify(payload),
             downloadLocation,
-            captureId: capture.id,
+            capture,
           });
         } catch (error) {
           logger.error(

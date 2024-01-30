@@ -63,17 +63,24 @@ const findOrCreateSourceDomainForUrl = async (
       ? sourceDomainInformationFromDataProvider.siteName
       : urlDomainName;
 
-  return SourceDomain.create({
-    url: urlDomainName,
-    name,
-    faviconPath: null,
-  }).catch((error: Error | string) => {
+  let newSourceDomain: SourceDomain | null = null;
+
+  try {
+    newSourceDomain = await SourceDomain.create({
+      url: urlDomainName,
+      name,
+      faviconPath: null,
+    });
+  } catch (error) {
     logger.error(
       `A DB error occurred when attempting to create SourceDomain with URL ${urlDomainName}:`
     );
     logger.error(error);
+
     return null;
-  });
+  }
+
+  return newSourceDomain;
 };
 
 export default findOrCreateSourceDomainForUrl;

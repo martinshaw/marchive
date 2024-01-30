@@ -42,15 +42,5 @@
     "pack:mac": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:mac && shx cp cli ../bin && cd ..",
     "pack:linux": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:linux && shx cp cli ../bin && cd ..",
     "pack:win": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:win && shx cp cli ../bin && cd .."
-  },
-  "pkg": {
-    "scripts": "lib/**/*.js",
-    "assets": [
-      "assets/**/*"
-    ],
-    "targets": [
-      "node18-macos-x64"
-    ],
-    "outputPath": "bin"
   }
 }

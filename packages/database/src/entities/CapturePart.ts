@@ -98,6 +98,12 @@ class CapturePart extends BaseEntity {
   })
   deletedAt: Date | null;
 
+  @Column({
+    type: "integer",
+    nullable: true,
+  })
+  captureId: number | null;
+
   @ManyToOne(() => Capture, (capture) => capture.captureParts)
   capture: Capture;
 }

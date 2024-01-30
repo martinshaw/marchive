@@ -94,6 +94,12 @@ class Schedule extends BaseEntity {
   })
   deletedAt: Date | null;
 
+  @Column({
+    type: "integer",
+    nullable: true,
+  })
+  sourceId: number | null;
+
   @ManyToOne(() => Source, (source) => source.schedules)
   source: Source;
 

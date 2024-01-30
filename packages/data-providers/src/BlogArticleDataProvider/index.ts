@@ -9,17 +9,17 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import fs from 'node:fs';
-import logger from 'logger';
+import fs from "node:fs";
+import logger from "logger";
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
   BaseDataProviderIconInformationReturnType,
   SourceDomainInformationReturnType,
-} from '../BaseDataProvider';
-import path from 'node:path';
-import { v4 as uuidV4 } from 'uuid';
-import { Page } from 'puppeteer-core';
-import { safeSanitizeFileName } from 'utilities'
+} from "../BaseDataProvider";
+import path from "node:path";
+import { v4 as uuidV4 } from "uuid";
+import { Page } from "puppeteer-core";
+import { safeSanitizeFileName } from "utilities";
 import {
   createPuppeteerBrowser,
   generatePageMetadata,
@@ -27,10 +27,10 @@ import {
   generatePageScreenshot,
   generatePageSnapshot,
   loadPageByUrl,
-} from '../helper_functions/PuppeteerDataProviderHelperFunctions';
-import { Capture, Schedule, Source, CapturePart } from 'database';
-import { CapturePartStatus } from 'database/src/models/CapturePart';
-import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from '../helper_functions/CapturePartHelperFunctions';
+} from "../helper_functions/PuppeteerDataProviderHelperFunctions";
+import { Capture, Schedule, Source, CapturePart } from "database";
+import { CapturePartStatus } from "database/src/entities/CapturePart";
+import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -41,42 +41,42 @@ export type BlogArticleDataProviderLinkType = {
 };
 
 export type BlogArticleDataProviderLinkedPagePayloadIncludesType =
-  | 'readability'
-  | 'screenshot'
-  | 'snapshot'
-  | 'metadata';
+  | "readability"
+  | "screenshot"
+  | "snapshot"
+  | "metadata";
 
 export type BlogArticleDataProviderLinkedPagePayloadType = {
   index: number;
   includes: BlogArticleDataProviderLinkedPagePayloadIncludesType[];
 } & BlogArticleDataProviderLinkType;
 
-export type BlogArticleDataProviderPartIdentifierType = 'linked-page';
+export type BlogArticleDataProviderPartIdentifierType = "linked-page";
 
 export type CountMapOfCommonParentDirectoriesType = { [key: string]: number };
 
 class BlogArticleDataProvider extends BaseDataProvider {
   getIdentifier(): string {
-    return 'blog-article';
+    return "blog-article";
   }
 
   getName(): string {
-    return 'Blog & News Articles';
+    return "Blog & News Articles";
   }
 
   getDescription(): string {
-    return 'Screenshots and snapshots this blog or news article and each of its related articles.';
+    return "Screenshots and snapshots this blog or news article and each of its related articles.";
   }
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, 'list-columns.svg'),
+      filePath: path.join(__dirname, "list-columns.svg"),
       shouldInvertOnDarkMode: true,
     };
   }
 
   async validateUrlPrompt(url: string): Promise<boolean> {
-    if ((url.startsWith('http://') || url.startsWith('https://')) === false)
+    if ((url.startsWith("http://") || url.startsWith("https://")) === false)
       url = `https://${url}`;
 
     let request: Response | null = null;
@@ -88,8 +88,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
       const contents = await request.text();
       if (!contents) return false;
       if (
-        contents.includes('<body') === false &&
-        contents.includes('<body>') === false
+        contents.includes("<body") === false &&
+        contents.includes("<body>") === false
       )
         return false;
     } catch (error) {
@@ -160,7 +160,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       capture.downloadLocation
     );
     if (firstPageScreenshot === false) {
-      const errorMessage = 'The first page screenshot could not be generated';
+      const errorMessage = "The first page screenshot could not be generated";
       logger.error(errorMessage);
 
       await page.close();
@@ -173,7 +173,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       capture.downloadLocation
     );
     if (firstPageSnapshot === false) {
-      const errorMessage = 'The first page snapshot could not be generated';
+      const errorMessage = "The first page snapshot could not be generated";
       logger.error(errorMessage);
 
       await page.close();
@@ -186,7 +186,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       capture.downloadLocation
     );
     if (firstPageMetadata === false) {
-      const errorMessage = 'The first page metadata could not be generated';
+      const errorMessage = "The first page metadata could not be generated";
       logger.error(errorMessage);
 
       await page.close();
@@ -194,9 +194,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage);
     }
 
-    if (firstPageMetadata.title != null && firstPageMetadata.title !== '') {
-      source.name = firstPageMetadata.title.toString()
-      await source.save()
+    if (firstPageMetadata.title != null && firstPageMetadata.title !== "") {
+      source.name = firstPageMetadata.title.toString();
+      await source.save();
     }
 
     /**
@@ -204,7 +204,10 @@ class BlogArticleDataProvider extends BaseDataProvider {
      * Stupidly, Wikipedia miss use the 'website' og:type for their articles, so we can include them regardless
      */
     let shouldCaptureReadability = true;
-    if (firstPageMetadata?.ogType === 'website' && source.url.includes('wikipedia.org/') === false)
+    if (
+      firstPageMetadata?.ogType === "website" &&
+      source.url.includes("wikipedia.org/") === false
+    )
       shouldCaptureReadability = false;
 
     if (shouldCaptureReadability) {
@@ -214,7 +217,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       );
       if (firstPageReadability === false) {
         const errorMessage =
-          'The first page readability could not be generated';
+          "The first page readability could not be generated";
         logger.error(errorMessage);
 
         await page.close();
@@ -252,17 +255,17 @@ class BlogArticleDataProvider extends BaseDataProvider {
   async determineAllLinks(
     page: Page
   ): Promise<BlogArticleDataProviderLinkType[]> {
-    const linkHandles = await page.$$('a');
+    const linkHandles = await page.$$("a");
 
     const articleLinks: BlogArticleDataProviderLinkType[] = await Promise.all(
       linkHandles.map(async (link) => {
         return {
-          url: (await (await link?.getProperty('href'))?.jsonValue()) ?? '',
-          text: (await (await link?.getProperty('text'))?.jsonValue()) ?? '',
+          url: (await (await link?.getProperty("href"))?.jsonValue()) ?? "",
+          text: (await (await link?.getProperty("text"))?.jsonValue()) ?? "",
           innerText:
-            (await (await link?.getProperty('innerText'))?.jsonValue()) ?? '',
-          alt: (await (await link?.getProperty('alt'))?.jsonValue()) ?? '',
-          title: (await (await link?.getProperty('title'))?.jsonValue()) ?? '',
+            (await (await link?.getProperty("innerText"))?.jsonValue()) ?? "",
+          alt: (await (await link?.getProperty("alt"))?.jsonValue()) ?? "",
+          title: (await (await link?.getProperty("title"))?.jsonValue()) ?? "",
         };
       })
     );
@@ -271,15 +274,15 @@ class BlogArticleDataProvider extends BaseDataProvider {
       resolve(
         articleLinks
           .map((link) => {
-            if (link.url === '') return null;
+            if (link.url === "") return null;
             if (
-              link.url.startsWith('http://') === false &&
-              link.url.startsWith('https://') === false
+              link.url.startsWith("http://") === false &&
+              link.url.startsWith("https://") === false
             )
               return null;
 
-            if (link.url.includes('#')) {
-              const urlWithoutHash = link.url.split('#')[0];
+            if (link.url.includes("#")) {
+              const urlWithoutHash = link.url.split("#")[0];
               if (
                 articleLinks.some(
                   (otherLink) => otherLink.url === urlWithoutHash
@@ -307,15 +310,15 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     articleLinks.forEach((link) => {
       const safeUrl =
-        link.url.startsWith('http://') || link.url.startsWith('https://')
+        link.url.startsWith("http://") || link.url.startsWith("https://")
           ? link.url
-          : 'https://' + link.url;
+          : "https://" + link.url;
       const url = new URL(safeUrl);
-      const pathParts = url.pathname.split('/');
+      const pathParts = url.pathname.split("/");
 
-      const commonParentDirectory = pathParts.slice(0, -1).join('/');
+      const commonParentDirectory = pathParts.slice(0, -1).join("/");
 
-      if (commonParentDirectory === '') return;
+      if (commonParentDirectory === "") return;
 
       if (
         countMapOfCommonParentDirectories[commonParentDirectory] === undefined
@@ -335,13 +338,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const singleAndFewSiblingLinks = allLinks.filter((link) => {
       const safeUrl =
-        link.url.startsWith('http://') || link.url.startsWith('https://')
+        link.url.startsWith("http://") || link.url.startsWith("https://")
           ? link.url
-          : 'https://' + link.url;
+          : "https://" + link.url;
       const url = new URL(safeUrl);
-      const pathParts = url.pathname.split('/');
+      const pathParts = url.pathname.split("/");
 
-      const commonParentDirectory = pathParts.slice(0, -1).join('/');
+      const commonParentDirectory = pathParts.slice(0, -1).join("/");
 
       return countMap[commonParentDirectory] < 2;
     });
@@ -362,13 +365,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const highestSiblingLinks = allLinks.filter((link) => {
       const safeUrl =
-        link.url.startsWith('http://') || link.url.startsWith('https://')
+        link.url.startsWith("http://") || link.url.startsWith("https://")
           ? link.url
-          : 'https://' + link.url;
+          : "https://" + link.url;
       const url = new URL(safeUrl);
-      const pathParts = url.pathname.split('/');
+      const pathParts = url.pathname.split("/");
 
-      const commonParentDirectory = pathParts.slice(0, -1).join('/');
+      const commonParentDirectory = pathParts.slice(0, -1).join("/");
 
       return highestCounts.has(countMap[commonParentDirectory]);
     });
@@ -401,12 +404,12 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const articleLinks = allLinks.filter((link) => {
       const safeUrl =
-        link.url.startsWith('http://') || link.url.startsWith('https://')
+        link.url.startsWith("http://") || link.url.startsWith("https://")
           ? link.url
-          : 'https://' + link.url;
+          : "https://" + link.url;
       const url = new URL(safeUrl);
-      const pathParts = url.pathname.split('/');
-      const commonParentDirectory = pathParts.slice(0, -1).join('/');
+      const pathParts = url.pathname.split("/");
+      const commonParentDirectory = pathParts.slice(0, -1).join("/");
       return (
         highHalfOfUniqueCountMapCounts.has(countMap[commonParentDirectory]) &&
         this.testLikelyArticleLinkUrl(link.url)
@@ -425,7 +428,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   testLikelyArticleLinkUrl(url: string): boolean {
     url = url.trim().toLowerCase();
-    if (url === '') return false;
+    if (url === "") return false;
 
     // if url is 'comments' lead or followed by a non-alphanumeric character, it is likely unwanted
     if (/comments[^\dA-Za-z]|[^\dA-Za-z]comments/.test(url)) return false;
@@ -453,7 +456,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     captureDownloadDirectory: string
   ): Promise<void> {
     return fs.writeFile(
-      path.join(captureDownloadDirectory, 'links.json'),
+      path.join(captureDownloadDirectory, "links.json"),
       JSON.stringify(articleLinks),
       {},
       (error) => {
@@ -470,7 +473,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   ): Promise<void> {
     let shouldAddArticleLinks = true;
     if (
-      source.useStartOrEndCursor === 'start' &&
+      source.useStartOrEndCursor === "start" &&
       source.currentStartCursorUrl != null
     )
       shouldAddArticleLinks = false;
@@ -492,7 +495,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       }
 
       if (
-        source.useStartOrEndCursor === 'start' &&
+        source.useStartOrEndCursor === "start" &&
         source?.currentStartCursorUrl === link.url
       ) {
         shouldAddArticleLinks = false;
@@ -500,7 +503,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       }
 
       if (
-        source.useStartOrEndCursor === 'end' &&
+        source.useStartOrEndCursor === "end" &&
         source?.currentEndCursorUrl === link.url
       ) {
         shouldAddArticleLinks = true;
@@ -510,7 +513,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       if (shouldAddArticleLinks) {
         const payload: BlogArticleDataProviderLinkedPagePayloadType = {
           index,
-          includes: ['readability', 'screenshot', 'snapshot', 'metadata'],
+          includes: ["readability", "screenshot", "snapshot", "metadata"],
           ...link,
         };
 
@@ -522,16 +525,16 @@ class BlogArticleDataProvider extends BaseDataProvider {
         let capturePart: CapturePart | null = null;
         try {
           capturePart = await CapturePart.create({
-            status: 'pending' as CapturePartStatus,
+            status: "pending" as CapturePartStatus,
             url: link.url,
             dataProviderPartIdentifier:
-              'linked-page' as BlogArticleDataProviderPartIdentifierType,
+              "linked-page" as BlogArticleDataProviderPartIdentifierType,
             payload: JSON.stringify(payload),
             downloadLocation,
-            captureId: capture.id,
+            capture,
           });
         } catch (error) {
-          logger.error('A DB error occurred when creating a new Capture Part');
+          logger.error("A DB error occurred when creating a new Capture Part");
           logger.error(error);
         }
 
@@ -554,9 +557,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
       if (shouldContinue === false) break;
     }
 
-    if (source.useStartOrEndCursor === 'start')
+    if (source.useStartOrEndCursor === "start")
       source.currentStartCursorUrl = articleLinks[0].url;
-    if (source.useStartOrEndCursor === 'end')
+    if (source.useStartOrEndCursor === "end")
       source.currentEndCursorUrl = articleLinks[articleLinks.length - 1].url;
     await source.save();
 
@@ -570,7 +573,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     switch (
       capturePart.dataProviderPartIdentifier as BlogArticleDataProviderPartIdentifierType
     ) {
-      case 'linked-page':
+      case "linked-page":
         return this.processLinkedPagePart(capturePart);
       default:
         return this.processDefaultPart(capturePart);
@@ -593,9 +596,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     if (
       capturePart?.capture?.downloadLocation == null ||
-      capturePart?.capture?.downloadLocation === '' ||
+      capturePart?.capture?.downloadLocation === "" ||
       capturePart?.downloadLocation == null ||
-      capturePart?.downloadLocation === ''
+      capturePart?.downloadLocation === ""
     ) {
       const errorMessage = `No download location found for Capture Part ${capturePart.id}`;
       logger.error(errorMessage);
@@ -620,16 +623,16 @@ class BlogArticleDataProvider extends BaseDataProvider {
       throw new Error(errorMessage);
     }
 
-    const readabilityGenerationStatus = payload.includes.includes('readability')
+    const readabilityGenerationStatus = payload.includes.includes("readability")
       ? await generatePageReadability(page, capturePart.downloadLocation)
       : true;
-    const screenshotGenerationStatus = payload.includes.includes('screenshot')
+    const screenshotGenerationStatus = payload.includes.includes("screenshot")
       ? await generatePageScreenshot(page, capturePart.downloadLocation)
       : true;
-    const snapshotGenerationStatus = payload.includes.includes('snapshot')
+    const snapshotGenerationStatus = payload.includes.includes("snapshot")
       ? await generatePageSnapshot(page, capturePart.downloadLocation)
       : true;
-    const metadataGenerationStatus = payload.includes.includes('metadata')
+    const metadataGenerationStatus = payload.includes.includes("metadata")
       ? await generatePageMetadata(page, capturePart.downloadLocation)
       : true;
 
@@ -665,9 +668,9 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   textIsSuitableForFileName(text: string | false): text is string {
     if (text === false) return false;
-    if (text == null || text === '') return false;
+    if (text == null || text === "") return false;
     if (text.length > 50) return false;
-    if (text.includes('>') || text.includes('<')) return false;
+    if (text.includes(">") || text.includes("<")) return false;
     return true;
   }
 
@@ -685,11 +688,11 @@ class BlogArticleDataProvider extends BaseDataProvider {
     if (this.textIsSuitableForFileName(sanitizedTitle)) return sanitizedTitle;
 
     const sanitizedAlt = safeSanitizeFileName(
-      typeof link.alt === 'string' ? link.alt : ''
+      typeof link.alt === "string" ? link.alt : ""
     );
     if (this.textIsSuitableForFileName(sanitizedAlt)) return sanitizedAlt;
 
-    const urlParts = link.url.split('/');
+    const urlParts = link.url.split("/");
     const urlLastPart = urlParts[urlParts.length - 1];
     const sanitizedUrlLastPart = safeSanitizeFileName(urlLastPart);
     if (this.textIsSuitableForFileName(sanitizedUrlLastPart))

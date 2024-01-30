@@ -63,6 +63,12 @@ class Capture extends BaseEntity {
   })
   deletedAt: Date | null;
 
+  @Column({
+    type: "integer",
+    nullable: true,
+  })
+  scheduleId: number | null;
+
   @ManyToOne(() => Schedule, (schedule) => schedule.source)
   schedule: Schedule;
 

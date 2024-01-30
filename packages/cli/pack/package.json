@@ -1,7 +1,9 @@
 {
-  "name": "cli",
+  "name": "marchive-cli",
   "private": true,
-  "bin": "./index.js",
+  "bin": {
+    "marchive-cli": "./index.js"
+  },
   "dependencies": {
     "better-sqlite3": "^9.3.0"
   },

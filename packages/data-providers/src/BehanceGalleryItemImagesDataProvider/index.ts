@@ -19,7 +19,6 @@ import BaseDataProvider, {
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
 import { Page } from "puppeteer-core";
-// import { JSONObject } from "types-json";
 import Downloader from "nodejs-file-downloader";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import {
@@ -27,7 +26,6 @@ import {
   loadPageByUrl,
   retrievePageHeadMetadata,
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
-import { CapturePartStatus } from "database/src/models/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 
 type BehanceGalleryItemImagesDataProviderImageType = {
@@ -186,7 +184,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   async generatePageProjectMetadata(
     page: Page,
     captureDownloadDirectory: string
-  // ): Promise<false | JSONObject> {
+    // ): Promise<false | JSONObject> {
   ): Promise<false | any> {
     const projectMetadataFileName = path.join(
       captureDownloadDirectory,
@@ -410,13 +408,13 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
         let capturePart: CapturePart | null = null;
         try {
           capturePart = await CapturePart.create({
-            status: "pending" as CapturePartStatus,
+            status: "pending",
             url: image.url,
             dataProviderPartIdentifier:
               "image" as BehanceGalleryItemImagesDataProviderPartIdentifierType,
             payload: JSON.stringify(payload),
             downloadLocation,
-            captureId: capture.id,
+            capture,
           });
         } catch (error) {
           logger.error("A DB error occurred when creating a new Capture Part");

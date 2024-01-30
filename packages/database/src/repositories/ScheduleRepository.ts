@@ -9,9 +9,8 @@ Modified: 2023-08-25T16:47:42.472Z
 Description: description
 */
 
+import { Schedule } from "..";
 import logger from "logger";
-import { Schedule, Source } from "../..";
-import { ScheduleStatus } from "../entities/Schedule";
 import { And, IsNull, LessThanOrEqual, Not } from "typeorm";
 
 const retrieveDueSchedules = async (): Promise<Schedule[]> => {

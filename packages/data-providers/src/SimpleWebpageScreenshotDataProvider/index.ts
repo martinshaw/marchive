@@ -11,7 +11,6 @@ Description: description
 
 import path from "node:path";
 import logger from "logger";
-import { Browser, Page } from "puppeteer-core";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import BaseDataProvider, {
   AllowedScheduleIntervalReturnType,
