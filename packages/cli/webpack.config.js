@@ -40,6 +40,7 @@ module.exports = {
     // These Puppeteer related modules require native modules and/or non-statically analyzable modules, I will package them inside the binary like with better-sqlite3 above
     "jsdom",
     "puppeteer-core",
+    // "@puppeteer/browsers",
   ],
   ignoreWarnings: [
     // Suppresses warnings about Webpack's above mentioned inability to determine that the TypeORM adapters are not used before runtime
@@ -85,6 +86,7 @@ module.exports = {
            * I would like to mangle all other class names, but I cannot get the regex option to work
            */
           keep_classnames: true,
+          keep_fnames: true,
         },
       }),
     ],

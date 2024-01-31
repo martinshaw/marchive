@@ -11,24 +11,26 @@
   "types": "lib/index.d.ts",
   "bin": "./lib/index.js",
   "dependencies": {
+    "jsdom": "^22.1.0",
+    "puppeteer-core": "^21.3.8",
+    "@puppeteer/browsers": "^1.9.1",
+    "better-sqlite3": "^9.3.0",
+    "commander": "^11.1.0",
     "data-providers": "workspace:^",
     "database": "workspace:^",
     "logger": "workspace:^",
-    "utilities": "workspace:^",
-    "commander": "^11.1.0",
-    "better-sqlite3": "^9.3.0",
-    "jsdom": "^22.1.0",
-    "puppeteer-core": "^21.3.8",
-    "puppeteer-autoscroll-down": "^1.1.2"
+    "utilities": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "20.11.6",
+    "bufferutil": "^4.0.8",
     "reflect-metadata": "^0.2.1",
     "shx": "^0.3.3",
     "terser-webpack-plugin": "^5.3.10",
     "ts-loader": "^9.5.1",
     "ts-node": "10.9.1",
     "typescript": "^5.1.3",
+    "utf-8-validate": "^6.0.3",
     "webpack": "^5.90.0",
     "webpack-cli": "^5.1.4"
   },
@@ -43,8 +45,8 @@
   ],
   "scripts": {
     "compile": "shx rm -rf lib && webpack --mode=production",
-    "pack:mac": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:mac && cd ..",
-    "pack:linux": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:linux && cd ..",
-    "pack:win": "pnpm run compile && shx rm -rf pack/index.js bin/cli && shx cp lib/index.js pack && cd pack && npm install && npm run pack:win && cd .."
+    "pack:mac": "pnpm run compile && node ./scripts/package.js macos x64",
+    "pack:linux": "pnpm run compile && node ./scripts/package.js linux x64",
+    "pack:win": "pnpm run compile && node ./scripts/package.js win x64"
   }
 }

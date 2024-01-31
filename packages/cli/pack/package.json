@@ -9,11 +9,6 @@
     "jsdom": "^22.1.0",
     "puppeteer-core": "^21.3.8"
   },
-  "scripts": {
-    "pack:mac": "npx pkg . --targets node18-macos-x64",
-    "pack:linux": "npx pkg . --targets node18-linux-x64",
-    "pack:win": "npx pkg . --targets node18-win-x64"
-  },
   "pkg": {
     "scripts": "**/*.js",
     "assets": [

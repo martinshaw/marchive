@@ -18,7 +18,7 @@ import BaseDataProvider, {
 } from "../BaseDataProvider";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
-import { Page } from "puppeteer-core";
+import { ElementHandle, Page } from "puppeteer-core";
 import Downloader from "nodejs-file-downloader";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import {
@@ -204,7 +204,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     textContentSelectors.forEach(async ({ selector, key }) => {
       await page.waitForSelector(selector);
       const element = await page.$(selector);
-      const value = await page.evaluate((el) => el?.textContent, element);
+      /**
+       * Using a serialisable template string function here instead of an actual function,
+       * resolves an issue with `pkg` unintentionally affecting the evaluated function
+       */
+      const value = await page.evaluate<
+        [ElementHandle<Element> | null],
+        (elementHandle: Element | null) => string | null
+      >(`(elementHandle) => elementHandle?.textContent ?? null`, element);
       projectMetadata[key] = value ?? null;
     });
 
@@ -220,28 +227,44 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       locationUrl: string | null;
     }[] = await Promise.all(
       authorHandles.map(async (authorHandle) =>
-        page.evaluate((el) => {
+        /**
+         * Using a serialisable template string function here instead of an actual function,
+         * resolves an issue with `pkg` unintentionally affecting the evaluated function
+         */
+        page.evaluate<
+          [ElementHandle<Element>],
+          (elementHandle: Element) => {
+            avatarImageUrl: string | null;
+            name: string | null;
+            url: string | null;
+            locationName: string | null;
+            locationUrl: string | null;
+          }
+        >(
+          `(elementHandle) => {
           return {
             avatarImageUrl:
-              el
+              elementHandle
                 ?.querySelector('[class*="UserInfo-userAvatar-"] img')
                 ?.getAttribute("src") ?? null,
             name:
-              el?.querySelector('a[class*="UserInfo-userName"]')?.textContent ??
-              null,
+              elementHandle?.querySelector('a[class*="UserInfo-userName"]')
+                ?.textContent ?? null,
             url:
-              el
+              elementHandle
                 ?.querySelector('a[class*="UserInfo-userName"]')
                 ?.getAttribute("href") ?? null,
             locationName:
-              el?.querySelector('a[class*="UserInfo-userLocation"]')
+              elementHandle?.querySelector('a[class*="UserInfo-userLocation"]')
                 ?.textContent ?? null,
             locationUrl:
-              el
+              elementHandle
                 ?.querySelector('a[class*="UserInfo-userLocation"]')
                 ?.getAttribute("href") ?? null,
           };
-        }, authorHandle)
+        }`,
+          authorHandle
+        )
       )
     );
     projectMetadata.authors = authorsData;
@@ -257,24 +280,40 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       content: string | null;
     }[] = await Promise.all(
       commentHandles.map(async (commentHandle) =>
-        page.evaluate((el) => {
+        /**
+         * Using a serialisable template string function here instead of an actual function,
+         * resolves an issue with `pkg` unintentionally affecting the evaluated function
+         */
+        page.evaluate<
+          [ElementHandle<HTMLLIElement>],
+          (elementHandle: HTMLLIElement) => {
+            avatarImageUrl: string | null;
+            authorName: string | null;
+            authorUrl: string | null;
+            content: string | null;
+          }
+        >(
+          `(elementHandle) => {
           return {
             avatarImageUrl:
-              el
+              elementHandle
                 ?.querySelector('[class*="ProjectComment-avatar-"] img')
                 ?.getAttribute("src") ?? null,
             authorName:
-              el?.querySelector('a[class*="ProjectComment-userName-"]')
-                ?.textContent ?? null,
+              elementHandle?.querySelector(
+                'a[class*="ProjectComment-userName-"]'
+              )?.textContent ?? null,
             authorUrl:
-              el
+              elementHandle
                 ?.querySelector('a[class*="ProjectComment-userName-"]')
                 ?.getAttribute("href") ?? null,
             content:
-              el?.querySelector('[class*="ProjectComment-comment-"]')
+              elementHandle?.querySelector('[class*="ProjectComment-comment-"]')
                 ?.textContent ?? null,
           };
-        }, commentHandle)
+        }`,
+          commentHandle
+        )
       )
     );
     projectMetadata.comments = commentsData;
@@ -287,12 +326,27 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       caption: string | null;
     }[] = await Promise.all(
       tagHandles.map(async (tagHandle) =>
-        page.evaluate((el) => {
-          return {
-            url: el?.querySelector("a")?.getAttribute("href") ?? null,
-            caption: el?.querySelector("a")?.textContent ?? null,
-          };
-        }, tagHandle)
+        /**
+         * Using a serialisable template string function here instead of an actual function,
+         * resolves an issue with `pkg` unintentionally affecting the evaluated function
+         */
+        page.evaluate<
+          [ElementHandle<HTMLLIElement>],
+          (elementHandle: HTMLLIElement) => {
+            url: string | null;
+            caption: string | null;
+          }
+        >(
+          `
+          (elementHandle) => {
+            return {
+              url:
+                elementHandle?.querySelector("a")?.getAttribute("href") ?? null,
+              caption: elementHandle?.querySelector("a")?.textContent ?? null,
+            };
+          }`,
+          tagHandle
+        )
       )
     );
     projectMetadata.tags = tagsData;

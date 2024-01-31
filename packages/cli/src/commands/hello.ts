@@ -25,8 +25,6 @@ hello.description("Hello world").action(async () => {
 
   const browser = await createPuppeteerBrowser();
   const page = await loadPageByUrl("https://www.google.com", browser);
-  await scrollPageToTop(page);
-  await smoothlyScrollPageToBottom(page);
   const metadata = await generatePageMetadata(
     page,
     "/Users/martinshaw-maltamac/Desktop"
@@ -35,7 +33,9 @@ hello.description("Hello world").action(async () => {
   await page.close();
   await browser.close();
 
-  logger.info("Testing Puppeteer ", { is_working: metadata });
+  logger.info("Testing Puppeteer ", {
+    is_working: metadata,
+  });
 });
 
 export default hello;

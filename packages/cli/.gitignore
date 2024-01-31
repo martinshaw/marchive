@@ -3,5 +3,6 @@ lib/*
 bin/*
 !bin/.gitkeep
 pack/*
+!pack/.gitkeep
 !pack/package.json
 node_modules

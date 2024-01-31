@@ -15,7 +15,7 @@ import { dataSource } from "database";
     .parse(
       (() => {
         let args = process.argv;
-        args[0] = "marchive-cli";
+        // args[0] = "marchive-cli";
         return args;
       })()
     );
