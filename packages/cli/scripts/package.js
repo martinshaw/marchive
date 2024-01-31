@@ -90,7 +90,7 @@ execSync(
    * TODO: Solve error causing me to use `--public` flag and remove use of the `--public` flag
    * @see https://www.notion.so/martinshaw/Fix-Marchive-5ec25001ff4840959d53676e4f56ef65?pvs=4#866fe5f5c52b4f85bf815866802ff88d
    */
-  `npx pkg . ` + `--targets node18-${platform}-${arch} --public`
+  `npx pkg . --targets node18-${platform}-${arch} --public`
   {
     cwd: path.join(cliPath, "pack"),
   }

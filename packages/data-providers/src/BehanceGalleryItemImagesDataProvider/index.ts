@@ -204,14 +204,10 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     textContentSelectors.forEach(async ({ selector, key }) => {
       await page.waitForSelector(selector);
       const element = await page.$(selector);
-      /**
-       * Using a serialisable template string function here instead of an actual function,
-       * resolves an issue with `pkg` unintentionally affecting the evaluated function
-       */
       const value = await page.evaluate<
         [ElementHandle<Element> | null],
         (elementHandle: Element | null) => string | null
-      >(`(elementHandle) => elementHandle?.textContent ?? null`, element);
+      >((elementHandle) => elementHandle?.textContent ?? null, element);
       projectMetadata[key] = value ?? null;
     });
 
@@ -227,10 +223,6 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       locationUrl: string | null;
     }[] = await Promise.all(
       authorHandles.map(async (authorHandle) =>
-        /**
-         * Using a serialisable template string function here instead of an actual function,
-         * resolves an issue with `pkg` unintentionally affecting the evaluated function
-         */
         page.evaluate<
           [ElementHandle<Element>],
           (elementHandle: Element) => {
@@ -240,8 +232,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
             locationName: string | null;
             locationUrl: string | null;
           }
-        >(
-          `(elementHandle) => {
+        >((elementHandle) => {
           return {
             avatarImageUrl:
               elementHandle
@@ -262,9 +253,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
                 ?.querySelector('a[class*="UserInfo-userLocation"]')
                 ?.getAttribute("href") ?? null,
           };
-        }`,
-          authorHandle
-        )
+        }, authorHandle)
       )
     );
     projectMetadata.authors = authorsData;
@@ -280,10 +269,6 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       content: string | null;
     }[] = await Promise.all(
       commentHandles.map(async (commentHandle) =>
-        /**
-         * Using a serialisable template string function here instead of an actual function,
-         * resolves an issue with `pkg` unintentionally affecting the evaluated function
-         */
         page.evaluate<
           [ElementHandle<HTMLLIElement>],
           (elementHandle: HTMLLIElement) => {
@@ -292,8 +277,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
             authorUrl: string | null;
             content: string | null;
           }
-        >(
-          `(elementHandle) => {
+        >((elementHandle) => {
           return {
             avatarImageUrl:
               elementHandle
@@ -311,9 +295,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
               elementHandle?.querySelector('[class*="ProjectComment-comment-"]')
                 ?.textContent ?? null,
           };
-        }`,
-          commentHandle
-        )
+        }, commentHandle)
       )
     );
     projectMetadata.comments = commentsData;
@@ -326,27 +308,19 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       caption: string | null;
     }[] = await Promise.all(
       tagHandles.map(async (tagHandle) =>
-        /**
-         * Using a serialisable template string function here instead of an actual function,
-         * resolves an issue with `pkg` unintentionally affecting the evaluated function
-         */
         page.evaluate<
           [ElementHandle<HTMLLIElement>],
           (elementHandle: HTMLLIElement) => {
             url: string | null;
             caption: string | null;
           }
-        >(
-          `
-          (elementHandle) => {
-            return {
-              url:
-                elementHandle?.querySelector("a")?.getAttribute("href") ?? null,
-              caption: elementHandle?.querySelector("a")?.textContent ?? null,
-            };
-          }`,
-          tagHandle
-        )
+        >((elementHandle) => {
+          return {
+            url:
+              elementHandle?.querySelector("a")?.getAttribute("href") ?? null,
+            caption: elementHandle?.querySelector("a")?.textContent ?? null,
+          };
+        }, tagHandle)
       )
     );
     projectMetadata.tags = tagsData;

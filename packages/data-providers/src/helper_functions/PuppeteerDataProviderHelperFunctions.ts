@@ -112,17 +112,10 @@ export const loadPageByUrl = async (
   return page;
 };
 
-export const scrollPageToTop = async (page: Page): Promise<void> => {
-  /**
-   * Using a serialisable template string function here instead of an actual function,
-   * resolves an issue with `pkg` unintentionally affecting the evaluated function
-   */
-  return page.evaluate<[], () => void>(`
-    (() => {
-      window.scrollTo(0, 0);
-    })()
-  `);
-};
+export const scrollPageToTop = async (page: Page): Promise<void> =>
+  page.evaluate<[], () => void>(() => {
+    window.scrollTo(0, 0);
+  });
 
 export const smoothlyScrollPageToBottom = async (
   page: Page,
@@ -136,28 +129,19 @@ export const generatePageReadability = async (
   page: Page,
   captureDownloadDirectory: string
 ): Promise<boolean> => {
-  /**
-   * Using a serialisable template string function here instead of an actual function,
-   * resolves an issue with `pkg` unintentionally affecting the evaluated function
-   */
-  const evaluatedPageUrl = await page.evaluate<[], () => string>(`
-    (() => {
-      return window.location.href;
-    })()
-  `);
+  const evaluatedPageUrl = await page.evaluate<[], () => string>(
+    () => window.location.href
+  );
 
-  /**
-   * Using a serialisable template string function here instead of an actual function,
-   * resolves an issue with `pkg` unintentionally affecting the evaluated function
-   */
-  const bodyTagHtmlIncludingTag = await page.evaluate<[], () => string | null>(`
-    (() => {
+  const bodyTagHtmlIncludingTag = await page.evaluate<[], () => string | null>(
+    () => {
       const bodyTag = document.querySelector("body");
       if (bodyTag == null) return null;
 
       return bodyTag.outerHTML;
-    })()
-  `);
+    }
+  );
+
   if (bodyTagHtmlIncludingTag == null) return false;
   if (bodyTagHtmlIncludingTag.trim().length === 0) return false;
 
@@ -311,117 +295,109 @@ export type PageHeadMetadata = {
 export const retrievePageHeadMetadata = async (
   page: Page
 ): Promise<PageHeadMetadata> =>
-  /**
-   * Using a serialisable template string function here instead of an actual function,
-   * resolves an issue with `pkg` unintentionally affecting the evaluated function
-   */
-  page.evaluate<[], () => PageHeadMetadata>(
-    `
-    (() => {
-      const metadata: Partial<PageHeadMetadata> = {};
+  page.evaluate<[], () => PageHeadMetadata>(() => {
+    const metadata: Partial<PageHeadMetadata> = {};
 
-      const titleElement = document.querySelector("title");
-      if (titleElement != null) metadata.title = titleElement.innerText;
+    const titleElement = document.querySelector("title");
+    if (titleElement != null) metadata.title = titleElement.innerText;
 
-      const metaTagsToInclude = [
-        { selector: "description", key: "description" },
-        { selector: "keywords", key: "keywords" },
-        { selector: "og:title", key: "ogTitle" },
-        { selector: "og:description", key: "ogDescription" },
-        { selector: "og:image", key: "ogImage" },
-        { selector: "og:url", key: "ogUrl" },
-        { selector: "og:site_name", key: "ogSiteName" },
-        { selector: "og:type", key: "ogType" },
-        { selector: "og:locale", key: "ogLocale" },
-        { selector: "og:locale:alternate", key: "ogLocaleAlternate" },
-        { selector: "og:video", key: "ogVideo" },
-        { selector: "og:video:secure_url", key: "ogVideoSecureUrl" },
-        { selector: "og:video:type", key: "ogVideoType" },
-        { selector: "og:video:width", key: "ogVideoWidth" },
-        { selector: "og:video:height", key: "ogVideoHeight" },
-        { selector: "og:image:secure_url", key: "ogImageSecureUrl" },
-        { selector: "og:image:type", key: "ogImageType" },
-        { selector: "og:image:width", key: "ogImageWidth" },
-        { selector: "og:image:height", key: "ogImageHeight" },
-        { selector: "og:image:alt", key: "ogImageAlt" },
-        { selector: "og:audio", key: "ogAudio" },
-        { selector: "og:audio:secure_url", key: "ogAudioSecureUrl" },
-        { selector: "og:audio:type", key: "ogAudioType" },
-        { selector: "og:audio:width", key: "ogAudioWidth" },
-        { selector: "og:audio:height", key: "ogAudioHeight" },
-        { selector: "og:determiner", key: "ogDeterminer" },
-        { selector: "theme-color", key: "themeColor" },
-        { selector: "twitter:card", key: "twitterCard" },
-        { selector: "twitter:site", key: "twitterSite" },
-        { selector: "twitter:creator", key: "twitterCreator" },
-        { selector: "twitter:title", key: "twitterTitle" },
-        { selector: "twitter:description", key: "twitterDescription" },
-        { selector: "twitter:image", key: "twitterImage" },
-        { selector: "twitter:image:alt", key: "twitterImageAlt" },
-        { selector: "twitter:player", key: "twitterPlayer" },
-        { selector: "twitter:player:width", key: "twitterPlayerWidth" },
-        { selector: "twitter:player:height", key: "twitterPlayerHeight" },
-        { selector: "twitter:player:stream", key: "twitterPlayerStream" },
-        {
-          selector: "twitter:player:stream:content_type",
-          key: "twitterPlayerStreamContentType",
-        },
-        { selector: "name", key: "name" },
-        { selector: "itemprop", key: "itemprop" },
-        { selector: "itemtype", key: "itemtype" },
-        { selector: "itemscope", key: "itemscope" },
-        { selector: "itemref", key: "itemref" },
-        { selector: "itemid", key: "itemid" },
-        { selector: "msapplication-TileImage", key: "msApplicationTileImage" },
-        { selector: "msapplication-TileColor", key: "msApplicationTileColor" },
-        { selector: "article:published_time", key: "articlePublishedTime" },
-        { selector: "article:modified_time", key: "articleModifiedTime" },
-        { selector: "article:expiration_time", key: "articleExpirationTime" },
-        { selector: "article:section", key: "articleSection" },
-        { selector: "article:opinion", key: "articleOpinion" },
-        { selector: "news_keywords", key: "newsKeywords" },
-      ] as const;
+    const metaTagsToInclude = [
+      { selector: "description", key: "description" },
+      { selector: "keywords", key: "keywords" },
+      { selector: "og:title", key: "ogTitle" },
+      { selector: "og:description", key: "ogDescription" },
+      { selector: "og:image", key: "ogImage" },
+      { selector: "og:url", key: "ogUrl" },
+      { selector: "og:site_name", key: "ogSiteName" },
+      { selector: "og:type", key: "ogType" },
+      { selector: "og:locale", key: "ogLocale" },
+      { selector: "og:locale:alternate", key: "ogLocaleAlternate" },
+      { selector: "og:video", key: "ogVideo" },
+      { selector: "og:video:secure_url", key: "ogVideoSecureUrl" },
+      { selector: "og:video:type", key: "ogVideoType" },
+      { selector: "og:video:width", key: "ogVideoWidth" },
+      { selector: "og:video:height", key: "ogVideoHeight" },
+      { selector: "og:image:secure_url", key: "ogImageSecureUrl" },
+      { selector: "og:image:type", key: "ogImageType" },
+      { selector: "og:image:width", key: "ogImageWidth" },
+      { selector: "og:image:height", key: "ogImageHeight" },
+      { selector: "og:image:alt", key: "ogImageAlt" },
+      { selector: "og:audio", key: "ogAudio" },
+      { selector: "og:audio:secure_url", key: "ogAudioSecureUrl" },
+      { selector: "og:audio:type", key: "ogAudioType" },
+      { selector: "og:audio:width", key: "ogAudioWidth" },
+      { selector: "og:audio:height", key: "ogAudioHeight" },
+      { selector: "og:determiner", key: "ogDeterminer" },
+      { selector: "theme-color", key: "themeColor" },
+      { selector: "twitter:card", key: "twitterCard" },
+      { selector: "twitter:site", key: "twitterSite" },
+      { selector: "twitter:creator", key: "twitterCreator" },
+      { selector: "twitter:title", key: "twitterTitle" },
+      { selector: "twitter:description", key: "twitterDescription" },
+      { selector: "twitter:image", key: "twitterImage" },
+      { selector: "twitter:image:alt", key: "twitterImageAlt" },
+      { selector: "twitter:player", key: "twitterPlayer" },
+      { selector: "twitter:player:width", key: "twitterPlayerWidth" },
+      { selector: "twitter:player:height", key: "twitterPlayerHeight" },
+      { selector: "twitter:player:stream", key: "twitterPlayerStream" },
+      {
+        selector: "twitter:player:stream:content_type",
+        key: "twitterPlayerStreamContentType",
+      },
+      { selector: "name", key: "name" },
+      { selector: "itemprop", key: "itemprop" },
+      { selector: "itemtype", key: "itemtype" },
+      { selector: "itemscope", key: "itemscope" },
+      { selector: "itemref", key: "itemref" },
+      { selector: "itemid", key: "itemid" },
+      { selector: "msapplication-TileImage", key: "msApplicationTileImage" },
+      { selector: "msapplication-TileColor", key: "msApplicationTileColor" },
+      { selector: "article:published_time", key: "articlePublishedTime" },
+      { selector: "article:modified_time", key: "articleModifiedTime" },
+      { selector: "article:expiration_time", key: "articleExpirationTime" },
+      { selector: "article:section", key: "articleSection" },
+      { selector: "article:opinion", key: "articleOpinion" },
+      { selector: "news_keywords", key: "newsKeywords" },
+    ] as const;
 
-      metaTagsToInclude.forEach(({ selector, key }) => {
-        const element = document.querySelector(
-          'meta[name="' + selector + '"], meta[property="' + selector + '"]'
-        );
-        if (element != null) metadata[key] = element.getAttribute("content");
-      });
-
-      // Some sites use multiple 'article:tag' + 'article:tags' tags and some other sites use one tag with multiple comma-separated values
-      const metaArticleTagTagsToInclude = document.querySelectorAll(
-        'meta[name="tag"], meta[property="tag"], meta[name="article:tag"], meta[property="article:tag"], meta[name="article:tags"], meta[property="article:tags"], meta[name="parsely-tags"], meta[property="parsely-tags"]'
+    metaTagsToInclude.forEach(({ selector, key }) => {
+      const element = document.querySelector(
+        'meta[name="' + selector + '"], meta[property="' + selector + '"]'
       );
-      metadata.articleTags = [];
-      Array.from(metaArticleTagTagsToInclude).forEach((element, index) => {
-        metadata.articleTags = [
-          ...(metadata.articleTags ?? []),
-          ...(element.getAttribute("content")?.split(", ") ?? []),
-        ];
-      });
-      metadata.articleTags = metadata.articleTags.filter(
-        (tag, index) => metadata.articleTags?.indexOf(tag) === index
-      );
+      if (element != null) metadata[key] = element.getAttribute("content");
+    });
 
-      const metaArticleAuthorTagsToInclude = document.querySelectorAll(
-        'meta[name="author"], meta[property="author"], meta[name="article:author"], meta[property="article:author"], meta[name="parsely-author"], meta[property="parsely-author"]'
-      );
-      metadata.articleAuthors = [];
-      Array.from(metaArticleAuthorTagsToInclude).forEach((element, index) => {
-        metadata.articleAuthors = [
-          ...(metadata.articleAuthors ?? []),
-          ...(element.getAttribute("content")?.split(", ") ?? []),
-        ];
-      });
-      metadata.articleAuthors = metadata.articleAuthors.filter(
-        (author, index) => metadata.articleAuthors?.indexOf(author) === index
-      );
+    // Some sites use multiple 'article:tag' + 'article:tags' tags and some other sites use one tag with multiple comma-separated values
+    const metaArticleTagTagsToInclude = document.querySelectorAll(
+      'meta[name="tag"], meta[property="tag"], meta[name="article:tag"], meta[property="article:tag"], meta[name="article:tags"], meta[property="article:tags"], meta[name="parsely-tags"], meta[property="parsely-tags"]'
+    );
+    metadata.articleTags = [];
+    Array.from(metaArticleTagTagsToInclude).forEach((element, index) => {
+      metadata.articleTags = [
+        ...(metadata.articleTags ?? []),
+        ...(element.getAttribute("content")?.split(", ") ?? []),
+      ];
+    });
+    metadata.articleTags = metadata.articleTags.filter(
+      (tag, index) => metadata.articleTags?.indexOf(tag) === index
+    );
 
-      return metadata as PageHeadMetadata;
-    })()
-  `
-  );
+    const metaArticleAuthorTagsToInclude = document.querySelectorAll(
+      'meta[name="author"], meta[property="author"], meta[name="article:author"], meta[property="article:author"], meta[name="parsely-author"], meta[property="parsely-author"]'
+    );
+    metadata.articleAuthors = [];
+    Array.from(metaArticleAuthorTagsToInclude).forEach((element, index) => {
+      metadata.articleAuthors = [
+        ...(metadata.articleAuthors ?? []),
+        ...(element.getAttribute("content")?.split(", ") ?? []),
+      ];
+    });
+    metadata.articleAuthors = metadata.articleAuthors.filter(
+      (author, index) => metadata.articleAuthors?.indexOf(author) === index
+    );
+
+    return metadata as PageHeadMetadata;
+  });
 
 export const retrieveFaviconsFromUrl = async (
   url: string
@@ -441,12 +417,7 @@ export const retrieveFaviconsFromPage = async (
 ): Promise<FaviconIconType[]> => {
   await page.waitForSelector("body");
 
-  /**
-   * Using a serialisable template string function here instead of an actual function,
-   * resolves an issue with `pkg` unintentionally affecting the evaluated function
-   */
-  return page.evaluate<[], () => FaviconIconType[]>(
-    `(() => {
+  return page.evaluate<[], () => FaviconIconType[]>(() => {
     let favicons: FaviconIconType[] = [];
 
     const linkTags = [
@@ -482,6 +453,5 @@ export const retrieveFaviconsFromPage = async (
     });
 
     return favicons;
-  })()`
-  );
+  });
 };
