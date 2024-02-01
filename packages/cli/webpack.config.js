@@ -12,6 +12,8 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 module.exports = {
   entry: "./src/index.ts",
   target: "node",
@@ -75,38 +77,42 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          mangle: true,
-          /**
-           * TypeOrm needs to reflect the class names of the imported migrations, so we need to keep them intact
-           * I would like to mangle all other class names, but I cannot get the regex option to work
-           */
-          keep_classnames: true,
-          keep_fnames: true,
+  ...(isProduction
+    ? {
+        optimization: {
+          minimizer: [
+            new TerserPlugin({
+              parallel: true,
+              terserOptions: {
+                mangle: true,
+                /**
+                 * TypeOrm needs to reflect the class names of the imported migrations, so we need to keep them intact
+                 * I would like to mangle all other class names, but I cannot get the regex option to work
+                 */
+                keep_classnames: true,
+                keep_fnames: true,
+              },
+            }),
+          ],
         },
-      }),
-    ],
-  },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(
-            __dirname,
-            "..",
-            "data-providers",
-            "src",
-            "browser_extensions"
-          ),
-          to: path.join(__dirname, "pack", "browser_extensions"),
-        },
-      ],
-    }),
-  ],
+        plugins: [
+          new CopyPlugin({
+            patterns: [
+              {
+                from: path.join(
+                  __dirname,
+                  "..",
+                  "data-providers",
+                  "src",
+                  "browser_extensions"
+                ),
+                to: path.join(__dirname, "pack", "browser_extensions"),
+              },
+            ],
+          }),
+        ],
+      }
+    : {}),
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "lib"),

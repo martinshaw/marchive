@@ -1,7 +1,8 @@
 import commander, { Option } from "commander";
 import process from "node:process";
-import test from "./commands/test";
 import { dataSource } from "database";
+import Test from "./commands/Test";
+import SourceCreate from "./commands/Source/SourceCreate";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
@@ -24,7 +25,8 @@ import { dataSource } from "database";
         .default(false)
         .conflicts(["l"])
     )
-    .addCommand(test)
+    .addCommand(Test)
+    .addCommand(SourceCreate)
     .parse(
       (() => {
         let args = process.argv;

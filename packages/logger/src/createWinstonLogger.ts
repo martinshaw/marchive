@@ -29,14 +29,17 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
     maxFiles: "7d",
   };
 
+  const combinedFileTransportConfig: DailyRotateFileTransportOptions = {
+    ...sharedFileTransportConfig,
+    filename: "combined-%DATE%.log",
+    handleExceptions: true,
+    handleRejections: true,
+  };
+
   const errorFileTransportConfig: DailyRotateFileTransportOptions = {
     ...sharedFileTransportConfig,
     filename: "error-%DATE%.log",
     level: "error",
-  };
-  const combinedFileTransportConfig: DailyRotateFileTransportOptions = {
-    ...sharedFileTransportConfig,
-    filename: "combined-%DATE%.log",
   };
 
   /**
@@ -60,18 +63,25 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
    * logger.error('A custom error message', {error})
    */
   const logger = createLogger({
+    /**
+     * As long as I am catching the error manually using ErrorResponse.catchErrorsWithErrorResponse(), I don't want to exit
+     * the process before rendering the error to std out. This is not recommended by the Winston docs,
+     * so I may need to remove this in the future.
+     */
+    // TODO: Winston doesn't seem to be logging errors at all
+    exitOnError: false,
     format: format.combine(
+      // TODO: Winston doesn't seem to be logging errors at all
+      format.errors({ stack: true }),
       format.timestamp({
         format: "YYYY-MM-DD HH:mm:ss",
       }),
-      format.errors({ stack: true }),
-      format.splat(),
       format.json()
     ),
     defaultMeta: { service: serviceName },
     transports: [
-      new DailyRotateFile(errorFileTransportConfig),
       new DailyRotateFile(combinedFileTransportConfig),
+      new DailyRotateFile(errorFileTransportConfig),
     ],
   });
 
