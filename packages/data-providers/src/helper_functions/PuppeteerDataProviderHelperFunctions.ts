@@ -446,3 +446,47 @@ export const retrieveFaviconsFromPage = async (
     return favicons;
   });
 };
+
+export const performPuppeteerTest = async (): Promise<void> => {
+  let browser: Browser | null = null;
+
+  try {
+    browser = await createPuppeteerBrowser();
+  } catch (error) {
+    console.log("   Creation of headless Chromium browser: NO");
+    console.log(error);
+
+    return process.exit(0);
+  }
+
+  console.log("   Creation of headless Chromium browser: YES");
+
+  let page: Page | null = null;
+
+  try {
+    page = await loadPageByUrl("https://www.google.com", browser);
+  } catch (error) {
+    console.log("   Loading of page: NO");
+    console.log(error);
+
+    return process.exit(0);
+  }
+
+  console.log("   Loading of page: YES");
+
+  let metadata: false | PageHeadMetadata = false;
+
+  try {
+    metadata = await retrievePageHeadMetadata(page);
+  } catch (error) {
+    console.log("   Generation of page metadata: NO");
+    console.log(error);
+
+    return process.exit(0);
+  }
+
+  await page.close();
+  await browser.close();
+
+  console.log("   Generation of page metadata: YES", { metadata });
+};

@@ -13,29 +13,16 @@ import findOrCreateSourceDomainForUrl from "./findOrCreateSourceDomainForUrl";
 import retrieveAndStoreFaviconFromUrl, {
   type FaviconIconType,
 } from "./retrieveAndStoreFaviconFromUrl";
-
 import BaseDataProvider, {
   type AllowedScheduleIntervalReturnType,
 } from "./BaseDataProvider";
+import { performPuppeteerTest } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+
 import BlogArticleDataProvider from "./BlogArticleDataProvider";
 import PodcastRssFeedDataProvider from "./PodcastRssFeedDataProvider";
 import WikipediaArticleDataProvider from "./WikipediaArticleDataProvider";
 import SimpleWebpageScreenshotDataProvider from "./SimpleWebpageScreenshotDataProvider";
 import BehanceGalleryItemImagesDataProvider from "./BehanceGalleryItemImagesDataProvider";
-
-// TODO: Remove these, added for testing
-import { createPuppeteerBrowser } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { loadPageByUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { scrollPageToTop } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { smoothlyScrollPageToBottom } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { generatePageReadability } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { generatePageScreenshot } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { generatePageSnapshot } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { generatePageMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { retrievePageHeadMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { retrieveFaviconsFromUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { retrieveFaviconsFromPage } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
-import { type PageHeadMetadata } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
 
 /**
  * These Data Provider Classes should be ordered in increasing order of specificity
@@ -97,18 +84,5 @@ export {
   findOrCreateSourceDomainForUrl,
   BaseDataProvider,
   type AllowedScheduleIntervalReturnType,
-
-  // TODO: Remove me, added for testing
-  createPuppeteerBrowser,
-  loadPageByUrl,
-  scrollPageToTop,
-  smoothlyScrollPageToBottom,
-  generatePageReadability,
-  generatePageScreenshot,
-  generatePageSnapshot,
-  generatePageMetadata,
-  retrievePageHeadMetadata,
-  retrieveFaviconsFromUrl,
-  retrieveFaviconsFromPage,
-  type PageHeadMetadata,
+  performPuppeteerTest,
 };

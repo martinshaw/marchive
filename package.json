@@ -30,7 +30,18 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "compile": "nx run-many --target=compile",
+    "data-providers:compile": "cd packages/data-providers && pnpm run compile",
+    "database:compile": "cd packages/database && pnpm run compile",
+    "logger:compile": "cd packages/logger && pnpm run compile",
+    "utilities:compile": "cd packages/utilities && pnpm run compile",
+    "cli:compile": "cd packages/cli && pnpm run compile",
+    "cli:run": "pnpm run compile && node ./packages/cli/lib/index.js",
+    "cli:run:ts": "ts-node ./packages/cli/src/index.ts",
     "start": "cd packages/electron-app && pnpm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "nx": "17.3.1"
   }
 }
