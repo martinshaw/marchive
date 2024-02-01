@@ -21,6 +21,7 @@ import {
 
 const storedSettingKeys = [
   "MARCHIVE_IS_SETUP",
+  "CLI_IS_USED",
   "SCHEDULE_RUN_PROCESS_IS_PAUSED",
   "CAPTURE_PART_RUN_PROCESS_IS_PAUSED",
 ] as const;

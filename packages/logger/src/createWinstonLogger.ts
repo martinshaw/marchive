@@ -9,25 +9,35 @@ Modified: 2023-08-30T23:09:46.570Z
 Description: description
 */
 
-import fs from 'node:fs'
-import appLogsPath from './logsPath'
-import { Logger, createLogger, format, transports } from 'winston'
-import DailyRotateFile, { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file'
+import fs from "node:fs";
+import { appLogsPath } from "./paths";
+import { Logger, createLogger, format, transports } from "winston";
+import DailyRotateFile, {
+  DailyRotateFileTransportOptions,
+} from "winston-daily-rotate-file";
 
 const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
-  if (fs.existsSync(appLogsPath) === false) fs.mkdirSync(appLogsPath, { recursive: true })
+  if (fs.existsSync(appLogsPath) === false)
+    fs.mkdirSync(appLogsPath, { recursive: true });
 
   const sharedFileTransportConfig: DailyRotateFileTransportOptions = {
-    filename: '%DATE%.log',
+    filename: "%DATE%.log",
     dirname: appLogsPath,
-    datePattern: 'YYYY-MM-DD-HH',
+    datePattern: "YYYY-MM-DD-HH",
     zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '7d',
-  }
+    maxSize: "20m",
+    maxFiles: "7d",
+  };
 
-  const errorFileTransportConfig: DailyRotateFileTransportOptions = { ...sharedFileTransportConfig, filename: 'error-%DATE%.log', level: 'error' }
-  const combinedFileTransportConfig: DailyRotateFileTransportOptions = { ...sharedFileTransportConfig, filename: 'combined-%DATE%.log' }
+  const errorFileTransportConfig: DailyRotateFileTransportOptions = {
+    ...sharedFileTransportConfig,
+    filename: "error-%DATE%.log",
+    level: "error",
+  };
+  const combinedFileTransportConfig: DailyRotateFileTransportOptions = {
+    ...sharedFileTransportConfig,
+    filename: "combined-%DATE%.log",
+  };
 
   /**
    * Notes when logging, the log level methods use an overloading interface to allow for the following uses (signatures) inspired
@@ -52,7 +62,7 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
   const logger = createLogger({
     format: format.combine(
       format.timestamp({
-        format: 'YYYY-MM-DD HH:mm:ss'
+        format: "YYYY-MM-DD HH:mm:ss",
       }),
       format.errors({ stack: true }),
       format.splat(),
@@ -63,19 +73,20 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
       new DailyRotateFile(errorFileTransportConfig),
       new DailyRotateFile(combinedFileTransportConfig),
     ],
-  })
+  });
 
-  // TODO: Uncomment or keep comments ???
-  // if (process.env.NODE_ENV !== 'production') {
-    logger.add(new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
-      )
-    }));
-  // }
+  if (
+    process.env.NODE_ENV !== "production" &&
+    process.env.MARCHIVE_CLI_LOG_TO_CONSOLE === "true"
+  ) {
+    logger.add(
+      new transports.Console({
+        format: format.combine(format.colorize(), format.simple()),
+      })
+    );
+  }
 
-  return logger
-}
+  return logger;
+};
 
-export default createWinstonLogger
+export default createWinstonLogger;

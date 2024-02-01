@@ -37,9 +37,6 @@ module.exports = {
 
     // I want this but I cannot bundle its native binary into the bundle code file, keep it external and bundle the binary with bindings using pkg
     "better-sqlite3",
-
-    // These Puppeteer related modules require native modules and/or non-statically analyzable modules, I will package them inside the binary like with better-sqlite3 above
-    "jsdom",
   ],
   ignoreWarnings: [
     // Suppresses warnings about Webpack's above mentioned inability to determine that the TypeORM adapters are not used before runtime
@@ -59,6 +56,10 @@ module.exports = {
     },
     {
       module: /typeorm.*better-sqlite3.*\/util\/ImportUtils.js/,
+    },
+    // These warnings are letting me know that some CLI interactivity functionality for @puppeteer/browsers is not available once bundled. Great, I don't want it.
+    {
+      module: /.*yargs.*\/index.cjs/,
     },
   ],
   externalsType: "commonjs",

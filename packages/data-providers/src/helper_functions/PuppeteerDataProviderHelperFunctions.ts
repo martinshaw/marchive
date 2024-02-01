@@ -68,10 +68,6 @@ export const createPuppeteerBrowser = async (
     );
   }
 
-  logger.info(
-    'Using browser executable path "' + readOnlyChromiumExecutablePath + '"'
-  );
-
   const browser = puppeteer.launch({
     executablePath: readOnlyChromiumExecutablePath,
     // FYI, new headless mode is around 30% slower than old headless mode but it allows feature parity with non-headless mode (most importantly, Chrome Extensions)

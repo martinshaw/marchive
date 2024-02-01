@@ -86,9 +86,4 @@ const readOnlyBrowserExtensionsPath = isRunningPackaged
   ? path.join(__dirname, "browser_extensions")
   : path.join(__dirname, "browser_extensions");
 
-console.log("readOnlyChromiumExecutablePath", readOnlyChromiumExecutablePath);
-console.log("readOnlyBrowserExtensionsPath", readOnlyBrowserExtensionsPath);
-console.log("__dirname", __dirname);
-console.log("process.execPath", process.execPath);
-
 export { readOnlyChromiumExecutablePath, readOnlyBrowserExtensionsPath };

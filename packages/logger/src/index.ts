@@ -11,18 +11,24 @@ Description: description
 
 import winston from "winston";
 import createWinstonLogger from "./createWinstonLogger";
+import { appLogsPath } from "./paths";
 
 let logger: winston.Logger | typeof console = console;
 logger = createWinstonLogger("other");
 
 const processWithOptionalType: NodeJS.Process & { type?: string } = process;
-if (typeof (processWithOptionalType).type !== "undefined") {
-  if (typeof processWithOptionalType.versions["electron"] !== "undefined" && ["renderer", "browser"].includes(processWithOptionalType.type)) {
-    logger = createWinstonLogger(processWithOptionalType.type === "browser" ? 
-      "main" :
-      processWithOptionalType.type
+if (typeof processWithOptionalType.type !== "undefined") {
+  if (
+    typeof processWithOptionalType.versions["electron"] !== "undefined" &&
+    ["renderer", "browser"].includes(processWithOptionalType.type)
+  ) {
+    logger = createWinstonLogger(
+      processWithOptionalType.type === "browser"
+        ? "main"
+        : processWithOptionalType.type
     );
   }
 }
 
 export default logger;
+export { appLogsPath };

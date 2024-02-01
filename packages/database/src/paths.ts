@@ -18,8 +18,4 @@ const userAppDataDatabaseFilePath = path.join(
   "marchive.db"
 );
 
-export {
-  userAppDataPath,
-  userAppDataDatabasesPath,
-  userAppDataDatabaseFilePath,
-};
+export { userAppDataDatabasesPath, userAppDataDatabaseFilePath };

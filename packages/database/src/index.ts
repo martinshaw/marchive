@@ -12,10 +12,7 @@ Description: description
 import fs from "node:fs";
 import { DataSource, DataSourceOptions } from "typeorm";
 import logger from "logger";
-import {
-  userAppDataDatabaseFilePath,
-  userAppDataDatabasesPath,
-} from "./databasePaths";
+import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from "./paths";
 import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
 import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
@@ -72,4 +69,6 @@ export {
   Schedule,
   Capture,
   CapturePart,
+  userAppDataDatabasesPath,
+  userAppDataDatabaseFilePath,
 };

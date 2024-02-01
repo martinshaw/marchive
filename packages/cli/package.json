@@ -45,9 +45,10 @@
     "/lib/**/*.js"
   ],
   "scripts": {
-    "compile": "shx rm -rf lib && webpack --mode=production",
-    "pack:mac": "pnpm run compile && node ./scripts/package.js macos x64",
-    "pack:linux": "pnpm run compile && node ./scripts/package.js linux x64",
-    "pack:win": "pnpm run compile && node ./scripts/package.js win x64"
+    "compile": "shx rm -rf lib && webpack --mode=development",
+    "compile:production": "shx rm -rf lib && webpack --mode=production",
+    "pack:mac": "pnpm run compile:production && node ./scripts/package.js macos x64",
+    "pack:linux": "pnpm run compile:production && node ./scripts/package.js linux x64",
+    "pack:win": "pnpm run compile:production && node ./scripts/package.js win x64"
   }
 }
