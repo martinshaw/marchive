@@ -70,7 +70,15 @@ fs.readdirSync(path.resolve(cliPath, "bin")).forEach((file) => {
 });
 
 fs.readdirSync(path.resolve(cliPath, "pack")).forEach((file) => {
-  if (["package.json", "package-lock.json", ".gitkeep"].includes(file)) return;
+  if (
+    [
+      "package.json",
+      "package-lock.json",
+      ".gitkeep",
+      "browser_extensions",
+    ].includes(file)
+  )
+    return;
   fs.rmSync(path.join(cliPath, "pack", file), { recursive: true });
 });
 
@@ -90,15 +98,17 @@ execSync(
    * TODO: Solve error causing me to use `--public` flag and remove use of the `--public` flag
    * @see https://www.notion.so/martinshaw/Fix-Marchive-5ec25001ff4840959d53676e4f56ef65?pvs=4#866fe5f5c52b4f85bf815866802ff88d
    */
-  `npx pkg . --targets node18-${platform}-${arch} --public`
+  `npx pkg --debug . --targets node18-${platform}-${arch} --public`,
   {
     cwd: path.join(cliPath, "pack"),
+    // Using `--debug` flag generates a tonne of additional output, so we ignore it
+    stdio: "ignore",
   }
 );
 
 // Copy Chromium binaries directory into bin directory to accompany binary (if missing)
 if (fs.existsSync(path.join(cliPath, "bin", "chromium"))) {
-  fs.rmdirSync(path.join(cliPath, "bin", "chromium"), { recursive: true });
+  fs.rmSync(path.join(cliPath, "bin", "chromium"), { recursive: true });
 }
 
 const chromiumPath = path.join(dataProvidersPath, "chromium");

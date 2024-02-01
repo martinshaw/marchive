@@ -21,5 +21,18 @@
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "bower_components",
+    "jspm_packages",
+    "lib",
+
+    /**
+     * This directory contains Chrome extension code ripped from the repos and which should not be compiled. We will check if
+     * the directory exists at runtime before attempting to load it. When compiling and packaging `cli` package,
+     * we will copy the directory into the `cli/pack` directory.
+     */
+    "src/browser_extensions"
+  ]
 }

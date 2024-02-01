@@ -18,21 +18,13 @@ import {
   detectBrowserPlatform,
 } from "@puppeteer/browsers";
 
+// @ts-ignore
+const isRunningPackaged: boolean = typeof process.pkg !== "undefined";
+
 const readOnlyChromiumExecutablePath: string | false = (() => {
-  // @ts-ignore
-  const isRunningPackaged: boolean = typeof process.pkg !== "undefined";
-
-  console.log("isRunningPackaged", isRunningPackaged);
-
   const puppeteerBrowsersRootDirectory = isRunningPackaged
     ? path.join(process.execPath, "..", "chromium")
     : path.join(__dirname, "..", "..", "data-providers", "chromium");
-
-  console.log(
-    "puppeteerBrowsersRootDirectory",
-    puppeteerBrowsersRootDirectory,
-    process
-  );
 
   const puppeteerBrowsersRootDirectoryContents = fs
     .readdirSync(puppeteerBrowsersRootDirectory, { withFileTypes: true })
@@ -90,9 +82,13 @@ const readOnlyChromiumExecutablePath: string | false = (() => {
   });
 })();
 
-const readOnlyBrowserExtensionsPath = path.join(
-  __dirname,
-  "browser_extensions"
-);
+const readOnlyBrowserExtensionsPath = isRunningPackaged
+  ? path.join(__dirname, "browser_extensions")
+  : path.join(__dirname, "browser_extensions");
+
+console.log("readOnlyChromiumExecutablePath", readOnlyChromiumExecutablePath);
+console.log("readOnlyBrowserExtensionsPath", readOnlyBrowserExtensionsPath);
+console.log("__dirname", __dirname);
+console.log("process.execPath", process.execPath);
 
 export { readOnlyChromiumExecutablePath, readOnlyBrowserExtensionsPath };

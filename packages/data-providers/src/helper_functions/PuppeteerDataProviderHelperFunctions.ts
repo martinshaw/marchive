@@ -25,11 +25,6 @@ import {
 } from "./../paths";
 // import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker';
 import { Options, scrollPageToBottom } from "puppeteer-autoscroll-down";
-import {
-  computeExecutablePath,
-  Browser as BrowserEnum,
-  detectBrowserPlatform,
-} from "@puppeteer/browsers";
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,

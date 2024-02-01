@@ -11,19 +11,20 @@
   "types": "lib/index.d.ts",
   "bin": "./lib/index.js",
   "dependencies": {
-    "jsdom": "^22.1.0",
-    "puppeteer-core": "^21.3.8",
     "@puppeteer/browsers": "^1.9.1",
     "better-sqlite3": "^9.3.0",
     "commander": "^11.1.0",
     "data-providers": "workspace:^",
     "database": "workspace:^",
+    "jsdom": "^22.1.0",
     "logger": "workspace:^",
+    "puppeteer-core": "^21.3.8",
     "utilities": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "20.11.6",
     "bufferutil": "^4.0.8",
+    "copy-webpack-plugin": "^12.0.2",
     "reflect-metadata": "^0.2.1",
     "shx": "^0.3.3",
     "terser-webpack-plugin": "^5.3.10",

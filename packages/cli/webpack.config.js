@@ -10,6 +10,7 @@ Description: description
 */
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -39,8 +40,6 @@ module.exports = {
 
     // These Puppeteer related modules require native modules and/or non-statically analyzable modules, I will package them inside the binary like with better-sqlite3 above
     "jsdom",
-    "puppeteer-core",
-    // "@puppeteer/browsers",
   ],
   ignoreWarnings: [
     // Suppresses warnings about Webpack's above mentioned inability to determine that the TypeORM adapters are not used before runtime
@@ -91,6 +90,22 @@ module.exports = {
       }),
     ],
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.join(
+            __dirname,
+            "..",
+            "data-providers",
+            "src",
+            "browser_extensions"
+          ),
+          to: path.join(__dirname, "pack", "browser_extensions"),
+        },
+      ],
+    }),
+  ],
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "lib"),
