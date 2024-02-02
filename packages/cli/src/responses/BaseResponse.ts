@@ -11,22 +11,22 @@ Description: description
 
 import process from "node:process";
 
-abstract class BaseResponse {
+abstract class BaseResponse<TDataType extends any[] = any[]> {
   constructor(
     protected isSuccess: boolean,
     protected message: string,
-    protected data: any[]
+    protected data: TDataType
   ) {}
 
-  public getIsSuccess(): boolean {
+  public getIsSuccess(): typeof this.isSuccess {
     return this.isSuccess;
   }
 
-  public getMessage(): string {
+  public getMessage(): typeof this.message {
     return this.message;
   }
 
-  public getData(): any[] {
+  public getData(): typeof this.data {
     return this.data;
   }
 

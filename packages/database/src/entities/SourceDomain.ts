@@ -23,11 +23,6 @@ import {
 } from "typeorm";
 import Source from "./Source";
 
-// const sourceUseStartOrEndCursorValues = ["start", "end", null] as const;
-// export type SourceUseStartOrEndCursorValueType =
-//   | (typeof sourceUseStartOrEndCursorValues)[number]
-//   | null;
-
 /**
  * A source domain is the website or domain which a source's URL belongs to.
  *

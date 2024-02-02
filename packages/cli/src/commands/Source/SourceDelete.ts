@@ -8,19 +8,12 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
-import {
-  BaseDataProvider,
-  findOrCreateSourceDomainForUrl,
-  getDataProviders,
-  validateUrlWithDataProviders,
-} from "data-providers";
+import fs from "node:fs";
 import logger from "logger";
 import commander, { Command } from "commander";
-import { Capture, CapturePart, Equal, Source } from "database";
+import { Capture, CapturePart, Source } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
-import process from "node:process";
-import fs from "node:fs";
 
 const SourceDelete = new commander.Command("source:delete");
 

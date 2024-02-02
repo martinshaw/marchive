@@ -22,7 +22,7 @@ import {
 } from "typeorm";
 import { Source, Capture } from "..";
 
-const scheduleStatuses = ["pending", "processing", "cancelled"] as const;
+export const scheduleStatuses = ["pending", "processing", "cancelled"];
 export type ScheduleStatus = (typeof scheduleStatuses)[number];
 
 @Entity()

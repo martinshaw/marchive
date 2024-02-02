@@ -19,15 +19,15 @@ import {
   DeleteDateColumn,
 } from "typeorm";
 
-const storedSettingKeys = [
+export const storedSettingKeys = [
   "MARCHIVE_IS_SETUP",
   "ELECTRON_IS_USED",
   "SCHEDULE_RUN_PROCESS_IS_PAUSED",
   "CAPTURE_PART_RUN_PROCESS_IS_PAUSED",
-] as const;
+];
 export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
 
-const storedSettingTypes = ["string", "number", "boolean"] as const;
+const storedSettingTypes = ["string", "number", "boolean"];
 export type StoredSettingTypeType = (typeof storedSettingTypes)[number];
 
 @Entity()

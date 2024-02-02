@@ -2,57 +2,55 @@
 All Rights Reserved, (c) 2024 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: SourceList.ts
+File Name: ScheduleList.ts
 Created:  2024-02-01T16:12:37.651Z
 Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
 import commander from "commander";
-import { Source } from "database";
+import { Schedule } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import generateTypeormWhereObjectFromCommanderOptions from "../../options/generateTypeormWhereObjectFromCommanderOptions";
 import generateTypeormRelationsObjectFromCommanderOptions from "../../options/generateTypeormRelationsObjectFromCommanderOptions";
+import { scheduleStatuses } from "database/src/entities/Schedule";
 
 const [
   addTypeormWhereCommanderOptions,
   determineTypeormWhereObjectFromCommanderOptions,
-] = generateTypeormWhereObjectFromCommanderOptions<Source>({
+] = generateTypeormWhereObjectFromCommanderOptions<Schedule>({
   id: { type: "integer" },
-  dataProviderIdentifier: { type: "string" },
-  url: { type: "string" },
-  name: { type: "string", nullable: true },
-  currentStartCursorUrl: { type: "string", nullable: true },
-  currentEndCursorUrl: { type: "string", nullable: true },
-  useStartOrEndCursor: {
-    type: "string",
-    nullable: true,
-    values: ["start", "end"],
-  },
+  status: { type: "string", values: scheduleStatuses },
+  interval: { type: "integer", nullable: true },
+  lastRunAt: { type: "date", nullable: true },
+  nextRunAt: { type: "date", nullable: true },
+  downloadLocation: { type: "string" },
+  enabled: { type: "boolean" },
+  deletedFromDownloads: { type: "boolean" },
   createdAt: { type: "date" },
   updatedAt: { type: "date" },
   deletedAt: { type: "date", nullable: true },
-  sourceDomainId: { type: "integer", nullable: true },
+  sourceId: { type: "integer", nullable: true },
 });
 
 const [
   addTypeormRelationsCommanderOptions,
   determineTypeormRelationsObjectFromCommanderOptions,
-] = generateTypeormRelationsObjectFromCommanderOptions<Source>([
-  "schedules",
-  "sourceDomain",
+] = generateTypeormRelationsObjectFromCommanderOptions<Schedule>([
+  "source",
+  "captures",
 ]);
 
-let SourceList = new commander.Command("source:list");
+let ScheduleList = new commander.Command("schedule:list");
 
-SourceList = addTypeormWhereCommanderOptions(SourceList);
-SourceList = addTypeormRelationsCommanderOptions(SourceList);
+ScheduleList = addTypeormWhereCommanderOptions(ScheduleList);
+ScheduleList = addTypeormRelationsCommanderOptions(ScheduleList);
 
-SourceList.description("Get Sources").action(
+ScheduleList.description("Get Schedules").action(
   async (optionsAndArguments: { [key: string]: string | number | boolean }) => {
     ErrorResponse.catchErrorsWithErrorResponse(async () => {
-      const sources = await Source.find({
+      const schedules = await Schedule.find({
         where:
           determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
         relations:
@@ -61,21 +59,22 @@ SourceList.description("Get Sources").action(
           ),
       });
 
-      return new TableResponse<Source>(`Source`, sources, {
+      return new TableResponse<Schedule>(`Schedule`, schedules, {
         id: "ID",
-        dataProviderIdentifier: "Data Provider Identifier",
-        url: "URL",
-        name: "Name",
-        currentStartCursorUrl: "Current Start Cursor URL",
-        currentEndCursorUrl: "Current End Cursor URL",
-        useStartOrEndCursor: "Use Start Or End Cursor",
+        status: "Status",
+        interval: "Interval",
+        lastRunAt: "Last Run At",
+        nextRunAt: "Next Run At",
+        downloadLocation: "Download Location",
+        enabled: "Enabled",
+        deletedFromDownloads: "Deleted From Downloads",
         createdAt: "Created At",
         updatedAt: "Updated At",
         deletedAt: "Deleted At",
-        sourceDomainId: "Source Domain ID",
+        sourceId: "Source ID",
       }).send();
     });
   }
 );
 
-export default SourceList;
+export default ScheduleList;

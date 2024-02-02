@@ -2,14 +2,14 @@
 All Rights Reserved, (c) 2024 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: SourceList.ts
+File Name: SourceDomainList.ts
 Created:  2024-02-01T16:12:37.651Z
 Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
 import commander from "commander";
-import { Source } from "database";
+import { SourceDomain } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import generateTypeormWhereObjectFromCommanderOptions from "../../options/generateTypeormWhereObjectFromCommanderOptions";
@@ -18,41 +18,32 @@ import generateTypeormRelationsObjectFromCommanderOptions from "../../options/ge
 const [
   addTypeormWhereCommanderOptions,
   determineTypeormWhereObjectFromCommanderOptions,
-] = generateTypeormWhereObjectFromCommanderOptions<Source>({
+] = generateTypeormWhereObjectFromCommanderOptions<SourceDomain>({
   id: { type: "integer" },
-  dataProviderIdentifier: { type: "string" },
-  url: { type: "string" },
-  name: { type: "string", nullable: true },
-  currentStartCursorUrl: { type: "string", nullable: true },
-  currentEndCursorUrl: { type: "string", nullable: true },
-  useStartOrEndCursor: {
-    type: "string",
-    nullable: true,
-    values: ["start", "end"],
-  },
+  name: { type: "string" },
+  url: { type: "string", nullable: true },
+  faviconPath: { type: "string", nullable: true },
   createdAt: { type: "date" },
   updatedAt: { type: "date" },
   deletedAt: { type: "date", nullable: true },
-  sourceDomainId: { type: "integer", nullable: true },
 });
 
 const [
   addTypeormRelationsCommanderOptions,
   determineTypeormRelationsObjectFromCommanderOptions,
-] = generateTypeormRelationsObjectFromCommanderOptions<Source>([
-  "schedules",
-  "sourceDomain",
+] = generateTypeormRelationsObjectFromCommanderOptions<SourceDomain>([
+  "sources",
 ]);
 
-let SourceList = new commander.Command("source:list");
+let SourceDomainList = new commander.Command("source-domain:list");
 
-SourceList = addTypeormWhereCommanderOptions(SourceList);
-SourceList = addTypeormRelationsCommanderOptions(SourceList);
+SourceDomainList = addTypeormWhereCommanderOptions(SourceDomainList);
+SourceDomainList = addTypeormRelationsCommanderOptions(SourceDomainList);
 
-SourceList.description("Get Sources").action(
+SourceDomainList.description("Get Source Domains").action(
   async (optionsAndArguments: { [key: string]: string | number | boolean }) => {
     ErrorResponse.catchErrorsWithErrorResponse(async () => {
-      const sources = await Source.find({
+      const sourceDomains = await SourceDomain.find({
         where:
           determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
         relations:
@@ -61,21 +52,17 @@ SourceList.description("Get Sources").action(
           ),
       });
 
-      return new TableResponse<Source>(`Source`, sources, {
+      return new TableResponse<SourceDomain>(`Source Domain`, sourceDomains, {
         id: "ID",
-        dataProviderIdentifier: "Data Provider Identifier",
-        url: "URL",
         name: "Name",
-        currentStartCursorUrl: "Current Start Cursor URL",
-        currentEndCursorUrl: "Current End Cursor URL",
-        useStartOrEndCursor: "Use Start Or End Cursor",
+        url: "URL",
+        faviconPath: "Favicon Path",
         createdAt: "Created At",
         updatedAt: "Updated At",
         deletedAt: "Deleted At",
-        sourceDomainId: "Source Domain ID",
       }).send();
     });
   }
 );
 
-export default SourceList;
+export default SourceDomainList;

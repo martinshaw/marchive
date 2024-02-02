@@ -21,7 +21,7 @@ import {
 } from "typeorm";
 import { Schedule, SourceDomain } from "..";
 
-const sourceUseStartOrEndCursorValues = ["start", "end", null] as const;
+const sourceUseStartOrEndCursorValues = ["start", "end", null];
 export type SourceUseStartOrEndCursorValueType =
   | (typeof sourceUseStartOrEndCursorValues)[number]
   | null;

@@ -19,7 +19,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { Capture, Schedule, SourceDomain } from "..";
+import { Capture } from "..";
 
 const capturePartStatuses = [
   "pending",
@@ -27,7 +27,7 @@ const capturePartStatuses = [
   "completed",
   "failed",
   "cancelled",
-] as const;
+];
 export type CapturePartStatus = (typeof capturePartStatuses)[number];
 
 @Entity()
