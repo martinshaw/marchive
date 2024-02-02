@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/node": "20.11.6",
     "bufferutil": "^4.0.8",
+    "canvas": "^2.11.2",
     "copy-webpack-plugin": "^12.0.2",
     "reflect-metadata": "^0.2.1",
     "shx": "^0.3.3",
