@@ -86,7 +86,7 @@ const SourceCreateAction = async (
 
   let source: Source | null = null;
   try {
-    source = await Source.create({
+    source = await Source.save({
       dataProviderIdentifier: chosenDataProvider.getIdentifier(),
       url,
       currentStartCursorUrl: null,

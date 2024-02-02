@@ -454,7 +454,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
         let capturePart: CapturePart | null = null;
         try {
-          capturePart = await CapturePart.create({
+          capturePart = await CapturePart.save({
             status: "pending" as CapturePartStatus,
             url: feedItemFileUrl,
             dataProviderPartIdentifier,

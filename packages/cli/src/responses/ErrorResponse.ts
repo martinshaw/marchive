@@ -66,6 +66,14 @@ class ErrorResponse extends BaseResponse {
         return error.send();
       }
 
+      console.log(
+        321,
+        error,
+        error instanceof Error,
+        error instanceof ErrorResponse,
+        error instanceof BaseResponse
+      );
+
       /**
        * If we get here, we have an unexpected error (e.g. a DB error, shell exec error, etc.), so we
        * catch it and return a generic error message

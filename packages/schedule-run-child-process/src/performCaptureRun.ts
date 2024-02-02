@@ -95,7 +95,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
 
   let capture: Capture | null = null;
   try {
-    capture = await Capture.create({
+    capture = await Capture.save({
       downloadLocation: captureDownloadDirectory,
       scheduleId: schedule.id,
     });

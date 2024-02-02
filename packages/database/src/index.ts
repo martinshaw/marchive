@@ -10,7 +10,27 @@ Description: description
 */
 
 import fs from "node:fs";
-import { DataSource, DataSourceOptions } from "typeorm";
+import {
+  DataSource,
+  DataSourceOptions,
+  BaseEntity,
+  FindOptionsWhere,
+  Not,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Equal,
+  Like,
+  ILike,
+  Between,
+  In,
+  IsNull,
+  And,
+  Or,
+  FindOperator,
+  FindOptionsRelations,
+} from "typeorm";
 import logger from "logger";
 import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from "./paths";
 import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
@@ -42,7 +62,7 @@ const dataSourceConfig: DataSourceOptions = {
   migrations,
   migrationsRun: true,
   synchronize: false,
-  cache: true,
+  cache: false,
 };
 
 const dataSource = new DataSource(dataSourceConfig);
@@ -63,6 +83,8 @@ export {
   retrieveDueSchedules,
   getStoredSettingValue,
   dataSource,
+  BaseEntity,
+  FindOptionsWhere,
   StoredSetting,
   Source,
   SourceDomain,
@@ -71,4 +93,19 @@ export {
   CapturePart,
   userAppDataDatabasesPath,
   userAppDataDatabaseFilePath,
+  Not,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Equal,
+  Like,
+  ILike,
+  Between,
+  In,
+  IsNull,
+  And,
+  Or,
+  FindOperator,
+  FindOptionsRelations,
 };

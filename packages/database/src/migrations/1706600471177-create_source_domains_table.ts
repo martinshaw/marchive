@@ -6,7 +6,7 @@ export class CreateSourceDomainsTable1706600471177
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
 CREATE TABLE source_domain (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     url TEXT NULL,
     "faviconPath" TEXT NULL,

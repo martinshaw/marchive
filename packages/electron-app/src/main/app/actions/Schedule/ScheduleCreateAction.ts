@@ -85,7 +85,7 @@ const ScheduleCreateAction = async (
 
   let schedule: Schedule | null = null
   try {
-    schedule = await Schedule.create({
+    schedule = await Schedule.save({
       interval: intervalInSeconds,
       nextRunAt: nextRunAtDate,
       downloadLocation: downloadLocation,

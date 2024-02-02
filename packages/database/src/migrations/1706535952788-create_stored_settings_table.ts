@@ -6,7 +6,7 @@ export class CreateStoredSettingsTable1706535952788
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
 CREATE TABLE stored_setting (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     key TEXT UNIQUE NOT NULL,
     value TEXT NOT NULL,
     type TEXT NOT NULL,

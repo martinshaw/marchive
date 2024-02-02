@@ -19,7 +19,7 @@ const Test = new commander.Command("test");
 Test.description(
   "Display paths, test connection to database and Puppeteer functionality"
 ).action(async (options, program) => {
-  console.log("Displaying Global Flags: ");
+  console.log("Displaying Global Options (Flags): ");
 
   const optionsWithGlobals = program.optsWithGlobals();
 
@@ -64,7 +64,7 @@ Test.description(
     )}`
   );
   console.log(
-    `      CLI_IS_USED: ${await getStoredSettingValue("CLI_IS_USED")}`
+    `      ELECTRON_IS_USED: ${await getStoredSettingValue("ELECTRON_IS_USED")}`
   );
   console.log(
     `      SCHEDULE_RUN_PROCESS_IS_PAUSED: ${await getStoredSettingValue(

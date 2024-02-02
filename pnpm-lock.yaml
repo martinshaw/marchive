@@ -20,6 +20,9 @@ importers:
       better-sqlite3:
         specifier: ^9.3.0
         version: 9.3.0
+      change-case:
+        specifier: ^5.4.2
+        version: 5.4.2
       commander:
         specifier: ^11.1.0
         version: 11.1.0
@@ -1052,6 +1055,10 @@ packages:
       sentence-case: 3.0.4
       snake-case: 3.0.4
       tslib: 2.6.2
+    dev: false
+
+  /change-case@5.4.2:
+    resolution: {integrity: sha512-WB3UiTDpT+vrTilAWaJS4gaIH/jc1He4H9f6erQvraUYas90uWT0JOYFkG1imdNv710XJ6gJvqynrgOHc4ihDA==}
     dev: false
 
   /chownr@1.1.4:

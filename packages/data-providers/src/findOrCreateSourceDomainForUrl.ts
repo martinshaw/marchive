@@ -66,7 +66,7 @@ const findOrCreateSourceDomainForUrl = async (
   let newSourceDomain: SourceDomain | null = null;
 
   try {
-    newSourceDomain = await SourceDomain.create({
+    newSourceDomain = await SourceDomain.save({
       url: urlDomainName,
       name,
       faviconPath: null,

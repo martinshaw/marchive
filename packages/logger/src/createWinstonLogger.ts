@@ -85,10 +85,14 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
     ],
   });
 
-  if (
-    process.env.NODE_ENV !== "production" &&
-    process.env.MARCHIVE_CLI_LOG_TO_CONSOLE === "true"
-  ) {
+  const usingLogToConsoleFlag =
+    process.env.MARCHIVE_CLI_LOG_TO_CONSOLE === "true" ||
+    process.argv.includes("--log-to-console") ||
+    process.argv.includes("-l");
+  const shouldShowLogInConsole =
+    process.env.NODE_ENV !== "production" && usingLogToConsoleFlag;
+
+  if (shouldShowLogInConsole) {
     logger.add(
       new transports.Console({
         format: format.combine(format.colorize(), format.simple()),

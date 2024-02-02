@@ -4,7 +4,7 @@ export class CreateSourcesTable1706600379383 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
 CREATE TABLE source (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     "dataProviderIdentifier" TEXT NOT NULL,
     url TEXT NOT NULL,
     name TEXT NULL,

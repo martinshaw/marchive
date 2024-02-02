@@ -6,7 +6,7 @@ export class CreateCapturePartsTable1706600783575
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
 CREATE TABLE capture_part (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     "status" TEXT NOT NULL DEFAULT 'pending',
     "url" TEXT NOT NULL,
     "dataProviderPartIdentifier" TEXT NOT NULL,

@@ -13,6 +13,7 @@
   "dependencies": {
     "@puppeteer/browsers": "^1.9.1",
     "better-sqlite3": "^9.3.0",
+    "change-case": "^5.4.2",
     "commander": "^11.1.0",
     "data-providers": "workspace:^",
     "database": "workspace:^",

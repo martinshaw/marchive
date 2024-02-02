@@ -2,10 +2,9 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CreateSchedulesTable1706600552839 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // typeorm syntax
     await queryRunner.query(`
 CREATE TABLE schedule (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     status TEXT NOT NULL DEFAULT 'pending', 
     interval INTEGER NULL,
     "lastRunAt" DATE NULL DEFAULT null,

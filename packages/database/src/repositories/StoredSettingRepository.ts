@@ -48,7 +48,7 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
 
   if (existingStoredSetting == null && newValue != null) {
     try {
-      return await StoredSetting.create({
+      return await StoredSetting.save({
         key,
         value: newValue.toString(),
         type: determineStoredSettingValueType(

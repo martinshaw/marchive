@@ -1,8 +1,13 @@
 import commander, { Option } from "commander";
 import process from "node:process";
 import { dataSource } from "database";
+import logToConsoleGlobalOption from "./options/logToConsoleGlobalOption";
+import jsonGlobalOption from "./options/jsonGlobalOption";
 import Test from "./commands/Test";
 import SourceCreate from "./commands/Source/SourceCreate";
+import SourceCount from "./commands/Source/SourceCount";
+import SourceList from "./commands/Source/SourceList";
+import SourceDelete from "./commands/Source/SourceDelete";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
@@ -12,26 +17,12 @@ import SourceCreate from "./commands/Source/SourceCreate";
   program
     .version("0.0.2")
     .description("Marchive CLI")
-    .addOption(
-      new Option(
-        "-l, --log-to-console",
-        "Print all logs to console (in addition to file)"
-      )
-        .env("MARCHIVE_CLI_LOG_TO_CONSOLE")
-        .default(false)
-    )
-    .addOption(
-      new Option("-j, --json", "Format all output as JSON")
-        .default(false)
-        .conflicts(["l"])
-    )
+    .addOption(logToConsoleGlobalOption)
+    .addOption(jsonGlobalOption)
     .addCommand(Test)
     .addCommand(SourceCreate)
-    .parse(
-      (() => {
-        let args = process.argv;
-        // args[0] = "marchive-cli";
-        return args;
-      })()
-    );
+    .addCommand(SourceCount)
+    .addCommand(SourceList)
+    .addCommand(SourceDelete)
+    .parse(process.argv);
 })();
