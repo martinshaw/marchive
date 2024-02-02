@@ -18,8 +18,8 @@ import CaptureList from "./commands/Capture/CaptureList";
 import CaptureDelete from "./commands/Capture/CaptureDelete";
 import DataProviderList from "./commands/DataProvider/DataProviderList";
 import DataProviderValidate from "./commands/DataProvider/DataProviderValidate";
-// import ScheduleCreate from "./commands/Schedule/ScheduleCreate";
-// import ScheduleUpdate from "./commands/Schedule/ScheduleUpdate";
+import ScheduleCreate from "./commands/Schedule/ScheduleCreate";
+import ScheduleUpdate from "./commands/Schedule/ScheduleUpdate";
 import ScheduleCount from "./commands/Schedule/ScheduleCount";
 import ScheduleList from "./commands/Schedule/ScheduleList";
 import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
@@ -62,8 +62,8 @@ import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
     .addCommand(DataProviderValidate)
 
     // Schedule related commands
-    // .addCommand(ScheduleCreate)
-    // .addCommand(ScheduleUpdate)
+    .addCommand(ScheduleCreate)
+    .addCommand(ScheduleUpdate)
     .addCommand(ScheduleCount)
     .addCommand(ScheduleList)
     .addCommand(ScheduleDelete)
