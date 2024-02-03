@@ -38,6 +38,10 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   }
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
+    console.log("__dirname", __dirname);
+    console.log("process.execPath", process.execPath);
+    console.log("process.cwd()", process.cwd());
+
     return {
       filePath: path.join(__dirname, "page-layout.svg"),
       shouldInvertOnDarkMode: true,

@@ -45,7 +45,7 @@ module.exports = (env, argv) => {
 
       // I want this but I cannot bundle its native binary into the bundle code file, keep it external and bundle the binary with bindings using pkg
       "better-sqlite3",
-      "jsdom",
+      "canvas",
     ],
     ignoreWarnings: [
       // Suppresses warnings about Webpack's above mentioned inability to determine that the TypeORM adapters are not used before runtime

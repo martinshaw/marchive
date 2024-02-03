@@ -5,8 +5,7 @@
     "marchive-cli": "./index.js"
   },
   "dependencies": {
-    "better-sqlite3": "^9.3.0",
-    "jsdom": "^24.0.0"
+    "better-sqlite3": "^9.3.0"
   },
   "pkg": {
     "scripts": "**/*.js",
