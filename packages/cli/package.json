@@ -30,6 +30,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "reflect-metadata": "^0.2.1",
     "shx": "^0.3.3",
+    "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^5.3.10",
     "ts-loader": "^9.5.1",
     "ts-node": "10.9.1",

@@ -79,6 +79,10 @@ module.exports = (env, argv) => {
           use: "ts-loader",
           exclude: /node_modules/,
         },
+        {
+          test: /\.svg$/,
+          loader: "svg-inline-loader",
+        },
       ],
     },
     resolve: {

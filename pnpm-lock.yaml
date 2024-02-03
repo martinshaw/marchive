@@ -69,6 +69,9 @@ importers:
       shx:
         specifier: ^0.3.3
         version: 0.3.4
+      svg-inline-loader:
+        specifier: ^0.8.2
+        version: 0.8.2
       terser-webpack-plugin:
         specifier: ^5.3.10
         version: 5.3.10(webpack@5.90.1)
@@ -985,6 +988,10 @@ packages:
       prebuild-install: 7.1.1
     dev: false
 
+  /big.js@5.2.2:
+    resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
+    dev: true
+
   /bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
     dependencies:
@@ -1512,6 +1519,11 @@ packages:
   /emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: false
+
+  /emojis-list@3.0.0:
+    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
+    engines: {node: '>= 4'}
+    dev: true
 
   /enabled@2.0.0:
     resolution: {integrity: sha512-AKrN98kuwOzMIdAizXGI86UFBoo26CL21UM763y1h/GMSJ4/OHU9k2YlsmBpyScFo/wbLzWQJBMCW4+IO3/+OQ==}
@@ -2206,6 +2218,13 @@ packages:
   /json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
+  /json5@1.0.2:
+    resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
+    hasBin: true
+    dependencies:
+      minimist: 1.2.8
+    dev: true
+
   /json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
@@ -2246,6 +2265,15 @@ packages:
   /loader-runner@4.3.0:
     resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==}
     engines: {node: '>=6.11.5'}
+    dev: true
+
+  /loader-utils@1.4.2:
+    resolution: {integrity: sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==}
+    engines: {node: '>=4.0.0'}
+    dependencies:
+      big.js: 5.2.2
+      emojis-list: 3.0.0
+      json5: 1.0.2
     dev: true
 
   /locate-path@5.0.0:
@@ -3189,6 +3217,10 @@ packages:
       simple-concat: 1.0.1
     dev: false
 
+  /simple-html-tokenizer@0.1.1:
+    resolution: {integrity: sha512-Mc/gH3RvlKvB/gkp9XwgDKEWrSYyefIJPGG8Jk1suZms/rISdUuVEMx5O1WBnTWaScvxXDvGJrZQWblUmQHjkQ==}
+    dev: true
+
   /simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
     dependencies:
@@ -3352,6 +3384,14 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: true
+
+  /svg-inline-loader@0.8.2:
+    resolution: {integrity: sha512-kbrcEh5n5JkypaSC152eGfGcnT4lkR0eSfvefaUJkLqgGjRQJyKDvvEE/CCv5aTSdfXuc+N98w16iAojhShI3g==}
+    dependencies:
+      loader-utils: 1.4.2
+      object-assign: 4.1.1
+      simple-html-tokenizer: 0.1.1
     dev: true
 
   /symbol-tree@3.2.4:

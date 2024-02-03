@@ -32,14 +32,14 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
   const combinedFileTransportConfig: DailyRotateFileTransportOptions = {
     ...sharedFileTransportConfig,
     filename: "combined-%DATE%.log",
-    handleExceptions: true,
-    handleRejections: true,
   };
 
   const errorFileTransportConfig: DailyRotateFileTransportOptions = {
     ...sharedFileTransportConfig,
     filename: "error-%DATE%.log",
     level: "error",
+    handleExceptions: true,
+    handleRejections: true,
   };
 
   /**
