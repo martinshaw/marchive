@@ -18,17 +18,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: npm
+          cache: pnpm
 
-      - name: npm install
+      - name: pnpm install
         run: |
-          npm install
+          pnpm install
 
-      - name: npm test
+      - name: pnpm test
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run package
-          npm run lint
-          npm exec tsc
-          npm test
+          pnpm run package
+          pnpm run lint
+          pnpm exec tsc
+          pnpm test

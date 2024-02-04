@@ -1,0 +1,26 @@
+{
+  "name": "logger",
+  "version": "0.0.2",
+  "private": true,
+  "packageManager": "pnpm@8.10.2",
+  "engines": {
+    "pnpm": ">=8.0.0",
+    "npm": ">=10.0.0",
+    "node": ">=18.0.0"
+  },
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "compile": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "utilities": "workspace:^",
+    "winston-daily-rotate-file": "^4.7.1",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.6",
+    "typescript": "^5.1.3"
+  }
+}

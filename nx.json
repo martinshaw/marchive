@@ -1,0 +1,16 @@
+{
+  "targetDefaults": {
+    "compile": {
+      "dependsOn": [
+        "^compile"
+      ],
+      "outputs": [
+        "{projectRoot}/lib"
+      ],
+      "cache": true
+    }
+  },
+  "affected": {
+    "defaultBase": "master"
+  }
+}

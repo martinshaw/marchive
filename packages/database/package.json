@@ -1,0 +1,30 @@
+{
+  "name": "database",
+  "version": "0.0.2",
+  "private": true,
+  "packageManager": "pnpm@8.10.2",
+  "engines": {
+    "pnpm": ">=8.0.0",
+    "npm": ">=10.0.0",
+    "node": ">=18.0.0"
+  },
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "compile": "tsc",
+    "typeorm": "./node_modules/.bin/typeorm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.3.0",
+    "logger": "workspace:^",
+    "typeorm": "^0.3.20",
+    "utilities": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
+    "@types/node": "20.11.6",
+    "reflect-metadata": "^0.2.1",
+    "typescript": "^5.1.3"
+  }
+}

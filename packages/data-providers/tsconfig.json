@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es2021",
+    "module": "CommonJS",
+    "lib": ["dom", "es2021"],
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "src",
+    "outDir": "lib",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "bower_components",
+    "jspm_packages",
+    "lib",
+
+    /**
+     * This directory contains Chrome extension code ripped from the repos and which should not be compiled. We will check if
+     * the directory exists at runtime before attempting to load it. When compiling and packaging `cli` package,
+     * we will copy the directory into the `cli/pack` directory.
+     */
+    "src/browser_extensions"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "marchive-cli",
+  "private": true,
+  "bin": {
+    "marchive-cli": "./index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.3.0"
+  },
+  "pkg": {
+    "scripts": "**/*.js",
+    "assets": [
+      "node_modules/better-sqlite3/build",
+      "browser_extensions"
+    ],
+    "outputPath": "../bin"
+  }
+}
