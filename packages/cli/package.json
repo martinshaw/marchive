@@ -18,6 +18,7 @@
     "commander": "^11.1.0",
     "data-providers": "workspace:^",
     "database": "workspace:^",
+    "dayjs": "^1.11.10",
     "jsdom": "^22.1.0",
     "logger": "workspace:^",
     "puppeteer-core": "^21.3.8",

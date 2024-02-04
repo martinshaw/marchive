@@ -9,6 +9,7 @@ Modified: 2023-08-25T16:47:42.472Z
 Description: description
 */
 
+import dayjs from "dayjs";
 import { Schedule } from "..";
 import logger from "logger";
 import { And, IsNull, LessThanOrEqual, Not } from "typeorm";
@@ -21,7 +22,7 @@ const retrieveDueSchedules = async (): Promise<Schedule[]> => {
         enabled: true,
         status: "pending",
         nextRunAt: And(
-          LessThanOrEqual(new Date().toISOString()),
+          LessThanOrEqual(dayjs().format("YYYY-MM-DD HH:mm:ss")),
           Not(IsNull())
         ),
       },

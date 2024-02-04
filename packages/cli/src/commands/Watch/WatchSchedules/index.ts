@@ -9,50 +9,58 @@ Modified: 2023-10-11T02:59:44.724Z
 Description: description
 */
 
+import {
+  Schedule,
+  retrieveDueSchedules,
+  getStoredSettingValue,
+} from "database";
 import logger from "logger";
-import "database";
-import { Schedule } from "database";
+import commander from "commander";
 import performCaptureRun from "./performCaptureRun";
-import { getStoredSettingValue } from "database";
-import { retrieveDueSchedules } from "database";
 
 let lastSchedule: Schedule | null = null;
 
-const WatchSchedules = async (): Promise<void | never> => {
-  const currentDelayBetweenTicks = 13 * 1000; // 13 seconds
+let WatchSchedules = new commander.Command("watch:schedules")
+  .description("Watch for pending Schedules to be processed")
+  .action(
+    async (optionsAndArguments: {
+      [key: string]: string | number | boolean;
+    }) => {
+      const currentDelayBetweenTicks = 13 * 1000; // 13 seconds
 
-  // TODO: Keep these or remove them ???
-  logger.info("WatchSchedules started (using Winston)"); // delete me
-  console.log("WatchSchedules started (using console.log)"); // delete me
+      // TODO: Keep these or remove them ???
+      logger.info("WatchSchedules started (using Winston)"); // delete me
+      console.log("WatchSchedules started (using console.log)"); // delete me
 
-  while (true) {
-    let watchSchedulesProcessIsPaused =
-      (await getStoredSettingValue("WATCH_SCHEDULES_PROCESS_IS_PAUSED")) ===
-      true;
+      while (true) {
+        let watchSchedulesProcessIsPaused =
+          (await getStoredSettingValue("WATCH_SCHEDULES_PROCESS_IS_PAUSED")) ===
+          true;
 
-    try {
-      if (watchSchedulesProcessIsPaused === false) await tick();
-    } catch (error) {
-      if (lastSchedule != null) {
-        logger.error(
-          `An error occurred when trying to process Schedule ${lastSchedule.id} ${lastSchedule}`
-        );
-        logger.error(error);
+        try {
+          if (watchSchedulesProcessIsPaused === false) await tick();
+        } catch (error) {
+          if (lastSchedule != null) {
+            logger.error(
+              `An error occurred when trying to process Schedule ${lastSchedule.id} ${lastSchedule}`
+            );
+            logger.error(error);
 
-        /**
-         * Don't want to update the status of the Schedule to failed, as it may be due to a temporary
-         *   issue and we don't want to stop the Schedule from running future captures
-         */
-        // lastSchedule.status = "failed";
-        // await lastSchedule.save();
+            /**
+             * Don't want to update the status of the Schedule to failed, as it may be due to a temporary
+             *   issue and we don't want to stop the Schedule from running future captures
+             */
+            // lastSchedule.status = "failed";
+            // await lastSchedule.save();
+          }
+        }
+
+        await new Promise((resolve) => {
+          setTimeout(() => resolve(null), currentDelayBetweenTicks);
+        });
       }
     }
-
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(null), currentDelayBetweenTicks);
-    });
-  }
-};
+  );
 
 const tick = async (): Promise<void> => {
   const dueSchedules = await retrieveDueSchedules();

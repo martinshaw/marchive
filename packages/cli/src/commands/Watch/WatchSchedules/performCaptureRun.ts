@@ -17,6 +17,7 @@ import { ScheduleStatus } from "database/src/entities/Schedule";
 import { Capture, Schedule, Source } from "database";
 import { getDataProviderByIdentifier } from "data-providers";
 import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import dayjs from "dayjs";
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
@@ -173,8 +174,7 @@ const generateCaptureDownloadDirectory = (
 ): string | false => {
   const attemptedDirectory = path.join(
     schedule.downloadLocation,
-    safeSanitizeFileName(new Date().toISOString().replace(/:/g, "-")) ||
-      uuidV4()
+    safeSanitizeFileName(dayjs().toISOString().replace(/:/g, "-")) || uuidV4()
   );
 
   if (fs.existsSync(attemptedDirectory) === false) {
@@ -199,8 +199,10 @@ const cleanup = async (
     Number.isNaN(Number(schedule.interval)) === false &&
     Number(schedule.interval) > 0
   ) {
-    const nextRunAt = new Date(new Date().getTime() + schedule.interval * 1000);
-    schedule.nextRunAt = nextRunAt;
+    schedule.nextRunAt = dayjs()
+      .add(schedule.interval, "second")
+      .clone()
+      .toDate();
   }
 
   if (schedule.interval == null) schedule.nextRunAt = null;

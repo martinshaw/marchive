@@ -35,6 +35,9 @@ importers:
       database:
         specifier: workspace:^
         version: link:../database
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0(bufferutil@4.0.8)(canvas@2.11.2)(utf-8-validate@6.0.3)
@@ -208,6 +211,9 @@ importers:
       better-sqlite3:
         specifier: ^9.3.0
         version: 9.4.0
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       logger:
         specifier: workspace:^
         version: link:../logger

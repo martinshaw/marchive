@@ -20,6 +20,7 @@ import { Schedule } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
 import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import dayjs from "dayjs";
 
 const ScheduleUpdate = new commander.Command("schedule:update");
 
@@ -93,7 +94,7 @@ ScheduleUpdate.description("Update an existing Schedule")
 
           if (intervalInSeconds === null) {
             schedule.interval = null;
-            schedule.nextRunAt = new Date();
+            schedule.nextRunAt = dayjs().toDate();
           } else {
             if (Number.isNaN(intervalInSeconds))
               throw new ErrorResponse("Scheduling interval must be a number");
@@ -104,9 +105,10 @@ ScheduleUpdate.description("Update an existing Schedule")
               );
 
             schedule.interval = intervalInSeconds;
-            schedule.nextRunAt = new Date(
-              Date.now() + schedule.interval * 1000
-            );
+            schedule.nextRunAt = dayjs()
+              .add(intervalInSeconds, "second")
+              .clone()
+              .toDate();
           }
         }
 

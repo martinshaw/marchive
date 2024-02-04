@@ -10,55 +10,61 @@ Description: description
 */
 
 import logger from "logger";
-import "database";
-import { getStoredSettingValue } from "database";
+import commander from "commander";
+import { getStoredSettingValue, CapturePart, Schedule } from "database";
 import { getDataProviderByIdentifier } from "data-providers";
 import BaseDataProvider from "data-providers/src/BaseDataProvider";
-import { CapturePartStatus } from "database/src/entities/CapturePart";
-import { Capture, CapturePart, Schedule, Source } from "database";
 
 let lastCapturePart: CapturePart | null = null;
 
-const WatchCaptureParts = async (): Promise<never | void> => {
-  // TODO: Keep these or remove them ???
-  logger.info("WatchCaptureParts started (using Winston)"); // delete me
-  console.log("WatchCaptureParts started (using console.log)"); // delete me
+let WatchCaptureParts = new commander.Command("watch:capture-parts")
+  .description("Watch for pending Capture Parts to be processed")
+  .action(
+    async (optionsAndArguments: {
+      [key: string]: string | number | boolean;
+    }) => {
+      // TODO: Keep these or remove them ???
+      logger.info("WatchCaptureParts started (using Winston)"); // delete me
+      console.log("WatchCaptureParts started (using console.log)"); // delete me
 
-  // Should wait for 6 seconds between ticks when downloading pending files
-  // When there are no pending files to download, should wait for 60 seconds between ticks
-  let currentDelayBetweenTicks = 6 * 1000;
+      // Should wait for 6 seconds between ticks when downloading pending files
+      // When there are no pending files to download, should wait for 60 seconds between ticks
+      let currentDelayBetweenTicks = 6 * 1000;
 
-  while (true) {
-    // TODO: May need to remove await, then use the returned values to set the currentDelayBetweenTicks asynchronously
+      while (true) {
+        // TODO: May need to remove await, then use the returned values to set the currentDelayBetweenTicks asynchronously
 
-    let watchCapturePartsProcessIsPaused =
-      (await getStoredSettingValue("WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED")) ===
-      true;
+        let watchCapturePartsProcessIsPaused =
+          (await getStoredSettingValue(
+            "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED"
+          )) === true;
 
-    try {
-      if (watchCapturePartsProcessIsPaused === false) {
-        const { processedSuccessfully, hadPendingCapturePart } = await tick();
+        try {
+          if (watchCapturePartsProcessIsPaused === false) {
+            const { processedSuccessfully, hadPendingCapturePart } =
+              await tick();
 
-        currentDelayBetweenTicks =
-          hadPendingCapturePart === false ? 60 * 1000 : 6 * 1000;
-      }
-    } catch (error) {
-      if (lastCapturePart != null) {
-        logger.error(
-          `An error occurred when trying to process Capture Part ${lastCapturePart.id} ${lastCapturePart.url}`
-        );
-        logger.error(error);
+            currentDelayBetweenTicks =
+              hadPendingCapturePart === false ? 60 * 1000 : 6 * 1000;
+          }
+        } catch (error) {
+          if (lastCapturePart != null) {
+            logger.error(
+              `An error occurred when trying to process Capture Part ${lastCapturePart.id} ${lastCapturePart.url}`
+            );
+            logger.error(error);
 
-        lastCapturePart.status = "failed";
-        await lastCapturePart.save();
+            lastCapturePart.status = "failed";
+            await lastCapturePart.save();
+          }
+        }
+
+        await new Promise((resolve) => {
+          setTimeout(() => resolve(null), currentDelayBetweenTicks);
+        });
       }
     }
-
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(null), currentDelayBetweenTicks);
-    });
-  }
-};
+  );
 
 const tick = async (): Promise<{
   processedSuccessfully: boolean;
