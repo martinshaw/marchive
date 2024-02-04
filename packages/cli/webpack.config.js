@@ -117,22 +117,6 @@ module.exports = (env, argv) => {
               }),
             ],
           },
-          plugins: [
-            new CopyPlugin({
-              patterns: [
-                {
-                  from: path.join(
-                    __dirname,
-                    "..",
-                    "data-providers",
-                    "src",
-                    "browser_extensions"
-                  ),
-                  to: path.join(__dirname, "pack", "browser_extensions"),
-                },
-              ],
-            }),
-          ],
         }
       : {}),
     output: {

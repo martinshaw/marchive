@@ -83,7 +83,14 @@ const readOnlyChromiumExecutablePath: string | false = (() => {
 })();
 
 const readOnlyBrowserExtensionsPath = isRunningPackaged
-  ? path.join(__dirname, "browser_extensions")
-  : path.join(__dirname, "browser_extensions");
+  ? path.join(process.execPath, "..", "browser_extensions")
+  : path.join(
+      __dirname,
+      "..",
+      "..",
+      "data-providers",
+      "src",
+      "browser_extensions"
+    );
 
 export { readOnlyChromiumExecutablePath, readOnlyBrowserExtensionsPath };

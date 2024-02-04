@@ -70,15 +70,7 @@ fs.readdirSync(path.resolve(cliPath, "bin")).forEach((file) => {
 });
 
 fs.readdirSync(path.resolve(cliPath, "pack")).forEach((file) => {
-  if (
-    [
-      "package.json",
-      "package-lock.json",
-      ".gitkeep",
-      "browser_extensions",
-    ].includes(file)
-  )
-    return;
+  if (["package.json", "package-lock.json", ".gitkeep"].includes(file)) return;
   fs.rmSync(path.join(cliPath, "pack", file), { recursive: true });
 });
 
@@ -98,7 +90,7 @@ execSync(
    * TODO: Solve error causing me to use `--public` flag and remove use of the `--public` flag
    * @see https://www.notion.so/martinshaw/Fix-Marchive-5ec25001ff4840959d53676e4f56ef65?pvs=4#866fe5f5c52b4f85bf815866802ff88d
    */
-  `npx pkg --debug . --targets node18-${platform}-${arch} --public`,
+  `npx pkg . --targets node18-${platform}-${arch} --public`,
   {
     cwd: path.join(cliPath, "pack"),
     // Using `--debug` flag generates a tonne of additional output, so we ignore it
@@ -148,6 +140,34 @@ if (chromiumBinariesPath.length === 0) {
 fs.cpSync(path.join(chromiumPath), path.join(cliPath, "bin", "chromium"), {
   recursive: true,
 });
+
+// Copy Chromium browser extensions into the bin directory to accompany binary (if missing)
+if (fs.existsSync(path.join(cliPath, "bin", "browser_extensions"))) {
+  fs.rmSync(path.join(cliPath, "bin", "browser_extensions"), {
+    recursive: true,
+  });
+}
+
+const browserExtensionsPath = path.join(
+  dataProvidersPath,
+  "src",
+  "browser_extensions"
+);
+
+if (fs.existsSync(browserExtensionsPath) !== true) {
+  console.error(
+    "Browser extensions directory not found in the data providers package."
+  );
+  process.exit(1);
+}
+
+fs.cpSync(
+  path.join(browserExtensionsPath),
+  path.join(cliPath, "bin", "browser_extensions"),
+  {
+    recursive: true,
+  }
+);
 
 console.log(
   "Successfully built binary with bundled CLI script and SQLite native binaries. Copied Chromium binaries alongside in the bin directory."

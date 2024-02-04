@@ -10,9 +10,9 @@ Description: description
 */
 
 export default {
-    curAutoMode: "easyModeActive",
-    curMode: "easyModeActive",
-    websites1: {},
-    websites2: {},
-    websites3: {},
-}
+  curAutoMode: "staticActive",
+  curMode: "staticActive",
+  websites1: {},
+  websites2: {},
+  websites3: {},
+};
