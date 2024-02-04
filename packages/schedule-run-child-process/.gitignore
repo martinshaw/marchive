@@ -1,5 +1,0 @@
-dist/*
-!dist/.gitkeep
-package/*
-!package/.gitkeep
-node_modules

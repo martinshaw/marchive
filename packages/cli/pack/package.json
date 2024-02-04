@@ -10,8 +10,7 @@
   "pkg": {
     "scripts": "**/*.js",
     "assets": [
-      "node_modules/better-sqlite3/build",
-      "browser_extensions"
+      "node_modules/better-sqlite3/build"
     ],
     "outputPath": "../bin"
   }

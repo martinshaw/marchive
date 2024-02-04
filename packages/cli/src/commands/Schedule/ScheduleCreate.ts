@@ -24,6 +24,7 @@ import { Schedule, Source } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
 import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import dayjs from "dayjs";
 
 const ScheduleCreate = new commander.Command("schedule:create");
 
@@ -121,16 +122,21 @@ ScheduleCreate.description("Create a new Schedule")
             `The chosen download destination must be a directory`
           );
 
-        const nextRunAtDate =
-          intervalInSeconds == null
-            ? new Date()
-            : new Date(Date.now() + intervalInSeconds * 1000);
+        const nextRunAtDate = dayjs();
+
+        if (intervalInSeconds != null) {
+          nextRunAtDate.add(intervalInSeconds, "second");
+        }
+
+        const nextRunAtDateAsString = nextRunAtDate.format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
 
         let schedule: Schedule | null = null;
         try {
           schedule = await Schedule.save({
             interval: intervalInSeconds,
-            nextRunAt: nextRunAtDate,
+            nextRunAt: nextRunAtDateAsString,
             downloadLocation: downloadLocation,
             sourceId: source.id,
           });

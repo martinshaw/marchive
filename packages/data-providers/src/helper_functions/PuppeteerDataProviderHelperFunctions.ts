@@ -28,15 +28,47 @@ import { Options, scrollPageToBottom } from "puppeteer-autoscroll-down";
 
 export const createPuppeteerBrowser = async (
   withPopUpOffExtension = true,
+  withIStillDontCareAboutCookiesExtension = true,
+  withAdblockPlusExtension = true,
   withStealthPlugin = true,
   withAdblockerPlugin = true,
   headless = true
 ): Promise<Browser> => {
   let browserArguments: string[] = [];
   const extensionFileNames = [
-    // For handling removal of overlays, cookie banners, etc... using my own PopUpOFF-headless forked extension
+    /**
+     * For handling removal of overlays, cookie banners, etc... using my own PopUpOFF-headless forked extension
+     *
+     * This extension works great when configured with 'aggressive mode', but despite all of my changes
+     *   to make it less interactive, and more headless, it still seems to enforce the default 'off' mode
+     *   for the first page navigated to (which in this case is the page to be captured).
+     *
+     * TODO: Either fix my fork of the extension by actually removing all interactive code and enforcing
+     *   'aggressive' or 'moderate' mode on all pages,
+     *   or remove it from the list of extensions to load (as the next extension seems to handle
+     *   similar functionality better)
+     */
     withPopUpOffExtension
       ? path.join(readOnlyBrowserExtensionsPath, "PopUpOFF-headless")
+      : null,
+
+    /**
+     * This seems to work great without any alteration, but there is at least a second of delay before removing
+     *   troublesome overlays, so ensure that the "page load wait" option is appropriately set
+     */
+    withIStillDontCareAboutCookiesExtension
+      ? path.join(
+          readOnlyBrowserExtensionsPath,
+          "I-Still-Dont-Care-About-Cookies"
+        )
+      : null,
+
+    /**
+     * Typical adblocker, built from source (https://gitlab.com/adblockinc/ext/adblockplus/adblockplusui)
+     * set the suppress_first_run_page default setting which causes a new page to open on install
+     */
+    withAdblockPlusExtension
+      ? path.join(readOnlyBrowserExtensionsPath, "adblockpluschrome-3.23")
       : null,
   ].filter((filename) => filename !== null);
 

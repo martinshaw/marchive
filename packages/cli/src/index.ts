@@ -23,6 +23,8 @@ import ScheduleUpdate from "./commands/Schedule/ScheduleUpdate";
 import ScheduleCount from "./commands/Schedule/ScheduleCount";
 import ScheduleList from "./commands/Schedule/ScheduleList";
 import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
+import WatchSchedules from "./commands/Watch/WatchSchedules";
+import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
@@ -67,6 +69,10 @@ import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
     .addCommand(ScheduleCount)
     .addCommand(ScheduleList)
     .addCommand(ScheduleDelete)
+
+    // Watch (daemon) related commands
+    .addCommand(WatchSchedules)
+    .addCommand(WatchCaptureParts)
 
     .addCommand(Test)
     .helpOption("-h, --help", "Display help for command")

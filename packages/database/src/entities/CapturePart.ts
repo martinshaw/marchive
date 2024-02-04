@@ -83,17 +83,17 @@ class CapturePart extends BaseEntity {
   deletedFromDownloads: boolean;
 
   @CreateDateColumn({
-    type: "date",
+    type: "datetime",
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: "date",
+    type: "datetime",
   })
   updatedAt: Date;
 
   @DeleteDateColumn({
-    type: "date",
+    type: "datetime",
     nullable: true,
   })
   deletedAt: Date | null;
