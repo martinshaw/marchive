@@ -88,8 +88,6 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       )
         return false;
     } catch (error) {
-      console.log(444, error);
-
       return false;
     }
 
