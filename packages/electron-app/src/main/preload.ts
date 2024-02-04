@@ -1,26 +1,8 @@
-import { SourcesChannels } from './ipc/Sources';
-import { CapturesChannels } from './ipc/Captures';
-import { SchedulesChannels } from './ipc/Schedules';
-import { ProcessesChannels } from './ipc/Processes';
-import { RenderersChannels } from './ipc/Renderers';
-import { UtilitiesChannels } from './ipc/Utilities';
-import { DataProvidersChannels } from './ipc/DataProviders';
-import { SourceDomainsChannels } from './ipc/SourceDomains';
+// Disable no-unused-vars, broken for spread args
+/* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-(async () => {
-  (await import('events')).EventEmitter.defaultMaxListeners = 15
-})
-
-export type Channels =
-  | CapturesChannels
-  | DataProvidersChannels
-  | SchedulesChannels
-  | SourcesChannels
-  | SourceDomainsChannels
-  | UtilitiesChannels
-  | ProcessesChannels
-  | RenderersChannels;
+export type Channels = 'ipc-example';
 
 const electronHandler = {
   ipcRenderer: {
@@ -39,11 +21,7 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    removeAllListeners(channel: Channels) {
-      ipcRenderer.removeAllListeners(channel);
-    },
   },
-  platform: process.platform,
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

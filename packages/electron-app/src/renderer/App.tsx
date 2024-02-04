@@ -1,59 +1,50 @@
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import icon from '../../assets/icon.svg';
+import './App.css';
 
-import TodayPage from './pages/TodayPage';
-import YesterdayPage from './pages/YesterdayPage';
-import DefaultLayout from './layouts/DefaultLayout';
-import OnboardingIndexPage from './pages/OnboardingIndexPage';
-import SourceShowPage, { SourceShowPageLoader } from './pages/SourceShowPage';
-import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
-import CaptureShowPage, { CaptureShowPageLoader } from './pages/CaptureShowPage';
-import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
-
-const App = () => {
+function Hello() {
   return (
-    <RouterProvider
-      router={createMemoryRouter([
-        {
-          path: '/',
-          element: <DefaultLayout />,
-          children: [
-            {
-              path: '/onboarding',
-              element: <OnboardingIndexPage />
-            },
-            {
-              path: '/yesterday',
-              element: <YesterdayPage />
-            },
-            {
-              path: '/today',
-              element: <TodayPage />
-            },
-            {
-              path: '/sources',
-              loader: SourceIndexPageLoader,
-              element: <SourceIndexPage />
-            },
-            {
-              path: '/sources/create',
-              loader: sourceCreatePageDataLoader,
-              element: <SourceCreatePage />
-            },
-            {
-              path: '/sources/:sourceId',
-              loader: SourceShowPageLoader,
-              element: <SourceShowPage />
-            },
-            {
-              path: '/captures/:captureId',
-              loader: CaptureShowPageLoader,
-              element: <CaptureShowPage />
-            },
-          ]
-        }
-      ])}
-    />
+    <div>
+      <div className="Hello">
+        <img width="200" alt="icon" src={icon} />
+      </div>
+      <h1>electron-react-boilerplate</h1>
+      <div className="Hello">
+        <a
+          href="https://electron-react-boilerplate.js.org/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <button type="button">
+            <span role="img" aria-label="books">
+              📚
+            </span>
+            Read our docs
+          </button>
+        </a>
+        <a
+          href="https://github.com/sponsors/electron-react-boilerplate"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <button type="button">
+            <span role="img" aria-label="folded hands">
+              🙏
+            </span>
+            Donate
+          </button>
+        </a>
+      </div>
+    </div>
   );
-};
+}
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Hello />} />
+      </Routes>
+    </Router>
+  );
+}
