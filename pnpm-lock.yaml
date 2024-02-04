@@ -17,6 +17,9 @@ importers:
       '@puppeteer/browsers':
         specifier: ^1.9.1
         version: 1.9.1
+      '@types/uuid':
+        specifier: ^9.0.3
+        version: 9.0.8
       better-sqlite3:
         specifier: ^9.3.0
         version: 9.4.0
@@ -47,6 +50,9 @@ importers:
       utilities:
         specifier: workspace:^
         version: link:../utilities
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
     devDependencies:
       '@babel/core':
         specifier: ^7.23.9
@@ -1791,7 +1797,6 @@ packages:
 
   /@types/uuid@9.0.8:
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
-    dev: true
 
   /@types/xml2js@0.4.14:
     resolution: {integrity: sha512-4YnrRemBShWRO2QjvUin8ESA41rH+9nQGLUGZV/1IDhi3SL9OhdpNC/MrulTWuptXKwhx/aDxE7toV0f/ypIXQ==}

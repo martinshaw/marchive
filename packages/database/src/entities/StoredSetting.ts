@@ -22,8 +22,8 @@ import {
 export const storedSettingKeys = [
   "MARCHIVE_IS_SETUP",
   "ELECTRON_IS_USED",
-  "SCHEDULE_RUN_PROCESS_IS_PAUSED",
-  "CAPTURE_PART_RUN_PROCESS_IS_PAUSED",
+  "WATCH_SCHEDULES_PROCESS_IS_PAUSED",
+  "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED",
 ];
 export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
 

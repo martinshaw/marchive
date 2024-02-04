@@ -13,10 +13,7 @@ import fs from "node:fs";
 import logger from "logger";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
-import {
-  ScheduleAttributes,
-  ScheduleStatus,
-} from "database/src/models/Schedule";
+import { ScheduleStatus } from "database/src/entities/Schedule";
 import { Capture, Schedule, Source } from "database";
 import { getDataProviderByIdentifier } from "data-providers";
 import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
@@ -25,7 +22,8 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
   logger.info("Found Schedule with ID: " + schedule.id);
 
-  schedule = await schedule.update({ status: "processing" as ScheduleStatus });
+  schedule.status = "processing";
+  schedule = await schedule.save();
 
   if (schedule.source == null) {
     await cleanup(schedule);
@@ -112,14 +110,16 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     return;
   }
 
-  capture = await capture.reload({
-    include: [
-      {
-        model: Schedule,
-        include: [Source],
-      },
-    ],
+  capture = await Capture.findOne({
+    where: { id: capture.id },
+    relations: ["schedule", "schedule.source"],
   });
+
+  if (capture == null) {
+    await cleanup(schedule);
+    logger.error("A new Capture could not be found");
+    return;
+  }
 
   logger.info(`Created new Capture with ID ${capture.id}`);
 
@@ -191,10 +191,8 @@ const cleanup = async (
 ): Promise<boolean> => {
   if (schedule == null) return true;
 
-  const changes: Partial<ScheduleAttributes> = {
-    status: "pending" as ScheduleStatus,
-    lastRunAt: schedule.nextRunAt,
-  };
+  schedule.status = "pending";
+  schedule.lastRunAt = schedule.nextRunAt;
 
   if (
     schedule.interval != null &&
@@ -202,12 +200,12 @@ const cleanup = async (
     Number(schedule.interval) > 0
   ) {
     const nextRunAt = new Date(new Date().getTime() + schedule.interval * 1000);
-    changes.nextRunAt = nextRunAt;
+    schedule.nextRunAt = nextRunAt;
   }
 
-  if (schedule.interval == null) changes.nextRunAt = null;
+  if (schedule.interval == null) schedule.nextRunAt = null;
 
-  return (await schedule.update(changes)) != null;
+  return (await schedule.save()) != null;
 };
 
 export default performCaptureRun;

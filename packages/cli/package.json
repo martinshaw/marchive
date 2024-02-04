@@ -12,6 +12,7 @@
   "bin": "./lib/index.js",
   "dependencies": {
     "@puppeteer/browsers": "^1.9.1",
+    "@types/uuid": "^9.0.3",
     "better-sqlite3": "^9.3.0",
     "change-case-commonjs": "^5.4.3",
     "commander": "^11.1.0",
@@ -21,7 +22,8 @@
     "logger": "workspace:^",
     "puppeteer-core": "^21.3.8",
     "table": "^6.8.1",
-    "utilities": "workspace:^"
+    "utilities": "workspace:^",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
