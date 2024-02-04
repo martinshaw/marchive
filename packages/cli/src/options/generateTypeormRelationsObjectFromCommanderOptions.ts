@@ -11,7 +11,7 @@ Description: description
 
 import { Command, Option } from "commander";
 import { BaseEntity, FindOptionsRelations } from "database";
-import { pascalCase, kebabCase, capitalCase } from "change-case";
+import { pascalCase, kebabCase, capitalCase } from "change-case-commonjs";
 
 type GenerateTypeormRelationsObjectFromCommanderOptionsColumnsParameterType<
   TEntityType extends BaseEntity

@@ -13,18 +13,23 @@
   "dependencies": {
     "@puppeteer/browsers": "^1.9.1",
     "better-sqlite3": "^9.3.0",
-    "change-case": "^5.4.2",
+    "change-case-commonjs": "^5.4.3",
     "commander": "^11.1.0",
-    "puppeteer-core": "^21.3.8",
-    "table": "^6.8.1",
     "data-providers": "workspace:^",
     "database": "workspace:^",
+    "jsdom": "^22.1.0",
     "logger": "workspace:^",
-    "utilities": "workspace:^",
-    "jsdom": "^22.1.0"
+    "puppeteer-core": "^21.3.8",
+    "table": "^6.8.1",
+    "utilities": "workspace:^"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "@babel/preset-env": "^7.23.9",
+    "@types/jsdom": "^21.1.3",
     "@types/node": "20.11.6",
+    "babel-loader": "^9.1.3",
     "bufferutil": "^4.0.8",
     "canvas": "^2.11.2",
     "copy-webpack-plugin": "^12.0.2",
@@ -38,8 +43,7 @@
     "typescript": "^5.1.3",
     "utf-8-validate": "^6.0.3",
     "webpack": "^5.90.0",
-    "webpack-cli": "^5.1.4",
-    "@types/jsdom": "^21.1.3"
+    "webpack-cli": "^5.1.4"
   },
   "packageManager": "pnpm@8.10.2",
   "engines": {

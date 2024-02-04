@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
-    "change-case": "^4.1.2",
+    "axios": "^1.6.7",
+    "change-case-commonjs": "^5.4.3",
     "database": "workspace:^",
     "dompurify": "^3.0.5",
     "jsdom": "^22.1.0",

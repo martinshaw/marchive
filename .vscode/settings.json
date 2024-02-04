@@ -73,5 +73,6 @@
       "addWords": true,
       "scope": "workspace"
     }
-  }
+  },
+  "svg.preview.background": "transparent"
 }

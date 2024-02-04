@@ -37,7 +37,6 @@ let DataProviderList = new commander.Command("data-provider:list")
             identifier: "Identifier",
             name: "Name",
             description: "Description",
-            iconInformation: "Icon Information",
           }
         ).send();
       });

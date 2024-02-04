@@ -156,19 +156,11 @@ abstract class BaseDataProvider {
    * @returns {DataProviderSerializedType}
    */
   async toJSON(): Promise<DataProviderSerializedType> {
-    const { filePath: iconFilePath, shouldInvertOnDarkMode } =
-      this.getIconInformation();
-    let iconDataUrl: string =
-      (await retrieveFileAsBase64DataUrlFromAbsolutePath(iconFilePath)) ?? "";
-
     return {
       identifier: this.getIdentifier(),
       name: this.getName(),
       description: this.getDescription(),
-      iconInformation: {
-        filePath: iconDataUrl,
-        shouldInvertOnDarkMode,
-      },
+      iconInformation: this.getIconInformation(),
     };
   }
 }

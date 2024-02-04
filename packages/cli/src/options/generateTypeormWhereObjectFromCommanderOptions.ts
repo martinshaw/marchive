@@ -26,7 +26,7 @@ import {
   MoreThanOrEqual,
   Not,
 } from "database";
-import { pascalCase, kebabCase, capitalCase } from "change-case";
+import { pascalCase, kebabCase, capitalCase } from "change-case-commonjs";
 
 type GenerateTypeormWhereObjectFromCommanderOptionsColumnsParameterType = {
   [columnName: string]: {

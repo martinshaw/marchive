@@ -31,6 +31,7 @@ import {
 import { Capture, Schedule, Source, CapturePart } from "database";
 import { CapturePartStatus } from "database/src/entities/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
+import axios, { AxiosResponse } from "axios";
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -70,7 +71,8 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, "list-columns.svg"),
+      filePath:
+        "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDUxLjMgKDU3NTQ0KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5BcnRib2FyZDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJBcnRib2FyZCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Imxpc3QtY29sdW1ucyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDEuMDAwMDAwKSIgZmlsbD0iIzAwMDAwMCIgZmlsbC1ydWxlPSJub256ZXJvIj4KICAgICAgICAgICAgPHBhdGggZD0iTTAsMS45NzM0MjE5MyBMMCwxLjAzNjU0NDg1IEMwLDAuNDY4NDM4NTM4IDAuNDU5NDg5NDU2LDAuMDA5OTY2Nzc3NDEgMS4wMjg4NTY4MywwIEw3Ljk3MTE0MzE3LDAgQzguNTQwNTEwNTQsMCA5LDAuNDY4NDM4NTM4IDksMS4wMjY1NzgwNyBMOSwxLjk3MzQyMTkzIEM5LDIuNTQxNTI4MjQgOC41MzA1MjE2NCwzIDcuOTcxMTQzMTcsMyBMMS4wMjg4NTY4MywzIEMwLjQ1OTQ4OTQ1NiwzIDAsMi41NDE1MjgyNCAwLDEuOTczNDIxOTMgWiBNMCw2Ljk3MzQyMTkzIEwwLDYuMDM2NTQ0ODUgQzAsNS40Njg0Mzg1NCAwLjQ1OTQ4OTQ1Niw1LjAwOTk2Njc4IDEuMDI4ODU2ODMsNSBMNy45NzExNDMxNyw1IEM4LjU0MDUxMDU0LDUgOSw1LjQ2ODQzODU0IDksNi4wMjY1NzgwNyBMOSw2Ljk3MzQyMTkzIEM5LDcuNTQxNTI4MjQgOC41MzA1MjE2NCw4IDcuOTcxMTQzMTcsOCBMMS4wMjg4NTY4Myw4IEMwLjQ1OTQ4OTQ1Niw4IDAsNy41NDE1MjgyNCAwLDYuOTczNDIxOTMgWiBNMCwxMS45NzM0MjE5IEwwLDExLjAzNjU0NDkgQzAsMTAuNDY4NDM4NSAwLjQ1OTQ4OTQ1NiwxMC4wMDk5NjY4IDEuMDI4ODU2ODMsMTAgTDcuOTcxMTQzMTcsMTAgQzguNTQwNTEwNTQsMTAgOSwxMC40Njg0Mzg1IDksMTEuMDI2NTc4MSBMOSwxMS45NzM0MjE5IEM5LDEyLjU0MTUyODIgOC41MzA1MjE2NCwxMyA3Ljk3MTE0MzE3LDEzIEwxLjAyODg1NjgzLDEzIEMwLjQ1OTQ4OTQ1NiwxMyAwLDEyLjU0MTUyODIgMCwxMS45NzM0MjE5IFogTTAsMTYuOTczNDIxOSBMMCwxNi4wMzY1NDQ5IEMwLDE1LjQ2ODQzODUgMC40NTk0ODk0NTYsMTUuMDA5OTY2OCAxLjAyODg1NjgzLDE1IEw3Ljk3MTE0MzE3LDE1IEM4LjU0MDUxMDU0LDE1IDksMTUuNDY4NDM4NSA5LDE2LjAyNjU3ODEgTDksMTYuOTczNDIxOSBDOSwxNy41NDE1MjgyIDguNTMwNTIxNjQsMTggNy45NzExNDMxNywxOCBMMS4wMjg4NTY4MywxOCBDMC40NTk0ODk0NTYsMTggMCwxNy41NDE1MjgyIDAsMTYuOTczNDIxOSBaIE0xMSwxLjk3MzQyMTkzIEwxMSwxLjAzNjU0NDg1IEMxMSwwLjQ2ODQzODUzOCAxMS40NTk0ODk1LDAuMDA5OTY2Nzc3NDEgMTIuMDI4ODU2OCwwIEwxOC45NzExNDMyLDAgQzE5LjU0MDUxMDUsMCAyMCwwLjQ2ODQzODUzOCAyMCwxLjAyNjU3ODA3IEwyMCwxLjk3MzQyMTkzIEMyMCwyLjU0MTUyODI0IDE5LjUzMDUyMTYsMyAxOC45NzExNDMyLDMgTDEyLjAyODg1NjgsMyBDMTEuNDU5NDg5NSwzIDExLDIuNTQxNTI4MjQgMTEsMS45NzM0MjE5MyBaIE0xMSw2Ljk3MzQyMTkzIEwxMSw2LjAzNjU0NDg1IEMxMSw1LjQ2ODQzODU0IDExLjQ1OTQ4OTUsNS4wMDk5NjY3OCAxMi4wMjg4NTY4LDUgTDE4Ljk3MTE0MzIsNSBDMTkuNTQwNTEwNSw1IDIwLDUuNDY4NDM4NTQgMjAsNi4wMjY1NzgwNyBMMjAsNi45NzM0MjE5MyBDMjAsNy41NDE1MjgyNCAxOS41MzA1MjE2LDggMTguOTcxMTQzMiw4IEwxMi4wMjg4NTY4LDggQzExLjQ1OTQ4OTUsOCAxMSw3LjU0MTUyODI0IDExLDYuOTczNDIxOTMgWiBNMTEsMTEuOTczNDIxOSBMMTEsMTEuMDM2NTQ0OSBDMTEsMTAuNDY4NDM4NSAxMS40NTk0ODk1LDEwLjAwOTk2NjggMTIuMDI4ODU2OCwxMCBMMTguOTcxMTQzMiwxMCBDMTkuNTQwNTEwNSwxMCAyMCwxMC40Njg0Mzg1IDIwLDExLjAyNjU3ODEgTDIwLDExLjk3MzQyMTkgQzIwLDEyLjU0MTUyODIgMTkuNTMwNTIxNiwxMyAxOC45NzExNDMyLDEzIEwxMi4wMjg4NTY4LDEzIEMxMS40NTk0ODk1LDEzIDExLDEyLjU0MTUyODIgMTEsMTEuOTczNDIxOSBaIE0xMSwxNi45NzM0MjE5IEwxMSwxNi4wMzY1NDQ5IEMxMSwxNS40Njg0Mzg1IDExLjQ1OTQ4OTUsMTUuMDA5OTY2OCAxMi4wMjg4NTY4LDE1IEwxOC45NzExNDMyLDE1IEMxOS41NDA1MTA1LDE1IDIwLDE1LjQ2ODQzODUgMjAsMTYuMDI2NTc4MSBMMjAsMTYuOTczNDIxOSBDMjAsMTcuNTQxNTI4MiAxOS41MzA1MjE2LDE4IDE4Ljk3MTE0MzIsMTggTDEyLjAyODg1NjgsMTggQzExLjQ1OTQ4OTUsMTggMTEsMTcuNTQxNTI4MiAxMSwxNi45NzM0MjE5IFoiIGlkPSJDb21iaW5lZC1TaGFwZSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+",
       shouldInvertOnDarkMode: true,
     };
   }
@@ -79,13 +81,15 @@ class BlogArticleDataProvider extends BaseDataProvider {
     if ((url.startsWith("http://") || url.startsWith("https://")) === false)
       url = `https://${url}`;
 
-    let request: Response | null = null;
+    let response: AxiosResponse | null = null;
     try {
-      request = await fetch(url);
-      if (request === null) return false;
-      if (request.status !== 200) return false;
+      response = await axios.get(url, { responseType: "document" });
+      if (response === null) return false;
+      if (response.status !== 200) return false;
+      if ((response.headers["content-type"] !== "text/html") === false)
+        return false;
 
-      const contents = await request.text();
+      const contents = await response.data;
       if (!contents) return false;
       if (
         contents.includes("<body") === false &&
@@ -111,13 +115,14 @@ class BlogArticleDataProvider extends BaseDataProvider {
     /**
      * TODO: @see https://www.notion.so/codeatlas/Build-UI-etc-for-podcast-DP-2b11d20d72ec4c91be3033217034f020?pvs=4#de488f21490d4c6cb2ba70d0aa6a7970
      */
-    // let request: Response | null = null;
+    // let response: AxiosResponse | null = null;
     // try {
-    //   request = await fetch(url);
-    //   if (request === null) return super.getSourceDomainInformation(url);
-    //   if (request.status !== 200) return super.getSourceDomainInformation(url);
+    //   response = await axios.get(url, { responseType: "document" });
+    //   if (response === null) return super.getSourceDomainInformation(url);
+    //   if (response.status !== 200) return super.getSourceDomainInformation(url);
+    //   if ((response.headers["content-type"] !== "text/html") === false) return false;
 
-    //   const contents = await request.text();
+    //   const contents = await response.data;
     //   if (!contents) return super.getSourceDomainInformation(url);
     //   if (
     //     contents.includes('<title ') === false &&

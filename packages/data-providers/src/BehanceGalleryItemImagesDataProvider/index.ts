@@ -27,6 +27,7 @@ import {
   retrievePageHeadMetadata,
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
+import axios, { AxiosResponse } from "axios";
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;
@@ -54,7 +55,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, "icon.png"),
+      filePath:
+        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggZD0iTTIyIDdoLTdWNWg3djJ6bTEuNzI2IDEwYy0uNDQyIDEuMjk3LTIuMDI5IDMtNS4xMDEgMy0zLjA3NCAwLTUuNTY0LTEuNzI5LTUuNTY0LTUuNjc1IDAtMy45MSAyLjMyNS01LjkyIDUuNDY2LTUuOTIgMy4wODIgMCA0Ljk2NCAxLjc4MiA1LjM3NSA0LjQyNi4wNzguNTA2LjEwOSAxLjE4OC4wOTUgMi4xNEgxNS45N2MuMTMgMy4yMTEgMy40ODMgMy4zMTIgNC41ODggMi4wMjloMy4xNjh6bS03LjY4Ni00aDQuOTY1Yy0uMTA1LTEuNTQ3LTEuMTM2LTIuMjE5LTIuNDc3LTIuMjE5LTEuNDY2IDAtMi4yNzcuNzY4LTIuNDg4IDIuMjE5em0tOS41NzQgNi45ODhIMFY1LjAyMWg2Ljk1M2M1LjQ3Ni4wODEgNS41OCA1LjQ0NCAyLjcyIDYuOTA2IDMuNDYxIDEuMjYgMy41NzcgOC4wNjEtMy4yMDcgOC4wNjF6TTMgMTFoMy41ODRjMi41MDggMCAyLjkwNi0zLS4zMTItM0gzdjN6bTMuMzkxIDNIM3YzLjAxNmgzLjM0MWMzLjA1NSAwIDIuODY4LTMuMDE2LjA1LTMuMDE2eiIvPjwvc3ZnPg==",
       shouldInvertOnDarkMode: false,
     };
   }
@@ -69,13 +71,16 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     )
       return false;
 
-    let request: Response | null = null;
+    let response: AxiosResponse | null = null;
     try {
-      request = await fetch(url);
-      if (request === null) return false;
-      if (request.status !== 200) return false;
+      response = await axios.get(url, { responseType: "document" });
+      if (response === null) return false;
+      if (response.status !== 200) return false;
+      if ((response.headers["content-type"] !== "text/html") === false)
+        return false;
 
-      const contents = await request.text();
+      const contents = await response.data;
+
       if (!contents) return false;
       if (
         contents.includes("<body") === false &&
@@ -83,6 +88,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
       )
         return false;
     } catch (error) {
+      console.log(444, error);
+
       return false;
     }
 

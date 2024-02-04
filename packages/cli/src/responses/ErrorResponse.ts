@@ -58,6 +58,12 @@ class ErrorResponse extends BaseResponse {
     try {
       return await callback();
     } catch (error) {
+      //
+
+      console.log("12312 errror this doesnt seem to be logged ", error);
+
+      //
+
       /**
        * Typically, we can "early return" a command on an error, by simply throwing an ErrorResponse with a
        * user-friendly message and the original error (optionally)

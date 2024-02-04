@@ -9,7 +9,6 @@ Modified: 2023-08-02T02:30:40.877Z
 Description: description
 */
 
-import path from "node:path";
 import logger from "logger";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import BaseDataProvider, {
@@ -23,6 +22,7 @@ import {
   generatePageScreenshot,
   loadPageByUrl,
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
+import axios, { AxiosResponse } from "axios";
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -38,12 +38,13 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   }
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
-    console.log("__dirname", __dirname);
-    console.log("process.execPath", process.execPath);
-    console.log("process.cwd()", process.cwd());
-
+    /**
+     * I would prefer to use the svg-loader to load the actual file inline during webpack compilation,
+     * but this would require adding webpack compilation to `data-providers` which adds unnecessary complexity.
+     */
     return {
-      filePath: path.join(__dirname, "page-layout.svg"),
+      filePath:
+        "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE3LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAyMCAyMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjAgMjAiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8ZyBpZD0ibGF5b3V0XzRfIj4KCTxnPgoJCTxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTksMUgxQzAuNDUsMSwwLDEuNDUsMCwydjE2YzAsMC41NSwwLjQ1LDEsMSwxaDE4YzAuNTUsMCwxLTAuNDUsMS0xVjIKCQkJQzIwLDEuNDUsMTkuNTUsMSwxOSwxeiBNNywxN0gyVjhoNVYxN3ogTTE4LDE3SDhWOGgxMFYxN3ogTTE4LDdIMlYzaDE2Vjd6Ii8+Cgk8L2c+CjwvZz4KPC9zdmc+Cg==",
       shouldInvertOnDarkMode: true,
     };
   }
@@ -52,13 +53,15 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     if ((url.startsWith("http://") || url.startsWith("https://")) === false)
       url = `https://${url}`;
 
-    let request: Response | null = null;
+    let response: AxiosResponse | null = null;
     try {
-      request = await fetch(url);
-      if (request === null) return false;
-      if (request.status !== 200) return false;
+      response = await axios.get(url, { responseType: "document" });
+      if (response === null) return false;
+      if (response.status !== 200) return false;
+      if ((response.headers["content-type"] !== "text/html") === false)
+        return false;
 
-      const contents = await request.text();
+      const contents = await response.data;
       if (!contents) return false;
       if (
         contents.includes("<body") === false &&
@@ -84,13 +87,14 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
     /**
      * @see https://www.notion.so/codeatlas/Build-UI-etc-for-podcast-DP-2b11d20d72ec4c91be3033217034f020?pvs=4#de488f21490d4c6cb2ba70d0aa6a7970
      */
-    // let request: Response | null = null;
+    // let response: AxiosResponse | null = null;
     // try {
-    //   request = await fetch(url);
-    //   if (request === null) return super.getSourceDomainInformation(url);
-    //   if (request.status !== 200) return super.getSourceDomainInformation(url);
+    //   response = await axios.get(url, {responseType: "document"});
+    //   if (response === null) return super.getSourceDomainInformation(url);
+    //   if (response.status !== 200) return super.getSourceDomainInformation(url);
+    //   if ((response.headers["content-type"] !== "text/html") === false) return super.getSourceDomainInformation(url);
 
-    //   const contents = await request.text();
+    //   const contents = await response.data;
     //   if (!contents) return super.getSourceDomainInformation(url);
     //   if (
     //     contents.includes('<title ') === false &&

@@ -24,6 +24,7 @@ import { safeSanitizeFileName } from "utilities";
 import { Capture, CapturePart, Schedule, Source } from "database";
 import { CapturePartStatus } from "database/src/entities/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
+import axios, { AxiosResponse } from "axios";
 
 export type RssParserFeedType = {
   [key: string]: any;
@@ -115,7 +116,8 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
   getIconInformation(): BaseDataProviderIconInformationReturnType {
     return {
-      filePath: path.join(__dirname, "microphone.svg"),
+      filePath:
+        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMCAwQzcuNzkwODYgMCA2IDEuNzkwODYgNiA0VjlDNiAxMS4yMDkxIDcuNzkwODYgMTMgMTAgMTNDMTIuMjA5MSAxMyAxNCAxMS4yMDkxIDE0IDlWNEMxNCAxLjc5MDg2IDEyLjIwOTEgMCAxMCAwWk00IDdDNC41NTIyOCA3IDUgNy40NDc3MiA1IDhWOUM1IDExLjc2MTQgNy4yMzg1OCAxNCAxMCAxNEMxMi43NjE0IDE0IDE1IDExLjc2MTQgMTUgOVY4QzE1IDcuNDQ3NzIgMTUuNDQ3NyA3IDE2IDdDMTYuNTUyMyA3IDE3IDcuNDQ3NzIgMTcgOFY5QzE3IDEyLjUyNjUgMTQuMzkyMyAxNS40NDM5IDExIDE1LjkyOTFWMThIMTJDMTIuNTUyMyAxOCAxMyAxOC40NDc3IDEzIDE5QzEzIDE5LjU1MjMgMTIuNTUyMyAyMCAxMiAyMEg4QzcuNDQ3NzIgMjAgNyAxOS41NTIzIDcgMTlDNyAxOC40NDc3IDcuNDQ3NzIgMTggOCAxOEg5VjE1LjkyOTFDNS42MDc3MSAxNS40NDM5IDMgMTIuNTI2NSAzIDlWOEMzIDcuNDQ3NzIgMy40NDc3MiA3IDQgN1oiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+Cg==",
       shouldInvertOnDarkMode: true,
     };
   }
@@ -217,11 +219,13 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async determinePodcastContent(
     url: string
   ): Promise<RssParserFeedType | null> {
-    const request: Response | null = await fetch(url);
-    if (request == null) return null;
-    if (request.status !== 200) return null;
+    const response: AxiosResponse | null = await axios.get(url);
+    if (response == null) return null;
+    if (response.status !== 200) return null;
+    if ((response.headers["content-type"] !== "text/html") === false)
+      return null;
 
-    const contents = await request.text();
+    const contents = await response.data;
     if (!contents) return null;
     if (
       contents.includes("<rss") === false &&
