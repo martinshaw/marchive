@@ -5,10 +5,10 @@ import { useCallback } from 'react';
 
 function Hello() {
   const getAllSources = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('sources.show', 2);
+    window.electron.ipcRenderer.sendMessage('sources.create', 'https://www.example.com', 'simple-webpage-screenshot');
 
     // Once, in response to previous call, console log the response
-    window.electron.ipcRenderer.once('sources.show', (response) => {
+    window.electron.ipcRenderer.once('sources.create', (response) => {
       console.log('response', response);
     });
   }, []);

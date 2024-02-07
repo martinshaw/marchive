@@ -16,11 +16,10 @@ const SourceShowAction = async (
   sourceId: number,
   withSourceDomain: boolean = false,
   withSchedules: boolean = false,
-): Promise<CliJsonResponse<any[]>> => {
-  return runCliCommandWithImmediateResponse('source:show', [sourceId], {
+): Promise<CliJsonResponse<any[]>> =>
+  runCliCommandWithImmediateResponse('source:show', [sourceId], {
     withSourceDomain,
     withSchedules,
   });
-};
 
 export default SourceShowAction;

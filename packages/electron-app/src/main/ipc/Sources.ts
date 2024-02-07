@@ -61,24 +61,16 @@ ipcMain.on(
 ipcMain.on(
   'sources.create',
   async (event, url: string, dataProviderIdentifier: string) => {
-    return SourceCreateAction(url, dataProviderIdentifier)
-      .then((source) => {
-        event.reply('sources.create', source, null);
-      })
-      .catch((error) => {
-        event.reply('sources.create', null, error);
-      });
+    return SourceCreateAction(url, dataProviderIdentifier).then((response) => {
+      event.reply('sources.create', response);
+    });
   },
 );
 
 ipcMain.on('sources.delete', async (event, sourceId: number) => {
-  return SourceDeleteAction(sourceId)
-    .then((source) => {
-      event.reply('sources.delete', source, null);
-    })
-    .catch((error) => {
-      event.reply('sources.delete', null, error);
-    });
+  return SourceDeleteAction(sourceId).then((response) => {
+    event.reply('sources.delete', response);
+  });
 });
 
 ipcMain.on('sources.prompt-for-deletion', async (event, sourceId: number) => {

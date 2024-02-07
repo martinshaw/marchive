@@ -19,25 +19,30 @@ import logger from 'logger';
 import { kebabCase } from 'change-case-commonjs';
 
 type CliCommandNamesWithImmediateResponses =
-  | 'capture:list'
-  | 'capture:delete'
-  | 'schedule:list'
-  | 'schedule:delete'
-  | 'schedule:update'
-  | 'schedule:create'
-  | 'schedule:count'
+  | 'stored-setting:list'
+  | 'stored-setting:get'
+  | 'stored-setting:set'
+  | 'stored-setting:unset'
+  | 'source-domain:list'
+  | 'source-domain:show'
+  | 'source-domain:count'
+  | 'source:list'
+  | 'source:show'
+  | 'source:count'
   | 'source:create'
   | 'source:delete'
-  | 'source:list'
-  | 'source:count'
-  | 'stored-setting:set'
-  | 'stored-setting:get'
-  | 'stored-setting:list'
-  | 'stored-setting:unset'
+  | 'capture:list'
+  | 'capture:show'
+  | 'capture:delete'
   | 'data-provider:list'
+  | 'data-provider:show'
   | 'data-provider:validate'
-  | 'source-domain:count'
-  | 'source-domain:list';
+  | 'schedule:list'
+  | 'schedule:show'
+  | 'schedule:count'
+  | 'schedule:create'
+  | 'schedule:update'
+  | 'schedule:delete';
 
 type CliCommandNamesWithNonTerminatingResponses =
   | 'watch:schedules'
@@ -57,13 +62,12 @@ const formatCliCommandOptionsAsCliArguments = (
     .join(' ');
 
 const formatCliCommand = (
-  path: string,
   command: string,
-  args: string[] = [],
+  args: (string | number)[] = [],
   options: Record<string, any> = {},
   asJson: boolean = true,
 ): string =>
-  `${path} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
+  `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliPath} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
     asJson ? '--json' : ''
   }`;
 
@@ -71,35 +75,14 @@ const runCliCommandWithImmediateResponse = async <
   TDataType extends any[] = any[],
 >(
   command: CliCommandNamesWithImmediateResponses,
-  args: string[] = [],
+  args: (string | number)[] = [],
   options: Record<string, any> = {},
 ): Promise<CliJsonResponse<TDataType>> =>
   new Promise((resolve, reject) => {
-    exec(
-      formatCliCommand(
-        `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliPath}`,
-        command,
-        args,
-        options,
-      ),
-      (error, stdout, stderr) => {
-        if (error) {
-          logger.error(
-            'An error occurred while executing the CLI command (with runCliCommandWithImmediateResponse)',
-            {
-              command,
-              options,
-            },
-          );
-          logger.error(error);
-
-          reject(error);
-        }
-
-        if (stderr) resolve(new CliJsonResponse(stderr));
-        else resolve(new CliJsonResponse(stdout));
-      },
-    );
+    exec(formatCliCommand(command, args, options), (error, stdout, stderr) => {
+      if (stderr) resolve(new CliJsonResponse(stderr));
+      else resolve(new CliJsonResponse(stdout));
+    });
   });
 
 export { runCliCommandWithImmediateResponse };
