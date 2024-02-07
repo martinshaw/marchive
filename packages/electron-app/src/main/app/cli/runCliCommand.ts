@@ -51,19 +51,37 @@ const formatCliCommandOptionsAsCliArguments = (
       key = kebabCase(key);
 
       if (typeof value === 'boolean') return `--${key}`;
-      return `--${key}="${value}"`;
+      if (typeof value === 'string') return `--${key}="${value}"`;
+      return `--${key}=${value}`;
     })
     .join(' ');
+
+const formatCliCommand = (
+  path: string,
+  command: string,
+  args: string[] = [],
+  options: Record<string, any> = {},
+  asJson: boolean = true,
+): string =>
+  `${path} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
+    asJson ? '--json' : ''
+  }`;
 
 const runCliCommandWithImmediateResponse = async <
   TDataType extends any[] = any[],
 >(
   command: CliCommandNamesWithImmediateResponses,
-  options: Record<string, any>,
+  args: string[] = [],
+  options: Record<string, any> = {},
 ): Promise<CliJsonResponse<TDataType>> =>
   new Promise((resolve, reject) => {
     exec(
-      `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliPath} ${command} ${formatCliCommandOptionsAsCliArguments(options)} --json`,
+      formatCliCommand(
+        `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliPath}`,
+        command,
+        args,
+        options,
+      ),
       (error, stdout, stderr) => {
         if (error) {
           logger.error(

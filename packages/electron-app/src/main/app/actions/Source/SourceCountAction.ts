@@ -9,9 +9,11 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-// import { Source } from 'database'
+import CliJsonResponse from '../../cli/CliJsonResponse';
+import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
 
-// const SourceCountAction = async (): Promise<number> => Source.count()
-const SourceCountAction = async (): Promise<number> => 0;
+const SourceCountAction = async (): Promise<
+  CliJsonResponse<[{ count: number }]>
+> => runCliCommandWithImmediateResponse('source:count');
 
 export default SourceCountAction;

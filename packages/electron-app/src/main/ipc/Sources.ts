@@ -27,46 +27,34 @@ export type SourcesChannels =
   | 'sources.prompt-for-deletion';
 
 ipcMain.on('sources.list', async (event) => {
-  return SourceListAction()
-    .then((sources) => {
-      event.reply('sources.list', sources);
-    })
-    .catch((error) => {
-      event.reply('sources.list', null, error);
-    });
+  return (
+    SourceListAction()
+      // I believe that in most cases, the error (unsuccessful response) and caught cli exec errors, are returned using CliJsonResponse
+      .then((response) => {
+        event.reply('sources.list', response);
+      })
+  );
 });
 
 ipcMain.on('sources.count', async (event) => {
-  return SourceCountAction()
-    .then((count) => {
-      event.reply('sources.count', count);
-    })
-    .catch((error) => {
-      event.reply('sources.count', null, error);
-    });
+  return SourceCountAction().then((response) => {
+    event.reply('sources.count', response);
+  });
 });
 
 ipcMain.on(
   'sources.show',
   async (
     event,
-    sourceId: number | null = null,
+    sourceId: number,
     withSourceDomain: boolean = false,
     withSchedules: boolean = false,
-    withCaptures: boolean = false,
   ) => {
-    return SourceShowAction(
-      sourceId,
-      withSourceDomain,
-      withSchedules,
-      withCaptures,
-    )
-      .then((source) => {
-        event.reply('sources.show', source, null);
-      })
-      .catch((error) => {
-        event.reply('sources.show', null, error);
-      });
+    return SourceShowAction(sourceId, withSourceDomain, withSchedules).then(
+      (response) => {
+        event.reply('sources.show', response);
+      },
+    );
   },
 );
 

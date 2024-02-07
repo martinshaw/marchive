@@ -5,10 +5,10 @@ import { useCallback } from 'react';
 
 function Hello() {
   const getAllSources = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('sources.count');
+    window.electron.ipcRenderer.sendMessage('sources.show', 2);
 
     // Once, in response to previous call, console log the response
-    window.electron.ipcRenderer.once('sources.count', (response) => {
+    window.electron.ipcRenderer.once('sources.show', (response) => {
       console.log('response', response);
     });
   }, []);
