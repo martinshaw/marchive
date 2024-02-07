@@ -42,6 +42,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/node": "^20.11.16",
     "nx": "17.3.1"
   }
 }

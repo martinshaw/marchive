@@ -1,14 +1,24 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import './App.css';
+import { useCallback } from 'react';
 
 function Hello() {
+  const getAllSources = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('sources.count');
+
+    // Once, in response to previous call, console log the response
+    window.electron.ipcRenderer.once('sources.count', (response) => {
+      console.log('response', response);
+    });
+  }, []);
+
   return (
     <div>
       <div className="Hello">
         <img width="200" alt="icon" src={icon} />
       </div>
-      <h1>electron-react-boilerplate</h1>
+      <h1>Marchive</h1>
       <div className="Hello">
         <a
           href="https://electron-react-boilerplate.js.org/"
@@ -22,18 +32,12 @@ function Hello() {
             Read our docs
           </button>
         </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
+          <button type="button" onClick={() => getAllSources()}>
             <span role="img" aria-label="folded hands">
               🙏
             </span>
-            Donate
+            Get all sources
           </button>
-        </a>
       </div>
     </div>
   );
