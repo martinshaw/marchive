@@ -13,10 +13,10 @@ import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import { readOnlyInternalRootPath } from '../paths';
-import {
-  getStoredSettingValue,
-  setStoredSettingValue,
-} from 'database/src/repositories/StoredSettingRepository';
+// import {
+//   getStoredSettingValue,
+//   setStoredSettingValue,
+// } from 'database/src/repositories/StoredSettingRepository';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
 import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 
@@ -40,7 +40,7 @@ const createGenericTrayIcon: () => NativeImage = () => {
   const iconDataUrl = retrieveFileAsBase64DataUrlFromAbsolutePath(iconPath);
   if (iconDataUrl == null)
     throw new Error(
-      `Tray icon data URL could not be generated ${iconPath} ${iconDataUrl}`
+      `Tray icon data URL could not be generated ${iconPath} ${iconDataUrl}`,
     );
 
   let iconImage = nativeImage.createFromDataURL(iconDataUrl);
@@ -53,7 +53,7 @@ const createTray = async () => {
   const tray = new Tray(
     process.platform === 'win32'
       ? createWin32TrayIcon()
-      : createGenericTrayIcon()
+      : createGenericTrayIcon(),
   );
 
   tray.setToolTip('Marchive');
@@ -62,51 +62,44 @@ const createTray = async () => {
   if (os.userInfo().username)
     greeting = `Hi ${os.userInfo().username}, this is your Marchive`;
 
-  let scheduleRunProcessIsPaused =
-    (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) === true;
-  let capturePartRunProcessIsPaused =
-    (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) ===
-    true;
+  let scheduleRunProcessIsPaused = false; // (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) === true;
+  let capturePartRunProcessIsPaused = false; // (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) === true;
 
   nativeTheme.on('updated', () => {
     tray.setImage(
       process.platform === 'win32'
         ? createWin32TrayIcon()
-        : createGenericTrayIcon()
+        : createGenericTrayIcon(),
     );
   });
 
   const scheduleRunProcessOnClickHandler = async () => {
-    await setStoredSettingValue(
-      'SCHEDULE_RUN_PROCESS_IS_PAUSED',
-      !scheduleRunProcessIsPaused
-    );
-
-    webContents.getAllWebContents().forEach((webContent) => {
-      webContent.send(
-        'utilities.schedule-run-process-is-paused',
-        !scheduleRunProcessIsPaused
-      );
-    });
-
-    scheduleRunProcessIsPaused = !scheduleRunProcessIsPaused;
-    regenerateContextMenu();
+    // await setStoredSettingValue(
+    //   'SCHEDULE_RUN_PROCESS_IS_PAUSED',
+    //   !scheduleRunProcessIsPaused,
+    // );
+    // webContents.getAllWebContents().forEach((webContent) => {
+    //   webContent.send(
+    //     'utilities.schedule-run-process-is-paused',
+    //     !scheduleRunProcessIsPaused,
+    //   );
+    // });
+    // scheduleRunProcessIsPaused = !scheduleRunProcessIsPaused;
+    // regenerateContextMenu();
   };
   const capturePartRunProcessOnClickHandler = async () => {
-    await setStoredSettingValue(
-      'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
-      !capturePartRunProcessIsPaused
-    );
-
-    webContents.getAllWebContents().forEach((webContent) => {
-      webContent.send(
-        'utilities.capture-part-run-process-is-paused',
-        !capturePartRunProcessIsPaused
-      );
-    });
-
-    capturePartRunProcessIsPaused = !capturePartRunProcessIsPaused;
-    regenerateContextMenu();
+    // await setStoredSettingValue(
+    //   'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
+    //   !capturePartRunProcessIsPaused,
+    // );
+    // webContents.getAllWebContents().forEach((webContent) => {
+    //   webContent.send(
+    //     'utilities.capture-part-run-process-is-paused',
+    //     !capturePartRunProcessIsPaused,
+    //   );
+    // });
+    // capturePartRunProcessIsPaused = !capturePartRunProcessIsPaused;
+    // regenerateContextMenu();
   };
 
   let contextMenu: Menu | null = null;

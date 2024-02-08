@@ -13,8 +13,8 @@ import prompt from 'electron-prompt';
 import { cleanupAndQuit } from '../main';
 import { shell, BrowserWindow, dialog, clipboard } from 'electron';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
-import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
-import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
+// import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
+// import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
 
 export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
   dialog
@@ -29,8 +29,7 @@ export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
     })
     .then(async (result) => {
       if (result.response === 1) {
-        await UtilityCleanAction(true, false);
-        // mainWindow.reload();
+        // await UtilityCleanAction(true, false);
 
         dialog
           .showMessageBox(mainWindow, {
@@ -48,7 +47,7 @@ export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
 };
 
 export const clearDatabaseAndDeleteDownloadsMenuAction = async (
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
 ) => {
   dialog
     .showMessageBox(mainWindow, {
@@ -63,8 +62,7 @@ export const clearDatabaseAndDeleteDownloadsMenuAction = async (
     })
     .then(async (result) => {
       if (result.response === 1) {
-        await UtilityCleanAction(true, true);
-        // mainWindow.reload();
+        // await UtilityCleanAction(true, true);
 
         dialog
           .showMessageBox(mainWindow, {
@@ -82,7 +80,7 @@ export const clearDatabaseAndDeleteDownloadsMenuAction = async (
 };
 
 export const retrieveIconForWebsiteMenuAction = async (
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
 ) => {
   prompt(
     {
@@ -91,74 +89,74 @@ export const retrieveIconForWebsiteMenuAction = async (
       type: 'input',
       height: 170,
     },
-    mainWindow
-  )
-    .then(async (result: string | null) => {
-      if (result)
-        await UtilityRetrieveFavicon(result)
-          .then((result) => {
-            if (result == null || result === '')
-              throw new Error('No icon found for the URL you entered.');
+    mainWindow,
+  );
+  // .then(async (result: string | null) => {
+  //   if (result)
+  //     await UtilityRetrieveFavicon(result)
+  //       .then((result) => {
+  //         if (result == null || result === '')
+  //           throw new Error('No icon found for the URL you entered.');
 
-            const pathToFile = result;
+  //         const pathToFile = result;
 
-            dialog
-              .showMessageBox(mainWindow, {
-                type: 'info',
-                message:
-                  'The icon image file has been saved successfully! Would you like to copy the file path to your clipboard, open the file or copy a Base64-encoded data URL?',
-                buttons: [
-                  "I'm Done",
-                  'Copy File Path',
-                  'Open File',
-                  'Copy Base64-encoded Data URL',
-                ],
-                defaultId: 0,
-              })
-              .then((result) => {
-                if (result.response === 0) return;
-                if (result.response === 1) {
-                  clipboard.writeText(pathToFile);
-                  return;
-                }
-                if (result.response === 2) {
-                  shell.openPath(pathToFile);
-                  return;
-                }
-                if (result.response === 3) {
-                  try {
-                    const base64Url =
-                      retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile);
-                    if (base64Url == null) throw new Error();
-                    clipboard.writeText(base64Url);
-                  } catch (error) {
-                    dialog.showMessageBox(mainWindow, {
-                      type: 'error',
-                      message:
-                        'An error occurred when attempting to copy the Base64-encoded data URL to your clipboard.',
-                      buttons: ['OK'],
-                      defaultId: 0,
-                    });
-                  }
-                  return;
-                }
-              })
-              .catch((error) => {
-                throw error;
-              });
-          })
-          .catch((error) => {
-            throw error;
-          });
-    })
-    .catch((error) => {
-      dialog.showMessageBox(mainWindow, {
-        type: 'error',
-        message: 'The URL you entered was invalid.',
-        buttons: ['OK'],
-        defaultId: 0,
-      });
-    });
+  //         dialog
+  //           .showMessageBox(mainWindow, {
+  //             type: 'info',
+  //             message:
+  //               'The icon image file has been saved successfully! Would you like to copy the file path to your clipboard, open the file or copy a Base64-encoded data URL?',
+  //             buttons: [
+  //               "I'm Done",
+  //               'Copy File Path',
+  //               'Open File',
+  //               'Copy Base64-encoded Data URL',
+  //             ],
+  //             defaultId: 0,
+  //           })
+  //           .then((result) => {
+  //             if (result.response === 0) return;
+  //             if (result.response === 1) {
+  //               clipboard.writeText(pathToFile);
+  //               return;
+  //             }
+  //             if (result.response === 2) {
+  //               shell.openPath(pathToFile);
+  //               return;
+  //             }
+  //             if (result.response === 3) {
+  //               try {
+  //                 const base64Url =
+  //                   retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile);
+  //                 if (base64Url == null) throw new Error();
+  //                 clipboard.writeText(base64Url);
+  //               } catch (error) {
+  //                 dialog.showMessageBox(mainWindow, {
+  //                   type: 'error',
+  //                   message:
+  //                     'An error occurred when attempting to copy the Base64-encoded data URL to your clipboard.',
+  //                   buttons: ['OK'],
+  //                   defaultId: 0,
+  //                 });
+  //               }
+  //               return;
+  //             }
+  //           })
+  //           .catch((error) => {
+  //             throw error;
+  //           });
+  //       })
+  //       .catch((error) => {
+  //         throw error;
+  //       });
+  // })
+  // .catch((error) => {
+  //   dialog.showMessageBox(mainWindow, {
+  //     type: 'error',
+  //     message: 'The URL you entered was invalid.',
+  //     buttons: ['OK'],
+  //     defaultId: 0,
+  //   });
+  // });
 };
 
 export const needMoreSpaceMenuAction = async (mainWindow: BrowserWindow) => {

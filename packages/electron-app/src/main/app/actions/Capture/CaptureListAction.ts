@@ -9,18 +9,20 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { Capture, Schedule } from 'database'
-import { CaptureAttributes } from 'database/src/models/Capture'
+// import { Capture, Schedule } from 'database'
+// import { CaptureAttributes } from 'database/src/models/Capture'
 
-const CaptureListAction = async (): Promise<CaptureAttributes[]> => {
-  return Capture
-    .findAll({
-      include: [Schedule],
-      order: [['createdAt', 'DESC']],
-    })
-    .then(captures =>
-      captures.map(capture => capture.toJSON())
-    )
-}
+const CaptureListAction = async (): Promise</*CaptureAttributes*/ []> => {
+  // return Capture
+  //   .findAll({
+  //     include: [Schedule],
+  //     order: [['createdAt', 'DESC']],
+  //   })
+  //   .then(captures =>
+  //     captures.map(capture => capture.toJSON())
+  //   )
 
-export default CaptureListAction
+  return [];
+};
+
+export default CaptureListAction;

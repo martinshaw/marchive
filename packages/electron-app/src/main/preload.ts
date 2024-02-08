@@ -8,10 +8,6 @@ import { DataProvidersChannels } from './ipc/DataProviders';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-(async () => {
-  (await import('events')).EventEmitter.defaultMaxListeners = 15
-})
-
 export type Channels =
   | CapturesChannels
   | DataProvidersChannels
@@ -21,6 +17,10 @@ export type Channels =
   | UtilitiesChannels
   | ProcessesChannels
   | RenderersChannels;
+
+async () => {
+  (await import('events')).EventEmitter.defaultMaxListeners = 15;
+};
 
 const electronHandler = {
   ipcRenderer: {
@@ -39,11 +39,7 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    removeAllListeners(channel: Channels) {
-      ipcRenderer.removeAllListeners(channel);
-    },
   },
-  platform: process.platform,
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

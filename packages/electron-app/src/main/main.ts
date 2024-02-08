@@ -1,15 +1,28 @@
-// Need to import database (by effect setting up and migrating database connection) before importing other modules
-import 'database';
-
+/**
+ * This module executes inside of electron's main process. You can start
+ * electron renderer process from here and communicate with the other processes
+ * through IPC.
+ *
+ * When running `npm run build` or `npm run build:main`, this file is compiled to
+ * `./src/main.js` using webpack. This gives us some performance wins.
+ */
 import logger from 'logger';
 import path from 'node:path';
-import WindowMenuBuilder from './menu';
 import contextMenu from 'electron-context-menu';
 import windowStateKeeper from 'electron-window-state';
-import resolveHtmlPath from './utilities/resolveHtmlPath';
-import { app, BrowserWindow, BrowserWindowConstructorOptions, nativeTheme, shell, TitleBarOverlay } from 'electron';
-// import { autoUpdater } from 'electron-updater';
-// import log from 'electron-log';
+import {
+  app,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  nativeTheme,
+  shell,
+  TitleBarOverlay,
+} from 'electron';
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
+import { resolveHtmlPath } from './utilities/resolveHtmlPath';
+import createTray from './tray';
+import WindowMenuBuilder from './menu';
 
 import './ipc/Captures';
 import './ipc/DataProviders';
@@ -20,38 +33,42 @@ import './ipc/Utilities';
 import './ipc/Processes';
 import './ipc/Renderers';
 
-import './protocols';
- 
-import createTray from './tray';
+/**
+ * TODO: Add import statement for 'protocols'
+ */
 
-// class AppUpdater {
-//   constructor() {
-//     log.transports.file.level = 'info';
-//     autoUpdater.logger = log;
-//     autoUpdater.checkForUpdatesAndNotify();
-//   }
-// }
+class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
-const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+if (process.env.NODE_ENV === 'production') {
+  const sourceMapSupport = require('source-map-support');
+  sourceMapSupport.install();
+}
+
+const isDebug =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
-} else {
-  require('source-map-support').install();
 }
 
-// const installExtensions = async () => {
-//   const installer = require('electron-devtools-installer');
-//   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-//   const extensions = ['REACT_DEVELOPER_TOOLS'];
+const installExtensions = async () => {
+  const installer = require('electron-devtools-installer');
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = ['REACT_DEVELOPER_TOOLS'];
 
-//   return installer
-//     .default(
-//       extensions.map((name) => installer[name]),
-//       forceDownload
-//     )
-//     .catch(console.log);
-// };
+  return installer
+    .default(
+      extensions.map((name) => installer[name]),
+      forceDownload,
+    )
+    .catch(console.log);
+};
 
 const windows: { [windowId: string]: BrowserWindow } = {};
 let mainWindowId: string | null = null;
@@ -70,13 +87,13 @@ const generateNewWindowId: () => string = () => {
 };
 
 export const createWindow = async () => {
-  // if (isDebug) {
-  //   await installExtensions();
-  // }
+  if (isDebug) {
+    await installExtensions();
+  }
 
   const RESOURCES_PATH = app.isPackaged
-  ? path.join(process.resourcesPath, 'assets')
-  : path.join(__dirname, '../../assets');
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
@@ -93,25 +110,32 @@ export const createWindow = async () => {
   // TODO: If we have different types of windows, we should use the `path` prop to differentiate stored size/position preferences
   let mainWindowState = windowStateKeeper({
     defaultWidth: 1024,
-    defaultHeight: 800
+    defaultHeight: 800,
   });
 
-  const windowBackgroundColor: () => string = () => nativeTheme.shouldUseDarkColors ? darkBackgroundColor : lightBackgroundColor;
+  const windowBackgroundColor: () => string = () =>
+    nativeTheme.shouldUseDarkColors
+      ? darkBackgroundColor
+      : lightBackgroundColor;
 
   const windowControlsTitleBarOverlay: () => TitleBarOverlay = () => ({
     color: nativeTheme.shouldUseDarkColors ? '#383e47' : '#ffffff',
     symbolColor: '#eeeeee',
-  })
+  });
 
-  let windowControlsAdditions: Partial<BrowserWindowConstructorOptions> = { titleBarStyle: 'default' }
-  if (process.platform === 'darwin') windowControlsAdditions = {
-    titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 15, y: 17 },
-  }
-  if (process.platform === 'win32') windowControlsAdditions = {
-    titleBarStyle: 'hidden',
-    titleBarOverlay: windowControlsTitleBarOverlay(),
-  }
+  let windowControlsAdditions: Partial<BrowserWindowConstructorOptions> = {
+    titleBarStyle: 'default',
+  };
+  if (process.platform === 'darwin')
+    windowControlsAdditions = {
+      titleBarStyle: 'hidden',
+      trafficLightPosition: { x: 15, y: 17 },
+    };
+  if (process.platform === 'win32')
+    windowControlsAdditions = {
+      titleBarStyle: 'hidden',
+      titleBarOverlay: windowControlsTitleBarOverlay(),
+    };
 
   windows[mainWindowId] = new BrowserWindow({
     ...windowControlsAdditions,
@@ -127,7 +151,9 @@ export const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       webviewTag: true,
-      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: app.isPackaged
+        ? path.join(__dirname, 'preload.js')
+        : path.join(__dirname, '../../.erb/dll/preload.js'),
       spellcheck: true,
     },
     backgroundColor: windowBackgroundColor(),
@@ -140,22 +166,27 @@ export const createWindow = async () => {
 
     windows[mainWindowId].setBackgroundColor(windowBackgroundColor());
 
-    if (process.platform !== 'darwin') windows[mainWindowId].setTitleBarOverlay(windowControlsTitleBarOverlay());
+    if (process.platform !== 'darwin')
+      windows[mainWindowId].setTitleBarOverlay(windowControlsTitleBarOverlay());
   });
 
   windows[mainWindowId].on('focus', () => {
     if (mainWindowId == null) return;
     if (windows[mainWindowId] == null) return;
 
-    windows[mainWindowId].webContents.send('renderer.focused-window.is-focused');
-  })
+    windows[mainWindowId].webContents.send(
+      'renderer.focused-window.is-focused',
+    );
+  });
 
   windows[mainWindowId].on('blur', () => {
     if (mainWindowId == null) return;
     if (windows[mainWindowId] == null) return;
 
-    windows[mainWindowId].webContents.send('renderer.focused-window.is-blurred');
-  })
+    windows[mainWindowId].webContents.send(
+      'renderer.focused-window.is-blurred',
+    );
+  });
 
   windows[mainWindowId].on('ready-to-show', () => {
     if (mainWindowId == null) return;
@@ -190,8 +221,12 @@ export const createWindow = async () => {
 
     if (
       url.indexOf('http://localhost') === 0 ||
-      allowedTemplateFiles.some((templateFile) => url.indexOf(templateFile) > -1 && url.indexOf('://') < 0)
-    ) return;
+      allowedTemplateFiles.some(
+        (templateFile) =>
+          url.indexOf(templateFile) > -1 && url.indexOf('://') < 0,
+      )
+    )
+      return;
 
     event.preventDefault();
     shell.openExternal(url);
@@ -200,6 +235,13 @@ export const createWindow = async () => {
   });
 
   windows[mainWindowId].loadURL(resolveHtmlPath('index.html'));
+
+  windows[mainWindowId].on('closed', () => {
+    if (mainWindowId == null) return;
+    if (windows[mainWindowId] == null) return;
+
+    delete windows[mainWindowId];
+  });
 
   const windowMenuBuilder = new WindowMenuBuilder(windows[mainWindowId]);
   windowMenuBuilder.buildMenu();
@@ -211,7 +253,8 @@ export const createWindow = async () => {
   });
 
   // Remove this if your app does not use auto updates
-  // new AppUpdater();
+  // eslint-disable-next-line
+  new AppUpdater();
 };
 
 /**
@@ -219,30 +262,21 @@ export const createWindow = async () => {
  */
 
 app.on('window-all-closed', () => {
-  /**
-   * In addition to respecting the OSX convention of having the application in memory even
-   * after all windows have been closed...
-   * We should ensure that closing all windows does not quit the application regardless of platform,
-   * because we want to keep the app running in the background to perform tasks such as
-   * child processes
-   */
-
-  // if (process.platform !== 'darwin') {
-  //   cleanupAndQuit();
-  // }
-
-  if (app.dock != null) app.dock.hide();
+  // Respect the OSX convention of having the application in memory even
+  // after all windows have been closed
+  if (process.platform !== 'darwin') {
+    cleanupAndQuit();
+  }
 });
 
 app
   .whenReady()
   .then(() => {
+    /**
+     * TODO: Add spawning of 'watch' processes
+     */
 
-    // TODO: Uncomment me when I have finished refactoring Child Process handling
-    // ipcMain.emit('processes.schedule-run-process.start');
-    // ipcMain.emit('processes.capture-part-run-process.start');
-
-    createTray()
+    createTray();
 
     /**
      * Electron doesn't offer a usual context menu for input boxes, link etc...
@@ -266,9 +300,8 @@ app
       // dock icon is clicked and there are no other windows open.
       if (windows[mainWindowId] === null) createWindow();
     });
-
   })
-  .catch(error => {
+  .catch((error) => {
     logger.error('Electron app whenReady error occurred');
     logger.error(error);
   });
@@ -277,10 +310,11 @@ export const cleanupAndQuit = () => {
   logger.info('Cleaning up and quitting...');
 
   // TODO: Kill child processes gracefully
+
   // TODO: Release / delete locks on processes
 
-  app.quit()
-}
+  app.quit();
+};
 
 export const closeAllWindows = () => {
   logger.info('Closing all windows...');
@@ -290,4 +324,4 @@ export const closeAllWindows = () => {
 
     windows[windowId].close();
   });
-}
+};

@@ -1,9 +1,7 @@
 packages:
-  # - 'packages/capture-part-run-child-process'
   - 'packages/data-providers'
   - 'packages/database'
-  # - 'packages/electron-app'
+  - 'packages/electron-app'
   - 'packages/logger'
-  # - 'packages/schedule-run-child-process'
   - 'packages/utilities'
   - 'packages/cli'

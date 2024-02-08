@@ -1,0 +1,16 @@
+{
+  "files.associations": {
+    ".prettierrc": "jsonc"
+  },
+
+  "search.exclude": {
+    ".git": true,
+    ".erb/dll": true,
+    "release/{build,app/dist}": true,
+    "node_modules": true,
+    "npm-debug.log.*": true,
+    "test/**/__snapshots__": true,
+    "package-lock.json": true,
+    "*.{css,sass,scss}.d.ts": true
+  }
+}

@@ -6,7 +6,7 @@
         "arrowParens": "always",
         "bracketSameLine": false,
         "bracketSpacing": true,
-        "semi": false,
+        "semi": true,
         "singleQuote": true,
         "jsxSingleQuote": false,
         "quoteProps": "consistent",
@@ -16,12 +16,14 @@
         "vueIndentScriptAndStyle": true,
         "proseWrap": "preserve",
         "insertPragma": false,
-        "printWidth": 100,
+        "printWidth": 160,
         "requirePragma": false,
         "tabWidth": 4,
         "useTabs": true,
         "embeddedLanguageFormatting": "auto",
-        "parser": "json"
+        "parser": "json",
+        "endOfLine": "lf",
+        "experimentalTernaries": false
       }
     }
   ]

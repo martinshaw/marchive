@@ -10,48 +10,50 @@ Description: description
 */
 
 import logger from 'logger';
-import { retrieveAndStoreFaviconFromUrl } from 'data-providers';
+// import { retrieveAndStoreFaviconFromUrl } from 'data-providers';
 
 /**
  * @throws {Error}
  */
 const UtilityRetrieveFavicon = async (url: string): Promise<string> => {
-  let urlDomainName: string | null = null;
-  try {
-    const safeUrl =
-      url.startsWith('http://') || url.startsWith('https://')
-        ? url
-        : 'https://' + url;
-    urlDomainName = new URL(safeUrl).hostname;
-  } catch (error) {
-    const warningMessage =
-      'Unable to parse URL domain name from URL: ' +
-      url +
-      ' when attempting retrieve favicon for site in utility';
-    logger.warn(warningMessage);
-    throw new Error(warningMessage);
-  }
+  // let urlDomainName: string | null = null;
+  // try {
+  //   const safeUrl =
+  //     url.startsWith('http://') || url.startsWith('https://')
+  //       ? url
+  //       : 'https://' + url;
+  //   urlDomainName = new URL(safeUrl).hostname;
+  // } catch (error) {
+  //   const warningMessage =
+  //     'Unable to parse URL domain name from URL: ' +
+  //     url +
+  //     ' when attempting retrieve favicon for site in utility';
+  //   logger.warn(warningMessage);
+  //   throw new Error(warningMessage);
+  // }
 
-  if (urlDomainName == null) {
-    const warningMessage =
-      'Empty URL domain parsed from URL: ' +
-      url +
-      ' when attempting retrieve favicon for site in utility';
-    logger.warn(warningMessage);
-    throw new Error(warningMessage);
-  }
+  // if (urlDomainName == null) {
+  //   const warningMessage =
+  //     'Empty URL domain parsed from URL: ' +
+  //     url +
+  //     ' when attempting retrieve favicon for site in utility';
+  //   logger.warn(warningMessage);
+  //   throw new Error(warningMessage);
+  // }
 
-  let faviconPath = await retrieveAndStoreFaviconFromUrl(url);
-  if (faviconPath == null || faviconPath === '') {
-    const warningMessage =
-      'Unable to retrieve favicon from URL: ' +
-      url +
-      ' when attempting retrieve favicon for site in utility';
-    logger.warn(warningMessage);
-    throw new Error(warningMessage);
-  }
+  // let faviconPath = await retrieveAndStoreFaviconFromUrl(url);
+  // if (faviconPath == null || faviconPath === '') {
+  //   const warningMessage =
+  //     'Unable to retrieve favicon from URL: ' +
+  //     url +
+  //     ' when attempting retrieve favicon for site in utility';
+  //   logger.warn(warningMessage);
+  //   throw new Error(warningMessage);
+  // }
 
-  return faviconPath;
+  // return faviconPath;
+
+  return '';
 };
 
 export default UtilityRetrieveFavicon;

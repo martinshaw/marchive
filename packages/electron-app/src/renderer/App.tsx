@@ -1,59 +1,53 @@
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import icon from '../../assets/icon.svg';
+import './App.css';
+import { useCallback } from 'react';
 
-import TodayPage from './pages/TodayPage';
-import YesterdayPage from './pages/YesterdayPage';
-import DefaultLayout from './layouts/DefaultLayout';
-import OnboardingIndexPage from './pages/OnboardingIndexPage';
-import SourceShowPage, { SourceShowPageLoader } from './pages/SourceShowPage';
-import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
-import CaptureShowPage, { CaptureShowPageLoader } from './pages/CaptureShowPage';
-import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
+function Hello() {
+  const getAllSources = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('sources.list');
+    
+    window.electron.ipcRenderer.once('sources.list', (response) => {
+      console.log('response', response);
+      // @ts-ignore
+      alert('response message ' + response.message);
+    });
+  }, []);
 
-const App = () => {
+  const getAndSetMarchiveIsSetupStoredSetting = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('utilities.marchive-is-setup', true);
+
+    window.electron.ipcRenderer.once('utilities.marchive-is-setup', (response) => {
+      console.log('response', response);
+      // @ts-ignore
+      alert('response message ' + response.message);
+    });
+  }, []);
+
   return (
-    <RouterProvider
-      router={createMemoryRouter([
-        {
-          path: '/',
-          element: <DefaultLayout />,
-          children: [
-            {
-              path: '/onboarding',
-              element: <OnboardingIndexPage />
-            },
-            {
-              path: '/yesterday',
-              element: <YesterdayPage />
-            },
-            {
-              path: '/today',
-              element: <TodayPage />
-            },
-            {
-              path: '/sources',
-              loader: SourceIndexPageLoader,
-              element: <SourceIndexPage />
-            },
-            {
-              path: '/sources/create',
-              loader: sourceCreatePageDataLoader,
-              element: <SourceCreatePage />
-            },
-            {
-              path: '/sources/:sourceId',
-              loader: SourceShowPageLoader,
-              element: <SourceShowPage />
-            },
-            {
-              path: '/captures/:captureId',
-              loader: CaptureShowPageLoader,
-              element: <CaptureShowPage />
-            },
-          ]
-        }
-      ])}
-    />
+    <div>
+      <div className="Hello">
+        <img width="200" alt="icon" src={icon} />
+      </div>
+      <h1>Marchive</h1>
+      <div className="Hello">
+        <button type="button" onClick={() => getAllSources()}>
+          Get all sources
+        </button>
+        <button type="button" onClick={() => getAndSetMarchiveIsSetupStoredSetting()}>
+          Set Marchive is setup
+        </button>
+      </div>
+    </div>
   );
-};
+}
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Hello />} />
+      </Routes>
+    </Router>
+  );
+}

@@ -3,13 +3,12 @@
  */
 
 import webpack from 'webpack';
-import path from 'node:path';
+import path from 'path';
 import { merge } from 'webpack-merge';
 import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 import { dependencies } from '../../package.json';
 import checkNodeEnv from '../scripts/check-node-env';
-import { name as appName } from '../../release/app/package.json'
 
 checkNodeEnv('development');
 
@@ -60,7 +59,6 @@ const configuration: webpack.Configuration = {
      * development checks
      */
     new webpack.EnvironmentPlugin({
-      APP_NAME: appName,
       NODE_ENV: 'development',
     }),
 

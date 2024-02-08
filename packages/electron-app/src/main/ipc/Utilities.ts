@@ -10,10 +10,23 @@ Description: description
 */
 
 import { Menu, shell, ipcMain, nativeTheme, BrowserWindow } from 'electron';
-import {
-  getStoredSettingValue,
-  setStoredSettingValue,
-} from 'database/src/repositories/StoredSettingRepository';
+import { runCliCommandWithImmediateResponse } from '../app/cli/runCliCommand';
+
+const setStoredSettingValue = async (key: string, value: any) =>
+  runCliCommandWithImmediateResponse('stored-setting:set', [key, value]).then(
+    (response) => {
+      if (response.getSuccess()) return response.getData()[0].value;
+      return null;
+    },
+  );
+
+const getStoredSettingValue = async (key: string) =>
+  runCliCommandWithImmediateResponse('stored-setting:get', [key]).then(
+    (response) => {
+      if (response.getSuccess()) return response.getData()[0].value;
+      return null;
+    },
+  );
 
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'
@@ -29,54 +42,60 @@ ipcMain.on('utilities.is-dark-mode', async (event) => {
   event.reply('utilities.is-dark-mode', nativeTheme.shouldUseDarkColors);
 });
 
-ipcMain.on('utilities.marchive-is-setup', async (event, newValue) => {
+ipcMain.on('utilities.marchive-is-setup', async (event, newValue: boolean) => {
   if (newValue != null)
     await setStoredSettingValue('MARCHIVE_IS_SETUP', newValue);
   event.reply(
     'utilities.marchive-is-setup',
-    (await getStoredSettingValue('MARCHIVE_IS_SETUP')) ?? false
+    (await getStoredSettingValue('MARCHIVE_IS_SETUP')) ?? false,
+    true,
   );
 });
 
 ipcMain.on(
   'utilities.schedule-run-process-is-paused',
-  async (event, newValue) => {
+  async (event, newValue: boolean) => {
     if (newValue != null)
       await setStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED', newValue);
     event.reply(
       'utilities.schedule-run-process-is-paused',
-      (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) ?? false
+      (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) ?? false,
+      false,
     );
-  }
+  },
 );
 
 ipcMain.on(
   'utilities.capture-part-run-process-is-paused',
-  async (event, newValue) => {
+  async (event, newValue: boolean) => {
     if (newValue != null)
       await setStoredSettingValue(
         'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
-        newValue
+        newValue,
       );
     event.reply(
       'utilities.capture-part-run-process-is-paused',
       (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) ??
-        false
+        false,
+      false,
     );
-  }
+  },
 );
 
-ipcMain.on('utilities.open-external-url-in-browser', async (event, url) => {
-  if (url == null) return;
-  shell.openExternal(url);
-});
+ipcMain.on(
+  'utilities.open-external-url-in-browser',
+  async (event, url: string) => {
+    if (url == null) return;
+    shell.openExternal(url);
+  },
+);
 
 ipcMain.on(
   'utilities.open-internal-path-in-default-program',
-  async (event, path) => {
+  async (event, path: string) => {
     if (path == null) return;
     shell.openPath(path);
-  }
+  },
 );
 
 ipcMain.on('utilities.focused-window.toggle-maximize', async (event) => {
