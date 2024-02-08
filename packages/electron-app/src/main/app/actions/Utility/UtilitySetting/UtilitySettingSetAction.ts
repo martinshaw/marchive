@@ -11,32 +11,39 @@ Description: description
 
 import logger from 'logger';
 import { getOrSetStoredSetting } from 'database/src/repositories/StoredSettingRepository';
-import { StoredSettingAttributes, StoredSettingKeyType } from 'database/src/models/StoredSetting'
+import StoredSetting, {
+  StoredSettingKeyType,
+} from 'database/src/entities/StoredSetting';
 
 /**
  * @throws {Error}
  */
-const UtilitySettingSetAction = async (key: StoredSettingKeyType, value: string): Promise<StoredSettingAttributes | never> => {
+const UtilitySettingSetAction = async (
+  key: StoredSettingKeyType,
+  value: string,
+): Promise<StoredSetting | never> => {
   if (key == null) {
-    const errorMessage = 'You must provide a key when setting a setting'
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage = 'You must provide a key when setting a setting';
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
   if (value == null) {
-    const errorMessage = 'You must provide a value to set the setting for key: ' + key
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage =
+      'You must provide a value to set the setting for key: ' + key;
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
-  const storedSetting = await getOrSetStoredSetting(key, value)
+  const storedSetting = await getOrSetStoredSetting(key, value);
   if (storedSetting == null) {
-    const errorMessage = 'An error occurred while setting the setting with the key: ' + key
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage =
+      'An error occurred while setting the setting with the key: ' + key;
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
-  return storedSetting.toJSON()
-}
+  return storedSetting;
+};
 
-export default UtilitySettingSetAction
+export default UtilitySettingSetAction;

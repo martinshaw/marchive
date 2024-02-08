@@ -12,9 +12,9 @@ Description: description
 export type RenderersChannels =
   | 'renderer.focused-window.navigate'
   | 'renderer.focused-window.is-focused'
-  | 'renderer.focused-window.is-blurred'
+  | 'renderer.focused-window.is-blurred';
 
 /**
  * You should not add renderer->main listeners here, this list of channels is for main->renderer channels
- *   only and listeners should be implmented in UI-related code which is run in the renderer process.
+ *   only and listeners should be implemented in UI-related code which is run in the renderer process.
  */

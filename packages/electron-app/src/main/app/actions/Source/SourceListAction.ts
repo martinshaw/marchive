@@ -9,18 +9,10 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { Schedule, Source, WhereOptions } from 'database'
-import { SourceAttributes } from 'database/src/models/Source'
+import { FindOptionsWhere, Source } from 'database';
 
-const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {
-  return Source
-    .findAll({
-      where,
-      include: [Schedule],
-    })
-    .then(sources =>
-      sources.map(source => source.toJSON())
-    )
-}
+const SourceListAction = async (
+  where?: FindOptionsWhere<Source>,
+): Promise<Source[]> => Source.find({ where, relations: { schedules: true } });
 
-export default SourceListAction
+export default SourceListAction;

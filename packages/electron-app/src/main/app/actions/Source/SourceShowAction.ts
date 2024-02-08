@@ -10,51 +10,45 @@ Description: description
 */
 
 import logger from 'logger';
-import { Includeable } from 'database';
-import { SourceAttributes } from 'database/src/models/Source';
-import { Capture, Schedule, Source, SourceDomain } from 'database';
+import { FindOptionsOrder, FindOptionsRelations, Source } from 'database';
 
 const SourceShowAction = async (
   sourceId: number | null = null,
   withSourceDomain: boolean = false,
   withSchedules: boolean = false,
-  withCaptures: boolean = false
-): Promise<SourceAttributes> => {
+  withCaptures: boolean = false,
+): Promise<Source> => {
   if (sourceId == null) {
     logger.info('No source ID provided');
     throw new Error('No source ID provided');
   }
 
-  let include: Includeable[] = [];
-  if (withSchedules) {
-    const includeSchedules: Includeable = {
-      model: Schedule,
-      separate: true,
-      order: [['createdAt', 'DESC']],
-    };
-    if (withCaptures)
-      includeSchedules.include = [
-        {
-          model: Capture,
-          separate: true,
-          order: [['createdAt', 'DESC']],
-        },
-      ];
+  let relations: FindOptionsRelations<Source> = {
+    ...(withSchedules
+      ? { schedules: withCaptures ? { captures: true } : true }
+      : {}),
+    ...(withSourceDomain ? { sourceDomain: true } : {}),
+  };
 
-    include.push(includeSchedules);
-  }
-
-  if (withSourceDomain) {
-    const includeSourceDomain: Includeable = { model: SourceDomain };
-    include.push(includeSourceDomain);
-  }
+  let order: FindOptionsOrder<Source> = {
+    schedules: {
+      createdAt: 'DESC',
+      captures: {
+        createdAt: 'DESC',
+      },
+    },
+  };
 
   let source: Source | null = null;
   try {
-    source = await Source.findByPk(sourceId, { include });
+    source = await Source.findOne({
+      where: { id: sourceId },
+      relations,
+      order,
+    });
   } catch (error) {
     logger.error(
-      `A DB error occurred when attempting to retrieve a source with ID ${sourceId}`
+      `A DB error occurred when attempting to retrieve a source with ID ${sourceId}`,
     );
     logger.error(error);
     throw error;
@@ -68,7 +62,7 @@ const SourceShowAction = async (
     throw new Error(friendlyInfoMessage);
   }
 
-  return source.toJSON();
+  return source;
 };
 
 export default SourceShowAction;

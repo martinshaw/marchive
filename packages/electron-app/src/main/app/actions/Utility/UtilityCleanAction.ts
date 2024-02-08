@@ -15,19 +15,22 @@ import {
 } from 'utilities';
 import fs from 'node:fs';
 import logger from 'logger';
-import { umzug } from 'database';
 
 const UtilityCleanAction = async (
   database: boolean = false,
-  downloads: boolean = false
+  downloads: boolean = false,
 ): Promise<void> => {
   if (database) await cleanDatabase();
   if (downloads) await cleanDownloads();
 };
 
 const cleanDatabase = async (): Promise<void> => {
-  await umzug.down({ to: 0 });
-  await umzug.up();
+  /**
+   * TODO: Non-essentially need to find an TypeOrm alternative for this, until then I have commented out the menu items
+   * for deleting the database and (still functional) the downloaded data
+   */
+  // await umzug.down({ to: 0 });
+  // await umzug.up();
 };
 
 const cleanDownloads = async (): Promise<void> => {
@@ -42,7 +45,7 @@ const cleanDownloads = async (): Promise<void> => {
   for (const directory of directoriesToClean) {
     if (fs.existsSync(directory.path) === false) {
       logger.warn(
-        `The ${directory.description} directory does not exist to be cleaned`
+        `The ${directory.description} directory does not exist to be cleaned`,
       );
       continue;
     }

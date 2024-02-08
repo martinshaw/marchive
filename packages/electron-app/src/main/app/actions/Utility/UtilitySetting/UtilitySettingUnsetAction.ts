@@ -10,14 +10,14 @@ Description: description
 */
 
 import logger from 'logger';
-import { StoredSettingKeyType } from 'database/src/models/StoredSetting';
+import { StoredSettingKeyType } from 'database/src/entities/StoredSetting';
 import { unsetStoredSetting } from 'database/src/repositories/StoredSettingRepository';
 
 /**
  * @throws {Error}
  */
 const UtilitySettingUnsetAction = async (
-  key: StoredSettingKeyType
+  key: StoredSettingKeyType,
 ): Promise<void | never> => {
   if (key == null) {
     const errorMessage = 'You must provide a key when unsetting a setting';

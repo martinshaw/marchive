@@ -14,17 +14,14 @@ import {
   findOrCreateSourceDomainForUrl,
 } from 'data-providers';
 import logger from 'logger';
-import {
-  SourceAttributes,
-  SourceUseStartOrEndCursorValueType,
-} from 'database/src/models/Source';
-import { Source, Op } from 'database';
+import { SourceUseStartOrEndCursorValueType } from 'database/src/entities/Source';
+import { Source } from 'database';
 import BaseDataProvider from 'data-providers/src/BaseDataProvider';
 
 const SourceCreateAction = async (
   url: string,
-  dataProviderIdentifier: string
-): Promise<SourceAttributes> => {
+  dataProviderIdentifier: string,
+): Promise<Source> => {
   url = url.trim();
   url =
     url.startsWith('http:') || url.startsWith('https:')
@@ -35,13 +32,13 @@ const SourceCreateAction = async (
   try {
     existingSource = await Source.findOne({
       where: {
-        url: { [Op.eq]: url },
-        dataProviderIdentifier: { [Op.eq]: dataProviderIdentifier },
+        url,
+        dataProviderIdentifier,
       },
     });
   } catch (error) {
     logger.error(
-      `A DB error occurred when attempting to check if an existing Source exists when creating a new Source for URL ${url} and Data Provider ${dataProviderIdentifier}`
+      `A DB error occurred when attempting to check if an existing Source exists when creating a new Source for URL ${url} and Data Provider ${dataProviderIdentifier}`,
     );
     logger.error(error);
     throw error;
@@ -49,7 +46,7 @@ const SourceCreateAction = async (
 
   if (existingSource != null) {
     logger.info(
-      `Source already exists with ID ${existingSource.id} for URL ${url} and Data Provider ${dataProviderIdentifier}, cancelling`
+      `Source already exists with ID ${existingSource.id} for URL ${url} and Data Provider ${dataProviderIdentifier}, cancelling`,
     );
 
     const friendlyInfoMessage =
@@ -81,7 +78,7 @@ const SourceCreateAction = async (
 
   const sourceDomain = await findOrCreateSourceDomainForUrl(
     url,
-    chosenDataProvider
+    chosenDataProvider,
   );
 
   let source: Source | null = null;
@@ -96,7 +93,7 @@ const SourceCreateAction = async (
     });
   } catch (error) {
     logger.error(
-      `A DB error occurred when attempting to create a new Source for URL ${url}`
+      `A DB error occurred when attempting to create a new Source for URL ${url}`,
     );
     logger.error(error);
     throw error;
@@ -104,7 +101,7 @@ const SourceCreateAction = async (
 
   logger.info(`Created new Source with ID ${source.id}`);
 
-  return source.toJSON();
+  return source;
 };
 
 export default SourceCreateAction;

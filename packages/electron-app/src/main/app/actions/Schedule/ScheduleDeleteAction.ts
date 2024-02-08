@@ -10,49 +10,59 @@ Description: description
 */
 
 import logger from 'logger';
-import { Schedule, Source } from 'database'
+import { Schedule } from 'database';
 
 /**
  * @throws {Error}
  */
 const ScheduleDeleteAction = async (scheduleId: number): Promise<void> => {
-  let originalSchedule: Schedule | null = null
+  let originalSchedule: Schedule | null = null;
   try {
-    originalSchedule = await Schedule.findByPk(scheduleId, {include: [Source]})
+    originalSchedule = await Schedule.findOne({
+      where: { id: scheduleId },
+      relations: { source: true },
+    });
   } catch (error) {
-    logger.error(`A DB error occurred when attempting to find Schedule ID  ${scheduleId} for deletion`)
-    logger.error(error)
+    logger.error(
+      `A DB error occurred when attempting to find Schedule ID  ${scheduleId} for deletion`,
+    );
+    logger.error(error);
   }
 
   if (originalSchedule == null) {
-    const errorMessage = 'No Schedule found with that ID'
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage = 'No Schedule found with that ID';
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
   if (originalSchedule.captures?.length > 0) {
-    const errorMessage = 'The Schedule has associated Captures and cannot be deleted'
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage =
+      'The Schedule has associated Captures and cannot be deleted';
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
-  logger.info('Deleting Schedule with ID ' + originalSchedule.id)
+  logger.info('Deleting Schedule with ID ' + originalSchedule.id);
 
-  await originalSchedule.destroy()
+  await originalSchedule.softRemove();
 
-  let scheduleCheck: Schedule | null = null
+  let scheduleCheck: Schedule | null = null;
   try {
-    scheduleCheck = await Schedule.findByPk(originalSchedule.id)
+    scheduleCheck = await Schedule.findOne({
+      where: { id: originalSchedule.id },
+    });
   } catch (error) {
-    logger.error(`A DB error occurred when attempting to find Schedule ID ${scheduleId} to be check successful deletion`)
-    logger.error(error)
+    logger.error(
+      `A DB error occurred when attempting to find Schedule ID ${scheduleId} to be check successful deletion`,
+    );
+    logger.error(error);
   }
 
   if (scheduleCheck != null) {
-    const errorMessage = 'The Schedule could not be deleted'
-    logger.error(errorMessage)
-    throw new Error(errorMessage)
+    const errorMessage = 'The Schedule could not be deleted';
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
   }
-}
+};
 
-export default ScheduleDeleteAction
+export default ScheduleDeleteAction;

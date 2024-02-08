@@ -10,59 +10,61 @@ Description: description
 */
 
 import logger from 'logger';
-import { Includeable } from 'database'
-import { CaptureAttributes } from 'database/src/models/Capture'
-import { Capture, CapturePart, Schedule, Source, SourceDomain } from 'database'
+import { Capture, FindOptionsOrder, FindOptionsRelations } from 'database';
 
 const CaptureShowAction = async (
   captureId: number | null = null,
   withSchedule: boolean = false,
   withSource: boolean = false,
   withSourceDomain: boolean = false,
-  withCaptureParts: boolean = false
-): Promise<CaptureAttributes> => {
+  withCaptureParts: boolean = false,
+): Promise<Capture> => {
   if (captureId == null) {
-    logger.info('No capture ID provided')
-    throw new Error('No capture ID provided')
+    logger.info('No capture ID provided');
+    throw new Error('No capture ID provided');
   }
 
-  let include: Includeable[] = []
-  if (withSchedule) {
-    const includeSchedule: Includeable = {
-      model: Schedule,
-      include: withSource ? [{
-        model: Source,
-        include: withSourceDomain ? [{
-          model: SourceDomain
-        }] : [],
-      }] : [],
-    }
+  const relations: FindOptionsRelations<Capture> = {
+    ...(withSchedule
+      ? {
+          schedule: withSource
+            ? { source: withSourceDomain ? { sourceDomain: true } : true }
+            : true,
+        }
+      : {}),
+    ...(withCaptureParts ? { captureParts: true } : {}),
+  };
 
-    include.push(includeSchedule)
-  }
+  const order: FindOptionsOrder<Capture> = {
+    captureParts: {
+      createdAt: 'ASC',
+    },
+  };
 
-  if (withCaptureParts) {
-    const includeCaptureParts: Includeable = { model: CapturePart, separate: true, order: [['createdAt', 'ASC']] }
-    include.push(includeCaptureParts)
-  }
-
-  let capture: Capture | null = null
+  let capture: Capture | null = null;
   try {
-    capture = await Capture.findByPk(captureId, { include })
+    capture = await Capture.findOne({
+      where: { id: captureId },
+      relations,
+      order,
+    });
   } catch (error) {
-    logger.error(`A DB error occurred when attempting to retrieve a capture with ID ${captureId}`)
-    logger.error(error)
-    throw error
+    logger.error(
+      `A DB error occurred when attempting to retrieve a capture with ID ${captureId}`,
+    );
+    logger.error(error);
+    throw error;
   }
 
   if (capture == null) {
-    logger.info(`Capture with ID ${captureId} not found`)
+    logger.info(`Capture with ID ${captureId} not found`);
 
-    const friendlyInfoMessage = 'We couldn\'t find the capture you were looking for. Maybe it was deleted?'
-    throw new Error(friendlyInfoMessage)
+    const friendlyInfoMessage =
+      "We couldn't find the capture you were looking for. Maybe it was deleted?";
+    throw new Error(friendlyInfoMessage);
   }
 
-  return capture.toJSON()
-}
+  return capture;
+};
 
-export default CaptureShowAction
+export default CaptureShowAction;

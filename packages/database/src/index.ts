@@ -30,6 +30,7 @@ import {
   Or,
   FindOperator,
   FindOptionsRelations,
+  FindOptionsOrder,
 } from "typeorm";
 import logger from "logger";
 import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from "./paths";
@@ -71,7 +72,7 @@ dataSource
   .initialize()
   .then(async () => {
     logger.info(
-      `DB: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`
+      `DB: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`,
     );
   })
   .catch((error) => {
@@ -108,4 +109,5 @@ export {
   Or,
   FindOperator,
   FindOptionsRelations,
+  FindOptionsOrder,
 };

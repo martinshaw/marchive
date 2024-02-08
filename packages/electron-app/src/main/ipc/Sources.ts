@@ -9,7 +9,7 @@ Modified: 2023-08-01T21:00:20.815Z
 Description: description
 */
 
-import { Op } from 'database';
+import { IsNull } from 'database';
 import { ipcMain } from 'electron';
 
 import SourceListAction from '../app/actions/Source/SourceListAction';
@@ -40,7 +40,7 @@ ipcMain.on('sources.list', async (event) => {
 
 ipcMain.on('sources.list-without-source-domains', async (event) => {
   return SourceListAction({
-    sourceDomainId: { [Op.eq]: null },
+    sourceDomainId: IsNull(),
   })
     .then((sources) => {
       event.reply('sources.list-without-source-domains', sources, null);
@@ -67,13 +67,13 @@ ipcMain.on(
     sourceId: number | null = null,
     withSourceDomain: boolean = false,
     withSchedules: boolean = false,
-    withCaptures: boolean = false
+    withCaptures: boolean = false,
   ) => {
     return SourceShowAction(
       sourceId,
       withSourceDomain,
       withSchedules,
-      withCaptures
+      withCaptures,
     )
       .then((source) => {
         event.reply('sources.show', source, null);
@@ -81,7 +81,7 @@ ipcMain.on(
       .catch((error) => {
         event.reply('sources.show', null, error);
       });
-  }
+  },
 );
 
 ipcMain.on(
@@ -94,7 +94,7 @@ ipcMain.on(
       .catch((error) => {
         event.reply('sources.create', null, error);
       });
-  }
+  },
 );
 
 ipcMain.on('sources.delete', async (event, sourceId: number) => {

@@ -9,25 +9,23 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { Op } from 'database'
-import { Capture, Schedule } from 'database'
-import { ScheduleAttributes } from 'database/src/models/Schedule'
+import { FindOptionsRelations, FindOptionsWhere, Schedule } from 'database';
 
-const ScheduleListAction = async (sourceId: number | null = null, withCaptures = false): Promise<ScheduleAttributes[]> => {
-  let where = {}
-  if (sourceId != null) where = { ...where, sourceId: {[Op.eq]: sourceId} }
+const ScheduleListAction = async (
+  sourceId: number | null = null,
+  withCaptures = false,
+): Promise<Schedule[]> => {
+  let where: FindOptionsWhere<Schedule> =
+    sourceId != null ? { id: sourceId } : {};
 
-  let include: any[] = []
-  if (withCaptures) include = [...include, Capture]
+  let relations: FindOptionsRelations<Schedule> = {
+    captures: withCaptures,
+  };
 
-  return Schedule
-    .findAll({
-      include,
-      where,
-    })
-    .then(schedules =>
-      schedules.map(schedule => schedule.toJSON())
-    )
-}
+  return Schedule.find({
+    where,
+    relations,
+  });
+};
 
-export default ScheduleListAction
+export default ScheduleListAction;

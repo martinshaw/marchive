@@ -12,21 +12,24 @@ Description: description
 import fs from 'node:fs';
 import logger from 'logger';
 import { rimraf } from 'rimraf';
-import { Capture, CapturePart, Schedule, Source } from 'database';
+import { Capture, CapturePart, Source } from 'database';
 
 /**
  * @throws {Error}
  */
 const SourceDeleteAction = async (
   sourceId: number,
-  alsoDeleteFiles: boolean = false
+  alsoDeleteFiles: boolean = false,
 ): Promise<void> => {
   let originalSource: Source | null = null;
   try {
-    originalSource = await Source.findByPk(sourceId, { include: [Schedule] });
+    originalSource = await Source.findOne({
+      where: { id: sourceId },
+      relations: { schedules: true },
+    });
   } catch (error) {
     logger.error(
-      `A DB error occurred when attempting to find Source ID ${sourceId} for deletion`
+      `A DB error occurred when attempting to find Source ID ${sourceId} for deletion`,
     );
     logger.error(error);
   }
@@ -41,24 +44,24 @@ const SourceDeleteAction = async (
     originalSource.schedules.forEach(async (schedule) => {
       logger.info('Deleting Schedule with ID ' + schedule.id);
 
-      const captures = await Capture.findAll({
+      const captures = await Capture.find({
         where: { scheduleId: schedule.id },
       });
 
       captures.forEach(async (capture) => {
         logger.info('Deleting Capture with ID ' + capture.id);
 
-        const captureParts = await CapturePart.findAll({
+        const captureParts = await CapturePart.find({
           where: { captureId: capture.id },
         });
 
         captureParts.forEach(async (capturePart) => {
           logger.info('Deleting Capture Part with ID ' + capturePart.id);
 
-          await capturePart.destroy();
+          await capturePart.softRemove();
         });
 
-        await capture.destroy();
+        await capture.softRemove();
       });
 
       if (
@@ -69,20 +72,20 @@ const SourceDeleteAction = async (
         await rimraf(schedule.downloadLocation);
       }
 
-      await schedule.destroy();
+      await schedule.softRemove();
     });
   }
 
   logger.info('Deleting Source with ID ' + originalSource.id);
 
-  await originalSource.destroy();
+  await originalSource.softRemove();
 
   let sourceCheck: Source | null = null;
   try {
-    sourceCheck = await Source.findByPk(sourceId);
+    sourceCheck = await Source.findOne({ where: { id: sourceId } });
   } catch (error) {
     logger.error(
-      `A DB error occurred when attempting to find Source ID ${sourceId} for check successful deletion`
+      `A DB error occurred when attempting to find Source ID ${sourceId} for check successful deletion`,
     );
     logger.error(error);
   }
