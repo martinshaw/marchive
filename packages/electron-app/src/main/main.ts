@@ -6,6 +6,7 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
+import 'database';
 import logger from 'logger';
 import path from 'node:path';
 import contextMenu from 'electron-context-menu';

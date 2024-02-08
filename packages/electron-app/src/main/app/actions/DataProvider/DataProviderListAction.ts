@@ -9,16 +9,14 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-// import { getDataProviders } from 'data-providers';
-// import { DataProviderSerializedType } from 'data-providers/src/BaseDataProvider';
+import { getDataProviders } from 'data-providers';
+import { DataProviderSerializedType } from 'data-providers/src/BaseDataProvider';
 
-// const DataProviderListAction = async (): Promise<
-//   DataProviderSerializedType[]
-// > =>
-//   getDataProviders().then((providers) =>
-//     Promise.all(providers.map((provider) => provider.toJSON()))
-//   );
-
-const DataProviderListAction = async (): Promise<[]> => [];
+const DataProviderListAction = async (): Promise<
+  DataProviderSerializedType[]
+> =>
+  getDataProviders().then((providers) =>
+    Promise.all(providers.map((provider) => provider.toJSON()))
+  );
 
 export default DataProviderListAction;

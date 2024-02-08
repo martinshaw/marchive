@@ -9,31 +9,26 @@ Modified: 2023-09-04T18:56:21.693Z
 Description: description
 */
 
-// import { Schedule, Source, SourceDomain } from 'database'
-// import { SourceDomainAttributes } from 'database/src/models/SourceDomain'
+import { Schedule, Source, SourceDomain } from 'database'
+import { SourceDomainAttributes } from 'database/src/models/SourceDomain'
 
-const SourceDomainListAction = async (
-  withSources: boolean,
-  withSourceSchedules: boolean,
-): Promise</*SourceDomainAttributes*/ []> => {
-  // /**
-  //  * TODO: Add sorting by latest nextRunAt to sources in addition to sources' schedules
-  //  */
-  // return SourceDomain
-  //   .findAll({
-  //     include: withSources ? [{
-  //       model: Source,
-  //       include: withSourceSchedules ? [
-  //         { model: Schedule, separate: true, order: [['nextRunAt', 'desc']] }
-  //       ] : [],
-  //     }] : [],
-  //     order: [['createdAt', 'desc']],
-  //   })
-  //   .then(sourceDomains => {
-  //     return sourceDomains.map(sourceDomain => sourceDomain.toJSON())
-  //   })
+const SourceDomainListAction = async (withSources: boolean, withSourceSchedules: boolean): Promise<SourceDomainAttributes[]> => {
+  /**
+   * TODO: Add sorting by latest nextRunAt to sources in addition to sources' schedules
+   */
+  return SourceDomain
+    .findAll({
+      include: withSources ? [{
+        model: Source,
+        include: withSourceSchedules ? [
+          { model: Schedule, separate: true, order: [['nextRunAt', 'desc']] }
+        ] : [],
+      }] : [],
+      order: [['createdAt', 'desc']],
+    })
+    .then(sourceDomains => {
+      return sourceDomains.map(sourceDomain => sourceDomain.toJSON())
+    })
+}
 
-  return [];
-};
-
-export default SourceDomainListAction;
+export default SourceDomainListAction

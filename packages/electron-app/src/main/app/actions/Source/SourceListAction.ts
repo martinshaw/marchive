@@ -9,13 +9,18 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import CliJsonResponse from '../../cli/CliJsonResponse';
-import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
+import { Schedule, Source, WhereOptions } from 'database'
+import { SourceAttributes } from 'database/src/models/Source'
 
-const SourceListAction = async (): Promise<CliJsonResponse<any[]>> =>
-  runCliCommandWithImmediateResponse('source:list', [], {
-    withSchedules: true,
-    withSourceDomain: false,
-  });
+const SourceListAction = async (where: WhereOptions<SourceAttributes> | undefined = undefined): Promise<SourceAttributes[]> => {
+  return Source
+    .findAll({
+      where,
+      include: [Schedule],
+    })
+    .then(sources =>
+      sources.map(source => source.toJSON())
+    )
+}
 
-export default SourceListAction;
+export default SourceListAction
