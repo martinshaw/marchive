@@ -5,11 +5,22 @@ import { useCallback } from 'react';
 
 function Hello() {
   const getAllSources = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('sources.create', 'https://www.example.com', 'simple-webpage-screenshot');
-
-    // Once, in response to previous call, console log the response
-    window.electron.ipcRenderer.once('sources.create', (response) => {
+    window.electron.ipcRenderer.sendMessage('sources.list');
+    
+    window.electron.ipcRenderer.once('sources.list', (response) => {
       console.log('response', response);
+      // @ts-ignore
+      alert('response message ' + response.message);
+    });
+  }, []);
+
+  const getAndSetMarchiveIsSetupStoredSetting = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('utilities.marchive-is-setup', true);
+
+    window.electron.ipcRenderer.once('utilities.marchive-is-setup', (response) => {
+      console.log('response', response);
+      // @ts-ignore
+      alert('response message ' + response.message);
     });
   }, []);
 
@@ -20,24 +31,12 @@ function Hello() {
       </div>
       <h1>Marchive</h1>
       <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-          <button type="button" onClick={() => getAllSources()}>
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Get all sources
-          </button>
+        <button type="button" onClick={() => getAllSources()}>
+          Get all sources
+        </button>
+        <button type="button" onClick={() => getAndSetMarchiveIsSetupStoredSetting()}>
+          Set Marchive is setup
+        </button>
       </div>
     </div>
   );
