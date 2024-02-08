@@ -27,13 +27,9 @@ export type SourcesChannels =
   | 'sources.prompt-for-deletion';
 
 ipcMain.on('sources.list', async (event) => {
-  return (
-    SourceListAction()
-      // I believe that in most cases, the error (unsuccessful response) and caught cli exec errors, are returned using CliJsonResponse
-      .then((response) => {
-        event.reply('sources.list', response);
-      })
-  );
+  return SourceListAction().then((response) => {
+    event.reply('sources.list', response);
+  });
 });
 
 ipcMain.on('sources.count', async (event) => {
