@@ -9,6 +9,7 @@ Modified: 2023-08-01T21:00:20.815Z
 Description: description
 */
 
+import { Op } from 'database';
 import { ipcMain } from 'electron';
 
 import SourceListAction from '../app/actions/Source/SourceListAction';
@@ -20,6 +21,7 @@ import SourcePromptForDeletionAction from '../app/actions/Source/SourcePromptFor
 
 export type SourcesChannels =
   | 'sources.list'
+  | 'sources.list-without-source-domains'
   | 'sources.count'
   | 'sources.show'
   | 'sources.create'
@@ -27,46 +29,82 @@ export type SourcesChannels =
   | 'sources.prompt-for-deletion';
 
 ipcMain.on('sources.list', async (event) => {
-  return SourceListAction().then((response) => {
-    event.reply('sources.list', response);
-  });
+  return SourceListAction()
+    .then((sources) => {
+      event.reply('sources.list', sources, null);
+    })
+    .catch((error) => {
+      event.reply('sources.list', null, error);
+    });
+});
+
+ipcMain.on('sources.list-without-source-domains', async (event) => {
+  return SourceListAction({
+    sourceDomainId: { [Op.eq]: null },
+  })
+    .then((sources) => {
+      event.reply('sources.list-without-source-domains', sources, null);
+    })
+    .catch((error) => {
+      event.reply('sources.list-without-source-domains', null, error);
+    });
 });
 
 ipcMain.on('sources.count', async (event) => {
-  return SourceCountAction().then((response) => {
-    event.reply('sources.count', response);
-  });
+  return SourceCountAction()
+    .then((count) => {
+      event.reply('sources.count', count, null);
+    })
+    .catch((error) => {
+      event.reply('sources.count', null, error);
+    });
 });
 
 ipcMain.on(
   'sources.show',
   async (
     event,
-    sourceId: number,
+    sourceId: number | null = null,
     withSourceDomain: boolean = false,
     withSchedules: boolean = false,
+    withCaptures: boolean = false
   ) => {
-    return SourceShowAction(sourceId, withSourceDomain, withSchedules).then(
-      (response) => {
-        event.reply('sources.show', response);
-      },
-    );
-  },
+    return SourceShowAction(
+      sourceId,
+      withSourceDomain,
+      withSchedules,
+      withCaptures
+    )
+      .then((source) => {
+        event.reply('sources.show', source, null);
+      })
+      .catch((error) => {
+        event.reply('sources.show', null, error);
+      });
+  }
 );
 
 ipcMain.on(
   'sources.create',
   async (event, url: string, dataProviderIdentifier: string) => {
-    return SourceCreateAction(url, dataProviderIdentifier).then((response) => {
-      event.reply('sources.create', response);
-    });
-  },
+    return SourceCreateAction(url, dataProviderIdentifier)
+      .then((source) => {
+        event.reply('sources.create', source, null);
+      })
+      .catch((error) => {
+        event.reply('sources.create', null, error);
+      });
+  }
 );
 
 ipcMain.on('sources.delete', async (event, sourceId: number) => {
-  return SourceDeleteAction(sourceId).then((response) => {
-    event.reply('sources.delete', response);
-  });
+  return SourceDeleteAction(sourceId)
+    .then((source) => {
+      event.reply('sources.delete', source, null);
+    })
+    .catch((error) => {
+      event.reply('sources.delete', null, error);
+    });
 });
 
 ipcMain.on('sources.prompt-for-deletion', async (event, sourceId: number) => {
