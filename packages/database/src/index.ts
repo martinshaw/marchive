@@ -37,6 +37,8 @@ import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from "./paths";
 import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
 import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
+console.log("database 1");
+
 import StoredSetting from "./entities/StoredSetting";
 import Source from "./entities/Source";
 import SourceDomain from "./entities/SourceDomain";
@@ -45,6 +47,8 @@ import Capture from "./entities/Capture";
 import CapturePart from "./entities/CapturePart";
 
 import migrations from "./migrations";
+
+console.log("database 2");
 
 if (fs.existsSync(userAppDataDatabasesPath) === false)
   fs.mkdirSync(userAppDataDatabasesPath, { recursive: true });
@@ -66,16 +70,24 @@ const dataSourceConfig: DataSourceOptions = {
   cache: false,
 };
 
+console.log("database 3");
+
 const dataSource = new DataSource(dataSourceConfig);
+
+console.log("database 4");
 
 dataSource
   .initialize()
   .then(async () => {
+    console.log("database 5");
+
     logger.info(
       `DB: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`,
     );
   })
   .catch((error) => {
+    console.log("database 6");
+
     logger.error("DB: Unable to connect to the database");
     logger.error(error);
   });

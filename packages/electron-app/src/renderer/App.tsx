@@ -7,8 +7,9 @@ function Hello() {
   const getAllSources = useCallback(() => {
     window.electron.ipcRenderer.sendMessage('sources.list');
     
-    window.electron.ipcRenderer.once('sources.list', (response) => {
+    window.electron.ipcRenderer.once('sources.list', (response, something) => {
       console.log('response', response);
+      console.log('something', something);
       // @ts-ignore
       alert('response message ' + response.message);
     });
@@ -17,8 +18,10 @@ function Hello() {
   const getAndSetMarchiveIsSetupStoredSetting = useCallback(() => {
     window.electron.ipcRenderer.sendMessage('utilities.marchive-is-setup', true);
 
-    window.electron.ipcRenderer.once('utilities.marchive-is-setup', (response) => {
+    window.electron.ipcRenderer.once('utilities.marchive-is-setup', (response,something) => {
       console.log('response', response);
+      console.log('something', something);
+
       // @ts-ignore
       alert('response message ' + response.message);
     });

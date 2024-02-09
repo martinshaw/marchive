@@ -6,7 +6,7 @@
   "engines": {
     "pnpm": ">=8.0.0",
     "npm": ">=10.0.0",
-    "node": ">=18.0.0"
+    "node": ">=16.0.0"
   },
   "main": "./src/main/main.ts",
   "scripts": {
@@ -14,7 +14,7 @@
     "build:dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
-    "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && pnpm run build:dll",
+    "postinstall": "ts-node ./.erb/scripts/check-native-dep.js && electron-builder install-app-deps && pnpm run build:dll",
     "package": "ts-node ./.erb/scripts/clean.js dist && pnpm run build && electron-builder build --publish never && pnpm run build:dll",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./src/build/close_windows_processes.ts && ts-node ./.erb/scripts/check-port-in-use.js && pnpm run start:renderer",
@@ -71,6 +71,7 @@
   },
   "dependencies": {
     "@rauschma/stringio": "^1.4.0",
+    "better-sqlite3": "^9.3.0",
     "change-case-commonjs": "^5.4.4",
     "data-providers": "link:../data-providers",
     "database": "link:../database",
