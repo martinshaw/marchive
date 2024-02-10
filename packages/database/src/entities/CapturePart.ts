@@ -17,9 +17,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  OneToMany,
 } from "typeorm";
 import { Capture } from "..";
+import { CaptureEntityType } from "./Capture";
+import CommonEntityType from "./CommonEntityType";
 
 const capturePartStatuses = [
   "pending",
@@ -30,8 +31,19 @@ const capturePartStatuses = [
 ];
 export type CapturePartStatus = (typeof capturePartStatuses)[number];
 
+export type CapturePartEntityType = CommonEntityType & {
+  status: CapturePartStatus;
+  url: string;
+  dataProviderPartIdentifier: string;
+  payload: string;
+  downloadLocation: string | null;
+  currentRetryCount: number;
+  deletedFromDownloads: boolean;
+  capture: CaptureEntityType;
+};
+
 @Entity()
-class CapturePart extends BaseEntity {
+class CapturePart extends BaseEntity implements CapturePartEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 

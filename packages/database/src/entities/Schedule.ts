@@ -21,12 +21,27 @@ import {
   OneToMany,
 } from "typeorm";
 import { Source, Capture } from "..";
+import { CaptureEntityType } from "./Capture";
+import { SourceEntityType } from "./Source";
+import CommonEntityType from "./CommonEntityType";
 
 export const scheduleStatuses = ["pending", "processing", "cancelled"];
 export type ScheduleStatus = (typeof scheduleStatuses)[number];
 
+export type ScheduleEntityType = CommonEntityType & {
+  status: ScheduleStatus;
+  interval: number | null;
+  lastRunAt: Date | null;
+  nextRunAt: Date | null;
+  downloadLocation: string;
+  enabled: boolean;
+  deletedFromDownloads: boolean;
+  source: SourceEntityType;
+  captures: CaptureEntityType[];
+};
+
 @Entity()
-class Schedule extends BaseEntity {
+class Schedule extends BaseEntity implements ScheduleEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 

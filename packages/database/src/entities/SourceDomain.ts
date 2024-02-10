@@ -9,8 +9,6 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "utilities";
-import logger from "logger";
 import {
   BaseEntity,
   Entity,
@@ -21,7 +19,14 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from "typeorm";
-import Source from "./Source";
+import Source, { SourceEntityType } from "./Source";
+
+export type SourceDomainEntityType = {
+  name: string;
+  url: string | null;
+  faviconPath: string | null;
+  sources: SourceEntityType[];
+};
 
 /**
  * A source domain is the website or domain which a source's URL belongs to.
@@ -34,7 +39,7 @@ import Source from "./Source";
  *   group sources by domain.
  */
 @Entity()
-class SourceDomain extends BaseEntity {
+class SourceDomain extends BaseEntity implements SourceDomainEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 

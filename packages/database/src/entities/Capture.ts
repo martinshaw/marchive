@@ -21,9 +21,20 @@ import {
   OneToMany,
 } from "typeorm";
 import { Schedule, CapturePart } from "..";
+import { CapturePartEntityType } from "./CapturePart";
+import { ScheduleEntityType } from "./Schedule";
+import CommonEntityType from "./CommonEntityType";
+
+export type CaptureEntityType = CommonEntityType & {
+  downloadLocation: string;
+  allowedRetriesCount: number;
+  deletedFromDownloads: boolean;
+  schedule: ScheduleEntityType;
+  captureParts: CapturePartEntityType[];
+};
 
 @Entity()
-class Capture extends BaseEntity {
+class Capture extends BaseEntity implements CaptureEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 

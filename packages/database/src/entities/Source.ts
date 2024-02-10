@@ -20,14 +20,26 @@ import {
   OneToMany,
 } from "typeorm";
 import { Schedule, SourceDomain } from "..";
+import { ScheduleEntityType } from "./Schedule";
+import { SourceDomainEntityType } from "./SourceDomain";
 
 const sourceUseStartOrEndCursorValues = ["start", "end", null];
 export type SourceUseStartOrEndCursorValueType =
   | (typeof sourceUseStartOrEndCursorValues)[number]
   | null;
 
+export type SourceEntityType = {
+  dataProviderIdentifier: string;
+  url: string;
+  name: string | null;
+  currentStartCursorUrl: string | null;
+  currentEndCursorUrl: string | null;
+  useStartOrEndCursor: SourceUseStartOrEndCursorValueType;
+  sourceDomain: SourceDomainEntityType;
+  schedules: ScheduleEntityType[];
+};
 @Entity()
-class Source extends BaseEntity {
+class Source extends BaseEntity implements SourceEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 

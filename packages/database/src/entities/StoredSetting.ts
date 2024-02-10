@@ -30,8 +30,14 @@ export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
 const storedSettingTypes = ["string", "number", "boolean"];
 export type StoredSettingTypeType = (typeof storedSettingTypes)[number];
 
+export type StoredSettingEntityType = {
+  key: StoredSettingKeyType;
+  value: string;
+  type: StoredSettingTypeType;
+};
+
 @Entity()
-class StoredSetting extends BaseEntity {
+class StoredSetting extends BaseEntity implements StoredSettingEntityType {
   @PrimaryGeneratedColumn()
   id: number;
 
