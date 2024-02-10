@@ -10,7 +10,7 @@ Description: description
 */
 
 import CliJsonResponse from '../../cli/CliJsonResponse';
-import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 /**
  * @throws {Error}
@@ -19,7 +19,7 @@ const SourceDeleteAction = async (
   sourceId: number,
   alsoDeleteFiles: boolean = false,
 ): Promise<CliJsonResponse<any[]>> =>
-  runCliCommandWithImmediateResponse('source:delete', [sourceId], {
+  runCliCommand('source:delete', [sourceId], {
     alsoDeleteFiles,
   });
 

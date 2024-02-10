@@ -10,15 +10,12 @@ Description: description
 */
 
 import CliJsonResponse from '../../cli/CliJsonResponse';
-import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 const SourceCreateAction = async (
   url: string,
   dataProviderIdentifier: string,
 ): Promise<CliJsonResponse<[any]>> =>
-  runCliCommandWithImmediateResponse('source:create', [
-    url,
-    dataProviderIdentifier,
-  ]);
+  runCliCommand('source:create', [url, dataProviderIdentifier]);
 
 export default SourceCreateAction;

@@ -10,10 +10,10 @@ Description: description
 */
 
 import CliJsonResponse from '../../cli/CliJsonResponse';
-import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 const SourceCountAction = async (): Promise<
   CliJsonResponse<[{ count: number }]>
-> => runCliCommandWithImmediateResponse('source:count');
+> => runCliCommand('source:count');
 
 export default SourceCountAction;

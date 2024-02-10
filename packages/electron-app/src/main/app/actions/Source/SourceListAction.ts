@@ -10,10 +10,10 @@ Description: description
 */
 
 import CliJsonResponse from '../../cli/CliJsonResponse';
-import { runCliCommandWithImmediateResponse } from '../../cli/runCliCommand';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 const SourceListAction = async (): Promise<CliJsonResponse<any[]>> =>
-  runCliCommandWithImmediateResponse('source:list', [], {
+  runCliCommand('source:list', [], {
     withSchedules: true,
     withSourceDomain: false,
   });

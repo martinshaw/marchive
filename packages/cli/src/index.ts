@@ -5,6 +5,7 @@ import logToConsoleGlobalOption from "./options/logToConsoleGlobalOption";
 import jsonGlobalOption from "./options/jsonGlobalOption";
 
 import Test from "./commands/Test";
+import Ipc from "./commands/Ipc";
 
 import SourceList from "./commands/Source/SourceList";
 import SourceShow from "./commands/Source/SourceShow";
@@ -92,7 +93,10 @@ import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
     .addCommand(WatchSchedules)
     .addCommand(WatchCaptureParts)
 
+    // Miscellaneous commands
     .addCommand(Test)
+    .addCommand(Ipc)
+
     .helpOption("-h, --help", "Display help for command")
     .parse(process.argv);
 })();

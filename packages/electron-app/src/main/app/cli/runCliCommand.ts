@@ -15,10 +15,9 @@ import {
   readOnlyInternalMarchiveCliPath,
 } from '../../../paths';
 import CliJsonResponse from './CliJsonResponse';
-import logger from 'logger';
 import { kebabCase } from 'change-case-commonjs';
 
-type CliCommandNamesWithImmediateResponses =
+type CliCommandNames =
   | 'stored-setting:list'
   | 'stored-setting:get'
   | 'stored-setting:set'
@@ -44,9 +43,7 @@ type CliCommandNamesWithImmediateResponses =
   | 'schedule:update'
   | 'schedule:delete';
 
-type CliCommandNamesWithNonTerminatingResponses =
-  | 'watch:schedules'
-  | 'watch:capture-parts';
+type PerpetualCliCommandNames = 'watch:schedules' | 'watch:capture-parts';
 
 const formatCliCommandOptionsAsCliArguments = (
   options: Record<string, any>,
@@ -71,10 +68,8 @@ const formatCliCommand = (
     asJson ? '--json' : ''
   }`;
 
-const runCliCommandWithImmediateResponse = async <
-  TDataType extends any[] = any[],
->(
-  command: CliCommandNamesWithImmediateResponses,
+const runCliCommand = async <TDataType extends any[] = any[]>(
+  command: CliCommandNames,
   args: (string | number)[] = [],
   options: Record<string, any> = {},
 ): Promise<CliJsonResponse<TDataType>> =>
@@ -85,4 +80,12 @@ const runCliCommandWithImmediateResponse = async <
     });
   });
 
-export { runCliCommandWithImmediateResponse };
+const runPerpetualCliCommand = async (
+  command: PerpetualCliCommandNames,
+  args: (string | number)[] = [],
+  options: Record<string, any> = {},
+): Promise<void> => {
+  //
+};
+
+export { runCliCommand, runPerpetualCliCommand };

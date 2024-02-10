@@ -10,23 +10,19 @@ Description: description
 */
 
 import { Menu, shell, ipcMain, nativeTheme, BrowserWindow } from 'electron';
-import { runCliCommandWithImmediateResponse } from '../app/cli/runCliCommand';
+import { runCliCommand } from '../app/cli/runCliCommand';
 
 const setStoredSettingValue = async (key: string, value: any) =>
-  runCliCommandWithImmediateResponse('stored-setting:set', [key, value]).then(
-    (response) => {
-      if (response.getSuccess()) return response.getData()[0].value;
-      return null;
-    },
-  );
+  runCliCommand('stored-setting:set', [key, value]).then((response) => {
+    if (response.getSuccess()) return response.getData()[0].value;
+    return null;
+  });
 
 const getStoredSettingValue = async (key: string) =>
-  runCliCommandWithImmediateResponse('stored-setting:get', [key]).then(
-    (response) => {
-      if (response.getSuccess()) return response.getData()[0].value;
-      return null;
-    },
-  );
+  runCliCommand('stored-setting:get', [key]).then((response) => {
+    if (response.getSuccess()) return response.getData()[0].value;
+    return null;
+  });
 
 export type UtilitiesChannels =
   | 'utilities.is-dark-mode'

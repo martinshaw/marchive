@@ -16,7 +16,7 @@ class ErrorResponse extends BaseResponse {
   constructor(
     message: string,
     protected error: Error | null = null,
-    data: any[] = []
+    data: any[] = [],
   ) {
     super(false, message, data);
   }
@@ -46,14 +46,20 @@ class ErrorResponse extends BaseResponse {
         message: this.getMessage(),
         detailedMessage: this.error?.message ?? null,
         data: this.getData(),
-      })
+      }),
     );
 
     process.exit(1);
   }
 
   public static async catchErrorsWithErrorResponse(
-    callback: () => never | Promise<never>
+    callback: () => never | Promise<never>,
+  ) {
+    return this.catchErrorsWithErrorResponseAllowingPerpetualCommand(callback);
+  }
+
+  public static async catchErrorsWithErrorResponseAllowingPerpetualCommand(
+    callback: () => never | Promise<never> | void | Promise<void>,
   ) {
     try {
       return await callback();
@@ -79,7 +85,7 @@ class ErrorResponse extends BaseResponse {
           {
             detailedMessage: error instanceof Error ? error.message : null,
           },
-        ]
+        ],
       ).send();
     }
   }
