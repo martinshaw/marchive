@@ -19,14 +19,8 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from "typeorm";
-import Source, { SourceEntityType } from "./Source";
-
-export type SourceDomainEntityType = {
-  name: string;
-  url: string | null;
-  faviconPath: string | null;
-  sources: SourceEntityType[];
-};
+import Source from "./Source";
+import { SourceDomainEntityType } from "database-types";
 
 /**
  * A source domain is the website or domain which a source's URL belongs to.

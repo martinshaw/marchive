@@ -19,28 +19,8 @@ import {
   ManyToOne,
 } from "typeorm";
 import { Capture } from "..";
-import { CaptureEntityType } from "./Capture";
-import CommonEntityType from "./CommonEntityType";
-
-const capturePartStatuses = [
-  "pending",
-  "processing",
-  "completed",
-  "failed",
-  "cancelled",
-];
-export type CapturePartStatus = (typeof capturePartStatuses)[number];
-
-export type CapturePartEntityType = CommonEntityType & {
-  status: CapturePartStatus;
-  url: string;
-  dataProviderPartIdentifier: string;
-  payload: string;
-  downloadLocation: string | null;
-  currentRetryCount: number;
-  deletedFromDownloads: boolean;
-  capture: CaptureEntityType;
-};
+import { CapturePartEntityType } from "database-types";
+import { CapturePartStatus } from "database-types/src/entities/CapturePart";
 
 @Entity()
 class CapturePart extends BaseEntity implements CapturePartEntityType {

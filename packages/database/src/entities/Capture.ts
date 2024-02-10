@@ -21,17 +21,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Schedule, CapturePart } from "..";
-import { CapturePartEntityType } from "./CapturePart";
-import { ScheduleEntityType } from "./Schedule";
-import CommonEntityType from "./CommonEntityType";
-
-export type CaptureEntityType = CommonEntityType & {
-  downloadLocation: string;
-  allowedRetriesCount: number;
-  deletedFromDownloads: boolean;
-  schedule: ScheduleEntityType;
-  captureParts: CapturePartEntityType[];
-};
+import { CaptureEntityType } from "database-types";
 
 @Entity()
 class Capture extends BaseEntity implements CaptureEntityType {

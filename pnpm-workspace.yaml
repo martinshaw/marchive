@@ -1,4 +1,5 @@
 packages:
+  - 'packages/database-types'
   - 'packages/data-providers'
   - 'packages/database'
   - 'packages/electron-app'

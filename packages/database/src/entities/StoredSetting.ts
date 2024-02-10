@@ -18,23 +18,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
 } from "typeorm";
-
-export const storedSettingKeys = [
-  "MARCHIVE_IS_SETUP",
-  "ELECTRON_IS_USED",
-  "WATCH_SCHEDULES_PROCESS_IS_PAUSED",
-  "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED",
-];
-export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
-
-const storedSettingTypes = ["string", "number", "boolean"];
-export type StoredSettingTypeType = (typeof storedSettingTypes)[number];
-
-export type StoredSettingEntityType = {
-  key: StoredSettingKeyType;
-  value: string;
-  type: StoredSettingTypeType;
-};
+import StoredSettingEntityType, {
+  StoredSettingKeyType,
+  StoredSettingTypeType,
+} from "database-types/src/entities/StoredSetting";
 
 @Entity()
 class StoredSetting extends BaseEntity implements StoredSettingEntityType {
