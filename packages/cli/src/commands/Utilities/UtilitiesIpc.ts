@@ -1,11 +1,11 @@
 import commander from "commander";
 import logger from "logger";
 import process from "node:process";
-import ErrorResponse from "../responses/ErrorResponse";
+import ErrorResponse from "../../responses/ErrorResponse";
 
-const Ipc = new commander.Command("ipc");
+const UtilitiesIpc = new commander.Command("utilities:ipc");
 
-Ipc.description(
+UtilitiesIpc.description(
   "Receive and send messages for command functionality using IPC communication",
 ).action(async (options, program) => {
   ErrorResponse.catchErrorsWithErrorResponseAllowingPerpetualCommand(
@@ -22,4 +22,4 @@ Ipc.description(
   );
 });
 
-export default Ipc;
+export default UtilitiesIpc;

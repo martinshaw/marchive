@@ -41,7 +41,8 @@ type CliCommandNames =
   | 'schedule:count'
   | 'schedule:create'
   | 'schedule:update'
-  | 'schedule:delete';
+  | 'schedule:delete'
+  | 'utilities:retrieve-favicon';
 
 type PerpetualCliCommandNames = 'watch:schedules' | 'watch:capture-parts';
 
@@ -75,8 +76,12 @@ const runCliCommand = async <TDataType extends any[] = any[]>(
 ): Promise<CliJsonResponse<TDataType>> =>
   new Promise((resolve, reject) => {
     exec(formatCliCommand(command, args, options), (error, stdout, stderr) => {
-      if (stderr) resolve(new CliJsonResponse(stderr));
-      else resolve(new CliJsonResponse(stdout));
+      if (stderr) {
+        // resolve(new CliJsonResponse(stderr));
+        reject(new CliJsonResponse(stderr).toError());
+      } else {
+        resolve(new CliJsonResponse(stdout));
+      }
     });
   });
 

@@ -17,6 +17,7 @@ import Downloader from "nodejs-file-downloader";
 import { resolveRelative, safeSanitizeFileName } from "utilities";
 import { userDownloadsSourceDomainFaviconsPath } from "utilities";
 import { retrieveFaviconsFromUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
+import icoToPng from "ico-to-png";
 
 export type FaviconIconType = {
   src?: string | null | undefined;
@@ -74,8 +75,14 @@ const iconLikelyHasSuitableSize = (icon: FaviconIconType): boolean => {
 };
 
 const retrieveAndStoreFaviconFromUrl = async (
-  url: string
-): Promise<string | null> => {
+  url: string,
+  store: boolean = true,
+): Promise<{
+  url: string;
+  directory: string | null;
+  fileName: string | null;
+  path: string | null;
+} | null> => {
   if (fs.existsSync(userDownloadsSourceDomainFaviconsPath) === false)
     fs.mkdirSync(userDownloadsSourceDomainFaviconsPath, { recursive: true });
 
@@ -87,22 +94,22 @@ const retrieveAndStoreFaviconFromUrl = async (
     icons.find(
       (icon) =>
         iconLikelyHasSuitableSize(icon) &&
-        (icon?.src?.endsWith(".png") || icon.type === "image/png")
+        (icon?.src?.endsWith(".png") || icon.type === "image/png"),
     ) ??
     icons.find(
       (icon) =>
         iconLikelyHasSuitableSize(icon) &&
         (icon?.src?.endsWith(".jpeg") ||
           icon?.src?.endsWith(".jpg") ||
-          icon.type === "image/jpeg")
+          icon.type === "image/jpeg"),
     ) ??
     icons.find(
       (icon) =>
         iconLikelyHasSuitableSize(icon) &&
-        (icon?.src?.endsWith(".svg") || icon.type === "image/svg+xml")
+        (icon?.src?.endsWith(".svg") || icon.type === "image/svg+xml"),
     ) ??
     icons.find(
-      (icon) => icon?.src?.endsWith(".ico") || icon.type === "image/x-icon"
+      (icon) => icon?.src?.endsWith(".ico") || icon.type === "image/x-icon",
     );
 
   let iconUrl: string | null | undefined = icon?.src ?? null;
@@ -126,7 +133,7 @@ const retrieveAndStoreFaviconFromUrl = async (
         iconUrl +
         " for URL " +
         url +
-        " when attempting to retrieve and store favicon, setting to null"
+        " when attempting to retrieve and store favicon, setting to null",
     );
     return null;
   }
@@ -137,11 +144,20 @@ const retrieveAndStoreFaviconFromUrl = async (
       ? url
       : "https://" + url;
   let iconFileName = safeSanitizeFileName(
-    new URL(safeUrl).hostname + "." + iconUrlExtension
+    new URL(safeUrl).hostname + "." + iconUrlExtension,
   );
   if (iconFileName === false)
     iconFileName = safeSanitizeFileName(uuidV4() + "." + iconUrlExtension);
   if (iconFileName === false) iconFileName = uuidV4() as string;
+
+  if (store !== true) {
+    return {
+      url: iconUrl,
+      directory: null,
+      fileName: null,
+      path: null,
+    };
+  }
 
   const iconDownloader = new Downloader({
     url: iconUrl,
@@ -157,13 +173,39 @@ const retrieveAndStoreFaviconFromUrl = async (
         iconUrl +
         " for URL " +
         url +
-        " due to error"
+        " due to error",
     );
     logger.error(error);
     return null;
   }
 
-  return path.join(userDownloadsSourceDomainFaviconsPath, iconFileName);
+  // If the file is a .ico, convert it to a .png
+  if (iconFileName.endsWith(".ico")) {
+    const icoSource = fs.readFileSync(
+      path.join(userDownloadsSourceDomainFaviconsPath, iconFileName),
+    );
+
+    const pngBuffer = await icoToPng(icoSource, 512);
+    const pngFileName = iconFileName.replace(".ico", ".png");
+
+    fs.writeFileSync(
+      path.join(userDownloadsSourceDomainFaviconsPath, pngFileName),
+      pngBuffer,
+    );
+
+    fs.unlinkSync(
+      path.join(userDownloadsSourceDomainFaviconsPath, iconFileName),
+    );
+
+    iconFileName = pngFileName;
+  }
+
+  return {
+    url: iconUrl,
+    directory: userDownloadsSourceDomainFaviconsPath,
+    fileName: iconFileName,
+    path: path.join(userDownloadsSourceDomainFaviconsPath, iconFileName),
+  };
 };
 
 export default retrieveAndStoreFaviconFromUrl;

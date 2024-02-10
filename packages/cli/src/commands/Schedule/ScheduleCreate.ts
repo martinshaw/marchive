@@ -12,11 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   AllowedScheduleIntervalReturnType,
-  BaseDataProvider,
-  findOrCreateSourceDomainForUrl,
   getDataProviderByIdentifier,
-  getDataProviders,
-  validateUrlWithDataProviders,
 } from "data-providers";
 import logger from "logger";
 import commander, { Command } from "commander";
@@ -32,17 +28,17 @@ ScheduleCreate.description("Create a new Schedule")
   .argument("<source-id>", "Source ID")
   .option(
     `--interval-in-seconds <interval-in-seconds>`,
-    "Interval in Seconds (default: does not repeat) (e.g. one hour = 3600, one day = 86400, two days = 172800, one week = 604800, two weeks = 1209600, monthly = 2592000, two months = 5184000, yearly = 31536000, monthly = 2592000)"
+    "Interval in Seconds (default: does not repeat) (e.g. one hour = 3600, one day = 86400, two days = 172800, one week = 604800, two weeks = 1209600, monthly = 2592000, two months = 5184000, yearly = 31536000, monthly = 2592000)",
   )
   .option(
     `--download-location <download-location>`,
-    "Download location (default: same as Source's download location)"
+    "Download location (default: same as Source's download location)",
   )
   .action(
     async (
       sourceId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-      program: Command
+      program: Command,
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         let intervalInSeconds: number | null =
@@ -59,7 +55,7 @@ ScheduleCreate.description("Create a new Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Source ID ${sourceId} for new Schedule`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -67,12 +63,12 @@ ScheduleCreate.description("Create a new Schedule")
           throw new ErrorResponse(`No source found with id: ${sourceId}`);
 
         const dataProvider = await getDataProviderByIdentifier(
-          source.dataProviderIdentifier
+          source.dataProviderIdentifier,
         );
         if (dataProvider == null)
           throw new ErrorResponse(
             "No installed Data Provider could be found for the Source's Data Provider identifier: " +
-              (source.dataProviderIdentifier ?? "")
+              (source.dataProviderIdentifier ?? ""),
           );
 
         const dataProviderAllowedIntervalInformation: AllowedScheduleIntervalReturnType =
@@ -84,12 +80,12 @@ ScheduleCreate.description("Create a new Schedule")
           intervalInSeconds == null
         ) {
           logger.info(
-            `The Source's Data Provider '${dataProvider.getName()}' will only allow this new Schedule to be ran once by the schedule watcher...`
+            `The Source's Data Provider '${dataProvider.getName()}' will only allow this new Schedule to be ran once by the schedule watcher...`,
           );
           intervalInSeconds = null;
         } else if (intervalInSeconds < minimumNonNullIntervalInSeconds) {
           logger.info(
-            `Attempting to create a new Schedule with an interval below the minimum allowed (${minimumNonNullIntervalInSeconds} seconds), using minimum allowed instead...`
+            `Attempting to create a new Schedule with an interval below the minimum allowed (${minimumNonNullIntervalInSeconds} seconds), using minimum allowed instead...`,
           );
           intervalInSeconds = minimumNonNullIntervalInSeconds;
         }
@@ -105,11 +101,11 @@ ScheduleCreate.description("Create a new Schedule")
           downloadLocation == null
             ? userDownloadsCapturesPath
             : downloadLocation,
-          downloadDirectory
+          downloadDirectory,
         );
 
         logger.info(
-          "Using download location: " + downloadLocation + " for new Schedule"
+          "Using download location: " + downloadLocation + " for new Schedule",
         );
 
         if (downloadLocation.endsWith("/"))
@@ -119,7 +115,7 @@ ScheduleCreate.description("Create a new Schedule")
 
         if (fs.lstatSync(downloadLocation).isDirectory() === false)
           throw new ErrorResponse(
-            `The chosen download destination must be a directory`
+            `The chosen download destination must be a directory`,
           );
 
         const nextRunAtDate = dayjs();
@@ -129,7 +125,7 @@ ScheduleCreate.description("Create a new Schedule")
         }
 
         const nextRunAtDateAsString = nextRunAtDate.format(
-          "YYYY-MM-DD HH:mm:ss"
+          "YYYY-MM-DD HH:mm:ss",
         );
 
         let schedule: Schedule | null = null;
@@ -143,7 +139,7 @@ ScheduleCreate.description("Create a new Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to create a new Schedule for Source ID ${source.id}`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -152,10 +148,10 @@ ScheduleCreate.description("Create a new Schedule")
 
         return new MessageResponse(
           `Created new Schedule with ID ${schedule.id}`,
-          [schedule]
+          [schedule],
         ).send();
       });
-    }
+    },
   );
 
 export default ScheduleCreate;

@@ -64,6 +64,10 @@ class CliJsonResponse<TDataType extends any[]> {
   public getData(): typeof this.data {
     return this.data;
   }
+
+  public toError(): Error {
+    return new Error(this.message);
+  }
 }
 
 export default CliJsonResponse;

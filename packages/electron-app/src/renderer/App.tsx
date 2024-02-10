@@ -1,16 +1,38 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
-import './App.css';
 import { useCallback } from 'react';
+
+import icon from '../../assets/icon.svg';
+
+import './App.css';
 
 function Hello() {
   const getAllSources = useCallback(() => {
     window.electron.ipcRenderer.sendMessage('sources.list');
     
-    window.electron.ipcRenderer.once('sources.list', (response) => {
-      console.log('response', response);
+    window.electron.ipcRenderer.once('sources.list', (sources, error) => {
+      if (error != null) {
+        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
+        alert('response error ' + (error as Error).message);
+      }
+
+      console.log('response', sources);
       // @ts-ignore
-      alert('response message ' + response.message);
+      alert('response length ' + sources.length);
+    });
+  }, []);
+
+  const getAllSourceDomains = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('source-domains.list', true);
+    
+    window.electron.ipcRenderer.once('source-domains.list', (sourceDomains, error) => {
+      if (error != null) {
+        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
+        alert('response error ' + (error as Error).message);
+      }
+
+      console.log('response', sourceDomains);
+      // @ts-ignore
+      alert('response length ' + sourceDomains.length);
     });
   }, []);
 
@@ -34,6 +56,11 @@ function Hello() {
         <button type="button" onClick={() => getAllSources()}>
           Get all sources
         </button>
+
+        <button type="button" onClick={() => getAllSourceDomains()}>
+          Get all source domains
+        </button>
+
         <button type="button" onClick={() => getAndSetMarchiveIsSetupStoredSetting()}>
           Set Marchive is setup
         </button>

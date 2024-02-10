@@ -4,9 +4,6 @@ import { dataSource } from "database";
 import logToConsoleGlobalOption from "./options/logToConsoleGlobalOption";
 import jsonGlobalOption from "./options/jsonGlobalOption";
 
-import Test from "./commands/Test";
-import Ipc from "./commands/Ipc";
-
 import SourceList from "./commands/Source/SourceList";
 import SourceShow from "./commands/Source/SourceShow";
 import SourceCount from "./commands/Source/SourceCount";
@@ -39,6 +36,10 @@ import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
 
 import WatchSchedules from "./commands/Watch/WatchSchedules";
 import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
+
+import UtilitiesTest from "./commands/Utilities/UtilitiesTest";
+import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
+import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
@@ -93,9 +94,10 @@ import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
     .addCommand(WatchSchedules)
     .addCommand(WatchCaptureParts)
 
-    // Miscellaneous commands
-    .addCommand(Test)
-    .addCommand(Ipc)
+    // Utilities commands
+    .addCommand(UtilitiesTest)
+    .addCommand(UtilitiesIpc)
+    .addCommand(UtilitiesRetrieveFavicon)
 
     .helpOption("-h, --help", "Display help for command")
     .parse(process.argv);

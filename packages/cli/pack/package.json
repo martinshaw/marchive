@@ -5,12 +5,14 @@
     "marchive-cli": "./index.js"
   },
   "dependencies": {
-    "better-sqlite3": "^9.3.0"
+    "better-sqlite3": "^9.3.0",
+    "lodepng": "^2.2.0"
   },
   "pkg": {
     "scripts": "**/*.js",
     "assets": [
-      "node_modules/better-sqlite3/build"
+      "node_modules/better-sqlite3/build",
+      "node_modules/lodepng/build/Release/"
     ],
     "outputPath": "../bin"
   }

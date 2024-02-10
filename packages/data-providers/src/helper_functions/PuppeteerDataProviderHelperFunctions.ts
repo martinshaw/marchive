@@ -32,7 +32,7 @@ export const createPuppeteerBrowser = async (
   withAdblockPlusExtension = true,
   withStealthPlugin = true,
   withAdblockerPlugin = true,
-  headless = true
+  headless = true,
 ): Promise<Browser> => {
   let browserArguments: string[] = [];
   const extensionFileNames = [
@@ -59,7 +59,7 @@ export const createPuppeteerBrowser = async (
     withIStillDontCareAboutCookiesExtension
       ? path.join(
           readOnlyBrowserExtensionsPath,
-          "I-Still-Dont-Care-About-Cookies"
+          "I-Still-Dont-Care-About-Cookies",
         )
       : null,
 
@@ -90,13 +90,13 @@ export const createPuppeteerBrowser = async (
 
   if (headless !== true) {
     console.warn(
-      "!!! DO NOT USE PUPPETEER IN NON-HEADLESS MODE DURING PRODUCTION !!!"
+      "!!! DO NOT USE PUPPETEER IN NON-HEADLESS MODE DURING PRODUCTION !!!",
     );
   }
 
   if (readOnlyChromiumExecutablePath === false) {
     throw new Error(
-      "Could not find an installed browser for Puppeteer, please get in touch with the developer to resolve this issue."
+      "Could not find an installed browser for Puppeteer, please get in touch with the developer to resolve this issue.",
     );
   }
 
@@ -121,7 +121,7 @@ export const loadPageByUrl = async (
     | "networkidle2" = "networkidle2",
   timeout: number = 0,
   width: number = 1280,
-  height: number = 800
+  height: number = 800,
 ): Promise<Page> => {
   const page = await browser.newPage();
   await page.setViewport({ width, height });
@@ -142,7 +142,7 @@ export const scrollPageToTop = async (page: Page): Promise<void> =>
 
 export const smoothlyScrollPageToBottom = async (
   page: Page,
-  options: Options = {}
+  options: Options = {},
 ): Promise<number> => {
   // I have no idea what the issue is here, I may be able to uninstall puppeteer-core if that isn't fixing the problem here
   return scrollPageToBottom(page, options);
@@ -150,10 +150,10 @@ export const smoothlyScrollPageToBottom = async (
 
 export const generatePageReadability = async (
   page: Page,
-  captureDownloadDirectory: string
+  captureDownloadDirectory: string,
 ): Promise<boolean> => {
   const evaluatedPageUrl = await page.evaluate<[], () => string>(
-    () => window.location.href
+    () => window.location.href,
   );
 
   const bodyTagHtmlIncludingTag = await page.evaluate<[], () => string | null>(
@@ -162,7 +162,7 @@ export const generatePageReadability = async (
       if (bodyTag == null) return null;
 
       return bodyTag.outerHTML;
-    }
+    },
   );
 
   if (bodyTagHtmlIncludingTag == null) return false;
@@ -175,14 +175,14 @@ export const generatePageReadability = async (
   let article = reader.parse();
   if (article == null) {
     logger.warn(
-      "Readability failed to parse article, probably isn't formatted ideally, skipping silently..."
+      "Readability failed to parse article, probably isn't formatted ideally, skipping silently...",
     );
     return true;
   }
 
   const readabilityJsonFileName = path.join(
     captureDownloadDirectory,
-    "readability.json"
+    "readability.json",
   );
   fs.writeFileSync(readabilityJsonFileName, JSON.stringify(article));
 
@@ -196,11 +196,11 @@ export const generatePageReadability = async (
 
 export const generatePageScreenshot = async (
   page: Page,
-  captureDownloadDirectory: string
+  captureDownloadDirectory: string,
 ): Promise<boolean> => {
   const screenshotFileName = path.join(
     captureDownloadDirectory,
-    "screenshot.jpg"
+    "screenshot.jpg",
   );
 
   await page.screenshot({
@@ -215,11 +215,11 @@ export const generatePageScreenshot = async (
 
 export const generatePageSnapshot = async (
   page: Page,
-  captureDownloadDirectory: string
+  captureDownloadDirectory: string,
 ): Promise<boolean> => {
   const snapshotFileName = path.join(
     captureDownloadDirectory,
-    "snapshot.mhtml"
+    "snapshot.mhtml",
   );
 
   const cdp = await page.target().createCDPSession();
@@ -231,7 +231,7 @@ export const generatePageSnapshot = async (
 
 export const generatePageMetadata = async (
   page: Page,
-  captureDownloadDirectory: string
+  captureDownloadDirectory: string,
 ): Promise<false | PageHeadMetadata> => {
   const metadataFileName = path.join(captureDownloadDirectory, "metadata.json");
 
@@ -301,7 +301,7 @@ export type PageHeadMetadata = {
 };
 
 export const retrievePageHeadMetadata = async (
-  page: Page
+  page: Page,
 ): Promise<PageHeadMetadata> =>
   page.evaluate<[], () => PageHeadMetadata>(() => {
     const metadata: Partial<PageHeadMetadata> = {};
@@ -370,14 +370,14 @@ export const retrievePageHeadMetadata = async (
 
     metaTagsToInclude.forEach(({ selector, key }) => {
       const element = document.querySelector(
-        'meta[name="' + selector + '"], meta[property="' + selector + '"]'
+        'meta[name="' + selector + '"], meta[property="' + selector + '"]',
       );
       if (element != null) metadata[key] = element.getAttribute("content");
     });
 
     // Some sites use multiple 'article:tag' + 'article:tags' tags and some other sites use one tag with multiple comma-separated values
     const metaArticleTagTagsToInclude = document.querySelectorAll(
-      'meta[name="tag"], meta[property="tag"], meta[name="article:tag"], meta[property="article:tag"], meta[name="article:tags"], meta[property="article:tags"], meta[name="parsely-tags"], meta[property="parsely-tags"]'
+      'meta[name="tag"], meta[property="tag"], meta[name="article:tag"], meta[property="article:tag"], meta[name="article:tags"], meta[property="article:tags"], meta[name="parsely-tags"], meta[property="parsely-tags"]',
     );
     metadata.articleTags = [];
     Array.from(metaArticleTagTagsToInclude).forEach((element, index) => {
@@ -387,11 +387,11 @@ export const retrievePageHeadMetadata = async (
       ];
     });
     metadata.articleTags = metadata.articleTags.filter(
-      (tag, index) => metadata.articleTags?.indexOf(tag) === index
+      (tag, index) => metadata.articleTags?.indexOf(tag) === index,
     );
 
     const metaArticleAuthorTagsToInclude = document.querySelectorAll(
-      'meta[name="author"], meta[property="author"], meta[name="article:author"], meta[property="article:author"], meta[name="parsely-author"], meta[property="parsely-author"]'
+      'meta[name="author"], meta[property="author"], meta[name="article:author"], meta[property="article:author"], meta[name="parsely-author"], meta[property="parsely-author"]',
     );
     metadata.articleAuthors = [];
     Array.from(metaArticleAuthorTagsToInclude).forEach((element, index) => {
@@ -401,14 +401,14 @@ export const retrievePageHeadMetadata = async (
       ];
     });
     metadata.articleAuthors = metadata.articleAuthors.filter(
-      (author, index) => metadata.articleAuthors?.indexOf(author) === index
+      (author, index) => metadata.articleAuthors?.indexOf(author) === index,
     );
 
     return metadata as PageHeadMetadata;
   });
 
 export const retrieveFaviconsFromUrl = async (
-  url: string
+  url: string,
 ): Promise<FaviconIconType[]> => {
   const browser = await createPuppeteerBrowser();
   const page = await loadPageByUrl(url, browser, "networkidle0");
@@ -421,7 +421,7 @@ export const retrieveFaviconsFromUrl = async (
 };
 
 export const retrieveFaviconsFromPage = async (
-  page: Page
+  page: Page,
 ): Promise<FaviconIconType[]> => {
   await page.waitForSelector("body");
 
@@ -438,6 +438,8 @@ export const retrieveFaviconsFromPage = async (
       'link[rel="fluid-icon"]',
       'link[rel="image_src"]',
       'link[rel="icon shortcut"]',
+      'meta[property="og:image"]',
+      'meta[property="og:image:url"]',
     ];
 
     linkTags.forEach((linkTag) => {
@@ -449,6 +451,7 @@ export const retrieveFaviconsFromPage = async (
         const src =
           linkTagElement.getAttribute("href") ||
           linkTagElement.getAttribute("src") ||
+          linkTagElement.getAttribute("content") ||
           undefined;
         if (typeof src !== "string") return;
 

@@ -11,7 +11,7 @@ Description: description
 import commander from "commander";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
-import { getDataProviderByIdentifier, getDataProviders } from "data-providers";
+import { getDataProviderByIdentifier } from "data-providers";
 import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
 
 let DataProviderShow = new commander.Command("data-provider:show")

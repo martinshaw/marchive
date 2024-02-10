@@ -19,7 +19,9 @@
     "data-providers": "workspace:^",
     "database": "workspace:^",
     "dayjs": "^1.11.10",
+    "ico-to-png": "^0.2.1",
     "jsdom": "^22.1.0",
+    "lodepng": "^2.2.0",
     "logger": "workspace:^",
     "puppeteer-core": "^21.3.8",
     "table": "^6.8.1",
@@ -58,6 +60,7 @@
     "/lib/**/*.js"
   ],
   "scripts": {
+    "dev": "nx run-many -t compile -p cli --parallel && node ./lib/index.js",
     "compile": "shx rm -rf lib && webpack --mode=development",
     "compile:production": "shx rm -rf lib && webpack --mode=production",
     "pack:mac": "pnpm run compile:production && node ./scripts/package.js macos x64",

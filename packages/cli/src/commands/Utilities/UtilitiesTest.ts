@@ -14,10 +14,10 @@ import {
 import { userAppDataPath } from "utilities";
 import { performPuppeteerTest } from "data-providers";
 
-const Test = new commander.Command("test");
+const UtilitiesTest = new commander.Command("utilities:test");
 
-Test.description(
-  "Display paths, test connection to database and Puppeteer functionality"
+UtilitiesTest.description(
+  "Display paths, test connection to database and Puppeteer functionality",
 ).action(async (options, program) => {
   console.log("Displaying Global Options (Flags): ");
 
@@ -26,10 +26,10 @@ Test.description(
   console.log(
     `   Called with --log-to-console: ${
       optionsWithGlobals.logToConsole ? "YES" : "NO"
-    } (env value: ${process.env.MARCHIVE_CLI_LOG_TO_CONSOLE})`
+    } (env value: ${process.env.MARCHIVE_CLI_LOG_TO_CONSOLE})`,
   );
   console.log(
-    `   Called with --json: ${optionsWithGlobals.json ? "YES" : "NO"}`
+    `   Called with --json: ${optionsWithGlobals.json ? "YES" : "NO"}`,
   );
 
   console.log("Displaying Paths: ");
@@ -41,10 +41,10 @@ Test.description(
   console.log(`   process.argv: ${process.argv}`);
 
   console.log(
-    `   readOnlyChromiumExecutablePath: ${readOnlyChromiumExecutablePath}`
+    `   readOnlyChromiumExecutablePath: ${readOnlyChromiumExecutablePath}`,
   );
   console.log(
-    `   readOnlyBrowserExtensionsPath: ${readOnlyBrowserExtensionsPath}`
+    `   readOnlyBrowserExtensionsPath: ${readOnlyBrowserExtensionsPath}`,
   );
   console.log(`   userAppDataPath: ${userAppDataPath}`);
   console.log(`   logsPath: ${appLogsPath}`);
@@ -54,27 +54,27 @@ Test.description(
   console.log("Testing Database: ");
 
   console.log(
-    `   Connection to Database: ${dataSource.isInitialized ? "YES" : "NO"}`
+    `   Connection to Database: ${dataSource.isInitialized ? "YES" : "NO"}`,
   );
 
   console.log(`   Retrieve data from Database: `);
   console.log(
     `      MARCHIVE_IS_SETUP: ${await getStoredSettingValue(
-      "MARCHIVE_IS_SETUP"
-    )}`
+      "MARCHIVE_IS_SETUP",
+    )}`,
   );
   console.log(
-    `      ELECTRON_IS_USED: ${await getStoredSettingValue("ELECTRON_IS_USED")}`
+    `      ELECTRON_IS_USED: ${await getStoredSettingValue("ELECTRON_IS_USED")}`,
   );
   console.log(
     `      SCHEDULE_RUN_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
-      "SCHEDULE_RUN_PROCESS_IS_PAUSED"
-    )}`
+      "SCHEDULE_RUN_PROCESS_IS_PAUSED",
+    )}`,
   );
   console.log(
     `      CAPTURE_PART_RUN_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
-      "CAPTURE_PART_RUN_PROCESS_IS_PAUSED"
-    )}`
+      "CAPTURE_PART_RUN_PROCESS_IS_PAUSED",
+    )}`,
   );
 
   console.log("Testing Puppeteer: ");
@@ -82,4 +82,4 @@ Test.description(
   performPuppeteerTest();
 });
 
-export default Test;
+export default UtilitiesTest;
