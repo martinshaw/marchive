@@ -1,6 +1,6 @@
 {
   "name": "marchive",
-  "version": "0.0.2",
+  "version": "0.10.0",
   "description": "The Ultimate Information, News and Media Archiver and Aggregator",
   "keywords": [
     "electron",
@@ -30,10 +30,18 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "compile": "nx run-many --target=compile",
-    "cli:run": "pnpm run compile && node ./packages/cli/lib/index.js",
-    "cli:run:ts": "ts-node ./packages/cli/src/index.ts",
+    "compile": "nx run-many -t compile --parallel",
+    "setup": "nx run-many -t setup --parallel && pnpm run compile",
+    "cli:dev": "cd packages/cli && pnpm run dev",
+    "cli:compile": "cd packages/cli && pnpm run compile",
+    "cli:compile:production": "cd packages/cli && pnpm run compile:production",
+    "cli:pack:mac": "cd packages/cli && pnpm run pack:macos",
+    "cli:pack:linux": "cd packages/cli && pnpm run pack:linux",
+    "cli:pack:win": "cd packages/cli && pnpm run pack:win",
     "electron-app:start": "cd packages/electron-app && pnpm run start",
+    "electron-app:build": "cd packages/electron-app && pnpm run build",
+    "electron-app:package": "cd packages/electron-app && pnpm run package",
+    "data-providers:chromium-install": "cd packages/data-providers && pnpm run chromium-install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "data-providers",
-  "version": "0.0.2",
+  "version": "0.10.0",
   "private": true,
   "packageManager": "pnpm@8.10.2",
   "engines": {
@@ -12,6 +12,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "compile": "tsc",
+    "setup": "pnpm run chromium-install",
     "chromium-install": "browsers install chromium@latest",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

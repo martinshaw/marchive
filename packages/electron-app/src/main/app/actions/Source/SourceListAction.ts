@@ -12,10 +12,13 @@ Description: description
 import { type SourceEntityType } from 'common-types';
 import { runCliCommand } from '../../cli/runCliCommand';
 
-const SourceListAction = async (): Promise<SourceEntityType[]> =>
+const SourceListAction = async (
+  withSchedules = true,
+  withSourceDomain = false,
+): Promise<SourceEntityType[]> =>
   runCliCommand<SourceEntityType>('source:list', [], {
-    withSchedules: true,
-    withSourceDomain: false,
+    withSchedules,
+    withSourceDomain,
   }).then((response) => response.getData());
 
 export default SourceListAction;

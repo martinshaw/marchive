@@ -3,6 +3,6 @@ packages:
   - 'packages/common-functions'
   - 'packages/data-providers'
   - 'packages/database'
-  # - 'packages/electron-app'
+  - 'packages/electron-app'
   - 'packages/logger'
   - 'packages/cli'

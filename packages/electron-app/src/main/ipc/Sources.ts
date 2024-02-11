@@ -26,16 +26,27 @@ export type SourcesChannels =
   | 'sources.delete'
   | 'sources.prompt-for-deletion';
 
-ipcMain.on('sources.list', async (event) => {
-  return SourceListAction().then((response) => {
-    event.reply('sources.list', response);
-  });
-});
+ipcMain.on(
+  'sources.list',
+  async (event, withSchedules: boolean, withSourceDomain: boolean) => {
+    return SourceListAction(withSchedules, withSourceDomain)
+      .then((response) => {
+        event.reply('sources.list', response, null);
+      })
+      .catch((error) => {
+        event.reply('sources.list', null, error);
+      });
+  },
+);
 
 ipcMain.on('sources.count', async (event) => {
-  return SourceCountAction().then((response) => {
-    event.reply('sources.count', response);
-  });
+  return SourceCountAction()
+    .then((response) => {
+      event.reply('sources.count', response, null);
+    })
+    .catch((error) => {
+      event.reply('sources.count', null, error);
+    });
 });
 
 ipcMain.on(
@@ -46,27 +57,37 @@ ipcMain.on(
     withSourceDomain: boolean = false,
     withSchedules: boolean = false,
   ) => {
-    return SourceShowAction(sourceId, withSourceDomain, withSchedules).then(
-      (response) => {
-        event.reply('sources.show', response);
-      },
-    );
+    return SourceShowAction(sourceId, withSourceDomain, withSchedules)
+      .then((response) => {
+        event.reply('sources.show', response, null);
+      })
+      .catch((error) => {
+        event.reply('sources.show', null, error);
+      });
   },
 );
 
 ipcMain.on(
   'sources.create',
   async (event, url: string, dataProviderIdentifier: string) => {
-    return SourceCreateAction(url, dataProviderIdentifier).then((response) => {
-      event.reply('sources.create', response);
-    });
+    return SourceCreateAction(url, dataProviderIdentifier)
+      .then((response) => {
+        event.reply('sources.create', response, null);
+      })
+      .catch((error) => {
+        event.reply('sources.create', null, error);
+      });
   },
 );
 
 ipcMain.on('sources.delete', async (event, sourceId: number) => {
-  return SourceDeleteAction(sourceId).then((response) => {
-    event.reply('sources.delete', response);
-  });
+  return SourceDeleteAction(sourceId)
+    .then((response) => {
+      event.reply('sources.delete', response, null);
+    })
+    .catch((error) => {
+      event.reply('sources.delete', null, error);
+    });
 });
 
 ipcMain.on('sources.prompt-for-deletion', async (event, sourceId: number) => {

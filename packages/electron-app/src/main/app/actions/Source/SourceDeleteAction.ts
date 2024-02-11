@@ -9,7 +9,7 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import { type runCliCommand } from '../../cli/runCliCommand';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 /**
  * @throws {Error}

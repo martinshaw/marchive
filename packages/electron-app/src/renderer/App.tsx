@@ -13,11 +13,28 @@ function Hello() {
       if (error != null) {
         console.log('response error is an error type ', error instanceof Error ? 1 : 0);
         alert('response error ' + (error as Error).message);
+        return;
       }
 
       console.log('response', sources);
       // @ts-ignore
       alert('response length ' + sources.length);
+    });
+  }, []);
+
+  const showSource = useCallback(() => {
+    window.electron.ipcRenderer.sendMessage('sources.show', 100);
+    
+    window.electron.ipcRenderer.once('sources.show', (source, error) => {
+      if (error != null) {
+        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
+        alert('response error ' + (error as Error).message);
+        return;
+      } 
+
+      console.log('response', source, error);
+      // @ts-ignore
+      alert('response ' + source?.url);
     });
   }, []);
 
@@ -28,6 +45,7 @@ function Hello() {
       if (error != null) {
         console.log('response error is an error type ', error instanceof Error ? 1 : 0);
         alert('response error ' + (error as Error).message);
+        return;
       }
 
       console.log('response', sourceDomains);
@@ -55,6 +73,10 @@ function Hello() {
       <div className="Hello">
         <button type="button" onClick={() => getAllSources()}>
           Get all sources
+        </button>
+
+        <button type="button" onClick={() => showSource()}>
+          Show source 100
         </button>
 
         <button type="button" onClick={() => getAllSourceDomains()}>

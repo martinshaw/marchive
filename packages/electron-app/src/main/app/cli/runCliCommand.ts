@@ -77,10 +77,12 @@ const runCliCommand = async <TDataType extends any>(
   new Promise((resolve, reject) => {
     exec(formatCliCommand(command, args, options), (error, stdout, stderr) => {
       if (stderr) {
-        // resolve(new CliJsonResponse(stderr));
         reject(new CliJsonResponse<TDataType>(stderr).toError());
       } else {
-        resolve(new CliJsonResponse<TDataType>(stdout));
+        const response = new CliJsonResponse<TDataType>(stdout);
+
+        if (response.getSuccess() !== true) reject(response.toError());
+        else resolve(response);
       }
     });
   });

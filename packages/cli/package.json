@@ -1,7 +1,7 @@
 {
   "name": "cli",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.10.0",
   "author": "Martin Shaw <developer@martinshaw.co>",
   "description": "",
   "homepage": "https://github.com/martinshaw/marchive/tree/master/packages/cli",
