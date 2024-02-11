@@ -11,7 +11,7 @@ import {
   readOnlyBrowserExtensionsPath,
   readOnlyChromiumExecutablePath,
 } from "data-providers/src/paths";
-import { userAppDataPath } from "utilities";
+import { userAppDataPath } from "common-functions";
 import { performPuppeteerTest } from "data-providers";
 
 const UtilitiesTest = new commander.Command("utilities:test");

@@ -12,7 +12,7 @@ Description: description
 import prompt from 'electron-prompt';
 import { cleanupAndQuit } from '../main';
 import { shell, BrowserWindow, dialog, clipboard } from 'electron';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'common-functions';
 // import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
 // import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
 

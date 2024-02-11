@@ -8,6 +8,7 @@ Modified: 2024-02-02T12:17:35.999Z
 
 Description: description
 */
+
 import commander from "commander";
 import { SourceDomain } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -26,10 +27,10 @@ SourceDomainCount.description("Get the count of Source Domains").action(
           {
             count,
           },
-        ]
+        ],
       ).send();
     });
-  }
+  },
 );
 
 export default SourceDomainCount;

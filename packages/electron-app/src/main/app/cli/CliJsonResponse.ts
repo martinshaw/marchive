@@ -9,10 +9,10 @@ Modified: 2024-02-07T04:21:28.578Z
 Description: description
 */
 
-class CliJsonResponse<TDataType extends any[]> {
+class CliJsonResponse<TDataType extends any> {
   protected success!: boolean;
   protected message!: string;
-  protected data: TDataType | [] = [];
+  protected data: TDataType[] = [];
 
   constructor(public readonly response: string) {
     try {

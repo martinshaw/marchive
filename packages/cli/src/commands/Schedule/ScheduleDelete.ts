@@ -8,7 +8,7 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
-import fs from "node:fs";
+
 import logger from "logger";
 import commander, { Command } from "commander";
 import { Schedule } from "database";
@@ -23,7 +23,7 @@ ScheduleDelete.description("Delete a Schedule")
     async (
       scheduleId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-      program: Command
+      program: Command,
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (isNaN(parseInt(scheduleId)))
@@ -40,7 +40,7 @@ ScheduleDelete.description("Delete a Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Schedule ID ${scheduleId} for deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -67,7 +67,7 @@ ScheduleDelete.description("Delete a Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Schedule ID ${scheduleId} for check successful deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -80,10 +80,10 @@ ScheduleDelete.description("Delete a Schedule")
             {
               id: scheduleId,
             },
-          ]
+          ],
         ).send();
       });
-    }
+    },
   );
 
 export default ScheduleDelete;

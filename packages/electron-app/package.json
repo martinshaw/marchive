@@ -70,9 +70,11 @@
     }
   },
   "dependencies": {
+    "common-types": "workspace:^",
+    "common-functions": "workspace:^",
+    "logger": "workspace:^",
     "@rauschma/stringio": "^1.4.0",
     "change-case-commonjs": "^5.4.4",
-    "database-types": "link:../database-types",
     "electron-context-menu": "^3.6.1",
     "electron-debug": "^3.2.0",
     "electron-is": "^3.0.0",
@@ -81,13 +83,11 @@
     "electron-prompt": "^1.7.0",
     "electron-updater": "^6.1.4",
     "electron-window-state": "^5.0.3",
-    "logger": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "use-async-memo": "^1.2.5",
     "use-state-with-callback": "^3.0.2",
-    "utilities": "link:../utilities",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

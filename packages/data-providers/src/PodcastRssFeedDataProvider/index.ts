@@ -11,20 +11,21 @@ Description: description
 
 import fs from "node:fs";
 import logger from "logger";
-import BaseDataProvider, {
-  AllowedScheduleIntervalReturnType,
-  BaseDataProviderIconInformationReturnType,
-  SourceDomainInformationReturnType,
-} from "../BaseDataProvider";
+import BaseDataProvider from "../BaseDataProvider";
 import path from "node:path";
 import Parser from "rss-parser";
 import { v4 as uuidV4 } from "uuid";
 import Downloader from "nodejs-file-downloader";
-import { safeSanitizeFileName } from "utilities";
+import { safeSanitizeFileName } from "common-functions";
 import { Capture, CapturePart, Schedule, Source } from "database";
-import { CapturePartStatus } from "database/src/entities/CapturePart";
+import { CapturePartStatus } from "common-types/src/entities/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 import axios, { AxiosResponse } from "axios";
+import {
+  type AllowedScheduleIntervalReturnType,
+  type BaseDataProviderIconInformationReturnType,
+  type SourceDomainInformationReturnType,
+} from "common-types";
 
 export type RssParserFeedType = {
   [key: string]: any;
@@ -171,15 +172,14 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       url = `https://${url}`;
 
     try {
-      const feed: RssParserFeedType | null = await this.determinePodcastContent(
-        url
-      );
+      const feed: RssParserFeedType | null =
+        await this.determinePodcastContent(url);
       if (feed == null) return false;
       if (feed.items === null) return false;
       if (feed.items.length === 0) return false;
 
       const allItemsHaveLinksEndingInAudioFileExtension = feed.items.every(
-        (item) => this.getUrlForFeedItem(item) != null
+        (item) => this.getUrlForFeedItem(item) != null,
       );
 
       if (allItemsHaveLinksEndingInAudioFileExtension === false) return false;
@@ -195,14 +195,13 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async getSourceDomainInformation(
-    url: string
+    url: string,
   ): Promise<SourceDomainInformationReturnType> {
     let authorName = (await super.getSourceDomainInformation(url)).siteName;
 
     try {
-      const feed: RssParserFeedType | null = await this.determinePodcastContent(
-        url
-      );
+      const feed: RssParserFeedType | null =
+        await this.determinePodcastContent(url);
       if (feed == null) return super.getSourceDomainInformation(url);
 
       if (feed.itunes?.author != null) authorName = feed.itunes.author;
@@ -217,7 +216,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   }
 
   async determinePodcastContent(
-    url: string
+    url: string,
   ): Promise<RssParserFeedType | null> {
     const response: AxiosResponse | null = await axios.get(url);
     if (response == null) return null;
@@ -243,10 +242,10 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source
+    source: Source,
   ): Promise<boolean | never> {
     const feed: RssParserFeedType | null = await this.determinePodcastContent(
-      source.url
+      source.url,
     );
 
     if (feed == null) return false;
@@ -279,7 +278,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         schedule,
         capture,
         source,
-        feed
+        feed,
       )) === false
     ) {
       const errorMessage = "Failed to create Capture Parts for podcast items";
@@ -292,7 +291,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
   async generatePodcastMetadataFile(
     capture: Capture,
-    feed: RssParserFeedType
+    feed: RssParserFeedType,
   ): Promise<boolean> {
     const feedWithoutItems = {
       ...feed,
@@ -301,13 +300,13 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     const feedMetadataFilePath = path.join(
       capture.downloadLocation,
-      "metadata.json"
+      "metadata.json",
     );
 
     try {
       fs.writeFileSync(
         feedMetadataFilePath,
-        JSON.stringify(feedWithoutItems, null, 2)
+        JSON.stringify(feedWithoutItems, null, 2),
       );
     } catch (error) {
       return false;
@@ -318,7 +317,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
   async generatePodcastLogoImageFile(
     capture: Capture,
-    feed: RssParserFeedType
+    feed: RssParserFeedType,
   ): Promise<boolean> {
     if (feed.image == null) return false;
 
@@ -347,7 +346,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
   async generatePodcastItunesImageFile(
     capture: Capture,
-    feed: RssParserFeedType
+    feed: RssParserFeedType,
   ): Promise<boolean> {
     if (feed.itunes == null) return false;
     if (feed.itunes.image == null) return false;
@@ -366,7 +365,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     } catch (error) {
       logger.error(
         "Unable to download podcast feed iTunes image due to error",
-        { feed, captureId: capture.id }
+        { feed, captureId: capture.id },
       );
       logger.error(error);
       return false;
@@ -379,7 +378,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
     schedule: Schedule,
     capture: Capture,
     source: Source,
-    feed: RssParserFeedType
+    feed: RssParserFeedType,
   ): Promise<boolean> {
     let shouldAddFeedItems = true;
     if (
@@ -392,7 +391,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (
       item: (typeof feed.items)[0],
-      index: number
+      index: number,
     ): Promise<boolean> => {
       const feedItemFileUrl = this.getUrlForFeedItem(item);
       if (feedItemFileUrl == null) return true;
@@ -401,7 +400,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         if (
           await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(
             schedule,
-            feedItemFileUrl
+            feedItemFileUrl,
           )
         )
           return true;
@@ -442,7 +441,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         };
 
         let capturePartDownloadDirectoryName = safeSanitizeFileName(
-          payload.title ?? ""
+          payload.title ?? "",
         );
         if (
           capturePartDownloadDirectoryName === "" ||
@@ -453,7 +452,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         }
         const downloadLocation = path.join(
           capture.downloadLocation,
-          capturePartDownloadDirectoryName
+          capturePartDownloadDirectoryName,
         );
 
         let capturePart: CapturePart | null = null;
@@ -468,7 +467,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
           });
         } catch (error) {
           logger.error(
-            "A DB error occurred when trying to create a new Capture Part"
+            "A DB error occurred when trying to create a new Capture Part",
           );
           logger.error(error);
         }
@@ -476,7 +475,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
         if (capturePart == null) {
           logger.error(
             `Capture Part ${index} could not be created: ${feedItemFileUrl}`,
-            { payload }
+            { payload },
           );
           return true;
         }
@@ -522,7 +521,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async processPart(capturePart: CapturePart): Promise<boolean | never> {
     if (
       ["audio-item", "video-item"].includes(
-        capturePart.dataProviderPartIdentifier as PodcastRssFeedDataProviderPartIdentifierType
+        capturePart.dataProviderPartIdentifier as PodcastRssFeedDataProviderPartIdentifierType,
       )
     )
       return this.processMediaItemCapturePart(capturePart);
@@ -534,10 +533,10 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async processMediaItemCapturePart(
-    capturePart: CapturePart
+    capturePart: CapturePart,
   ): Promise<boolean> {
     const payload: PodcastRssFeedDataProviderPartPayloadType = JSON.parse(
-      capturePart.payload
+      capturePart.payload,
     );
     const feedItemFileUrl = this.getUrlForFeedItem(payload);
     if (feedItemFileUrl == null) return false;
@@ -575,7 +574,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
       (await this.downloadPodcastItemMediaFile(
         capturePart,
         payload,
-        feedItemFileUrl
+        feedItemFileUrl,
       )) === false
     ) {
       const errorMessage = `Failed to download podcast item media file for Capture Part ${capturePart.id}`;
@@ -588,17 +587,17 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
 
   async generatePodcastItemMetadataFile(
     capturePart: CapturePart,
-    capturePartPayload: PodcastRssFeedDataProviderPartPayloadType
+    capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
   ): Promise<boolean> {
     const itemMetadataFilePath = path.join(
       capturePart.downloadLocation,
-      "metadata.json"
+      "metadata.json",
     );
 
     try {
       fs.writeFileSync(
         itemMetadataFilePath,
-        JSON.stringify(capturePartPayload, null, 2)
+        JSON.stringify(capturePartPayload, null, 2),
       );
     } catch (error) {
       return false;
@@ -610,7 +609,7 @@ class PodcastRssFeedDataProvider extends BaseDataProvider {
   async downloadPodcastItemMediaFile(
     capturePart: CapturePart,
     capturePartPayload: PodcastRssFeedDataProviderPartPayloadType,
-    mediaDownloadUrl: string
+    mediaDownloadUrl: string,
   ): Promise<boolean> {
     const downloader = new Downloader({
       url: mediaDownloadUrl,

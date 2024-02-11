@@ -9,13 +9,13 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import CliJsonResponse from '../../cli/CliJsonResponse';
+import { type SourceEntityType } from 'common-types';
 import { runCliCommand } from '../../cli/runCliCommand';
 
-const SourceListAction = async (): Promise<CliJsonResponse<any[]>> =>
-  runCliCommand('source:list', [], {
+const SourceListAction = async (): Promise<SourceEntityType[]> =>
+  runCliCommand<SourceEntityType>('source:list', [], {
     withSchedules: true,
     withSourceDomain: false,
-  });
+  }).then((response) => response.getData());
 
 export default SourceListAction;

@@ -20,7 +20,7 @@ import {
   OneToMany,
 } from "typeorm";
 import Source from "./Source";
-import { SourceDomainEntityType } from "database-types";
+import { SourceDomainEntityType } from "common-types";
 
 /**
  * A source domain is the website or domain which a source's URL belongs to.

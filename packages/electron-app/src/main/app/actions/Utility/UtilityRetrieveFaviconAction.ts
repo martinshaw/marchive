@@ -9,8 +9,14 @@ Modified: 2023-09-06T03:31:41.596Z
 Description: description
 */
 
-import CliJsonResponse from '../../cli/CliJsonResponse';
 import { runCliCommand } from '../../cli/runCliCommand';
+
+export type UtilityRetrieveFaviconActionResponseType = {
+  url: string;
+  directory: string | null;
+  fileName: string | null;
+  path: string | null;
+};
 
 /**
  * @throws {Error}
@@ -18,7 +24,11 @@ import { runCliCommand } from '../../cli/runCliCommand';
 const UtilityRetrieveFaviconAction = async (
   url: string,
   store: boolean,
-): Promise<CliJsonResponse<[any]>> =>
-  runCliCommand('utilities:retrieve-favicon', [url], { store });
+): Promise<UtilityRetrieveFaviconActionResponseType> =>
+  runCliCommand<UtilityRetrieveFaviconActionResponseType>(
+    'utilities:retrieve-favicon',
+    [url],
+    { store },
+  ).then((response) => response.getData()[0]);
 
 export default UtilityRetrieveFaviconAction;

@@ -8,21 +8,22 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
-import { Source, StoredSetting } from "database";
+import { StoredSetting } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import { getOrSetStoredSetting } from "database/src/repositories/StoredSettingRepository";
 import {
   StoredSettingKeyType,
   storedSettingKeys,
-} from "database/src/entities/StoredSetting";
+} from "common-types/src/entities/StoredSetting";
 
 let StoredSettingSet = new commander.Command("stored-setting:set")
   .description("Set Stored Setting by Key")
   .argument(
     "<key>",
-    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`
+    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`,
   )
   .argument("<value>", `New Value of Stored Setting`)
   .action(
@@ -31,7 +32,7 @@ let StoredSettingSet = new commander.Command("stored-setting:set")
       value: string | number | boolean,
       optionsAndArguments: {
         [key: string]: string | number | boolean;
-      }
+      },
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (!storedSettingKeys.includes(key))
@@ -46,7 +47,7 @@ let StoredSettingSet = new commander.Command("stored-setting:set")
         const storedSetting = await getOrSetStoredSetting(key, valueAsString);
         if (storedSetting == null)
           throw new ErrorResponse(
-            `An error occurred while setting the setting with the key: ${key}`
+            `An error occurred while setting the setting with the key: ${key}`,
           );
 
         return new TableResponse<StoredSetting>(
@@ -60,10 +61,10 @@ let StoredSettingSet = new commander.Command("stored-setting:set")
             createdAt: "Created At",
             updatedAt: "Updated At",
             deletedAt: "Deleted At",
-          }
+          },
         ).send();
       });
-    }
+    },
   );
 
 export default StoredSettingSet;

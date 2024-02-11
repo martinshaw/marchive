@@ -17,7 +17,7 @@ import { readOnlyInternalRootPath } from '../paths';
 //   getStoredSettingValue,
 //   setStoredSettingValue,
 // } from 'database/src/repositories/StoredSettingRepository';
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'utilities';
+import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'common-functions';
 import { cleanupAndQuit, closeAllWindows, createWindow } from './main';
 
 const isDarkMode = nativeTheme.shouldUseDarkColors;

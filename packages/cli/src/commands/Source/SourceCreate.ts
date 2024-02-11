@@ -8,6 +8,7 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
+
 import {
   BaseDataProvider,
   findOrCreateSourceDomainForUrl,
@@ -44,17 +45,17 @@ SourceCreate.description("Create a new Source")
       } catch (error) {
         throw new ErrorResponse(
           `A DB error occurred when attempting to check if an existing Source exists when creating a new Source for URL ${url} and Data Provider ${dataProviderIdentifier}`,
-          error instanceof Error ? error : null
+          error instanceof Error ? error : null,
         );
       }
 
       if (existingSource != null) {
         logger.info(
-          `Source already exists with ID ${existingSource.id} for URL ${url} and Data Provider ${dataProviderIdentifier}, cancelling`
+          `Source already exists with ID ${existingSource.id} for URL ${url} and Data Provider ${dataProviderIdentifier}, cancelling`,
         );
 
         throw new ErrorResponse(
-          "You have already added this source. Please delete the existing source or make changes to it."
+          "You have already added this source. Please delete the existing source or make changes to it.",
         );
       }
 
@@ -75,16 +76,16 @@ SourceCreate.description("Create a new Source")
           [
             {
               identifiers: (await getDataProviders()).map((dataProvider) =>
-                dataProvider.getIdentifier()
+                dataProvider.getIdentifier(),
               ),
             },
-          ]
+          ],
         );
       }
 
       const sourceDomain = await findOrCreateSourceDomainForUrl(
         url,
-        chosenDataProvider
+        chosenDataProvider,
       );
 
       let source: Source | null = null;
@@ -100,7 +101,7 @@ SourceCreate.description("Create a new Source")
       } catch (error) {
         throw new ErrorResponse(
           `A DB error occurred when attempting to create a new Source for URL ${url}`,
-          error instanceof Error ? error : null
+          error instanceof Error ? error : null,
         );
       }
 

@@ -10,28 +10,12 @@ Description: description
 */
 
 import { Capture, CapturePart, Schedule, Source } from "database";
-import { retrieveFileAsBase64DataUrlFromAbsolutePath } from "utilities";
-
-export type DataProviderSerializedType = {
-  identifier: string;
-  name: string;
-  description: string;
-  iconInformation: BaseDataProviderIconInformationReturnType;
-};
-
-export type SourceDomainInformationReturnType = {
-  siteName: string | null;
-  // TODO: Add site favicon using more time-effective method in future, see commented code in SourceDomainRepository.ts
-};
-
-export type AllowedScheduleIntervalReturnType = {
-  onlyRunOnce?: boolean;
-};
-
-export type BaseDataProviderIconInformationReturnType = {
-  filePath: string;
-  shouldInvertOnDarkMode: boolean;
-};
+import {
+  type AllowedScheduleIntervalReturnType,
+  type BaseDataProviderIconInformationReturnType,
+  type DataProviderSerializedType,
+  type SourceDomainInformationReturnType,
+} from "common-types";
 
 abstract class BaseDataProvider {
   /**
@@ -84,7 +68,7 @@ abstract class BaseDataProvider {
    *   and for RSS feed should retrieve the podcast network's name from the XML, etc...
    */
   async getSourceDomainInformation(
-    url: string
+    url: string,
   ): Promise<SourceDomainInformationReturnType> {
     let rootUrl = url;
 
@@ -128,7 +112,7 @@ abstract class BaseDataProvider {
   abstract performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source
+    source: Source,
   ): Promise<boolean | never>;
 
   /**

@@ -8,6 +8,7 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
+
 import commander from "commander";
 import { Schedule } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -26,7 +27,7 @@ ScheduleCount.description("Get the count of Schedules").action(
         },
       ]).send();
     });
-  }
+  },
 );
 
 export default ScheduleCount;

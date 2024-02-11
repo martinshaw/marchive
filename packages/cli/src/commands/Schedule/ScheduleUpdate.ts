@@ -8,19 +8,21 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
+
 import fs from "node:fs";
 import path from "node:path";
-import {
-  AllowedScheduleIntervalReturnType,
-  getDataProviderByIdentifier,
-} from "data-providers";
+import { getDataProviderByIdentifier } from "data-providers";
 import logger from "logger";
 import commander, { Command, Option } from "commander";
 import { Schedule } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
-import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import {
+  safeSanitizeFileName,
+  userDownloadsCapturesPath,
+} from "common-functions";
 import dayjs from "dayjs";
+import { type AllowedScheduleIntervalReturnType } from "../../../../common-types/src";
 
 const ScheduleUpdate = new commander.Command("schedule:update");
 
@@ -28,11 +30,11 @@ ScheduleUpdate.description("Update an existing Schedule")
   .argument("<schedule-id>", "Schedule ID")
   .option(
     `--interval-in-seconds <interval-in-seconds>`,
-    "Update Schedule's Interval in Seconds (e.g. one hour = 3600, one day = 86400, two days = 172800, one week = 604800, two weeks = 1209600, monthly = 2592000, two months = 5184000, yearly = 31536000, monthly = 2592000)"
+    "Update Schedule's Interval in Seconds (e.g. one hour = 3600, one day = 86400, two days = 172800, one week = 604800, two weeks = 1209600, monthly = 2592000, two months = 5184000, yearly = 31536000, monthly = 2592000)",
   )
   .option(
     `--download-location <download-location>`,
-    "Update Schedule's Download location"
+    "Update Schedule's Download location",
   )
   .addOption(new Option(`--enable`, "Enable Schedule").conflicts("disable"))
   .addOption(new Option(`--disable`, "Disable Schedule").conflicts("enable"))
@@ -40,7 +42,7 @@ ScheduleUpdate.description("Update an existing Schedule")
     async (
       scheduleId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-      program: Command
+      program: Command,
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (isNaN(parseInt(scheduleId)))
@@ -55,7 +57,7 @@ ScheduleUpdate.description("Update an existing Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Schedule ID ${scheduleId} to be updated`,
-            error instanceof Error ? error : undefined
+            error instanceof Error ? error : undefined,
           );
         }
 
@@ -64,15 +66,15 @@ ScheduleUpdate.description("Update an existing Schedule")
 
         if (schedule?.source?.dataProviderIdentifier == null)
           throw new ErrorResponse(
-            "The Source's Data Provider identifier is not set"
+            "The Source's Data Provider identifier is not set",
           );
 
         const dataProvider = await getDataProviderByIdentifier(
-          schedule?.source?.dataProviderIdentifier
+          schedule?.source?.dataProviderIdentifier,
         );
         if (dataProvider == null)
           throw new ErrorResponse(
-            "No installed Data  Provider could be found for the Source's Data Provider identifier"
+            "No installed Data  Provider could be found for the Source's Data Provider identifier",
           );
 
         const dataProviderAllowedIntervalInformation: AllowedScheduleIntervalReturnType =
@@ -80,7 +82,7 @@ ScheduleUpdate.description("Update an existing Schedule")
 
         if (typeof optionsAndArguments["intervalInSeconds"] !== "undefined") {
           const intervalInSeconds = parseInt(
-            optionsAndArguments["intervalInSeconds"] + ""
+            optionsAndArguments["intervalInSeconds"] + "",
           );
 
           if (
@@ -88,7 +90,7 @@ ScheduleUpdate.description("Update an existing Schedule")
             intervalInSeconds === null
           ) {
             throw new ErrorResponse(
-              "The Source's Data Provider does not allow the Schedule to be ran more than once"
+              "The Source's Data Provider does not allow the Schedule to be ran more than once",
             );
           }
 
@@ -101,7 +103,7 @@ ScheduleUpdate.description("Update an existing Schedule")
 
             if (Number(intervalInSeconds) < 1)
               throw new ErrorResponse(
-                "Scheduling interval must be greater than 0"
+                "Scheduling interval must be greater than 0",
               );
 
             schedule.interval = intervalInSeconds;
@@ -133,7 +135,7 @@ ScheduleUpdate.description("Update an existing Schedule")
             downloadLocation == null
               ? userDownloadsCapturesPath
               : downloadLocation,
-            downloadDirectory
+            downloadDirectory,
           );
 
           if (downloadLocation.endsWith("/"))
@@ -141,14 +143,14 @@ ScheduleUpdate.description("Update an existing Schedule")
 
           if (fs.existsSync(downloadLocation) === false) {
             logger.info(
-              "The chosen download destination does not exist, creating it now"
+              "The chosen download destination does not exist, creating it now",
             );
             fs.mkdirSync(downloadLocation, { recursive: true });
           }
 
           if (fs.lstatSync(downloadLocation).isDirectory() === false)
             throw new ErrorResponse(
-              "The chosen download destination must be a directory"
+              "The chosen download destination must be a directory",
             );
 
           schedule.downloadLocation = downloadLocation;
@@ -179,7 +181,7 @@ ScheduleUpdate.description("Update an existing Schedule")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to update Schedule ID ${scheduleId}`,
-            error instanceof Error ? error : undefined
+            error instanceof Error ? error : undefined,
           );
         }
 
@@ -188,10 +190,10 @@ ScheduleUpdate.description("Update an existing Schedule")
 
         return new MessageResponse(
           `Updated existing Schedule with ID ${updatedSchedule.id}`,
-          [updatedSchedule]
+          [updatedSchedule],
         ).send();
       });
-    }
+    },
   );
 
 export default ScheduleUpdate;

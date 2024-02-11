@@ -11,11 +11,7 @@ Description: description
 
 import logger from "logger";
 import { Capture, CapturePart, Schedule, Source } from "database";
-import BaseDataProvider, {
-  AllowedScheduleIntervalReturnType,
-  BaseDataProviderIconInformationReturnType,
-  SourceDomainInformationReturnType,
-} from "../BaseDataProvider";
+import BaseDataProvider from "../BaseDataProvider";
 import {
   createPuppeteerBrowser,
   generatePageMetadata,
@@ -23,6 +19,11 @@ import {
   loadPageByUrl,
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
 import axios, { AxiosResponse } from "axios";
+import {
+  type SourceDomainInformationReturnType,
+  type BaseDataProviderIconInformationReturnType,
+  type AllowedScheduleIntervalReturnType,
+} from "common-types";
 
 class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   getIdentifier(): string {
@@ -80,7 +81,7 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   }
 
   async getSourceDomainInformation(
-    url: string
+    url: string,
   ): Promise<SourceDomainInformationReturnType> {
     return super.getSourceDomainInformation(url);
 
@@ -127,14 +128,14 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
   async performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source
+    source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser();
     const page = await loadPageByUrl(source.url, browser);
 
     const firstPageScreenshot = await generatePageScreenshot(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (firstPageScreenshot === false) {
       const errorMessage = "The first page screenshot could not be generated";
@@ -147,7 +148,7 @@ class SimpleWebpageScreenshotDataProvider extends BaseDataProvider {
 
     const firstPageMetadata = await generatePageMetadata(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (firstPageMetadata === false) {
       const errorMessage = "The first page metadata could not be generated";

@@ -11,11 +11,7 @@ Description: description
 
 import fs from "node:fs";
 import logger from "logger";
-import BaseDataProvider, {
-  AllowedScheduleIntervalReturnType,
-  BaseDataProviderIconInformationReturnType,
-  SourceDomainInformationReturnType,
-} from "../BaseDataProvider";
+import BaseDataProvider from "../BaseDataProvider";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
 import { ElementHandle, Page } from "puppeteer-core";
@@ -28,6 +24,11 @@ import {
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 import axios, { AxiosResponse } from "axios";
+import {
+  type AllowedScheduleIntervalReturnType,
+  type BaseDataProviderIconInformationReturnType,
+  type SourceDomainInformationReturnType,
+} from "common-types";
 
 type BehanceGalleryItemImagesDataProviderImageType = {
   url: string;
@@ -102,7 +103,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   }
 
   async getSourceDomainInformation(
-    url: string
+    url: string,
   ): Promise<SourceDomainInformationReturnType> {
     return {
       siteName: "Behance Projects",
@@ -115,14 +116,14 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   async performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source
+    source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser();
     const page = await loadPageByUrl(source.url, browser);
 
     const indexPageDownloadFileName = path.join(
       capture.downloadLocation,
-      "screenshot.jpg"
+      "screenshot.jpg",
     );
 
     await page.screenshot({
@@ -136,7 +137,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     const projectMetadata = await this.generatePageProjectMetadata(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (projectMetadata === false) {
       await page.close();
@@ -156,7 +157,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
         schedule,
         capture,
         source,
-        pageImages
+        pageImages,
       );
     } catch (error) {
       await page.close();
@@ -173,11 +174,11 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
   async generatePageHeadMetadata(
     page: Page,
-    captureDownloadDirectory: string
+    captureDownloadDirectory: string,
   ): Promise<boolean> {
     const headMetadataFileName = path.join(
       captureDownloadDirectory,
-      "metadata.json"
+      "metadata.json",
     );
 
     const headMetadata = await retrievePageHeadMetadata(page);
@@ -188,12 +189,12 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
   async generatePageProjectMetadata(
     page: Page,
-    captureDownloadDirectory: string
+    captureDownloadDirectory: string,
     // ): Promise<false | JSONObject> {
   ): Promise<false | any> {
     const projectMetadataFileName = path.join(
       captureDownloadDirectory,
-      "project.json"
+      "project.json",
     );
 
     // const projectMetadata: JSONObject = {};
@@ -258,8 +259,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
                 ?.querySelector('a[class*="UserInfo-userLocation"]')
                 ?.getAttribute("href") ?? null,
           };
-        }, authorHandle)
-      )
+        }, authorHandle),
+      ),
     );
     projectMetadata.authors = authorsData;
 
@@ -290,7 +291,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
                 ?.getAttribute("src") ?? null,
             authorName:
               elementHandle?.querySelector(
-                'a[class*="ProjectComment-userName-"]'
+                'a[class*="ProjectComment-userName-"]',
               )?.textContent ?? null,
             authorUrl:
               elementHandle
@@ -300,8 +301,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
               elementHandle?.querySelector('[class*="ProjectComment-comment-"]')
                 ?.textContent ?? null,
           };
-        }, commentHandle)
-      )
+        }, commentHandle),
+      ),
     );
     projectMetadata.comments = commentsData;
 
@@ -325,8 +326,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
               elementHandle?.querySelector("a")?.getAttribute("href") ?? null,
             caption: elementHandle?.querySelector("a")?.textContent ?? null,
           };
-        }, tagHandle)
-      )
+        }, tagHandle),
+      ),
     );
     projectMetadata.tags = tagsData;
 
@@ -336,7 +337,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
   }
 
   async determineAllImages(
-    page: Page
+    page: Page,
   ): Promise<BehanceGalleryItemImagesDataProviderImageType[]> {
     const imageHandles = await page.$$("#primary-project-content img");
 
@@ -348,7 +349,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
             caption:
               (await (await image?.getProperty("alt"))?.jsonValue()) ?? null,
           };
-        })
+        }),
       );
 
     return new Promise((resolve) => {
@@ -377,8 +378,8 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
             return image as BehanceGalleryItemImagesDataProviderImageType;
           })
           .filter(
-            (image) => image !== null
-          ) as BehanceGalleryItemImagesDataProviderImageType[]
+            (image) => image !== null,
+          ) as BehanceGalleryItemImagesDataProviderImageType[],
       );
     });
   }
@@ -390,7 +391,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
     schedule: Schedule,
     capture: Capture,
     source: Source,
-    images: BehanceGalleryItemImagesDataProviderImageType[]
+    images: BehanceGalleryItemImagesDataProviderImageType[],
   ): Promise<void | never> {
     let shouldAddImage = true;
     if (
@@ -403,13 +404,13 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (
       image: BehanceGalleryItemImagesDataProviderImageType,
-      index: number
+      index: number,
     ): Promise<boolean> => {
       if (source.useStartOrEndCursor == null) {
         if (
           await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(
             schedule,
-            image.url
+            image.url,
           )
         )
           return true;
@@ -456,7 +457,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
 
         if (capturePart === null) {
           logger.error(
-            `Capture Part ${index} could not be created: ${image.url}`
+            `Capture Part ${index} could not be created: ${image.url}`,
           );
           return true;
         }
@@ -498,7 +499,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async processImageCapturePart(
-    capturePart: CapturePart
+    capturePart: CapturePart,
   ): Promise<boolean | never> {
     const payload: BehanceGalleryItemImagesDataProviderImagePayloadType =
       JSON.parse(capturePart.payload);
@@ -538,7 +539,7 @@ class BehanceGalleryItemImagesDataProvider extends BaseDataProvider {
    */
   async downloadImageMediaFile(
     capturePart: CapturePart,
-    payload: BehanceGalleryItemImagesDataProviderImagePayloadType
+    payload: BehanceGalleryItemImagesDataProviderImagePayloadType,
   ): Promise<boolean | never> {
     if (payload.url == null || (payload.url ?? "").trim() === "") return false;
 

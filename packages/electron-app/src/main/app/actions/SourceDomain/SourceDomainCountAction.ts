@@ -12,7 +12,7 @@ Description: description
 import { runCliCommand } from '../../cli/runCliCommand';
 
 const SourceDomainCountAction = async (): Promise<number> =>
-  runCliCommand<[{ count: number }]>('source-domain:count').then(
+  runCliCommand<{ count: number }>('source-domain:count').then(
     (response) => response.getData()[0]?.count ?? 0,
   );
 

@@ -11,15 +11,11 @@ Description: description
 
 import fs from "node:fs";
 import logger from "logger";
-import BaseDataProvider, {
-  AllowedScheduleIntervalReturnType,
-  BaseDataProviderIconInformationReturnType,
-  SourceDomainInformationReturnType,
-} from "../BaseDataProvider";
+import BaseDataProvider from "../BaseDataProvider";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
 import { Page } from "puppeteer-core";
-import { safeSanitizeFileName } from "utilities";
+import { safeSanitizeFileName } from "common-functions";
 import {
   createPuppeteerBrowser,
   generatePageMetadata,
@@ -29,9 +25,14 @@ import {
   loadPageByUrl,
 } from "../helper_functions/PuppeteerDataProviderHelperFunctions";
 import { Capture, Schedule, Source, CapturePart } from "database";
-import { CapturePartStatus } from "database/src/entities/CapturePart";
+import { type CapturePartStatus } from "common-types/src/entities/CapturePart";
 import { checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl } from "../helper_functions/CapturePartHelperFunctions";
 import axios, { AxiosResponse } from "axios";
+import {
+  type AllowedScheduleIntervalReturnType,
+  type BaseDataProviderIconInformationReturnType,
+  type SourceDomainInformationReturnType,
+} from "common-types";
 
 export type BlogArticleDataProviderLinkType = {
   url: string;
@@ -108,7 +109,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   }
 
   async getSourceDomainInformation(
-    url: string
+    url: string,
   ): Promise<SourceDomainInformationReturnType> {
     return super.getSourceDomainInformation(url);
 
@@ -155,14 +156,14 @@ class BlogArticleDataProvider extends BaseDataProvider {
   async performCapture(
     capture: Capture,
     schedule: Schedule,
-    source: Source
+    source: Source,
   ): Promise<boolean | never> {
     const browser = await createPuppeteerBrowser();
     const page = await loadPageByUrl(source.url, browser);
 
     const firstPageScreenshot = await generatePageScreenshot(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (firstPageScreenshot === false) {
       const errorMessage = "The first page screenshot could not be generated";
@@ -175,7 +176,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const firstPageSnapshot = await generatePageSnapshot(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (firstPageSnapshot === false) {
       const errorMessage = "The first page snapshot could not be generated";
@@ -188,7 +189,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const firstPageMetadata = await generatePageMetadata(
       page,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
     if (firstPageMetadata === false) {
       const errorMessage = "The first page metadata could not be generated";
@@ -218,7 +219,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     if (shouldCaptureReadability) {
       const firstPageReadability = await generatePageReadability(
         page,
-        capture.downloadLocation
+        capture.downloadLocation,
       );
       if (firstPageReadability === false) {
         const errorMessage =
@@ -236,19 +237,19 @@ class BlogArticleDataProvider extends BaseDataProvider {
       await this.determineCountMapOfCommonParentDirectories(allLinks);
     const articleLinks = await this.filterLikelyArticleLinks(
       allLinks,
-      countMapOfCommonParentDirectories
+      countMapOfCommonParentDirectories,
     );
 
     await this.generateIndexPageJsonFileOfLinks(
       articleLinks,
-      capture.downloadLocation
+      capture.downloadLocation,
     );
 
     await this.createCapturePartsForArticleLinks(
       schedule,
       capture,
       source,
-      articleLinks
+      articleLinks,
     );
 
     await page.close();
@@ -258,7 +259,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   }
 
   async determineAllLinks(
-    page: Page
+    page: Page,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const linkHandles = await page.$$("a");
 
@@ -272,7 +273,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
           alt: (await (await link?.getProperty("alt"))?.jsonValue()) ?? "",
           title: (await (await link?.getProperty("title"))?.jsonValue()) ?? "",
         };
-      })
+      }),
     );
 
     return new Promise((resolve) => {
@@ -290,7 +291,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
               const urlWithoutHash = link.url.split("#")[0];
               if (
                 articleLinks.some(
-                  (otherLink) => otherLink.url === urlWithoutHash
+                  (otherLink) => otherLink.url === urlWithoutHash,
                 )
               )
                 return null;
@@ -302,13 +303,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
             return link as BlogArticleDataProviderLinkType;
           })
-          .filter((link) => link !== null) as BlogArticleDataProviderLinkType[]
+          .filter((link) => link !== null) as BlogArticleDataProviderLinkType[],
       );
     });
   }
 
   async determineCountMapOfCommonParentDirectories(
-    articleLinks: BlogArticleDataProviderLinkType[]
+    articleLinks: BlogArticleDataProviderLinkType[],
   ): Promise<CountMapOfCommonParentDirectoriesType> {
     const countMapOfCommonParentDirectories: CountMapOfCommonParentDirectoriesType =
       {};
@@ -339,7 +340,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   async filterSingleAndFewSiblingLinks(
     allLinks: BlogArticleDataProviderLinkType[],
-    countMap: CountMapOfCommonParentDirectoriesType
+    countMap: CountMapOfCommonParentDirectoriesType,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const singleAndFewSiblingLinks = allLinks.filter((link) => {
       const safeUrl =
@@ -359,13 +360,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   async filterHighestSiblingLinks(
     allLinks: BlogArticleDataProviderLinkType[],
-    countMap: CountMapOfCommonParentDirectoriesType
+    countMap: CountMapOfCommonParentDirectoriesType,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const highestCounts = new Set(
       Object.values(countMap)
         .sort((a, b) => b - a)
         // .slice(0, 2)
-        .slice(0, 1)
+        .slice(0, 1),
     );
 
     const highestSiblingLinks = allLinks.filter((link) => {
@@ -386,25 +387,25 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   async filterLikelyArticleLinks(
     allLinks: BlogArticleDataProviderLinkType[],
-    countMap: CountMapOfCommonParentDirectoriesType
+    countMap: CountMapOfCommonParentDirectoriesType,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const countMapWithoutLikelyUnwantedKeys = Object.fromEntries(
       Object.entries(countMap)
         .map(([key, value]) =>
-          this.testLikelyArticleLinkUrl(key) ? [key, value] : null
+          this.testLikelyArticleLinkUrl(key) ? [key, value] : null,
         )
-        .filter((entry) => entry !== null) as Array<[string, number]>
+        .filter((entry) => entry !== null) as Array<[string, number]>,
     );
 
     const countMapCounts = Object.values(
-      countMapWithoutLikelyUnwantedKeys
+      countMapWithoutLikelyUnwantedKeys,
     ).sort((a, b) => b - a);
     const uniqueCountMapCounts = new Set(countMapCounts);
     const highHalfOfUniqueCountMapCounts = new Set(
       [...uniqueCountMapCounts].slice(
         0,
-        Math.ceil(uniqueCountMapCounts.size / 2)
-      )
+        Math.ceil(uniqueCountMapCounts.size / 2),
+      ),
     );
 
     const articleLinks = allLinks.filter((link) => {
@@ -458,7 +459,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
   async generateIndexPageJsonFileOfLinks(
     articleLinks: BlogArticleDataProviderLinkType[],
-    captureDownloadDirectory: string
+    captureDownloadDirectory: string,
   ): Promise<void> {
     return fs.writeFile(
       path.join(captureDownloadDirectory, "links.json"),
@@ -466,7 +467,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
       {},
       (error) => {
         /* */
-      }
+      },
     );
   }
 
@@ -474,7 +475,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     schedule: Schedule,
     capture: Capture,
     source: Source,
-    articleLinks: BlogArticleDataProviderLinkType[]
+    articleLinks: BlogArticleDataProviderLinkType[],
   ): Promise<void> {
     let shouldAddArticleLinks = true;
     if (
@@ -487,13 +488,13 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
     const addCapturePart = async (
       link: BlogArticleDataProviderLinkType,
-      index: number
+      index: number,
     ): Promise<boolean> => {
       if (source.useStartOrEndCursor == null) {
         if (
           await checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl(
             schedule,
-            link.url
+            link.url,
           )
         )
           return true;
@@ -524,7 +525,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
         const downloadLocation = path.join(
           capture.downloadLocation,
-          this.determineScreenshotFileNameFromLink(payload)
+          this.determineScreenshotFileNameFromLink(payload),
         );
 
         let capturePart: CapturePart | null = null;
@@ -545,7 +546,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
 
         if (capturePart === null) {
           logger.error(
-            `Capture Part ${index} could not be created: ${link.url}`
+            `Capture Part ${index} could not be created: ${link.url}`,
           );
           return true;
         }
@@ -589,10 +590,10 @@ class BlogArticleDataProvider extends BaseDataProvider {
    * @throws {Error}
    */
   async processLinkedPagePart(
-    capturePart: CapturePart
+    capturePart: CapturePart,
   ): Promise<boolean | never> {
     const payload: BlogArticleDataProviderLinkedPagePayloadType = JSON.parse(
-      capturePart.payload
+      capturePart.payload,
     );
 
     const browser = await createPuppeteerBrowser();
@@ -680,7 +681,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
   }
 
   determineScreenshotFileNameFromLink(
-    link: BlogArticleDataProviderLinkType
+    link: BlogArticleDataProviderLinkType,
   ): string {
     const sanitizedText = safeSanitizeFileName(link.text);
     if (this.textIsSuitableForFileName(sanitizedText)) return sanitizedText;
@@ -693,7 +694,7 @@ class BlogArticleDataProvider extends BaseDataProvider {
     if (this.textIsSuitableForFileName(sanitizedTitle)) return sanitizedTitle;
 
     const sanitizedAlt = safeSanitizeFileName(
-      typeof link.alt === "string" ? link.alt : ""
+      typeof link.alt === "string" ? link.alt : "",
     );
     if (this.textIsSuitableForFileName(sanitizedAlt)) return sanitizedAlt;
 

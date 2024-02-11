@@ -97,7 +97,7 @@
     "source-map-support": "^0.5.21",
     "use-async-memo": "^1.2.4",
     "use-state-with-callback": "^3.0.2",
-    "utilities": "workspace:^",
+    "common-functions": "workspace:^",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

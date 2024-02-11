@@ -8,27 +8,28 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
 import { unsetStoredSetting } from "database/src/repositories/StoredSettingRepository";
 import {
-  StoredSettingKeyType,
   storedSettingKeys,
-} from "database/src/entities/StoredSetting";
+  StoredSettingKeyType,
+} from "common-types/src/entities/StoredSetting";
 
 let StoredSettingUnset = new commander.Command("stored-setting:unset")
   .description("Unset Stored Setting by Key")
   .argument(
     "<key>",
-    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`
+    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`,
   )
   .action(
     async (
       key: StoredSettingKeyType,
       optionsAndArguments: {
         [key: string]: string | number | boolean;
-      }
+      },
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (!storedSettingKeys.includes(key))
@@ -42,7 +43,7 @@ let StoredSettingUnset = new commander.Command("stored-setting:unset")
 
         return new MessageResponse(`Stored Setting unset`).send();
       });
-    }
+    },
   );
 
 export default StoredSettingUnset;

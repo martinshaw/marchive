@@ -8,6 +8,7 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import { Source, StoredSetting } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -16,20 +17,20 @@ import { getOrSetStoredSetting } from "database/src/repositories/StoredSettingRe
 import {
   StoredSettingKeyType,
   storedSettingKeys,
-} from "database/src/entities/StoredSetting";
+} from "common-types/src/entities/StoredSetting";
 
 let StoredSettingGet = new commander.Command("stored-setting:get")
   .description("Get Stored Setting by Key")
   .argument(
     "<key>",
-    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`
+    `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`,
   )
   .action(
     async (
       key: StoredSettingKeyType,
       optionsAndArguments: {
         [key: string]: string | number | boolean;
-      }
+      },
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (!storedSettingKeys.includes(key))
@@ -52,10 +53,10 @@ let StoredSettingGet = new commander.Command("stored-setting:get")
             createdAt: "Created At",
             updatedAt: "Updated At",
             deletedAt: "Deleted At",
-          }
+          },
         ).send();
       });
-    }
+    },
   );
 
 export default StoredSettingGet;

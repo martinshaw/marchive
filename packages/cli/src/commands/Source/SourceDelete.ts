@@ -8,6 +8,7 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
+
 import fs from "node:fs";
 import logger from "logger";
 import commander, { Command } from "commander";
@@ -24,7 +25,7 @@ SourceDelete.description("Delete a Source")
     async (
       sourceId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-      program: Command
+      program: Command,
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (isNaN(parseInt(sourceId)))
@@ -41,7 +42,7 @@ SourceDelete.description("Delete a Source")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Source ID ${sourceId} for deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -98,7 +99,7 @@ SourceDelete.description("Delete a Source")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Source ID ${sourceId} for check successful deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -111,10 +112,10 @@ SourceDelete.description("Delete a Source")
             {
               id: sourceId,
             },
-          ]
+          ],
         ).send();
       });
-    }
+    },
   );
 
 export default SourceDelete;

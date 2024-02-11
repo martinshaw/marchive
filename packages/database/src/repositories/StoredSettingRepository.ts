@@ -11,13 +11,13 @@ Description: description
 
 import logger from "logger";
 import {
-  StoredSettingKeyType,
-  StoredSettingTypeType,
-} from "../entities/StoredSetting";
+  type StoredSettingKeyType,
+  type StoredSettingTypeType,
+} from "common-types/src/entities/StoredSetting";
 import { StoredSetting } from "../..";
 
 const determineStoredSettingValueType = (
-  value: string | number | boolean
+  value: string | number | boolean,
 ): StoredSettingTypeType => {
   if (
     value === true ||
@@ -32,7 +32,7 @@ const determineStoredSettingValueType = (
 
 const getOrSetStoredSetting = async <T = string | number | boolean>(
   key: StoredSettingKeyType,
-  newValue: T | null = null
+  newValue: T | null = null,
 ): Promise<StoredSetting | null> => {
   let existingStoredSetting: StoredSetting | null = null;
   try {
@@ -52,12 +52,12 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
         key,
         value: newValue.toString(),
         type: determineStoredSettingValueType(
-          newValue as string | number | boolean
+          newValue as string | number | boolean,
         ),
       });
     } catch (error) {
       logger.error(
-        "A DB error occurred when attempting to create a new StoredSetting"
+        "A DB error occurred when attempting to create a new StoredSetting",
       );
       logger.error(error);
       return null;
@@ -67,7 +67,7 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
   if (existingStoredSetting != null && newValue != null) {
     existingStoredSetting.value = newValue.toString();
     existingStoredSetting.type = determineStoredSettingValueType(
-      newValue as string | number | boolean
+      newValue as string | number | boolean,
     );
 
     try {
@@ -75,7 +75,7 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
       return existingStoredSetting;
     } catch (error) {
       logger.error(
-        "A DB error occurred when attempting to update an existing StoredSetting"
+        "A DB error occurred when attempting to update an existing StoredSetting",
       );
       logger.error(error);
       return null;
@@ -86,7 +86,7 @@ const getOrSetStoredSetting = async <T = string | number | boolean>(
 };
 
 const unsetStoredSetting = async (
-  key: StoredSettingKeyType
+  key: StoredSettingKeyType,
 ): Promise<boolean> => {
   let existingStoredSetting: StoredSetting | null = null;
   try {
@@ -102,7 +102,7 @@ const unsetStoredSetting = async (
 };
 
 const getStoredSettingValue = async (
-  key: StoredSettingKeyType
+  key: StoredSettingKeyType,
 ): Promise<string | number | boolean | null> => {
   const storedSetting = await getOrSetStoredSetting(key);
   if (storedSetting == null) return null;
@@ -122,7 +122,7 @@ const getStoredSettingValue = async (
 
 const setStoredSettingValue = async (
   key: StoredSettingKeyType,
-  value: string | number | boolean
+  value: string | number | boolean,
 ): Promise<string | number | boolean | null> => {
   const storedSetting = await getOrSetStoredSetting(key, value);
   if (storedSetting == null) return null;

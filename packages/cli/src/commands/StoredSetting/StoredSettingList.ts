@@ -8,6 +8,7 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import { StoredSetting } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -50,10 +51,10 @@ StoredSettingList.description("Get Stored Settings").action(
           createdAt: "Created At",
           updatedAt: "Updated At",
           deletedAt: "Deleted At",
-        }
+        },
       ).send();
     });
-  }
+  },
 );
 
 export default StoredSettingList;

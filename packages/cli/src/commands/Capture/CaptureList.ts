@@ -8,6 +8,7 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import { Capture, Source } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -50,7 +51,7 @@ CaptureList.description("Get Captures").action(
           determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
         relations:
           determineTypeormRelationsObjectFromCommanderOptions(
-            optionsAndArguments
+            optionsAndArguments,
           ),
         order: {
           createdAt: "DESC",
@@ -68,7 +69,7 @@ CaptureList.description("Get Captures").action(
         scheduleId: "Schedule ID",
       }).send();
     });
-  }
+  },
 );
 
 export default CaptureList;

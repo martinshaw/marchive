@@ -19,6 +19,8 @@
     "@mozilla/readability": "^0.4.4",
     "axios": "^1.6.7",
     "change-case-commonjs": "^5.4.3",
+    "common-functions": "workspace:^",
+    "common-types": "workspace:^",
     "database": "workspace:^",
     "dompurify": "^3.0.5",
     "ico-to-png": "^0.2.1",
@@ -35,7 +37,6 @@
     "slugify": "^1.6.6",
     "standard-slugify": "^3.1.1",
     "types-json": "^4.0.1",
-    "utilities": "workspace:^",
     "uuid": "^9.0.0",
     "xml2js": "^0.6.2",
     "zod": "^3.22.4"

@@ -8,11 +8,12 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import { validateUrlWithDataProviders } from "data-providers";
-import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
+import { DataProviderSerializedType } from "common-types";
 
 let DataProviderValidate = new commander.Command("data-provider:validate")
   .description("Validate Data Providers by URL")
@@ -22,13 +23,13 @@ let DataProviderValidate = new commander.Command("data-provider:validate")
       url: string,
       optionsAndArguments: {
         [key: string]: string | number | boolean;
-      }
+      },
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         // Reduce unnecessary checks by ignoring URLs shorter than 4 characters (e.g. a.co)
         if (url.length < 4) {
           return new ErrorResponse(
-            "URL must be at least 4 characters long"
+            "URL must be at least 4 characters long",
           ).send();
         }
 
@@ -39,9 +40,9 @@ let DataProviderValidate = new commander.Command("data-provider:validate")
           .then((validDataProvidersForUrl) =>
             Promise.all(
               validDataProvidersForUrl.map((dataProvider) =>
-                dataProvider.toJSON()
-              )
-            )
+                dataProvider.toJSON(),
+              ),
+            ),
           )
           .then((dataProviders) => dataProviders.reverse());
 
@@ -53,10 +54,10 @@ let DataProviderValidate = new commander.Command("data-provider:validate")
             name: "Name",
             description: "Description",
             iconInformation: "Icon Information",
-          }
+          },
         ).send();
       });
-    }
+    },
   );
 
 export default DataProviderValidate;

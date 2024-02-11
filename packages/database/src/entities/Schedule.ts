@@ -21,8 +21,8 @@ import {
   OneToMany,
 } from "typeorm";
 import { Source, Capture } from "..";
-import { ScheduleEntityType } from "database-types";
-import { ScheduleStatus } from "database-types/src/entities/Schedule";
+import { ScheduleEntityType } from "common-types";
+import { ScheduleStatus } from "common-types/src/entities/Schedule";
 
 @Entity()
 class Schedule extends BaseEntity implements ScheduleEntityType {

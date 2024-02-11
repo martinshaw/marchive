@@ -8,13 +8,14 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import { Schedule } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import generateTypeormWhereObjectFromCommanderOptions from "../../options/generateTypeormWhereObjectFromCommanderOptions";
 import generateTypeormRelationsObjectFromCommanderOptions from "../../options/generateTypeormRelationsObjectFromCommanderOptions";
-import { scheduleStatuses } from "database/src/entities/Schedule";
+import { scheduleStatuses } from "common-types/src/entities/Schedule";
 
 const [
   addTypeormWhereCommanderOptions,
@@ -55,7 +56,7 @@ ScheduleList.description("Get Schedules").action(
           determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
         relations:
           determineTypeormRelationsObjectFromCommanderOptions(
-            optionsAndArguments
+            optionsAndArguments,
           ),
       });
 
@@ -74,7 +75,7 @@ ScheduleList.description("Get Schedules").action(
         sourceId: "Source ID",
       }).send();
     });
-  }
+  },
 );
 
 export default ScheduleList;

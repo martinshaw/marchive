@@ -10,14 +10,11 @@ Description: description
 */
 
 import { runCliCommand } from '../../cli/runCliCommand';
-import CliJsonResponse from '../../cli/CliJsonResponse';
 
 /**
  * @throws {Error}
  */
-const StoredSettingUnsetAction = async (
-  key: string,
-): Promise<CliJsonResponse<any[]>> =>
-  runCliCommand('stored-setting:unset', [key]);
+const StoredSettingUnsetAction = async (key: string): Promise<void> =>
+  runCliCommand<[]>('stored-setting:unset', [key]).then((response) => {});
 
 export default StoredSettingUnsetAction;

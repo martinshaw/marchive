@@ -9,13 +9,16 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import CliJsonResponse from '../../cli/CliJsonResponse';
+import { type SourceEntityType } from 'common-types';
 import { runCliCommand } from '../../cli/runCliCommand';
 
 const SourceCreateAction = async (
   url: string,
   dataProviderIdentifier: string,
-): Promise<CliJsonResponse<[any]>> =>
-  runCliCommand('source:create', [url, dataProviderIdentifier]);
+): Promise<SourceEntityType> =>
+  runCliCommand<SourceEntityType>('source:create', [
+    url,
+    dataProviderIdentifier,
+  ]).then((response) => response.getData()[0]);
 
 export default SourceCreateAction;

@@ -19,8 +19,8 @@ import {
   ManyToOne,
 } from "typeorm";
 import { Capture } from "..";
-import { CapturePartEntityType } from "database-types";
-import { CapturePartStatus } from "database-types/src/entities/CapturePart";
+import { CapturePartEntityType } from "common-types";
+import { CapturePartStatus } from "common-types/src/entities/CapturePart";
 
 @Entity()
 class CapturePart extends BaseEntity implements CapturePartEntityType {

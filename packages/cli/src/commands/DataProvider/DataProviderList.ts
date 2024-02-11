@@ -8,11 +8,12 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import { getDataProviders } from "data-providers";
-import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
+import { DataProviderSerializedType } from "common-types";
 
 let DataProviderList = new commander.Command("data-provider:list")
   .description("Get Data Providers")
@@ -25,9 +26,9 @@ let DataProviderList = new commander.Command("data-provider:list")
           (validDataProvidersForUrl) =>
             Promise.all(
               validDataProvidersForUrl.map((dataProvider) =>
-                dataProvider.toJSON()
-              )
-            )
+                dataProvider.toJSON(),
+              ),
+            ),
         );
 
         return new TableResponse<DataProviderSerializedType>(
@@ -37,10 +38,10 @@ let DataProviderList = new commander.Command("data-provider:list")
             identifier: "Identifier",
             name: "Name",
             description: "Description",
-          }
+          },
         ).send();
       });
-    }
+    },
   );
 
 export default DataProviderList;

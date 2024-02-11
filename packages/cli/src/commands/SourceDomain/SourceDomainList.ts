@@ -8,6 +8,7 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import { SourceDomain } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
@@ -48,7 +49,7 @@ SourceDomainList.description("Get Source Domains").action(
           determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
         relations:
           determineTypeormRelationsObjectFromCommanderOptions(
-            optionsAndArguments
+            optionsAndArguments,
           ),
       });
 
@@ -62,7 +63,7 @@ SourceDomainList.description("Get Source Domains").action(
         deletedAt: "Deleted At",
       }).send();
     });
-  }
+  },
 );
 
 export default SourceDomainList;

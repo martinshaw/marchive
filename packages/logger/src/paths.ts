@@ -11,7 +11,7 @@ Description: description
 
 import os from "node:os";
 import path from "node:path";
-import { userAppDataPath } from "utilities";
+import { userAppDataPath } from "common-functions";
 
 // Alternative to the convenient Electron method `app.getPath('logs')` which is not available in non-Electron processes.
 

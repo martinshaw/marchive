@@ -9,30 +9,18 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-// import { Op } from 'database';
-// import { Capture, Schedule } from 'database';
-// import { ScheduleAttributes } from 'database/src/models/Schedule';
+import { type ScheduleEntityType } from 'common-types';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 const ScheduleListAction = async (
   sourceId: number | null = null,
+  withSource = false,
   withCaptures = false,
-): Promise</*ScheduleAttributes*/ []> => {
-  // let where = {}
-  // if (sourceId != null) where = { ...where, sourceId: {[Op.eq]: sourceId} }
-
-  // let include: any[] = []
-  // if (withCaptures) include = [...include, Capture]
-
-  // return Schedule
-  //   .findAll({
-  //     include,
-  //     where,
-  //   })
-  //   .then(schedules =>
-  //     schedules.map(schedule => schedule.toJSON())
-  //   )
-
-  return [];
-};
+): Promise<ScheduleEntityType[]> =>
+  runCliCommand<ScheduleEntityType>('schedule:list', [], {
+    ...(sourceId !== null && { whereSourceIdEq: sourceId }),
+    withSource,
+    withCaptures,
+  }).then((response) => response.getData());
 
 export default ScheduleListAction;

@@ -9,23 +9,17 @@ Modified: 2023-08-31T03:18:06.255Z
 Description: description
 */
 
-// import { validateUrlWithDataProviders } from 'data-providers';
-// import { DataProviderSerializedType } from 'data-providers/src/BaseDataProvider';
+import { type DataProviderSerializedType } from 'common-types';
+import { runCliCommand } from '../../cli/runCliCommand';
 
 /**
  * @throws {Error}
  */
-// const DataProviderValidateAction = async (
-//   url: string
-// ): Promise<DataProviderSerializedType[]> =>
-//   validateUrlWithDataProviders(url)
-//     .then((validDataProvidersForUrl) =>
-//       Promise.all(
-//         validDataProvidersForUrl.map((dataProvider) => dataProvider.toJSON())
-//       )
-//     )
-//     .then((dataProviders) => dataProviders.reverse());
-
-const DataProviderValidateAction = async (url: string): Promise<[]> => [];
+const DataProviderValidateAction = async (
+  url: string,
+): Promise<DataProviderSerializedType[]> =>
+  runCliCommand<DataProviderSerializedType>('data-provider:validate', [
+    url,
+  ]).then((result) => result.getData());
 
 export default DataProviderValidateAction;

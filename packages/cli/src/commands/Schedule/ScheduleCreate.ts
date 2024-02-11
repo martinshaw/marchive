@@ -10,17 +10,18 @@ Description: description
 */
 import fs from "node:fs";
 import path from "node:path";
-import {
-  AllowedScheduleIntervalReturnType,
-  getDataProviderByIdentifier,
-} from "data-providers";
+import { getDataProviderByIdentifier } from "data-providers";
 import logger from "logger";
 import commander, { Command } from "commander";
 import { Schedule, Source } from "database";
 import ErrorResponse from "../../responses/ErrorResponse";
 import MessageResponse from "../../responses/MessageResponse";
-import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import {
+  safeSanitizeFileName,
+  userDownloadsCapturesPath,
+} from "common-functions";
 import dayjs from "dayjs";
+import { type AllowedScheduleIntervalReturnType } from "../../../../common-types/src";
 
 const ScheduleCreate = new commander.Command("schedule:create");
 

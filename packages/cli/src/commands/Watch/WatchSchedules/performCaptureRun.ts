@@ -13,10 +13,12 @@ import fs from "node:fs";
 import logger from "logger";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
-import { ScheduleStatus } from "database/src/entities/Schedule";
 import { Capture, Schedule, Source } from "database";
 import { getDataProviderByIdentifier } from "data-providers";
-import { safeSanitizeFileName, userDownloadsCapturesPath } from "utilities";
+import {
+  safeSanitizeFileName,
+  userDownloadsCapturesPath,
+} from "common-functions";
 import dayjs from "dayjs";
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
@@ -40,7 +42,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   }
 
   const dataProvider = await getDataProviderByIdentifier(
-    sourceDataProviderIdentifier
+    sourceDataProviderIdentifier,
   );
   if (dataProvider == null) {
     await cleanup(schedule);
@@ -52,7 +54,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     "Found Data Provider: " +
       dataProvider.getIdentifier() +
       " - " +
-      dataProvider.getName()
+      dataProvider.getName(),
   );
 
   let logCurrentCursorUrlExplanation = " for the first time";
@@ -68,7 +70,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     logCurrentCursorUrlExplanation = ` from End Cursor URL: ${schedule.source.currentEndCursorUrl}`;
 
   logger.info(
-    `Attempting to capture URL: ${schedule?.source?.url} - ${logCurrentCursorUrlExplanation}`
+    `Attempting to capture URL: ${schedule?.source?.url} - ${logCurrentCursorUrlExplanation}`,
   );
 
   if (ensureDownloadsDirectoryExists() === false) {
@@ -80,7 +82,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
   if (ensureScheduleDownloadLocationExists(schedule) === false) {
     await cleanup(schedule);
     logger.error(
-      "The Schedule's chosen download destination cannot be created"
+      "The Schedule's chosen download destination cannot be created",
     );
     return;
   }
@@ -140,7 +142,7 @@ const performCaptureRun = async (schedule: Schedule): Promise<void> => {
     await dataProvider.performCapture(
       capture,
       capture.schedule,
-      capture.schedule.source
+      capture.schedule.source,
     );
   } catch (error) {
     await cleanup(schedule);
@@ -170,11 +172,11 @@ const ensureScheduleDownloadLocationExists = (schedule: Schedule): boolean => {
 };
 
 const generateCaptureDownloadDirectory = (
-  schedule: Schedule
+  schedule: Schedule,
 ): string | false => {
   const attemptedDirectory = path.join(
     schedule.downloadLocation,
-    safeSanitizeFileName(dayjs().toISOString().replace(/:/g, "-")) || uuidV4()
+    safeSanitizeFileName(dayjs().toISOString().replace(/:/g, "-")) || uuidV4(),
   );
 
   if (fs.existsSync(attemptedDirectory) === false) {
@@ -187,7 +189,7 @@ const generateCaptureDownloadDirectory = (
 };
 
 const cleanup = async (
-  schedule: Schedule | null | undefined
+  schedule: Schedule | null | undefined,
 ): Promise<boolean> => {
   if (schedule == null) return true;
 

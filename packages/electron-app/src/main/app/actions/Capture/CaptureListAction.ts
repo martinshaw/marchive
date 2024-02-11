@@ -9,20 +9,12 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-// import { Capture, Schedule } from 'database'
-// import { CaptureAttributes } from 'database/src/models/Capture'
+import { type CaptureEntityType } from 'common-types';
+import { runCliCommand } from '../../cli/runCliCommand';
 
-const CaptureListAction = async (): Promise</*CaptureAttributes*/ []> => {
-  // return Capture
-  //   .findAll({
-  //     include: [Schedule],
-  //     order: [['createdAt', 'DESC']],
-  //   })
-  //   .then(captures =>
-  //     captures.map(capture => capture.toJSON())
-  //   )
-
-  return [];
-};
+const CaptureListAction = async (): Promise<CaptureEntityType[]> =>
+  runCliCommand<CaptureEntityType>('capture:list').then((response) =>
+    response.getData(),
+  );
 
 export default CaptureListAction;

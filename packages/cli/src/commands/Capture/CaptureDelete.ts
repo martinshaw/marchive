@@ -8,6 +8,7 @@ Modified: 2024-02-01T05:03:25.700Z
 
 Description: description
 */
+
 import fs from "node:fs";
 import logger from "logger";
 import commander, { Command } from "commander";
@@ -24,7 +25,7 @@ CaptureDelete.description("Delete a Capture")
     async (
       captureId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-      program: Command
+      program: Command,
     ) => {
       ErrorResponse.catchErrorsWithErrorResponse(async () => {
         if (isNaN(parseInt(captureId)))
@@ -41,7 +42,7 @@ CaptureDelete.description("Delete a Capture")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Capture ID ${captureId} for deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -78,7 +79,7 @@ CaptureDelete.description("Delete a Capture")
         } catch (error) {
           throw new ErrorResponse(
             `A DB error occurred when attempting to find Capture ID ${captureId} for check successful deletion`,
-            error instanceof Error ? error : null
+            error instanceof Error ? error : null,
           );
         }
 
@@ -91,10 +92,10 @@ CaptureDelete.description("Delete a Capture")
             {
               id: captureId,
             },
-          ]
+          ],
         ).send();
       });
-    }
+    },
   );
 
 export default CaptureDelete;

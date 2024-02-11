@@ -13,11 +13,9 @@ import findOrCreateSourceDomainForUrl from "./findOrCreateSourceDomainForUrl";
 import retrieveAndStoreFaviconFromUrl, {
   type FaviconIconType,
 } from "./retrieveAndStoreFaviconFromUrl";
-import BaseDataProvider, {
-  type AllowedScheduleIntervalReturnType,
-} from "./BaseDataProvider";
 import { performPuppeteerTest } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
 
+import BaseDataProvider from "./BaseDataProvider";
 import BlogArticleDataProvider from "./BlogArticleDataProvider";
 import PodcastRssFeedDataProvider from "./PodcastRssFeedDataProvider";
 import WikipediaArticleDataProvider from "./WikipediaArticleDataProvider";
@@ -50,7 +48,7 @@ const getDataProviders = async (): Promise<BaseDataProvider[]> => {
 };
 
 const getDataProviderByIdentifier: (
-  identifier: string
+  identifier: string,
 ) => Promise<BaseDataProvider | undefined> = async (identifier: string) => {
   return dataProvidersClasses.find((dataProvider) => {
     return dataProvider.getIdentifier() === identifier;
@@ -58,7 +56,7 @@ const getDataProviderByIdentifier: (
 };
 
 const validateUrlWithDataProviders: (
-  url: string
+  url: string,
 ) => Promise<BaseDataProvider[]> = async (url: string) => {
   const dataProviders = await getDataProviders();
 
@@ -83,6 +81,5 @@ export {
   retrieveAndStoreFaviconFromUrl,
   findOrCreateSourceDomainForUrl,
   BaseDataProvider,
-  type AllowedScheduleIntervalReturnType,
   performPuppeteerTest,
 };

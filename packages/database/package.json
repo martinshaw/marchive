@@ -16,12 +16,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "better-sqlite3": "^9.3.0",
-    "database-types": "link:../database-types",
-    "dayjs": "^1.11.10",
+    "common-types": "workspace:^",
+    "common-functions": "workspace:^",
     "logger": "workspace:^",
-    "typeorm": "^0.3.20",
-    "utilities": "workspace:^"
+    "better-sqlite3": "^9.3.0",
+    "dayjs": "^1.11.10",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.9",

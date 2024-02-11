@@ -8,11 +8,12 @@ Modified: 2024-02-01T16:12:37.651Z
 
 Description: description
 */
+
 import commander from "commander";
 import ErrorResponse from "../../responses/ErrorResponse";
 import TableResponse from "../../responses/TableResponse";
 import { getDataProviderByIdentifier } from "data-providers";
-import { DataProviderSerializedType } from "data-providers/src/BaseDataProvider";
+import { DataProviderSerializedType } from "common-types";
 
 let DataProviderShow = new commander.Command("data-provider:show")
   .argument("<data-provider-identifier>", "Data Provider Identifier")

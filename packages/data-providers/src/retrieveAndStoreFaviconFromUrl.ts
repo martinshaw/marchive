@@ -14,8 +14,8 @@ import logger from "logger";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
 import Downloader from "nodejs-file-downloader";
-import { resolveRelative, safeSanitizeFileName } from "utilities";
-import { userDownloadsSourceDomainFaviconsPath } from "utilities";
+import { resolveRelative, safeSanitizeFileName } from "common-functions";
+import { userDownloadsSourceDomainFaviconsPath } from "common-functions";
 import { retrieveFaviconsFromUrl } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
 import icoToPng from "ico-to-png";
 

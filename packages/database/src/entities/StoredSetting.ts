@@ -21,7 +21,7 @@ import {
 import StoredSettingEntityType, {
   StoredSettingKeyType,
   StoredSettingTypeType,
-} from "database-types/src/entities/StoredSetting";
+} from "common-types/src/entities/StoredSetting";
 
 @Entity()
 class StoredSetting extends BaseEntity implements StoredSettingEntityType {

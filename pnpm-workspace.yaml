@@ -1,8 +1,8 @@
 packages:
-  - 'packages/database-types'
+  - 'packages/common-types'
+  - 'packages/common-functions'
   - 'packages/data-providers'
   - 'packages/database'
-  - 'packages/electron-app'
+  # - 'packages/electron-app'
   - 'packages/logger'
-  - 'packages/utilities'
   - 'packages/cli'

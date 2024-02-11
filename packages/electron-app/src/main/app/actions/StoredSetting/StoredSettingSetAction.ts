@@ -9,7 +9,7 @@ Modified: 2023-08-29T21:25:45.800Z
 Description: description
 */
 
-import CliJsonResponse from '../../cli/CliJsonResponse';
+import { type StoredSettingEntityType } from 'common-types';
 import { runCliCommand } from '../../cli/runCliCommand';
 
 /**
@@ -18,7 +18,10 @@ import { runCliCommand } from '../../cli/runCliCommand';
 const StoredSettingSetAction = async (
   key: string,
   value: string,
-): Promise<CliJsonResponse<any[]>> =>
-  runCliCommand('stored-setting:set', [key, value]);
+): Promise<StoredSettingEntityType> =>
+  runCliCommand<StoredSettingEntityType>('stored-setting:set', [
+    key,
+    value,
+  ]).then((response) => response.getData()[0]);
 
 export default StoredSettingSetAction;

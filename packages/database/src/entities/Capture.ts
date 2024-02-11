@@ -21,7 +21,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Schedule, CapturePart } from "..";
-import { CaptureEntityType } from "database-types";
+import { CaptureEntityType } from "common-types";
 
 @Entity()
 class Capture extends BaseEntity implements CaptureEntityType {

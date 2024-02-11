@@ -10,7 +10,7 @@ Description: description
 */
 
 import logger from "logger";
-import { Capture, CapturePart, Schedule } from "database";
+import { CapturePart, Schedule } from "database";
 
 /**
  * If we are not using 'start' or 'end' cursor to determine when to start or to stop downloading capture parts,
@@ -39,7 +39,7 @@ export const checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl
       });
     } catch (error) {
       logger.error(
-        "A DB error occurred when trying to find an existing Capture Part"
+        "A DB error occurred when trying to find an existing Capture Part",
       );
       logger.error(error);
 
@@ -48,12 +48,12 @@ export const checkIfUseStartOrEndCursorNullScheduleHasExistingCapturePartWithUrl
 
     let existingCapturePart: CapturePart | null =
       unscopedExistingCaptureParts.find(
-        (capturePart) => capturePart.capture?.scheduleId === schedule.id
+        (capturePart) => capturePart.capture?.scheduleId === schedule.id,
       ) || null;
 
     if (existingCapturePart != null) {
       logger.info(
-        `Capture Part ${existingCapturePart.id} has been previously downloaded: ${url}`
+        `Capture Part ${existingCapturePart.id} has been previously downloaded: ${url}`,
       );
       return true;
     }

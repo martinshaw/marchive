@@ -10,13 +10,13 @@ Description: description
 */
 
 import BlogArticleDataProvider, {
-  BlogArticleDataProviderLinkType,
-  CountMapOfCommonParentDirectoriesType,
+  type BlogArticleDataProviderLinkType,
+  type CountMapOfCommonParentDirectoriesType,
 } from "../BlogArticleDataProvider";
 import { Page } from "puppeteer-core";
 import { sentenceCase } from "change-case-commonjs";
 import { parse as parseHtml } from "node-html-parser";
-import { BaseDataProviderIconInformationReturnType } from "../BaseDataProvider";
+import { type BaseDataProviderIconInformationReturnType } from "common-types";
 import axios, { AxiosResponse } from "axios";
 
 class WikipediaArticleDataProvider extends BlogArticleDataProvider {
@@ -41,7 +41,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
   }
 
   async determineUrlIsAValidWikipediaUrl(
-    url: string
+    url: string,
   ): Promise<false | { url: string; articleName: string }> {
     // See my own highly tested regex based on the quidelines (https://en.wikipedia.org/wiki/Help:URL) in Regex101 at https://regex101.com/r/wRgj8A/1
     const regex =
@@ -69,7 +69,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
     }
 
     validUrls = validUrls.filter(
-      (validUrl) => validUrl.url.includes("action=edit") === false
+      (validUrl) => validUrl.url.includes("action=edit") === false,
     );
 
     return validUrls.length > 0 ? validUrls[0] : false;
@@ -109,7 +109,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
   }
 
   async determineAllLinks(
-    page: Page
+    page: Page,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const linkHandles = await page.$$(".mw-body-content a");
 
@@ -117,7 +117,7 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
       linkHandles
         .map(async (link) => {
           const wikipediaInfo = await this.determineUrlIsAValidWikipediaUrl(
-            await (await link?.getProperty("href"))?.jsonValue()
+            await (await link?.getProperty("href"))?.jsonValue(),
           );
 
           if (wikipediaInfo === false) return null;
@@ -132,8 +132,8 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
           };
         })
         .filter(
-          (link) => link !== null
-        ) as Promise<BlogArticleDataProviderLinkType>[]
+          (link) => link !== null,
+        ) as Promise<BlogArticleDataProviderLinkType>[],
     );
 
     return new Promise((resolve) => {
@@ -167,24 +167,24 @@ class WikipediaArticleDataProvider extends BlogArticleDataProvider {
 
             return link as BlogArticleDataProviderLinkType;
           })
-          .filter((link) => link !== null) as BlogArticleDataProviderLinkType[]
+          .filter((link) => link !== null) as BlogArticleDataProviderLinkType[],
       );
     });
   }
 
   async determineCountMapOfCommonParentDirectories(
-    articleLinks: BlogArticleDataProviderLinkType[]
+    articleLinks: BlogArticleDataProviderLinkType[],
   ): Promise<CountMapOfCommonParentDirectoriesType> {
     return {};
   }
 
   async filterLikelyArticleLinks(
     allLinks: BlogArticleDataProviderLinkType[],
-    countMap: CountMapOfCommonParentDirectoriesType
+    countMap: CountMapOfCommonParentDirectoriesType,
   ): Promise<BlogArticleDataProviderLinkType[]> {
     const uniqueArticleLinks = allLinks.filter(
       (link, index) =>
-        allLinks.findIndex((otherLink) => otherLink.url === link.url) === index
+        allLinks.findIndex((otherLink) => otherLink.url === link.url) === index,
     );
 
     return uniqueArticleLinks;

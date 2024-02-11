@@ -15,6 +15,12 @@ import type ScheduleEntityType from "./entities/Schedule";
 import type SourceEntityType from "./entities/Source";
 import type SourceDomainEntityType from "./entities/SourceDomain";
 import type StoredSettingEntityType from "./entities/StoredSetting";
+import {
+  type DataProviderSerializedType,
+  type SourceDomainInformationReturnType,
+  type AllowedScheduleIntervalReturnType,
+  type BaseDataProviderIconInformationReturnType,
+} from "./data-providers/BaseDataProvider";
 
 export {
   CaptureEntityType,
@@ -23,4 +29,8 @@ export {
   SourceEntityType,
   SourceDomainEntityType,
   StoredSettingEntityType,
+  DataProviderSerializedType,
+  SourceDomainInformationReturnType,
+  AllowedScheduleIntervalReturnType,
+  BaseDataProviderIconInformationReturnType,
 };

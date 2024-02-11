@@ -10,12 +10,12 @@ Description: description
 */
 
 import path from "node:path";
-import { userAppDataPath } from "utilities";
+import { userAppDataPath } from "common-functions";
 
 const userAppDataDatabasesPath = path.join(userAppDataPath, "Databases");
 const userAppDataDatabaseFilePath = path.join(
   userAppDataDatabasesPath,
-  "marchive.db"
+  "marchive.db",
 );
 
 export { userAppDataDatabasesPath, userAppDataDatabaseFilePath };

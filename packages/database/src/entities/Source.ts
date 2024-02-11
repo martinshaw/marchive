@@ -20,8 +20,8 @@ import {
   OneToMany,
 } from "typeorm";
 import { Schedule, SourceDomain } from "..";
-import { SourceEntityType } from "database-types";
-import { SourceUseStartOrEndCursorValueType } from "database-types/src/entities/Source";
+import { SourceEntityType } from "common-types";
+import { SourceUseStartOrEndCursorValueType } from "common-types/src/entities/Source";
 
 @Entity()
 class Source extends BaseEntity implements SourceEntityType {

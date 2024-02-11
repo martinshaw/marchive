@@ -69,7 +69,7 @@ const formatCliCommand = (
     asJson ? '--json' : ''
   }`;
 
-const runCliCommand = async <TDataType extends any[] = any[]>(
+const runCliCommand = async <TDataType extends any>(
   command: CliCommandNames,
   args: (string | number)[] = [],
   options: Record<string, any> = {},
@@ -78,9 +78,9 @@ const runCliCommand = async <TDataType extends any[] = any[]>(
     exec(formatCliCommand(command, args, options), (error, stdout, stderr) => {
       if (stderr) {
         // resolve(new CliJsonResponse(stderr));
-        reject(new CliJsonResponse(stderr).toError());
+        reject(new CliJsonResponse<TDataType>(stderr).toError());
       } else {
-        resolve(new CliJsonResponse(stdout));
+        resolve(new CliJsonResponse<TDataType>(stdout));
       }
     });
   });
