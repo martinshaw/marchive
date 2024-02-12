@@ -331,6 +331,9 @@ importers:
       electron-window-state:
         specifier: ^5.0.3
         version: 5.0.3
+      generic-pool:
+        specifier: ^3.9.0
+        version: 3.9.0
       logger:
         specifier: workspace:^
         version: link:../logger
@@ -3359,7 +3362,7 @@ packages:
       webpack-cli: 5.x.x
     dependencies:
       webpack: 5.90.1(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack@5.90.1)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.1)(webpack-dev-server@4.15.1)(webpack@5.90.1)
     dev: true
 
   /@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.90.1):
@@ -3370,7 +3373,7 @@ packages:
       webpack-cli: 5.x.x
     dependencies:
       webpack: 5.90.1(webpack-cli@5.1.4)
-      webpack-cli: 5.1.4(webpack@5.90.1)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.1)(webpack-dev-server@4.15.1)(webpack@5.90.1)
     dev: true
 
   /@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@4.15.1)(webpack@5.90.1):
@@ -6274,6 +6277,11 @@ packages:
       strip-ansi: 6.0.1
       wide-align: 1.1.5
     dev: true
+
+  /generic-pool@3.9.0:
+    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
+    engines: {node: '>= 4'}
+    dev: false
 
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -11784,7 +11792,7 @@ packages:
       tapable: 2.2.1
       terser-webpack-plugin: 5.3.10(webpack@5.90.1)
       watchpack: 2.4.0
-      webpack-cli: 5.1.4(webpack@5.90.1)
+      webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.1)(webpack-dev-server@4.15.1)(webpack@5.90.1)
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - '@swc/core'
