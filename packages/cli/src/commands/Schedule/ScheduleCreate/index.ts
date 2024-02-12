@@ -28,7 +28,7 @@ const ScheduleCreate = async (
   intervalInSeconds?: number | null | undefined,
   downloadLocation?: string | null | undefined,
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     intervalInSeconds = (
       intervalInSeconds == null ? null : parseInt(intervalInSeconds + "")
     ) as number | null;
@@ -130,7 +130,7 @@ const ScheduleCreate = async (
 
     return new MessageResponse(`Created new Schedule with ID ${schedule.id}`, [
       schedule,
-    ]).send();
+    ]);
   });
 };
 

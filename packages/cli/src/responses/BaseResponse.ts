@@ -13,13 +13,13 @@ import process from "node:process";
 
 abstract class BaseResponse<TDataType extends any[] = any[]> {
   constructor(
-    protected isSuccess: boolean,
+    protected success: boolean,
     protected message: string,
-    protected data: TDataType
+    protected data: TDataType,
   ) {}
 
-  public getIsSuccess(): typeof this.isSuccess {
-    return this.isSuccess;
+  public getSuccess(): typeof this.success {
+    return this.success;
   }
 
   public getMessage(): typeof this.message {
@@ -30,13 +30,25 @@ abstract class BaseResponse<TDataType extends any[] = any[]> {
     return this.data;
   }
 
-  protected abstract guiResponse(): never;
-  protected abstract jsonResponse(): never;
+  public toJson(): {
+    success: boolean;
+    message: string;
+    data: TDataType;
+  } {
+    return {
+      success: this.getSuccess(),
+      message: this.getMessage(),
+      data: this.getData(),
+    };
+  }
 
-  public send(): never {
+  protected abstract guiResponseToConsole(): never;
+  protected abstract jsonResponseToConsole(): never;
+
+  public respondToConsole(): never {
     return process.argv.includes("--json") || process.argv.includes("-j")
-      ? this.jsonResponse()
-      : this.guiResponse();
+      ? this.jsonResponseToConsole()
+      : this.guiResponseToConsole();
   }
 }
 

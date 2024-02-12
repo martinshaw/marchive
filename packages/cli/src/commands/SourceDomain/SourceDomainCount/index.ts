@@ -14,7 +14,7 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const SourceDomainCount = async () => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const count = await SourceDomain.count();
 
     return new MessageResponse(
@@ -24,7 +24,7 @@ const SourceDomainCount = async () => {
           count,
         },
       ],
-    ).send();
+    );
   });
 };
 

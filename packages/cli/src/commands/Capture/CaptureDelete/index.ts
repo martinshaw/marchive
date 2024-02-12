@@ -16,7 +16,7 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const CaptureDelete = async (captureId: string, alsoDeleteFiles?: boolean) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(captureId)))
       throw new ErrorResponse("Capture ID must be a number");
 
@@ -82,7 +82,7 @@ const CaptureDelete = async (captureId: string, alsoDeleteFiles?: boolean) => {
           id: captureId,
         },
       ],
-    ).send();
+    );
   });
 };
 

@@ -18,7 +18,9 @@ SourceCreate.description("Create a new Source")
   .argument("<url>", "Source URL")
   .argument("<dataProviderIdentifier>", "Identifier for the data provider")
   .action(async (url: string, dataProviderIdentifier: string) =>
-    action(url, dataProviderIdentifier),
+    action(url, dataProviderIdentifier).then((action) =>
+      action.respondToConsole(),
+    ),
   );
 
 export default SourceCreate;

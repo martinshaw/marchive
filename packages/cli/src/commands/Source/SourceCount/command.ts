@@ -14,6 +14,8 @@ import action from ".";
 
 const SourceCount = new commander.Command("source:count");
 
-SourceCount.description("Get the count of Sources").action(action);
+SourceCount.description("Get the count of Sources").action(() =>
+  action().then((action) => action.respondToConsole()),
+);
 
 export default SourceCount;

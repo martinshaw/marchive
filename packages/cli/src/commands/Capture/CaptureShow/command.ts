@@ -24,7 +24,10 @@ CaptureShow.description("Get singular Capture by ID")
       optionsAndArguments: {
         [key: string]: string | number | boolean;
       },
-    ) => action(captureId, optionsAndArguments),
+    ) =>
+      action(captureId, optionsAndArguments).then((action) =>
+        action.respondToConsole(),
+      ),
   );
 
 export default CaptureShow;

@@ -14,6 +14,8 @@ import action from ".";
 let DataProviderValidate = new commander.Command("data-provider:validate")
   .description("Validate Data Providers by URL")
   .argument("<url>", "URL to be validated")
-  .action(async (url: string) => action(url));
+  .action(async (url: string) =>
+    action(url).then((action) => action.respondToConsole()),
+  );
 
 export default DataProviderValidate;

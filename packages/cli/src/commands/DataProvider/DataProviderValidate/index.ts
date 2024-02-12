@@ -15,10 +15,10 @@ import { validateUrlWithDataProviders } from "data-providers";
 import { DataProviderSerializedType } from "common-types";
 
 let DataProviderValidate = async (url: string) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     // Reduce unnecessary checks by ignoring URLs shorter than 4 characters (e.g. a.co)
     if (url.length < 4) {
-      return new ErrorResponse("URL must be at least 4 characters long").send();
+      return new ErrorResponse("URL must be at least 4 characters long");
     }
 
     const urlRegex = /^(http|https|ftp|file):\/\/[^ "]+$/;
@@ -41,7 +41,7 @@ let DataProviderValidate = async (url: string) => {
         description: "Description",
         iconInformation: "Icon Information",
       },
-    ).send();
+    );
   });
 };
 

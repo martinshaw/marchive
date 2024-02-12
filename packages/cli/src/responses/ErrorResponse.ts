@@ -21,7 +21,7 @@ class ErrorResponse extends BaseResponse {
     super(false, message, data);
   }
 
-  public send(): never {
+  public respondToConsole(): never {
     /**
      * Don't need to log the error in the command's code file. When an ErrorResponse or error is thrown,
      * the catchErrorsWithErrorResponse() method will log the error before printing the
@@ -31,21 +31,19 @@ class ErrorResponse extends BaseResponse {
     // TODO: Something to do with winston config is causing Winston not to be logging errors at all
     if (this.error != null) logger.error(this.error);
 
-    return super.send();
+    return super.respondToConsole();
   }
 
-  protected guiResponse(): never {
+  protected guiResponseToConsole(): never {
     console.log(this.getMessage());
     process.exit(1);
   }
 
-  protected jsonResponse(): never {
+  protected jsonResponseToConsole(): never {
     console.log(
       JSON.stringify({
-        success: this.getIsSuccess(),
-        message: this.getMessage(),
+        ...super.toJson(),
         detailedMessage: this.error?.message ?? null,
-        data: this.getData(),
       }),
     );
 
@@ -53,13 +51,15 @@ class ErrorResponse extends BaseResponse {
   }
 
   public static async catchErrorsWithErrorResponse(
-    callback: () => never | Promise<never>,
+    callback: () => BaseResponse | Promise<BaseResponse>,
   ) {
-    return this.catchErrorsWithErrorResponseAllowingPerpetualCommand(callback);
+    return this.catchErrorsWithErrorResponseAllowingPerpetualCommand(
+      callback,
+    ) as BaseResponse | Promise<BaseResponse>;
   }
 
   public static async catchErrorsWithErrorResponseAllowingPerpetualCommand(
-    callback: () => never | Promise<never> | void | Promise<void>,
+    callback: () => BaseResponse | Promise<BaseResponse> | void | Promise<void>,
   ) {
     try {
       return await callback();
@@ -69,7 +69,7 @@ class ErrorResponse extends BaseResponse {
        * user-friendly message and the original error (optionally)
        */
       if (error instanceof ErrorResponse || error instanceof BaseResponse) {
-        return error.send();
+        return error;
       }
 
       /**
@@ -86,7 +86,7 @@ class ErrorResponse extends BaseResponse {
             detailedMessage: error instanceof Error ? error.message : null,
           },
         ],
-      ).send();
+      );
     }
   }
 }

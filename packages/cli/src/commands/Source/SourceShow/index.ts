@@ -28,7 +28,7 @@ let SourceShow = async (
     [key: string]: string | number | boolean;
   },
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(sourceId))) {
       throw new ErrorResponse("Source ID must be a number");
     }
@@ -59,7 +59,7 @@ let SourceShow = async (
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       sourceDomainId: "Source Domain ID",
-    }).send();
+    });
   });
 };
 

@@ -30,7 +30,7 @@ export const [
 let StoredSettingList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
 }) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const storedSettings = await StoredSetting.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
@@ -44,7 +44,7 @@ let StoredSettingList = async (optionsAndArguments: {
       createdAt: "Created At",
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
-    }).send();
+    });
   });
 };
 

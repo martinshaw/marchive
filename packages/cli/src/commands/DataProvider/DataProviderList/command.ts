@@ -14,6 +14,6 @@ import action from ".";
 
 let DataProviderList = new commander.Command("data-provider:list")
   .description("Get Data Providers")
-  .action(action);
+  .action(() => action().then((action) => action.respondToConsole()));
 
 export default DataProviderList;

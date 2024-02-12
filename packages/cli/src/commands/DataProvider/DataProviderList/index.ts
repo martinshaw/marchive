@@ -15,7 +15,7 @@ import { getDataProviders } from "data-providers";
 import { DataProviderSerializedType } from "common-types";
 
 let DataProviderList = async () => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const dataProviders = await getDataProviders().then(
       (validDataProvidersForUrl) =>
         Promise.all(
@@ -31,7 +31,7 @@ let DataProviderList = async () => {
         name: "Name",
         description: "Description",
       },
-    ).send();
+    );
   });
 };
 

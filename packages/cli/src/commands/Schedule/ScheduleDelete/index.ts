@@ -15,7 +15,7 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const ScheduleDelete = async (scheduleId: string) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(scheduleId)))
       throw new ErrorResponse("Schedule ID must be a number");
 
@@ -71,7 +71,7 @@ const ScheduleDelete = async (scheduleId: string) => {
           id: scheduleId,
         },
       ],
-    ).send();
+    );
   });
 };
 

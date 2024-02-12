@@ -14,6 +14,8 @@ import action from ".";
 
 const ScheduleCount = new commander.Command("schedule:count");
 
-ScheduleCount.description("Get the count of Schedules").action(action);
+ScheduleCount.description("Get the count of Schedules").action(() =>
+  action().then((action) => action.respondToConsole()),
+);
 
 export default ScheduleCount;

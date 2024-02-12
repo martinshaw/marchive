@@ -21,7 +21,10 @@ CaptureDelete.description("Delete a Capture")
     async (
       captureId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-    ) => action(captureId, optionsAndArguments?.alsoDeleteFiles as boolean),
+    ) =>
+      action(captureId, optionsAndArguments?.alsoDeleteFiles as boolean).then(
+        (action) => action.respondToConsole(),
+      ),
   );
 
 export default CaptureDelete;

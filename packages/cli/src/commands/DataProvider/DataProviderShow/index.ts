@@ -15,7 +15,7 @@ import { getDataProviderByIdentifier } from "data-providers";
 import { DataProviderSerializedType } from "common-types";
 
 let DataProviderShow = async (dataProviderIdentifier: string) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const dataProvider = await getDataProviderByIdentifier(
       dataProviderIdentifier,
     );
@@ -32,7 +32,7 @@ let DataProviderShow = async (dataProviderIdentifier: string) => {
         name: "Name",
         description: "Description",
       },
-    ).send();
+    );
   });
 };
 

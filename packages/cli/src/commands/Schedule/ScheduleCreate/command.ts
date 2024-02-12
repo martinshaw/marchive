@@ -33,7 +33,7 @@ ScheduleCreate.description("Create a new Schedule")
         sourceId,
         optionsAndArguments?.intervalInSeconds as number | null,
         optionsAndArguments?.downloadLocation as string | null,
-      ),
+      ).then((action) => action.respondToConsole()),
   );
 
 export default ScheduleCreate;

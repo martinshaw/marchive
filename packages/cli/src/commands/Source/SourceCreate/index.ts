@@ -21,7 +21,7 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const SourceCreate = async (url: string, dataProviderIdentifier: string) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     url = url.trim();
     url =
       url.startsWith("http:") || url.startsWith("https:")
@@ -101,7 +101,7 @@ const SourceCreate = async (url: string, dataProviderIdentifier: string) => {
 
     return new MessageResponse(`Created new Source with ID ${source.id}`, [
       source,
-    ]).send();
+    ]);
   });
 };
 

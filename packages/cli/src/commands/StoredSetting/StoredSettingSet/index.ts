@@ -22,7 +22,7 @@ let StoredSettingSet = async (
   key: StoredSettingKeyType,
   value: string | number | boolean,
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (!storedSettingKeys.includes(key))
       throw new ErrorResponse(`Invalid key: ${key}`, null, [
         { validKeys: storedSettingKeys },
@@ -46,7 +46,7 @@ let StoredSettingSet = async (
       createdAt: "Created At",
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
-    }).send();
+    });
   });
 };
 

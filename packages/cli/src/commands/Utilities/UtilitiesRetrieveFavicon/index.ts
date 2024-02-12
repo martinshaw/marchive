@@ -14,7 +14,7 @@ import MessageResponse from "../../../responses/MessageResponse";
 import { retrieveAndStoreFaviconFromUrl } from "data-providers";
 
 let UtilitiesRetrieveFavicon = async (url: string, store?: boolean) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     let urlDomainName: string | null = null;
     try {
       const safeUrl =
@@ -48,7 +48,7 @@ let UtilitiesRetrieveFavicon = async (url: string, store?: boolean) => {
     return new MessageResponse(
       `Found favicon for URL: '${faviconPathInfo.url}'`,
       [faviconPathInfo],
-    ).send();
+    );
   });
 };
 

@@ -16,6 +16,8 @@ const ScheduleDelete = new commander.Command("schedule:delete");
 
 ScheduleDelete.description("Delete a Schedule")
   .argument("<schedule-id>", "Schedule ID")
-  .action(async (scheduleId: string) => action(scheduleId));
+  .action(async (scheduleId: string) =>
+    action(scheduleId).then((action) => action.respondToConsole()),
+  );
 
 export default ScheduleDelete;

@@ -38,7 +38,7 @@ export const [
 let SourceDomainList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
 }) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const sourceDomains = await SourceDomain.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
@@ -56,7 +56,7 @@ let SourceDomainList = async (optionsAndArguments: {
       createdAt: "Created At",
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
-    }).send();
+    });
   });
 };
 

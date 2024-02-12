@@ -22,6 +22,8 @@ let StoredSettingGet = new commander.Command("stored-setting:get")
     "<key>",
     `Key of Stored Setting (valid keys: ${storedSettingKeys.join(" | ")})`,
   )
-  .action(async (key: StoredSettingKeyType) => action(key));
+  .action(async (key: StoredSettingKeyType) =>
+    action(key).then((action) => action.respondToConsole()),
+  );
 
 export default StoredSettingGet;

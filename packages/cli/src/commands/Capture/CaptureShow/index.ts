@@ -28,7 +28,7 @@ let CaptureShow = async (
     [key: string]: string | number | boolean;
   },
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(captureId))) {
       throw new ErrorResponse("Capture ID must be a number");
     }
@@ -56,7 +56,7 @@ let CaptureShow = async (
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       scheduleId: "Schedule ID",
-    }).send();
+    });
   });
 };
 

@@ -18,7 +18,7 @@ StoredSettingList = addTypeormWhereCommanderOptions(StoredSettingList);
 
 StoredSettingList.description("Get Stored Settings").action(
   async (optionsAndArguments: { [key: string]: string | number | boolean }) =>
-    action(optionsAndArguments),
+    action(optionsAndArguments).then((action) => action.respondToConsole()),
 );
 
 export default StoredSettingList;

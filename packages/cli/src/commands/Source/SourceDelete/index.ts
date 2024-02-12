@@ -16,7 +16,7 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const SourceDelete = async (sourceId: string, alsoDeleteFiles?: boolean) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(sourceId)))
       throw new ErrorResponse("Source ID must be a number");
 
@@ -102,7 +102,7 @@ const SourceDelete = async (sourceId: string, alsoDeleteFiles?: boolean) => {
           id: sourceId,
         },
       ],
-    ).send();
+    );
   });
 };
 

@@ -19,7 +19,7 @@ import {
 } from "common-types/src/entities/StoredSetting";
 
 let StoredSettingGet = async (key: StoredSettingKeyType) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (!storedSettingKeys.includes(key))
       throw new ErrorResponse(`Invalid key: ${key}`, null, [
         { validKeys: storedSettingKeys },
@@ -37,7 +37,7 @@ let StoredSettingGet = async (key: StoredSettingKeyType) => {
       createdAt: "Created At",
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
-    }).send();
+    });
   });
 };
 

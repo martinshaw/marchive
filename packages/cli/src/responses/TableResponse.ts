@@ -15,7 +15,7 @@ import BaseResponse from "./BaseResponse";
 import { JSONValue } from "types-json";
 
 class TableResponse<
-  TEntityType extends BaseEntity | { [key: string]: JSONValue }
+  TEntityType extends BaseEntity | { [key: string]: JSONValue },
 > extends BaseResponse<TEntityType[]> {
   protected tableRowColumns: string[][] = [];
 
@@ -24,12 +24,12 @@ class TableResponse<
     data: TEntityType[] = [],
     protected tableColumnHeadings: Partial<{
       [columnName in keyof TEntityType]: string;
-    }> = {}
+    }> = {},
   ) {
     super(
       true,
       `${data.length} ${entityTerm}${data.length === 1 ? "" : "s"} found`,
-      data
+      data,
     );
 
     this.tableRowColumns = [];
@@ -38,32 +38,26 @@ class TableResponse<
       const tableColumnHeadingsKeys = Object.keys(tableColumnHeadings);
       this.tableRowColumns.push(
         tableColumnHeadingsKeys.map(
-          (key) => entity[key as keyof TEntityType] + ""
-        )
+          (key) => entity[key as keyof TEntityType] + "",
+        ),
       );
     });
   }
 
-  protected guiResponse(): never {
+  protected guiResponseToConsole(): never {
     console.log(
       table(this.tableRowColumns, {
         header: {
           alignment: "center",
           content: this.getMessage(),
         },
-      })
+      }),
     );
     process.exit(0);
   }
 
-  protected jsonResponse(): never {
-    console.log(
-      JSON.stringify({
-        success: this.getIsSuccess(),
-        message: this.getMessage(),
-        data: this.getData(),
-      })
-    );
+  protected jsonResponseToConsole(): never {
+    console.log(JSON.stringify(this.toJson()));
 
     process.exit(0);
   }

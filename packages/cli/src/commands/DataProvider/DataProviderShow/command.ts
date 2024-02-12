@@ -16,7 +16,7 @@ let DataProviderShow = new commander.Command("data-provider:show")
   .argument("<data-provider-identifier>", "Data Provider Identifier")
   .description("Get singular Data Providers by Identifier")
   .action(async (dataProviderIdentifier: string) =>
-    action(dataProviderIdentifier),
+    action(dataProviderIdentifier).then((action) => action.respondToConsole()),
   );
 
 export default DataProviderShow;

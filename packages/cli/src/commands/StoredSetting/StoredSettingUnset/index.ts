@@ -18,17 +18,17 @@ import {
 } from "common-types/src/entities/StoredSetting";
 
 let StoredSettingUnset = async (key: StoredSettingKeyType) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (!storedSettingKeys.includes(key))
-      throw new ErrorResponse(`Invalid key: ${key}`, null, [
+      return new ErrorResponse(`Invalid key: ${key}`, null, [
         { validKeys: storedSettingKeys },
       ]);
 
     const result = await unsetStoredSetting(key);
     if (result === false)
-      throw new ErrorResponse(`The Stored Setting was unable to be unset`);
+      return new ErrorResponse(`The Stored Setting was unable to be unset`);
 
-    return new MessageResponse(`Stored Setting unset`).send();
+    return new MessageResponse(`Stored Setting unset`);
   });
 };
 

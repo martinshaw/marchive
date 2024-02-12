@@ -24,7 +24,10 @@ ScheduleShow.description("Get singular Schedule by ID")
       optionsAndArguments: {
         [key: string]: string | number | boolean;
       },
-    ) => action(scheduleId, optionsAndArguments),
+    ) =>
+      action(scheduleId, optionsAndArguments).then((action) =>
+        action.respondToConsole(),
+      ),
   );
 
 export default ScheduleShow;

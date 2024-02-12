@@ -26,7 +26,7 @@ let SourceDomainShow = async (
   sourceDomainId: string,
   optionsAndArguments: { [key: string]: string | number | boolean },
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(sourceDomainId))) {
       throw new ErrorResponse("Source Domain ID must be a number");
     }
@@ -51,7 +51,7 @@ let SourceDomainShow = async (
       createdAt: "Created At",
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
-    }).send();
+    });
   });
 };
 

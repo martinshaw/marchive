@@ -45,7 +45,7 @@ export const [
 let ScheduleList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
 }) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const schedules = await Schedule.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
@@ -68,7 +68,7 @@ let ScheduleList = async (optionsAndArguments: {
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       sourceId: "Source ID",
-    }).send();
+    });
   });
 };
 

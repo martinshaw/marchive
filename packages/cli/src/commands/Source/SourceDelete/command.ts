@@ -25,7 +25,7 @@ SourceDelete.description("Delete a Source")
       action(
         sourceId,
         optionsAndArguments?.alsoDeleteFiles as boolean | undefined,
-      ),
+      ).then((action) => action.respondToConsole()),
   );
 
 export default SourceDelete;

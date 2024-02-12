@@ -14,6 +14,8 @@ import action from ".";
 
 const SourceDomainCount = new commander.Command("source-domain:count");
 
-SourceDomainCount.description("Get the count of Source Domains").action(action);
+SourceDomainCount.description("Get the count of Source Domains").action(() =>
+  action().then((action) => action.respondToConsole()),
+);
 
 export default SourceDomainCount;

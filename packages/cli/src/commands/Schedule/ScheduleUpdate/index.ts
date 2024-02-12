@@ -30,7 +30,7 @@ const ScheduleUpdate = async (
   enable?: boolean | string | null,
   disable?: boolean | string | null,
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(scheduleId)))
       throw new ErrorResponse("Schedule ID must be a number");
 
@@ -166,7 +166,7 @@ const ScheduleUpdate = async (
     return new MessageResponse(
       `Updated existing Schedule with ID ${updatedSchedule.id}`,
       [updatedSchedule],
-    ).send();
+    );
   });
 };
 

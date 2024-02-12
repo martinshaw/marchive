@@ -47,7 +47,7 @@ export const [
 let SourceList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
 }) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const sources = await Source.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
@@ -69,7 +69,7 @@ let SourceList = async (optionsAndArguments: {
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       sourceDomainId: "Source Domain ID",
-    }).send();
+    });
   });
 };
 

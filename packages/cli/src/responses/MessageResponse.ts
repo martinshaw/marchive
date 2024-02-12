@@ -16,19 +16,13 @@ class MessageResponse extends BaseResponse {
     super(true, message, data);
   }
 
-  protected guiResponse(): never {
+  protected guiResponseToConsole(): never {
     console.log(this.getMessage());
     process.exit(0);
   }
 
-  protected jsonResponse(): never {
-    console.log(
-      JSON.stringify({
-        success: this.getIsSuccess(),
-        message: this.getMessage(),
-        data: this.getData(),
-      })
-    );
+  protected jsonResponseToConsole(): never {
+    console.log(JSON.stringify(super.toJson()));
 
     process.exit(0);
   }

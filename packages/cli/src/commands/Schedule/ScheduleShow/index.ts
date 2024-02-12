@@ -28,7 +28,7 @@ let ScheduleShow = async (
     [key: string]: string | number | boolean;
   },
 ) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     if (isNaN(parseInt(scheduleId))) {
       throw new ErrorResponse("Schedule ID must be a number");
     }
@@ -60,7 +60,7 @@ let ScheduleShow = async (
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       sourceId: "Source ID",
-    }).send();
+    });
   });
 };
 

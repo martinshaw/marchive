@@ -19,7 +19,7 @@ const SourceCount = async () => {
     {
       count,
     },
-  ]).send();
+  ]);
 };
 
 export default SourceCount;

@@ -37,7 +37,7 @@ ScheduleUpdate.description("Update an existing Schedule")
         optionsAndArguments?.downloadLocation as string | null | undefined,
         optionsAndArguments?.enable as boolean | null | undefined,
         optionsAndArguments?.disable as boolean | null | undefined,
-      ),
+      ).then((action) => action.respondToConsole()),
   );
 
 export default ScheduleUpdate;

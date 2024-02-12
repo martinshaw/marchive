@@ -22,7 +22,7 @@ SourceList = addTypeormRelationsCommanderOptions(SourceList);
 
 SourceList.description("Get Sources").action(
   async (optionsAndArguments: { [key: string]: string | number | boolean }) =>
-    action(optionsAndArguments),
+    action(optionsAndArguments).then((action) => action.respondToConsole()),
 );
 
 export default SourceList;

@@ -37,9 +37,9 @@ import ScheduleDelete from "./commands/Schedule/ScheduleDelete/command";
 import WatchSchedules from "./commands/Watch/WatchSchedules";
 import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
 
+import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon/command";
 import UtilitiesTest from "./commands/Utilities/UtilitiesTest";
 import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
-import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon/command";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();

@@ -22,7 +22,10 @@ SourceDomainShow.description("Get singular Source Domain by ID")
     async (
       sourceDomainId: string,
       optionsAndArguments: { [key: string]: string | number | boolean },
-    ) => action(sourceDomainId, optionsAndArguments),
+    ) =>
+      action(sourceDomainId, optionsAndArguments).then((action) =>
+        action.respondToConsole(),
+      ),
   );
 
 export default SourceDomainShow;

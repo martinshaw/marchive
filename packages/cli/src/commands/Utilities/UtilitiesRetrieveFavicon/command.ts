@@ -10,7 +10,7 @@ Description: description
 */
 
 import commander from "commander";
-import action from '.'
+import action from ".";
 
 let UtilitiesRetrieveFavicon = new commander.Command(
   "utilities:retrieve-favicon",
@@ -24,10 +24,10 @@ let UtilitiesRetrieveFavicon = new commander.Command(
       optionsAndArguments: {
         [key: string]: string | number | boolean;
       },
-    ) => action(
-        url
-        optionsAndArguments?.store as boolean | undefined
-    )
+    ) =>
+      action(url, optionsAndArguments?.store as boolean | undefined).then(
+        (action) => action.respondToConsole(),
+      ),
   );
 
 export default UtilitiesRetrieveFavicon;

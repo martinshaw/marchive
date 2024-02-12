@@ -40,7 +40,7 @@ export const [
 let CaptureList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
 }) => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const captures = await Capture.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
@@ -62,7 +62,7 @@ let CaptureList = async (optionsAndArguments: {
       updatedAt: "Updated At",
       deletedAt: "Deleted At",
       scheduleId: "Schedule ID",
-    }).send();
+    });
   });
 };
 

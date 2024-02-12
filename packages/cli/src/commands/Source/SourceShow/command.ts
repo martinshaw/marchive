@@ -24,7 +24,10 @@ SourceShow.description("Get singular Source by ID")
       optionsAndArguments: {
         [key: string]: string | number | boolean;
       },
-    ) => action(sourceId, optionsAndArguments),
+    ) =>
+      action(sourceId, optionsAndArguments).then((action) =>
+        action.respondToConsole(),
+      ),
   );
 
 export default SourceShow;

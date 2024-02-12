@@ -22,7 +22,7 @@ SourceDomainList = addTypeormRelationsCommanderOptions(SourceDomainList);
 
 SourceDomainList.description("Get Source Domains").action(
   async (optionsAndArguments: { [key: string]: string | number | boolean }) =>
-    action(optionsAndArguments),
+    action(optionsAndArguments).then((action) => action.respondToConsole()),
 );
 
 export default SourceDomainList;

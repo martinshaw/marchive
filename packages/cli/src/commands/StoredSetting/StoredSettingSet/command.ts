@@ -24,7 +24,7 @@ let StoredSettingSet = new commander.Command("stored-setting:set")
   )
   .argument("<value>", `New Value of Stored Setting`)
   .action(async (key: StoredSettingKeyType, value: string | number | boolean) =>
-    action(key, value),
+    action(key, value).then((action) => action.respondToConsole()),
   );
 
 export default StoredSettingSet;

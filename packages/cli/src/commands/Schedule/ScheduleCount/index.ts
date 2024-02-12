@@ -14,14 +14,14 @@ import ErrorResponse from "../../../responses/ErrorResponse";
 import MessageResponse from "../../../responses/MessageResponse";
 
 const ScheduleCount = async () => {
-  ErrorResponse.catchErrorsWithErrorResponse(async () => {
+  return ErrorResponse.catchErrorsWithErrorResponse(async () => {
     const count = await Schedule.count();
 
     return new MessageResponse(`${count} Schedule${count === 1 ? "" : "s"}`, [
       {
         count,
       },
-    ]).send();
+    ]);
   });
 };
 
