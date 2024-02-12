@@ -9,9 +9,10 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
+import type CommonEntityType from "./Common";
 import { type SourceEntityType } from "./Source";
 
-export type SourceDomainEntityType = {
+export type SourceDomainEntityType = CommonEntityType & {
   name: string;
   url: string | null;
   faviconPath: string | null;

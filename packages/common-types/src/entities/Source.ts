@@ -9,6 +9,7 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
+import type CommonEntityType from "./Common";
 import { type ScheduleEntityType } from "./Schedule";
 import { type SourceDomainEntityType } from "./SourceDomain";
 
@@ -17,7 +18,7 @@ export type SourceUseStartOrEndCursorValueType =
   | (typeof sourceUseStartOrEndCursorValues)[number]
   | null;
 
-export type SourceEntityType = {
+export type SourceEntityType = CommonEntityType & {
   dataProviderIdentifier: string;
   url: string;
   name: string | null;

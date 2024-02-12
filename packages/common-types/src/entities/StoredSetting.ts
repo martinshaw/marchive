@@ -9,6 +9,8 @@ Modified: 2023-06-21T16:32:11.327Z
 Description: description
 */
 
+import type CommonEntityType from "./Common";
+
 export const storedSettingKeys = [
   "MARCHIVE_IS_SETUP",
   "ELECTRON_IS_USED",
@@ -20,7 +22,7 @@ export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
 const storedSettingTypes = ["string", "number", "boolean"];
 export type StoredSettingTypeType = (typeof storedSettingTypes)[number];
 
-export type StoredSettingEntityType = {
+export type StoredSettingEntityType = CommonEntityType & {
   key: StoredSettingKeyType;
   value: string;
   type: StoredSettingTypeType;

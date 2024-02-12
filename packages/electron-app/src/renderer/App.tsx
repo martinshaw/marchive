@@ -11,7 +11,6 @@ function Hello() {
     
     window.electron.ipcRenderer.once('sources.list', (sources, error) => {
       if (error != null) {
-        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
         alert('response error ' + (error as Error).message);
         return;
       }
@@ -22,12 +21,11 @@ function Hello() {
     });
   }, []);
 
-  const showSource = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('sources.show', 100);
+  const showSource = useCallback((sourceId: number) => {
+    window.electron.ipcRenderer.sendMessage('sources.show', sourceId);
     
     window.electron.ipcRenderer.once('sources.show', (source, error) => {
       if (error != null) {
-        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
         alert('response error ' + (error as Error).message);
         return;
       } 
@@ -43,7 +41,6 @@ function Hello() {
     
     window.electron.ipcRenderer.once('source-domains.list', (sourceDomains, error) => {
       if (error != null) {
-        console.log('response error is an error type ', error instanceof Error ? 1 : 0);
         alert('response error ' + (error as Error).message);
         return;
       }
@@ -75,7 +72,11 @@ function Hello() {
           Get all sources
         </button>
 
-        <button type="button" onClick={() => showSource()}>
+        <button type="button" onClick={() => showSource(1)}>
+          Show source 1
+        </button>
+
+        <button type="button" onClick={() => showSource(100)}>
           Show source 100
         </button>
 
