@@ -4,42 +4,42 @@ import { dataSource } from "database";
 import logToConsoleGlobalOption from "./options/logToConsoleGlobalOption";
 import jsonGlobalOption from "./options/jsonGlobalOption";
 
-import SourceList from "./commands/Source/SourceList";
-import SourceShow from "./commands/Source/SourceShow";
-import SourceCount from "./commands/Source/SourceCount";
-import SourceCreate from "./commands/Source/SourceCreate";
-import SourceDelete from "./commands/Source/SourceDelete";
+import SourceList from "./commands/Source/SourceList/command";
+import SourceShow from "./commands/Source/SourceShow/command";
+import SourceCount from "./commands/Source/SourceCount/command";
+import SourceCreate from "./commands/Source/SourceCreate/command";
+import SourceDelete from "./commands/Source/SourceDelete/command";
 
-import SourceDomainList from "./commands/SourceDomain/SourceDomainList";
-import SourceDomainShow from "./commands/SourceDomain/SourceDomainShow";
-import SourceDomainCount from "./commands/SourceDomain/SourceDomainCount";
+import SourceDomainList from "./commands/SourceDomain/SourceDomainList/command";
+import SourceDomainShow from "./commands/SourceDomain/SourceDomainShow/command";
+import SourceDomainCount from "./commands/SourceDomain/SourceDomainCount/command";
 
-import StoredSettingList from "./commands/StoredSetting/StoredSettingList";
-import StoredSettingGet from "./commands/StoredSetting/StoredSettingGet";
-import StoredSettingSet from "./commands/StoredSetting/StoredSettingSet";
-import StoredSettingUnset from "./commands/StoredSetting/StoredSettingUnset";
+import StoredSettingList from "./commands/StoredSetting/StoredSettingList/command";
+import StoredSettingGet from "./commands/StoredSetting/StoredSettingGet/command";
+import StoredSettingSet from "./commands/StoredSetting/StoredSettingSet/command";
+import StoredSettingUnset from "./commands/StoredSetting/StoredSettingUnset/command";
 
-import CaptureList from "./commands/Capture/CaptureList";
-import CaptureShow from "./commands/Capture/CaptureShow";
-import CaptureDelete from "./commands/Capture/CaptureDelete";
+import CaptureList from "./commands/Capture/CaptureList/command";
+import CaptureShow from "./commands/Capture/CaptureShow/command";
+import CaptureDelete from "./commands/Capture/CaptureDelete/command";
 
-import DataProviderList from "./commands/DataProvider/DataProviderList";
-import DataProviderShow from "./commands/DataProvider/DataProviderShow";
-import DataProviderValidate from "./commands/DataProvider/DataProviderValidate";
+import DataProviderList from "./commands/DataProvider/DataProviderList/command";
+import DataProviderShow from "./commands/DataProvider/DataProviderShow/command";
+import DataProviderValidate from "./commands/DataProvider/DataProviderValidate/command";
 
-import ScheduleList from "./commands/Schedule/ScheduleList";
-import ScheduleShow from "./commands/Schedule/ScheduleShow";
-import ScheduleCount from "./commands/Schedule/ScheduleCount";
-import ScheduleCreate from "./commands/Schedule/ScheduleCreate";
-import ScheduleUpdate from "./commands/Schedule/ScheduleUpdate";
-import ScheduleDelete from "./commands/Schedule/ScheduleDelete";
+import ScheduleList from "./commands/Schedule/ScheduleList/command";
+import ScheduleShow from "./commands/Schedule/ScheduleShow/command";
+import ScheduleCount from "./commands/Schedule/ScheduleCount/command";
+import ScheduleCreate from "./commands/Schedule/ScheduleCreate/command";
+import ScheduleUpdate from "./commands/Schedule/ScheduleUpdate/command";
+import ScheduleDelete from "./commands/Schedule/ScheduleDelete/command";
 
 import WatchSchedules from "./commands/Watch/WatchSchedules";
 import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
 
 import UtilitiesTest from "./commands/Utilities/UtilitiesTest";
 import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
-import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon";
+import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon/command";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
