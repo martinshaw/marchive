@@ -39,7 +39,7 @@ import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
 
 import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon/command";
 import UtilitiesTest from "./commands/Utilities/UtilitiesTest";
-import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
+// import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
 
 (async () => {
   if (dataSource.isInitialized !== true) await dataSource.initialize();
@@ -96,7 +96,7 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
 
     // Utilities commands
     .addCommand(UtilitiesTest)
-    .addCommand(UtilitiesIpc)
+    // .addCommand(UtilitiesIpc)
     .addCommand(UtilitiesRetrieveFavicon)
 
     .helpOption("-h, --help", "Display help for command")
