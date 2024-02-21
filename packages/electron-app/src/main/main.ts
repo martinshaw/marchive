@@ -30,7 +30,7 @@ import './ipc/Schedules';
 import './ipc/Sources';
 import './ipc/SourceDomains';
 import './ipc/Utilities';
-import './ipc/Processes';
+import './ipc/Watchers';
 import './ipc/Renderers';
 
 /**

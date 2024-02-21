@@ -9,7 +9,7 @@ Modified: 2023-09-06T03:31:41.596Z
 Description: description
 */
 
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 export type UtilityRetrieveFaviconActionResponseType = {
   url: string;

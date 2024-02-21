@@ -1,7 +1,7 @@
 import { SourcesChannels } from './ipc/Sources';
 import { CapturesChannels } from './ipc/Captures';
 import { SchedulesChannels } from './ipc/Schedules';
-import { ProcessesChannels } from './ipc/Processes';
+import { WatchersChannels } from './ipc/Watchers';
 import { RenderersChannels } from './ipc/Renderers';
 import { UtilitiesChannels } from './ipc/Utilities';
 import { DataProvidersChannels } from './ipc/DataProviders';
@@ -15,7 +15,7 @@ export type Channels =
   | SourcesChannels
   | SourceDomainsChannels
   | UtilitiesChannels
-  | ProcessesChannels
+  | WatchersChannels
   | RenderersChannels;
 
 async () => {

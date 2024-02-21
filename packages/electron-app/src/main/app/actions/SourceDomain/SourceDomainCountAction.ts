@@ -9,7 +9,7 @@ Modified: 2023-09-04T18:56:21.693Z
 Description: description
 */
 
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 const SourceDomainCountAction = async (): Promise<number> =>
   runCliCommand<{ count: number }>('source-domain:count').then(

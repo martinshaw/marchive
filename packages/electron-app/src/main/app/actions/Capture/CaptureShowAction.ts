@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type CaptureEntityType } from 'common-types';
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 const CaptureShowAction = async (
   captureId: number,

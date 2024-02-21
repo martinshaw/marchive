@@ -2,6 +2,11 @@
   "name": "electron-app",
   "version": "0.10.0",
   "private": true,
+  "author": {
+    "name": "Martin Shaw",
+    "email": "developer@martinshaw.co",
+    "url": "https://martinshaw.co"
+  },
   "packageManager": "pnpm@8.10.2",
   "engines": {
     "pnpm": ">=8.0.0",
@@ -87,6 +92,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
+    "source-map-support": "^0.5.21",
     "use-async-memo": "^1.2.5",
     "use-state-with-callback": "^3.0.2",
     "uuid": "^9.0.0"
@@ -138,6 +144,7 @@
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "types-json": "^4.0.1",
     "typescript": "^5.2.2",
     "url-loader": "^4.1.1",
     "webpack": "^5.88.2",

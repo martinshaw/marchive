@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type DataProviderSerializedType } from 'common-types';
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 const DataProviderListAction = async (): Promise<DataProviderSerializedType> =>
   runCliCommand<DataProviderSerializedType>('data-provider:list').then(

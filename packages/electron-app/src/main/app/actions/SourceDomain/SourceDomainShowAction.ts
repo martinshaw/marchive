@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type SourceDomainEntityType } from 'common-types';
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 const SourceDomainShowAction = async (
   sourceDomainId: number,

@@ -13,18 +13,29 @@ import logger from 'logger';
 import path from 'node:path';
 import { ChildProcess, fork } from 'node:child_process';
 import GenericPool from 'generic-pool';
+import {
+  readOnlyInternalMarchiveCliExecutable,
+  readOnlyInternalMarchiveCliPath,
+} from '../../../paths';
 
 const CliIpcCommunicableInstancePool = GenericPool.createPool<ChildProcess>(
   {
     create: async () => {
-      const modulePath = path.join(__dirname, 'processor.js');
-      const commandProcessor = fork(modulePath);
+      const modulePath = path.join(
+        readOnlyInternalMarchiveCliExecutable,
+        readOnlyInternalMarchiveCliPath,
+      );
+      const commandProcessor = fork(`${modulePath} utilities:ipc`);
 
+      console.log(`Forked command processor with pid ${commandProcessor.pid}`);
       logger.debug(`Forked command processor with pid ${commandProcessor.pid}`);
 
       return commandProcessor;
     },
     destroy: async (commandProcessor) => {
+      console.log(
+        `Destroying command processor with pid ${commandProcessor.pid}`,
+      );
       logger.debug(
         `Destroying command processor with pid ${commandProcessor.pid}`,
       );
@@ -44,3 +55,5 @@ const CliIpcCommunicableInstancePool = GenericPool.createPool<ChildProcess>(
 
 CliIpcCommunicableInstancePool.on('factoryCreateError', logger.error);
 CliIpcCommunicableInstancePool.on('factoryDestroyError', logger.error);
+
+export default CliIpcCommunicableInstancePool;

@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type StoredSettingEntityType } from 'common-types';
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 /**
  * @throws {Error}

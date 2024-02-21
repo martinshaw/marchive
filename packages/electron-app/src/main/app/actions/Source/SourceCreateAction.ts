@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type SourceEntityType } from 'common-types';
-import { runCliCommand } from '../../cli/runCliCommand';
+import runCliCommand from '../../cli/runCliCommand';
 
 const SourceCreateAction = async (
   url: string,
