@@ -27,12 +27,13 @@ let readOnlyInternalAssetsPath = path.join(readOnlyInternalRootPath, 'assets');
 /**
  * Path to the `marchive-cli` binary (when packaged) and the bundled `lib/index.js` (when not packaged).
  */
-const readOnlyInternalMarchiveCliPath = isPackaged.isPackaged
-  ? path.join(readOnlyInternalRootPath, 'cli', 'marchive-cli')
+
+const readOnlyInternalMarchiveCliScriptPath = isPackaged
+  ? ''
   : path.join(readOnlyInternalRootPath, '..', 'cli', 'lib', 'index.js');
 
-const readOnlyInternalMarchiveCliExecutable = isPackaged.isPackaged
-  ? ''
+const readOnlyInternalMarchiveCliExecutable = isPackaged
+  ? path.join(readOnlyInternalRootPath, '..', '..', '..', 'cli', 'marchive-cli')
   : 'node';
 
 /**
@@ -42,6 +43,6 @@ const readOnlyInternalMarchiveCliExecutable = isPackaged.isPackaged
 export {
   readOnlyInternalRootPath,
   readOnlyInternalAssetsPath,
-  readOnlyInternalMarchiveCliPath,
+  readOnlyInternalMarchiveCliScriptPath,
   readOnlyInternalMarchiveCliExecutable,
 };

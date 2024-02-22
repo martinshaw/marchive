@@ -215,6 +215,12 @@
     "extraResources": [
       "./assets/**"
     ],
+    "extraFiles": [
+      {
+        "from": "../cli/bin",
+        "to": "cli"
+      }
+    ],
     "publish": {
       "provider": "github",
       "owner": "martinshaw",

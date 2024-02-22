@@ -12,7 +12,7 @@ Description: description
 import { kebabCase } from 'change-case-commonjs';
 import {
   readOnlyInternalMarchiveCliExecutable,
-  readOnlyInternalMarchiveCliPath,
+  readOnlyInternalMarchiveCliScriptPath,
 } from '../../../paths';
 
 const formatCliCommandOptionsAsCliArguments = (
@@ -34,7 +34,7 @@ const formatCliCommand = (
   options: Record<string, any> = {},
   asJson: boolean = true,
 ): string =>
-  `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliPath} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
+  `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliScriptPath} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
     asJson ? '--json' : ''
   }`;
 
