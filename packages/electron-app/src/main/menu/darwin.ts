@@ -10,8 +10,8 @@ Description: description
 */
 
 import {
-  clearDatabaseAndDeleteDownloadsMenuAction,
-  clearDatabaseMenuAction,
+  // clearDatabaseAndDeleteDownloadsMenuAction,
+  // clearDatabaseMenuAction,
   needMoreSpaceMenuAction,
   retrieveIconForWebsiteMenuAction,
 } from './actions';
@@ -20,7 +20,7 @@ import { WindowMenuItemConstructorOptions } from '.';
 import { BrowserWindow, MenuItemConstructorOptions } from 'electron';
 
 const buildDarwinTemplate: (
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
 ) => MenuItemConstructorOptions[] = (mainWindow) => {
   const subMenuAbout: WindowMenuItemConstructorOptions = {
     label: 'Marchive',
@@ -61,7 +61,7 @@ const buildDarwinTemplate: (
         click: () => {
           mainWindow.webContents.send(
             'renderer.focused-window.navigate',
-            '/sources/create'
+            '/sources/create',
           );
         },
       },
@@ -100,18 +100,18 @@ const buildDarwinTemplate: (
   const subMenuMarchiveUtilities: MenuItemConstructorOptions = {
     label: 'Utilities',
     submenu: [
-      {
-        label: 'Clear Database',
-        click: async () => {
-          return clearDatabaseMenuAction(mainWindow);
-        },
-      },
-      {
-        label: 'Clear Database && Delete Downloads Folder',
-        click: async () => {
-          return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
-        },
-      },
+      // {
+      //   label: 'Clear Database',
+      //   click: async () => {
+      //     return clearDatabaseMenuAction(mainWindow);
+      //   },
+      // },
+      // {
+      //   label: 'Clear Database && Delete Downloads Folder',
+      //   click: async () => {
+      //     return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
+      //   },
+      // },
       {
         label: 'Retrieve Icon for Website',
         click: async () => {

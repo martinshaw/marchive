@@ -24,7 +24,7 @@ import { JSONValue } from 'types-json';
  *   allow "immediate" commands to be run in this way. This describes commands which return a result without
  *   entering a while-loop or similar mechanism for prolonged execution.
  */
-const runCliCommandUsingIpcPool = async <TDataType extends any>(
+const runImmediateCliCommandUsingIpcPool = async <TDataType extends any>(
   command: ImmediateCliCommandNames,
   functionArgs: JSONValue[] = [],
 ): Promise<CliJsonResponse<TDataType>> => {
@@ -68,4 +68,4 @@ const runCliCommandUsingIpcPool = async <TDataType extends any>(
   }
 };
 
-export default runCliCommandUsingIpcPool;
+export default runImmediateCliCommandUsingIpcPool;

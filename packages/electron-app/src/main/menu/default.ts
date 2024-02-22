@@ -10,16 +10,16 @@ Description: description
 */
 
 import {
-  clearDatabaseMenuAction,
+  // clearDatabaseMenuAction,
   needMoreSpaceMenuAction,
   retrieveIconForWebsiteMenuAction,
-  clearDatabaseAndDeleteDownloadsMenuAction,
+  // clearDatabaseAndDeleteDownloadsMenuAction,
 } from './actions';
 import { BrowserWindow } from 'electron';
 import { WindowMenuItemConstructorOptions } from '.';
 
 const buildDefaultTemplate: (
-  mainWindow: BrowserWindow
+  mainWindow: BrowserWindow,
 ) => WindowMenuItemConstructorOptions[] = (mainWindow) => {
   const templateDefault: WindowMenuItemConstructorOptions[] = [
     {
@@ -32,7 +32,7 @@ const buildDefaultTemplate: (
           click: () => {
             mainWindow.webContents.send(
               'renderer.focused-window.navigate',
-              '/sources/create'
+              '/sources/create',
             );
           },
         },
@@ -109,18 +109,18 @@ const buildDefaultTemplate: (
     {
       label: '&Utilities',
       submenu: [
-        {
-          label: '&Clear Database',
-          click: async () => {
-            return clearDatabaseMenuAction(mainWindow);
-          },
-        },
-        {
-          label: 'Clear Database && &Delete Downloads Folder',
-          click: async () => {
-            return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
-          },
-        },
+        // {
+        //   label: '&Clear Database',
+        //   click: async () => {
+        //     return clearDatabaseMenuAction(mainWindow);
+        //   },
+        // },
+        // {
+        //   label: 'Clear Database && &Delete Downloads Folder',
+        //   click: async () => {
+        //     return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
+        //   },
+        // },
         {
           label: 'Retrieve &Icon for Website',
           click: async () => {

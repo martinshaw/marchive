@@ -14,6 +14,7 @@ import {
   app,
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  ipcMain,
   nativeTheme,
   shell,
   TitleBarOverlay,
@@ -272,9 +273,8 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
-    /**
-     * TODO: Add spawning of 'watch' processes
-     */
+    ipcMain.emit('watchers.schedules.start');
+    ipcMain.emit('watchers.capture-parts.start');
 
     createTray();
 
@@ -309,9 +309,9 @@ app
 export const cleanupAndQuit = () => {
   logger.info('Cleaning up and quitting...');
 
-  // TODO: Kill child processes gracefully
+  // TODO: Kill child processes gracefully ???
 
-  // TODO: Release / delete locks on processes
+  // TODO: Release / delete locks on processes ???
 
   app.quit();
 };

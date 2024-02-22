@@ -10,13 +10,13 @@ Description: description
 */
 
 import { type SourceEntityType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const SourceCreateAction = async (
   url: string,
   dataProviderIdentifier: string,
 ): Promise<SourceEntityType> =>
-  runCliCommandUsingIpcPool<SourceEntityType>('source:create', [
+  runImmediateCliCommandUsingIpcPool<SourceEntityType>('source:create', [
     url,
     dataProviderIdentifier,
   ]).then((response) => response.getData()[0]);

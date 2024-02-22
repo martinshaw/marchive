@@ -10,10 +10,10 @@ Description: description
 */
 
 import { type CaptureEntityType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const CaptureListAction = async (): Promise<CaptureEntityType[]> =>
-  runCliCommandUsingIpcPool<CaptureEntityType>('capture:list').then(
+  runImmediateCliCommandUsingIpcPool<CaptureEntityType>('capture:list').then(
     (response) => response.getData(),
   );
 

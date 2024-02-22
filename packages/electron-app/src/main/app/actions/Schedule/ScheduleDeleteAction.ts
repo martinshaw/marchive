@@ -9,13 +9,13 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
  */
 const ScheduleDeleteAction = async (scheduleId: number): Promise<void> =>
-  runCliCommandUsingIpcPool<{ id: number }>('schedule:delete', [
+  runImmediateCliCommandUsingIpcPool<{ id: number }>('schedule:delete', [
     scheduleId,
   ]).then((response) => {});
 

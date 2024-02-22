@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type CaptureEntityType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const CaptureShowAction = async (
   captureId: number,
@@ -19,7 +19,7 @@ const CaptureShowAction = async (
   withSourceDomain: boolean = false,
   withCaptureParts: boolean = false,
 ): Promise<CaptureEntityType> =>
-  runCliCommandUsingIpcPool<CaptureEntityType>('capture:show', [
+  runImmediateCliCommandUsingIpcPool<CaptureEntityType>('capture:show', [
     captureId,
     {
       withSchedule,

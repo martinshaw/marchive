@@ -10,13 +10,66 @@ Description: description
 */
 
 import { ipcMain } from 'electron';
+import runPerpetualCliCommand from '../app/cli/runPerpetualCliCommand';
 
 export type WatchersChannels =
+  // for watch:schedules CLI sub-command
   | 'watchers.schedules.start'
+  | 'watchers.schedules.ongoing-stdout'
+  | 'watchers.schedules.ongoing-stderr'
+  | 'watchers.schedules.ongoing-message'
   | 'watchers.schedules.connected'
-  | 'watchers.schedules.ongoing-event'
-  | 'watchers.schedules.connection-error'
+  | 'watchers.schedules.disconnected'
+  // for watch:capture-parts CLI sub-command
   | 'watchers.capture-parts.start'
+  | 'watchers.capture-parts.ongoing-stdout'
+  | 'watchers.capture-parts.ongoing-stderr'
+  | 'watchers.capture-parts.ongoing-message'
   | 'watchers.capture-parts.connected'
-  | 'watchers.capture-parts.ongoing-event'
-  | 'watchers.capture-parts.connection-error';
+  | 'watchers.capture-parts.disconnected';
+
+ipcMain.on('watchers.schedules.start', async (event) => {
+  runPerpetualCliCommand(
+    'watch:schedules',
+    [],
+    {},
+    (data) => {
+      event.reply('watchers.schedules.ongoing-stdout', data);
+    },
+    (data) => {
+      event.reply('watchers.schedules.ongoing-stderr', data);
+    },
+    (message) => {
+      event.reply('watchers.schedules.ongoing-message', message);
+    },
+    (code) => {
+      event.reply('watchers.schedules.disconnected', code);
+    },
+    (childProcess) => {
+      event.reply('watchers.schedules.connected', childProcess.pid);
+    },
+  );
+});
+
+ipcMain.on('watchers.capture-parts.start', async (event) => {
+  runPerpetualCliCommand(
+    'watch:capture-parts',
+    [],
+    {},
+    (data) => {
+      event.reply('watchers.capture-parts.ongoing-stdout', data);
+    },
+    (data) => {
+      event.reply('watchers.capture-parts.ongoing-stderr', data);
+    },
+    (message) => {
+      event.reply('watchers.capture-parts.ongoing-message', message);
+    },
+    (code) => {
+      event.reply('watchers.capture-parts.disconnected', code);
+    },
+    (childProcess) => {
+      event.reply('watchers.capture-parts.connected', childProcess.pid);
+    },
+  );
+});

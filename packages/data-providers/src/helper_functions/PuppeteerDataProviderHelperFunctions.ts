@@ -411,7 +411,7 @@ export const retrieveFaviconsFromUrl = async (
   url: string,
 ): Promise<FaviconIconType[]> => {
   const browser = await createPuppeteerBrowser();
-  const page = await loadPageByUrl(url, browser, "networkidle0");
+  const page = await loadPageByUrl(url, browser, "networkidle2");
   const favicons = await retrieveFaviconsFromPage(page);
 
   await page.close();

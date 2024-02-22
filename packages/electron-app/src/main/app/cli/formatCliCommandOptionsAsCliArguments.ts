@@ -2,7 +2,7 @@
 All Rights Reserved, (c) 2024 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: formatCliCommand.ts
+File Name: formatCliCommandOptionsAsCliArguments.ts
 Created:  2024-02-17T16:04:22.618Z
 Modified: 2024-02-17T16:04:22.618Z
 
@@ -10,10 +10,6 @@ Description: description
 */
 
 import { kebabCase } from 'change-case-commonjs';
-import {
-  readOnlyInternalMarchiveCliExecutable,
-  readOnlyInternalMarchiveCliScriptPath,
-} from '../../../paths';
 
 const formatCliCommandOptionsAsCliArguments = (
   options: Record<string, any>,
@@ -28,14 +24,4 @@ const formatCliCommandOptionsAsCliArguments = (
     })
     .join(' ');
 
-const formatCliCommand = (
-  command: string,
-  args: (string | number)[] = [],
-  options: Record<string, any> = {},
-  asJson: boolean = true,
-): string =>
-  `${readOnlyInternalMarchiveCliExecutable} ${readOnlyInternalMarchiveCliScriptPath} ${command} ${args.join(' ')} ${formatCliCommandOptionsAsCliArguments(options)} ${
-    asJson ? '--json' : ''
-  }`;
-
-export default formatCliCommand;
+export default formatCliCommandOptionsAsCliArguments;

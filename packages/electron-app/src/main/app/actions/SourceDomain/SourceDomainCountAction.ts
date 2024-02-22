@@ -9,11 +9,11 @@ Modified: 2023-09-04T18:56:21.693Z
 Description: description
 */
 
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const SourceDomainCountAction = async (): Promise<number> =>
-  runCliCommandUsingIpcPool<{ count: number }>('source-domain:count').then(
-    (response) => response.getData()[0]?.count ?? 0,
-  );
+  runImmediateCliCommandUsingIpcPool<{ count: number }>(
+    'source-domain:count',
+  ).then((response) => response.getData()[0]?.count ?? 0);
 
 export default SourceDomainCountAction;

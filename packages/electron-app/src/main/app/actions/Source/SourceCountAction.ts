@@ -9,10 +9,10 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const SourceCountAction = async (): Promise<number> =>
-  runCliCommandUsingIpcPool<{ count: number }>('source:count').then(
+  runImmediateCliCommandUsingIpcPool<{ count: number }>('source:count').then(
     (response) => response.getData()[0]?.count ?? 0,
   );
 

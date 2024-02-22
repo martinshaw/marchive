@@ -10,15 +10,18 @@ Description: description
 */
 
 import { type SourceDomainEntityType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const SourceDomainListAction = async (
   withSources: boolean,
 ): Promise<SourceDomainEntityType[]> =>
-  runCliCommandUsingIpcPool<SourceDomainEntityType>('source-domain:list', [
-    {
-      withSources,
-    },
-  ]).then((response) => response.getData());
+  runImmediateCliCommandUsingIpcPool<SourceDomainEntityType>(
+    'source-domain:list',
+    [
+      {
+        withSources,
+      },
+    ],
+  ).then((response) => response.getData());
 
 export default SourceDomainListAction;

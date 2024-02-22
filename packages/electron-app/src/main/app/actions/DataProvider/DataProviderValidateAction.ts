@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type DataProviderSerializedType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
@@ -18,7 +18,7 @@ import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 const DataProviderValidateAction = async (
   url: string,
 ): Promise<DataProviderSerializedType[]> =>
-  runCliCommandUsingIpcPool<DataProviderSerializedType>(
+  runImmediateCliCommandUsingIpcPool<DataProviderSerializedType>(
     'data-provider:validate',
     [url],
   ).then((result) => result.getData());

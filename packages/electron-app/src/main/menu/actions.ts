@@ -13,71 +13,72 @@ import prompt from 'electron-prompt';
 import { cleanupAndQuit } from '../main';
 import { shell, BrowserWindow, dialog, clipboard } from 'electron';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'common-functions';
+import UtilityRetrieveFaviconAction from '../app/actions/Utility/UtilityRetrieveFaviconAction';
 // import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
 // import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
 
-export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
-  dialog
-    .showMessageBox(mainWindow, {
-      type: 'warning',
-      message: 'Are you sure you want to clear the database?',
-      detail:
-        'All of your captured files will remain but information about them will be permanently lost.',
-      buttons: ['Cancel', 'Clear Database'],
-      defaultId: 0,
-      cancelId: 0,
-    })
-    .then(async (result) => {
-      if (result.response === 1) {
-        // await UtilityCleanAction(true, false);
+// export const clearDatabaseMenuAction = async (mainWindow: BrowserWindow) => {
+//   dialog
+//     .showMessageBox(mainWindow, {
+//       type: 'warning',
+//       message: 'Are you sure you want to clear the database?',
+//       detail:
+//         'All of your captured files will remain but information about them will be permanently lost.',
+//       buttons: ['Cancel', 'Clear Database'],
+//       defaultId: 0,
+//       cancelId: 0,
+//     })
+//     .then(async (result) => {
+//       if (result.response === 1) {
+//         // await UtilityCleanAction(true, false);
 
-        dialog
-          .showMessageBox(mainWindow, {
-            type: 'info',
-            message:
-              'Your Marchive will now quit. Reopen it for a fresh start...',
-            buttons: ['Cool!'],
-            defaultId: 0,
-          })
-          .then(() => {
-            cleanupAndQuit();
-          });
-      }
-    });
-};
+//         dialog
+//           .showMessageBox(mainWindow, {
+//             type: 'info',
+//             message:
+//               'Your Marchive will now quit. Reopen it for a fresh start...',
+//             buttons: ['Cool!'],
+//             defaultId: 0,
+//           })
+//           .then(() => {
+//             cleanupAndQuit();
+//           });
+//       }
+//     });
+// };
 
-export const clearDatabaseAndDeleteDownloadsMenuAction = async (
-  mainWindow: BrowserWindow,
-) => {
-  dialog
-    .showMessageBox(mainWindow, {
-      type: 'warning',
-      message:
-        'Are you sure you want to clear the database and delete the default downloads folder?',
-      detail:
-        'All of your captured files will be deleted and information about them will be permanently lost.',
-      buttons: ['Cancel', 'Delete Everything'],
-      defaultId: 0,
-      cancelId: 0,
-    })
-    .then(async (result) => {
-      if (result.response === 1) {
-        // await UtilityCleanAction(true, true);
+// export const clearDatabaseAndDeleteDownloadsMenuAction = async (
+//   mainWindow: BrowserWindow,
+// ) => {
+//   dialog
+//     .showMessageBox(mainWindow, {
+//       type: 'warning',
+//       message:
+//         'Are you sure you want to clear the database and delete the default downloads folder?',
+//       detail:
+//         'All of your captured files will be deleted and information about them will be permanently lost.',
+//       buttons: ['Cancel', 'Delete Everything'],
+//       defaultId: 0,
+//       cancelId: 0,
+//     })
+//     .then(async (result) => {
+//       if (result.response === 1) {
+//         // await UtilityCleanAction(true, true);
 
-        dialog
-          .showMessageBox(mainWindow, {
-            type: 'info',
-            message:
-              'Your Marchive will now quit. Reopen it for a fresh start...',
-            buttons: ['Cool!'],
-            defaultId: 0,
-          })
-          .then(() => {
-            cleanupAndQuit();
-          });
-      }
-    });
-};
+//         dialog
+//           .showMessageBox(mainWindow, {
+//             type: 'info',
+//             message:
+//               'Your Marchive will now quit. Reopen it for a fresh start...',
+//             buttons: ['Cool!'],
+//             defaultId: 0,
+//           })
+//           .then(() => {
+//             cleanupAndQuit();
+//           });
+//       }
+//     });
+// };
 
 export const retrieveIconForWebsiteMenuAction = async (
   mainWindow: BrowserWindow,
@@ -90,73 +91,75 @@ export const retrieveIconForWebsiteMenuAction = async (
       height: 170,
     },
     mainWindow,
-  );
-  // .then(async (result: string | null) => {
-  //   if (result)
-  //     await UtilityRetrieveFavicon(result)
-  //       .then((result) => {
-  //         if (result == null || result === '')
-  //           throw new Error('No icon found for the URL you entered.');
+  )
+    .then(async (result: string | null) => {
+      if (result)
+        await UtilityRetrieveFaviconAction(result, true)
+          .then((result) => {
+            console.log('RESULTS 1: ', result);
 
-  //         const pathToFile = result;
+            if (result == null || result?.path === '' || result?.path == null)
+              throw new Error('No icon found for the URL you entered.');
 
-  //         dialog
-  //           .showMessageBox(mainWindow, {
-  //             type: 'info',
-  //             message:
-  //               'The icon image file has been saved successfully! Would you like to copy the file path to your clipboard, open the file or copy a Base64-encoded data URL?',
-  //             buttons: [
-  //               "I'm Done",
-  //               'Copy File Path',
-  //               'Open File',
-  //               'Copy Base64-encoded Data URL',
-  //             ],
-  //             defaultId: 0,
-  //           })
-  //           .then((result) => {
-  //             if (result.response === 0) return;
-  //             if (result.response === 1) {
-  //               clipboard.writeText(pathToFile);
-  //               return;
-  //             }
-  //             if (result.response === 2) {
-  //               shell.openPath(pathToFile);
-  //               return;
-  //             }
-  //             if (result.response === 3) {
-  //               try {
-  //                 const base64Url =
-  //                   retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile);
-  //                 if (base64Url == null) throw new Error();
-  //                 clipboard.writeText(base64Url);
-  //               } catch (error) {
-  //                 dialog.showMessageBox(mainWindow, {
-  //                   type: 'error',
-  //                   message:
-  //                     'An error occurred when attempting to copy the Base64-encoded data URL to your clipboard.',
-  //                   buttons: ['OK'],
-  //                   defaultId: 0,
-  //                 });
-  //               }
-  //               return;
-  //             }
-  //           })
-  //           .catch((error) => {
-  //             throw error;
-  //           });
-  //       })
-  //       .catch((error) => {
-  //         throw error;
-  //       });
-  // })
-  // .catch((error) => {
-  //   dialog.showMessageBox(mainWindow, {
-  //     type: 'error',
-  //     message: 'The URL you entered was invalid.',
-  //     buttons: ['OK'],
-  //     defaultId: 0,
-  //   });
-  // });
+            const pathToFile = result.path;
+
+            dialog
+              .showMessageBox(mainWindow, {
+                type: 'info',
+                message:
+                  'The icon image file has been saved successfully! Would you like to copy the file path to your clipboard, open the file or copy a Base64-encoded data URL?',
+                buttons: [
+                  "I'm Done",
+                  'Copy File Path',
+                  'Open File',
+                  'Copy Base64-encoded Data URL',
+                ],
+                defaultId: 0,
+              })
+              .then((result) => {
+                if (result.response === 0) return;
+                if (result.response === 1) {
+                  clipboard.writeText(pathToFile);
+                  return;
+                }
+                if (result.response === 2) {
+                  shell.openPath(pathToFile);
+                  return;
+                }
+                if (result.response === 3) {
+                  try {
+                    const base64Url =
+                      retrieveFileAsBase64DataUrlFromAbsolutePath(pathToFile);
+                    if (base64Url == null) throw new Error();
+                    clipboard.writeText(base64Url);
+                  } catch (error) {
+                    dialog.showMessageBox(mainWindow, {
+                      type: 'error',
+                      message:
+                        'An error occurred when attempting to copy the Base64-encoded data URL to your clipboard.',
+                      buttons: ['OK'],
+                      defaultId: 0,
+                    });
+                  }
+                  return;
+                }
+              })
+              .catch((error) => {
+                throw error;
+              });
+          })
+          .catch((error) => {
+            throw error;
+          });
+    })
+    .catch((error) => {
+      dialog.showMessageBox(mainWindow, {
+        type: 'error',
+        message: 'The URL you entered was invalid.',
+        buttons: ['OK'],
+        defaultId: 0,
+      });
+    });
 };
 
 export const needMoreSpaceMenuAction = async (mainWindow: BrowserWindow) => {

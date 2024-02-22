@@ -9,7 +9,7 @@ Modified: 2023-09-06T03:31:41.596Z
 Description: description
 */
 
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 export type UtilityRetrieveFaviconActionResponseType = {
   url: string;
@@ -25,9 +25,9 @@ const UtilityRetrieveFaviconAction = async (
   url: string,
   store: boolean,
 ): Promise<UtilityRetrieveFaviconActionResponseType> =>
-  runCliCommandUsingIpcPool<UtilityRetrieveFaviconActionResponseType>(
+  runImmediateCliCommandUsingIpcPool<UtilityRetrieveFaviconActionResponseType>(
     'utilities:retrieve-favicon',
-    [url, { store }],
+    [url, store],
   ).then((response) => response.getData()[0]);
 
 export default UtilityRetrieveFaviconAction;

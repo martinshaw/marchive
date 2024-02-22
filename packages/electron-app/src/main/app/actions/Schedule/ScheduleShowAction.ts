@@ -10,14 +10,14 @@ Description: description
 */
 
 import { type ScheduleEntityType } from 'common-types';
-import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
+import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const ScheduleShowAction = async (
   scheduleId: number,
   withSource = false,
   withCaptures = false,
 ): Promise<ScheduleEntityType> =>
-  runCliCommandUsingIpcPool<ScheduleEntityType>('schedule:show', [
+  runImmediateCliCommandUsingIpcPool<ScheduleEntityType>('schedule:show', [
     scheduleId,
     {
       withSource,
