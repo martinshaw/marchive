@@ -10,11 +10,13 @@ Description: description
 */
 
 import { type DataProviderSerializedType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
-const DataProviderListAction = async (): Promise<DataProviderSerializedType> =>
-  runCliCommand<DataProviderSerializedType>('data-provider:list').then(
-    (result) => result.getData()[0],
-  );
+const DataProviderListAction = async (): Promise<
+  DataProviderSerializedType[]
+> =>
+  runCliCommandUsingIpcPool<DataProviderSerializedType>(
+    'data-provider:list',
+  ).then((result) => result.getData());
 
 export default DataProviderListAction;

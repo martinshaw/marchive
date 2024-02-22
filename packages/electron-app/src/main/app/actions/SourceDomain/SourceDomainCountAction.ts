@@ -9,10 +9,10 @@ Modified: 2023-09-04T18:56:21.693Z
 Description: description
 */
 
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 const SourceDomainCountAction = async (): Promise<number> =>
-  runCliCommand<{ count: number }>('source-domain:count').then(
+  runCliCommandUsingIpcPool<{ count: number }>('source-domain:count').then(
     (response) => response.getData()[0]?.count ?? 0,
   );
 

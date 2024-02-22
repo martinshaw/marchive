@@ -9,7 +9,7 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
@@ -18,8 +18,11 @@ const CaptureDeleteAction = async (
   captureId: number,
   alsoDeleteFiles: boolean = false,
 ): Promise<void> =>
-  runCliCommand<{ id: number }>('capture:delete', [captureId], {
-    alsoDeleteFiles,
-  }).then((response) => {});
+  runCliCommandUsingIpcPool<{ id: number }>('capture:delete', [
+    captureId,
+    {
+      alsoDeleteFiles,
+    },
+  ]).then((response) => {});
 
 export default CaptureDeleteAction;

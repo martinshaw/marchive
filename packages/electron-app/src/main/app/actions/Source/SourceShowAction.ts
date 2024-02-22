@@ -10,16 +10,19 @@ Description: description
 */
 
 import { type SourceEntityType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 const SourceShowAction = async (
   sourceId: number,
   withSourceDomain: boolean = false,
   withSchedules: boolean = false,
 ): Promise<SourceEntityType> =>
-  runCliCommand<SourceEntityType>('source:show', [sourceId], {
-    withSourceDomain,
-    withSchedules,
-  }).then((response) => response.getData()[0]);
+  runCliCommandUsingIpcPool<SourceEntityType>('source:show', [
+    sourceId,
+    {
+      withSourceDomain,
+      withSchedules,
+    },
+  ]).then((response) => response.getData()[0]);
 
 export default SourceShowAction;

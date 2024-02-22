@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type ScheduleEntityType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
@@ -22,11 +22,14 @@ const ScheduleUpdateAction = async (
   enable: boolean | null = null,
   disable: boolean | null = null,
 ): Promise<ScheduleEntityType> =>
-  runCliCommand<ScheduleEntityType>('schedule:update', [scheduleId], {
-    intervalInSeconds,
-    downloadLocation,
-    enable,
-    disable,
-  }).then((response) => response.getData()[0]);
+  runCliCommandUsingIpcPool<ScheduleEntityType>('schedule:update', [
+    scheduleId,
+    {
+      intervalInSeconds,
+      downloadLocation,
+      enable,
+      disable,
+    },
+  ]).then((response) => response.getData()[0]);
 
 export default ScheduleUpdateAction;

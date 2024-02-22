@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type StoredSettingEntityType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
@@ -18,8 +18,8 @@ import runCliCommand from '../../cli/runCliCommand';
 const StoredSettingGetAction = async (
   key: string,
 ): Promise<StoredSettingEntityType> =>
-  runCliCommand<StoredSettingEntityType>('stored-setting:get', [key]).then(
-    (response) => response.getData()[0],
-  );
+  runCliCommandUsingIpcPool<StoredSettingEntityType>('stored-setting:get', [
+    key,
+  ]).then((response) => response.getData()[0]);
 
 export default StoredSettingGetAction;

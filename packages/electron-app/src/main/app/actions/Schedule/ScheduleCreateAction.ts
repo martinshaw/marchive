@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type ScheduleEntityType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
@@ -20,9 +20,12 @@ const ScheduleCreateAction = async (
   intervalInSeconds: number | null,
   downloadLocation: string | null = null,
 ): Promise<ScheduleEntityType> =>
-  runCliCommand<ScheduleEntityType>('schedule:create', [sourceId], {
-    intervalInSeconds,
-    downloadLocation,
-  }).then((response) => response.getData()[0]);
+  runCliCommandUsingIpcPool<ScheduleEntityType>('schedule:create', [
+    sourceId,
+    {
+      intervalInSeconds,
+      downloadLocation,
+    },
+  ]).then((response) => response.getData()[0]);
 
 export default ScheduleCreateAction;

@@ -10,7 +10,7 @@ Description: description
 */
 
 import { type CaptureEntityType } from 'common-types';
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 const CaptureShowAction = async (
   captureId: number,
@@ -19,11 +19,14 @@ const CaptureShowAction = async (
   withSourceDomain: boolean = false,
   withCaptureParts: boolean = false,
 ): Promise<CaptureEntityType> =>
-  runCliCommand<CaptureEntityType>('capture:show', [captureId], {
-    withSchedule,
-    withSource,
-    withSourceDomain,
-    withCaptureParts,
-  }).then((response) => response.getData()[0]);
+  runCliCommandUsingIpcPool<CaptureEntityType>('capture:show', [
+    captureId,
+    {
+      withSchedule,
+      withSource,
+      withSourceDomain,
+      withCaptureParts,
+    },
+  ]).then((response) => response.getData()[0]);
 
 export default CaptureShowAction;

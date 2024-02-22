@@ -9,14 +9,14 @@ Modified: 2023-08-17T09:03:35.767Z
 Description: description
 */
 
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
  */
 const ScheduleDeleteAction = async (scheduleId: number): Promise<void> =>
-  runCliCommand<{ id: number }>('schedule:delete', [scheduleId], {}).then(
-    (response) => {},
-  );
+  runCliCommandUsingIpcPool<{ id: number }>('schedule:delete', [
+    scheduleId,
+  ]).then((response) => {});
 
 export default ScheduleDeleteAction;

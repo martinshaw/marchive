@@ -51,16 +51,6 @@ function Hello() {
     });
   }, []);
 
-  const getAndSetMarchiveIsSetupStoredSetting = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('utilities.marchive-is-setup', true);
-
-    window.electron.ipcRenderer.once('utilities.marchive-is-setup', (response) => {
-      console.log('response', response);
-      // @ts-ignore
-      alert('response message ' + response.message);
-    });
-  }, []);
-
   return (
     <div>
       <div className="Hello">
@@ -69,11 +59,11 @@ function Hello() {
       <h1>Marchive</h1>
       <div className="Hello">
         <button type="button" onClick={() => getAllSources()}>
-          Get all sources
+          Get all sources IPC
         </button>
 
         <button type="button" onClick={() => showSource(1)}>
-          Show source 1
+          Show source 1 IPC
         </button>
 
         <button type="button" onClick={() => showSource(100)}>
@@ -82,10 +72,6 @@ function Hello() {
 
         <button type="button" onClick={() => getAllSourceDomains()}>
           Get all source domains
-        </button>
-
-        <button type="button" onClick={() => getAndSetMarchiveIsSetupStoredSetting()}>
-          Set Marchive is setup
         </button>
       </div>
     </div>

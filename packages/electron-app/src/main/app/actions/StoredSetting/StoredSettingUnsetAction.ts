@@ -9,12 +9,14 @@ Modified: 2023-08-29T21:25:45.800Z
 Description: description
 */
 
-import runCliCommand from '../../cli/runCliCommand';
+import runCliCommandUsingIpcPool from '../../cli/runCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
  */
 const StoredSettingUnsetAction = async (key: string): Promise<void> =>
-  runCliCommand<[]>('stored-setting:unset', [key]).then((response) => {});
+  runCliCommandUsingIpcPool<[]>('stored-setting:unset', [key]).then(
+    (response) => {},
+  );
 
 export default StoredSettingUnsetAction;
