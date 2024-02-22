@@ -14,7 +14,8 @@ import path from 'node:path';
 // It is just a fucking boolean, I tried to create a .d.ts file for that, doesn't work, will not waste more time on it
 // @ts-ignore
 import _isPackaged from 'electron-is-packaged';
-export const isPackaged = _isPackaged as unknown as { isPackaged: boolean };
+export const isPackaged = (_isPackaged as unknown as { isPackaged: boolean })
+  .isPackaged;
 
 /**
  * Do not use `readOnlyInternalRootPath` nor any path prefixed `readOnly` for any write operations.
@@ -35,6 +36,15 @@ const readOnlyInternalMarchiveCliScriptPath = isPackaged
 const readOnlyInternalMarchiveCliExecutable = isPackaged
   ? path.join(readOnlyInternalRootPath, '..', '..', '..', 'cli', 'marchive-cli')
   : 'node';
+
+console.log(
+  'isPackaged',
+  isPackaged,
+  'readOnlyInternalMarchiveCliScriptPath',
+  readOnlyInternalMarchiveCliScriptPath,
+  'readOnlyInternalMarchiveCliExecutable',
+  readOnlyInternalMarchiveCliExecutable,
+);
 
 /**
  * Other exports
