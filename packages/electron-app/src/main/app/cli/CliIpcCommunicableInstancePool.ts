@@ -27,6 +27,7 @@ const CliIpcCommunicableInstancePool = GenericPool.createPool<ChildProcess>(
         ),
         {
           stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+          windowsHide: true,
         },
       ),
     destroy: async (commandProcessor) => {

@@ -23,16 +23,22 @@ const runCliCommand = async <TDataType extends any>(
   options: Record<string, any> = {},
 ): Promise<CliJsonResponse<TDataType>> =>
   new Promise((resolve, reject) => {
-    exec(formatCliCommand(command, args, options), (error, stdout, stderr) => {
-      if (stderr) {
-        reject(new CliJsonResponse<TDataType>(stderr).toError());
-      } else {
-        const response = new CliJsonResponse<TDataType>(stdout);
+    exec(
+      formatCliCommand(command, args, options),
+      {
+        windowsHide: true,
+      },
+      (error, stdout, stderr) => {
+        if (stderr) {
+          reject(new CliJsonResponse<TDataType>(stderr).toError());
+        } else {
+          const response = new CliJsonResponse<TDataType>(stdout);
 
-        if (response.getSuccess() !== true) reject(response.toError());
-        else resolve(response);
-      }
-    });
+          if (response.getSuccess() !== true) reject(response.toError());
+          else resolve(response);
+        }
+      },
+    );
   });
 
 export default runCliCommand;
