@@ -96,8 +96,6 @@ export const retrieveIconForWebsiteMenuAction = async (
       if (result)
         await UtilityRetrieveFaviconAction(result, true)
           .then((result) => {
-            console.log('RESULTS 1: ', result);
-
             if (result == null || result?.path === '' || result?.path == null)
               throw new Error('No icon found for the URL you entered.');
 

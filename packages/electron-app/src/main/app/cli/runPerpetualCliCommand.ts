@@ -45,29 +45,13 @@ const runPerpetualCliCommand = (
     },
   );
 
-  childProcess.stdout?.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+  childProcess.stdout?.on('data', (data) => onStdout(data.toString()));
 
-    onStdout(data.toString());
-  });
+  childProcess.stderr?.on('data', (data) => onStderr(data.toString()));
 
-  childProcess.stderr?.on('data', (data) => {
-    console.error(`stderr: ${data}`);
+  childProcess.on('message', (message) => onMessage(message));
 
-    onStderr(data.toString());
-  });
-
-  childProcess.on('message', (message) => {
-    console.log(`Received message from child: ${message}`);
-
-    onMessage(message);
-  });
-
-  childProcess.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
-
-    onClose(code);
-  });
+  childProcess.on('close', (code) => onClose(code));
 
   onSpawn(childProcess);
 };
