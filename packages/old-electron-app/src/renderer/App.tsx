@@ -18,7 +18,7 @@ const App = () => {
           element: <DefaultLayout />,
           children: [
             {
-              path: '/onboarding',
+              path: '/onboarding', 
               element: <OnboardingIndexPage />
             },
             {

@@ -1,89 +1,59 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { useCallback } from 'react';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
-import icon from '../../assets/icon.svg';
+import TodayPage from './pages/TodayPage';
+import YesterdayPage from './pages/YesterdayPage';
+import DefaultLayout from './layouts/DefaultLayout';
+import OnboardingIndexPage from './pages/OnboardingIndexPage';
+import SourceShowPage, { SourceShowPageLoader } from './pages/SourceShowPage';
+import SourceIndexPage, { SourceIndexPageLoader } from './pages/SourceIndexPage';
+import CaptureShowPage, { CaptureShowPageLoader } from './pages/CaptureShowPage';
+import SourceCreatePage, { sourceCreatePageDataLoader } from './pages/SourceCreatePage';
 
-import './App.css';
-
-function Hello() {
-  const getAllSources = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('sources.list');
-    
-    window.electron.ipcRenderer.once('sources.list', (sources, error) => {
-      if (error != null) {
-        alert('response error ' + (error as Error).message);
-        return;
-      }
-
-      console.log('response', sources);
-      // @ts-ignore
-      alert('response length ' + sources.length);
-    });
-  }, []);
-
-  const showSource = useCallback((sourceId: number) => {
-    window.electron.ipcRenderer.sendMessage('sources.show', sourceId);
-    
-    window.electron.ipcRenderer.once('sources.show', (source, error) => {
-      if (error != null) {
-        alert('response error ' + (error as Error).message);
-        return;
-      } 
-
-      console.log('response', source, error);
-      // @ts-ignore
-      alert('response ' + source?.url);
-    });
-  }, []);
-
-  const getAllSourceDomains = useCallback(() => {
-    window.electron.ipcRenderer.sendMessage('source-domains.list', true);
-    
-    window.electron.ipcRenderer.once('source-domains.list', (sourceDomains, error) => {
-      if (error != null) {
-        alert('response error ' + (error as Error).message);
-        return;
-      }
-
-      console.log('response', sourceDomains);
-      // @ts-ignore
-      alert('response length ' + sourceDomains.length);
-    });
-  }, []);
-
+const App = () => {
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>Marchive</h1>
-      <div className="Hello">
-        <button type="button" onClick={() => getAllSources()}>
-          Get all sources IPC
-        </button>
-
-        <button type="button" onClick={() => showSource(1)}>
-          Show source 1 IPC
-        </button>
-
-        <button type="button" onClick={() => showSource(100)}>
-          Show source 100
-        </button>
-
-        <button type="button" onClick={() => getAllSourceDomains()}>
-          Get all source domains
-        </button>
-      </div>
-    </div>
+    <RouterProvider
+      router={createMemoryRouter([
+        {
+          path: '/',
+          element: <DefaultLayout />,
+          children: [
+            {
+              path: '/onboarding', 
+              element: <OnboardingIndexPage />
+            },
+            {
+              path: '/yesterday',
+              element: <YesterdayPage />
+            },
+            {
+              path: '/today',
+              element: <TodayPage />
+            },
+            {
+              path: '/sources',
+              loader: SourceIndexPageLoader,
+              element: <SourceIndexPage />
+            },
+            {
+              path: '/sources/create',
+              loader: sourceCreatePageDataLoader,
+              element: <SourceCreatePage />
+            },
+            {
+              path: '/sources/:sourceId',
+              loader: SourceShowPageLoader,
+              element: <SourceShowPage />
+            },
+            {
+              path: '/captures/:captureId',
+              loader: CaptureShowPageLoader,
+              element: <CaptureShowPage />
+            },
+          ]
+        }
+      ])}
+    />
   );
-}
+};
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
-}
+export default App;

@@ -39,7 +39,11 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    removeAllListeners(channel: Channels) {
+      ipcRenderer.removeAllListeners(channel);
+    },
   },
+  platform: process.platform,
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);
