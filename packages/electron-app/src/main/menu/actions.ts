@@ -10,10 +10,11 @@ Description: description
 */
 
 import prompt from 'electron-prompt';
-import { cleanupAndQuit } from '../main';
+// import { cleanupAndQuit } from '../main';
 import { shell, BrowserWindow, dialog, clipboard } from 'electron';
 import { retrieveFileAsBase64DataUrlFromAbsolutePath } from 'common-functions';
 import UtilityRetrieveFaviconAction from '../app/actions/Utility/UtilityRetrieveFaviconAction';
+import UtilityAddCliToPathAction from '../app/actions/Utility/UtilityAddCliToPathAction';
 // import UtilityCleanAction from '../app/actions/Utility/UtilityCleanAction';
 // import UtilityRetrieveFavicon from '../app/actions/Utility/UtilityRetrieveFavicon';
 
@@ -79,6 +80,20 @@ import UtilityRetrieveFaviconAction from '../app/actions/Utility/UtilityRetrieve
 //       }
 //     });
 // };
+
+export const addCliToolToShellPathAction = async (
+  mainWindow: BrowserWindow,
+) => {
+  await UtilityAddCliToPathAction().then(() => {
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      message:
+        'The CLI tool has been added to your shell path! Type `marchive-cli` to use Marchive from the command line.',
+      buttons: ['OK'],
+      defaultId: 0,
+    });
+  });
+};
 
 export const retrieveIconForWebsiteMenuAction = async (
   mainWindow: BrowserWindow,

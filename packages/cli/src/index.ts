@@ -38,6 +38,7 @@ import WatchSchedules from "./commands/Watch/WatchSchedules";
 import WatchCaptureParts from "./commands/Watch/WatchCaptureParts";
 
 import UtilitiesRetrieveFavicon from "./commands/Utilities/UtilitiesRetrieveFavicon/command";
+import UtilitiesAddCliToPath from "./commands/Utilities/UtilitiesAddCliToPath/command";
 import UtilitiesTest from "./commands/Utilities/UtilitiesTest";
 import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
 
@@ -98,6 +99,7 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
     .addCommand(UtilitiesTest)
     .addCommand(UtilitiesIpc)
     .addCommand(UtilitiesRetrieveFavicon)
+    .addCommand(UtilitiesAddCliToPath)
 
     .helpOption("-h, --help", "Display help for command")
     .parse(process.argv);

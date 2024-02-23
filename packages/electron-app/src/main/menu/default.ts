@@ -10,6 +10,7 @@ Description: description
 */
 
 import {
+  addCliToolToShellPathAction,
   // clearDatabaseMenuAction,
   needMoreSpaceMenuAction,
   retrieveIconForWebsiteMenuAction,
@@ -121,6 +122,12 @@ const buildDefaultTemplate: (
         //     return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
         //   },
         // },
+        {
+          label: 'Add &CLI Tool to Shell Path',
+          click: async () => {
+            return addCliToolToShellPathAction(mainWindow);
+          },
+        },
         {
           label: 'Retrieve &Icon for Website',
           click: async () => {

@@ -10,6 +10,7 @@ Description: description
 */
 
 import {
+  addCliToolToShellPathAction,
   // clearDatabaseAndDeleteDownloadsMenuAction,
   // clearDatabaseMenuAction,
   needMoreSpaceMenuAction,
@@ -112,6 +113,12 @@ const buildDarwinTemplate: (
       //     return clearDatabaseAndDeleteDownloadsMenuAction(mainWindow);
       //   },
       // },
+      {
+        label: 'Add CLI Tool to Shell Path',
+        click: async () => {
+          return addCliToolToShellPathAction(mainWindow);
+        },
+      },
       {
         label: 'Retrieve Icon for Website',
         click: async () => {

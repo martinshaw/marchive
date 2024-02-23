@@ -34,6 +34,7 @@ import ScheduleUpdate from "../Schedule/ScheduleUpdate";
 import ScheduleDelete from "../Schedule/ScheduleDelete";
 
 import UtilitiesRetrieveFavicon from "../Utilities/UtilitiesRetrieveFavicon";
+import UtilitiesAddCliToPath from "../Utilities/UtilitiesAddCliToPath";
 
 const UtilitiesIpc = new commander.Command("utilities:ipc");
 
@@ -81,6 +82,7 @@ UtilitiesIpc.description(
       "source-domain:list": () => SourceDomainList,
 
       "utilities:retrieve-favicon": () => UtilitiesRetrieveFavicon,
+      "utilities:add-cli-to-path": () => UtilitiesAddCliToPath,
     } as const;
 
     process.on(

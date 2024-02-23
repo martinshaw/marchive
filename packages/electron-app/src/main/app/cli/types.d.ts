@@ -34,7 +34,8 @@ type ImmediateCliCommandNames =
   | 'schedule:create'
   | 'schedule:update'
   | 'schedule:delete'
-  | 'utilities:retrieve-favicon';
+  | 'utilities:retrieve-favicon'
+  | 'utilities:add-cli-to-path';
 
 type PerpetualCliCommandNames = 'watch:schedules' | 'watch:capture-parts';
 
