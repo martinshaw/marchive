@@ -1,6 +1,6 @@
 {
   "name": "common-types",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "packageManager": "pnpm@8.10.2",
   "engines": {

@@ -50,7 +50,7 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
   program
     .name("marchive-cli")
     .nameFromFilename("marchive-cli")
-    .version("0.0.2")
+    .version("0.11.0")
     .description("Marchive CLI")
     .addOption(logToConsoleGlobalOption)
     .addOption(jsonGlobalOption)
