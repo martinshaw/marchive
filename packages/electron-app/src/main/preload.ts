@@ -6,6 +6,7 @@ import { RenderersChannels } from './ipc/Renderers';
 import { UtilitiesChannels } from './ipc/Utilities';
 import { DataProvidersChannels } from './ipc/DataProviders';
 import { SourceDomainsChannels } from './ipc/SourceDomains';
+import { StoredSettingsChannels } from './ipc/StoredSettings';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channels =
@@ -16,7 +17,8 @@ export type Channels =
   | SourceDomainsChannels
   | UtilitiesChannels
   | WatchersChannels
-  | RenderersChannels;
+  | RenderersChannels
+  | StoredSettingsChannels;
 
 async () => {
   (await import('events')).EventEmitter.defaultMaxListeners = 15;

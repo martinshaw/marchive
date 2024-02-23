@@ -9,7 +9,7 @@ Modified: 2023-09-11T12:35:33.900Z
 Description: description
 */
 
-import { SourceEntityType } from 'common-types';
+import SourceEntityType from 'common-types/src/entities/Source';
 
 /**
  * @throws {string}

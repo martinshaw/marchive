@@ -3,19 +3,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  gap: 30px;
+  height: 100%;
+  width: 100%;
+  padding: 40px 15px !important;
 }
 
 .onboarding__heading {
   font-weight: 100 !important;
-  padding: 40px 15px !important;
   text-align: center !important;
   font-size: 3.6rem !important;
 }
 
 .onboarding__subheading {
-  padding: 20px 15px !important;
   text-align: center !important;
   font-weight: 300 !important;
   opacity: 0.6 !important;
@@ -23,39 +23,56 @@
 }
 
 .onboarding__features {
-  width: 100%;
-  height: auto;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 20px 0;
 
-  .onboarding__features__grid {
-    display: grid;
-    // four equal grid columns
-    grid-template-columns: repeat(4, 1fr);
-    text-align: center;
+  // Spread height of container, grid and row to fill the available space
+  & > div:nth-child(1),
+  & > div:nth-child(1) > div:nth-child(2),
+  & > div:nth-child(1) > div:nth-child(2) > div:nth-child(1),
+  &
+    > div:nth-child(1)
+    > div:nth-child(2)
+    > div:nth-child(1)
+    > div:nth-child(1) {
+    height: 100%;
+  }
+
+  // In this case, I don't want arrow buttons to overlap the grid items
+  & > div:nth-child(1) > div:nth-child(2) {
+    width: calc(100% - 120px) !important;
     margin: auto;
-    gap: 3rem;
-    width: 90%;
+  }
+
+  // Add minimal styling to arrow buttons
+  & > div:nth-child(1) > div:nth-child(1),
+  & > div:nth-child(1) > div:nth-child(3) {
+    opacity: 0.6;
   }
 
   .onboarding__features__feature {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 10px;
     justify-content: center;
     align-items: center;
 
-    b, p {
-      line-height: 1.55rem;
+    b,
+    p {
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: center;
+      // align-items: center;
+      min-height: 40px;
+      line-height: 1.5rem;
+      text-align: center;
     }
   }
 }
 
 .onboarding__buttons {
-  padding: 40px 15px !important;
   display: flex;
   flex-direction: row;
   align-items: center;

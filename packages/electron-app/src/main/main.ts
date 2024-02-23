@@ -33,6 +33,7 @@ import './ipc/SourceDomains';
 import './ipc/Utilities';
 import './ipc/Watchers';
 import './ipc/Renderers';
+import './ipc/StoredSettings';
 
 /**
  * TODO: Add import statement for 'protocols'

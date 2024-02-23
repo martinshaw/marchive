@@ -9,12 +9,15 @@ Modified: 2023-08-29T21:25:45.800Z
 Description: description
 */
 
+import { StoredSettingKeyType } from 'common-types/src/entities/StoredSetting';
 import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 /**
  * @throws {Error}
  */
-const StoredSettingUnsetAction = async (key: string): Promise<void> =>
+const StoredSettingUnsetAction = async (
+  key: StoredSettingKeyType,
+): Promise<void> =>
   runImmediateCliCommandUsingIpcPool<[]>('stored-setting:unset', [key]).then(
     (response) => {},
   );

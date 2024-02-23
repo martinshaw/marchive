@@ -16,7 +16,7 @@ export const storedSettingKeys = [
   "ELECTRON_IS_USED",
   "WATCH_SCHEDULES_PROCESS_IS_PAUSED",
   "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED",
-];
+] as const;
 export type StoredSettingKeyType = (typeof storedSettingKeys)[number];
 
 const storedSettingTypes = ["string", "number", "boolean"];

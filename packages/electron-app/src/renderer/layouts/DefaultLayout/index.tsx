@@ -13,12 +13,12 @@ import Navbar from './components/Navbar';
 import { useAsyncMemo } from 'use-async-memo';
 import { useCallback, useEffect, createRef } from 'react';
 import isDarkMode from './functions/isDarkMode';
-import marchiveIsSetup from './functions/marchiveIsSetup';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import mainToRendererListeners from './functions/mainToRendererListeners';
 import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
-import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
-import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
+// import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
+// import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
+import getMarchiveIsSetup from './functions/getMarchiveIsSetup';
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -32,130 +32,123 @@ const DefaultLayout = () => {
 
   const layoutRef = createRef<HTMLDivElement>();
 
-  const loaderData: {
+  const loaderData = useAsyncMemo<{
     isDarkMode: boolean;
-    marchiveIsSetup: boolean | null;
+    marchiveIsSetup: boolean;
     sourcesCount: number | null;
     hasHistory: boolean;
-    platform: string;
-  } = useAsyncMemo(async () => {
-    let hasHistory = false;
-    const ignoredLandingPages = ['/', '/today'];
-    if (
-      hasHistory === false &&
-      ignoredLandingPages.includes(location.pathname) === false
-    )
-      hasHistory = true;
-
-    return {
+    platform: string | null;
+  }>(
+    async () => ({
       isDarkMode: await isDarkMode(),
-      marchiveIsSetup: await marchiveIsSetup(),
+      marchiveIsSetup: await getMarchiveIsSetup(),
       sourcesCount: await getSourcesCount(),
-      hasHistory,
+      hasHistory: ['/', '/today'].includes(location.pathname) === false,
       platform: window.electron.platform,
-    };
-  }, [location.pathname]) ?? {
-    isDarkMode: false,
-    marchiveIsSetup: null,
-    sourcesCount: null,
-    hasHistory: false,
-    platform: '',
-  };
+    }),
+    [location.pathname],
+    {
+      isDarkMode: false,
+      marchiveIsSetup: false,
+      sourcesCount: null,
+      hasHistory: false,
+      platform: null,
+    },
+  );
 
   useEffect(() => {
     const allowedPaths = ['/onboarding', '/sources'];
     const currentPathIsAllowedPath = allowedPaths.some((allowedPath) =>
-      location.pathname.startsWith(allowedPath)
+      location.pathname.startsWith(allowedPath),
     );
     const shouldForceOnboarding =
-      loaderData.marchiveIsSetup === false &&
-      currentPathIsAllowedPath === false;
+      loaderData.marchiveIsSetup !== true && currentPathIsAllowedPath === false;
     if (shouldForceOnboarding) navigate('/onboarding');
 
     if (location.pathname === '/' && loaderData.sourcesCount != null)
       navigate('/today');
   }, [loaderData, location.pathname]);
 
-  const checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange =
-    useCallback(
-      (ongoingEvent: string) => {
-        const shouldRefreshPageOnScheduleStatusChanges =
-          (location.pathname.startsWith('/sources') &&
-            location.pathname.startsWith('/sources/create') === false &&
-            location.pathname.startsWith('/sources/edit') === false &&
-            location.pathname.startsWith('/sources/delete') === false) ||
-          location.pathname.startsWith('/captures');
+  // const checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange =
+  //   useCallback(
+  //     (ongoingEvent: string) => {
+  //       const shouldRefreshPageOnScheduleStatusChanges =
+  //         (location.pathname.startsWith('/sources') &&
+  //           location.pathname.startsWith('/sources/create') === false &&
+  //           location.pathname.startsWith('/sources/edit') === false &&
+  //           location.pathname.startsWith('/sources/delete') === false) ||
+  //         location.pathname.startsWith('/captures');
 
-        const relevantStdoutMessages = [
-          /Capture ID [\d]* ran successfully/gm,
-          /Created new Capture with ID/gm,
-          /Successfully Processed Capture Part/gm,
-          /Processing Capture Part/gm,
-        ];
+  //       const relevantStdoutMessages = [
+  //         /Capture ID [\d]* ran successfully/gm,
+  //         /Created new Capture with ID/gm,
+  //         /Successfully Processed Capture Part/gm,
+  //         /Processing Capture Part/gm,
+  //       ];
 
-        relevantStdoutMessages.some((relevantStdoutMessage) => {
-          let matches;
+  //       relevantStdoutMessages.some((relevantStdoutMessage) => {
+  //         let matches;
 
-          while (
-            (matches = relevantStdoutMessage.exec(ongoingEvent)) !== null
-          ) {
-            if (matches.index === relevantStdoutMessage.lastIndex)
-              relevantStdoutMessage.lastIndex++;
-            if (matches != null && shouldRefreshPageOnScheduleStatusChanges) {
-              navigate(0);
-              return true;
-            }
-          }
-        });
-      },
-      [location.pathname, location.search]
-    );
+  //         while (
+  //           (matches = relevantStdoutMessage.exec(ongoingEvent)) !== null
+  //         ) {
+  //           if (matches.index === relevantStdoutMessage.lastIndex)
+  //             relevantStdoutMessage.lastIndex++;
+  //           if (matches != null && shouldRefreshPageOnScheduleStatusChanges) {
+  //             navigate(0);
+  //             return true;
+  //           }
+  //         }
+  //       });
+  //     },
+  //     [location.pathname, location.search]
+  //   );
 
-  useEffect(() => {
-    const { removeListeners } = scheduleRunProcessListeners(
-      (connectionInfo) => {
-        /* */
-      },
-      (ongoingEvent) => {
-        checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(
-          ongoingEvent
-        );
-      },
-      (error) => {
-        /* */
-      }
-    );
+  // useEffect(() => {
+  //   const { removeListeners } = scheduleRunProcessListeners(
+  //     (connectionInfo) => {
+  //       /* */
+  //     },
+  //     (ongoingEvent) => {
+  //       checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(
+  //         ongoingEvent
+  //       );
+  //     },
+  //     (error) => {
+  //       /* */
+  //     }
+  //   );
 
-    return () => {
-      removeListeners();
-    };
-  }, [location.pathname, location.search, location.hash]);
+  //   return () => {
+  //     removeListeners();
+  //   };
+  // }, [location.pathname, location.search, location.hash]);
 
-  useEffect(() => {
-    const { removeListeners } = capturePartRunProcessListeners(
-      (connectionInfo) => {
-        /* */
-      },
-      (ongoingEvent) => {
-        checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(
-          ongoingEvent
-        );
-      },
-      (error) => {
-        /* */
-      }
-    );
+  // useEffect(() => {
+  //   const { removeListeners } = capturePartRunProcessListeners(
+  //     (connectionInfo) => {
+  //       /* */
+  //     },
+  //     (ongoingEvent) => {
+  //       checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange(
+  //         ongoingEvent
+  //       );
+  //     },
+  //     (error) => {
+  //       /* */
+  //     }
+  //   );
 
-    return () => {
-      removeListeners();
-    };
-  }, [location.pathname, location.search, location.hash]);
+  //   return () => {
+  //     removeListeners();
+  //   };
+  // }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
     const { removeListeners } = mainToRendererListeners(
       location,
       navigate,
-      layoutRef
+      layoutRef,
     );
     return () => {
       removeListeners();
@@ -163,6 +156,7 @@ const DefaultLayout = () => {
   }, [location.pathname, location.search, navigate, layoutRef]);
 
   let className = '';
+
   if (loaderData.isDarkMode) className += ' bp5-dark';
   if (loaderData.platform) className += ` platform-${loaderData.platform}`;
 

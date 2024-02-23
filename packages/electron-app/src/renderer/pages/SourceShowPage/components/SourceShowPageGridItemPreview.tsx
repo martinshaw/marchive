@@ -15,7 +15,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
 import dataProvidersRendererDetailsList from '../../../data_providers';
 import promptForCaptureDeletion from '../../../layouts/DefaultLayout/functions/promptForCaptureDeletion';
-import { CaptureEntityType, DataProviderSerializedType, ScheduleEntityType, SourceEntityType } from 'common-types';
+import SourceEntityType from 'common-types/src/entities/Source';
+import ScheduleEntityType from 'common-types/src/entities/Schedule';
+import CaptureEntityType from 'common-types/src/entities/Capture';
+import { type DataProviderSerializedType } from 'common-types';
 
 export type SourceShowPageGridItemPreviewPropsType = {
   source: SourceEntityType;
@@ -25,7 +28,7 @@ export type SourceShowPageGridItemPreviewPropsType = {
 };
 
 const SourceShowPageGridItemPreview = (
-  props: SourceShowPageGridItemPreviewPropsType
+  props: SourceShowPageGridItemPreviewPropsType,
 ) => {
   const navigate = useNavigate();
 

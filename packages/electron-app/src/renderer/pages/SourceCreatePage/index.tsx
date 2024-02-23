@@ -9,37 +9,35 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import { InputGroup } from '@blueprintjs/core'
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import useValidateUrlWithDataProviders from './hooks/useValidateUrlWithDataProviders'
-import useCreateNewSource from './hooks/useCreateNewSource'
-import useCreateNewSchedule from './hooks/useCreateNewSchedule'
-import { useLoaderData, useNavigate } from 'react-router-dom'
-import SourceCreatePageExampleSourceGallery from './components/SourceCreatePageExampleSourceGallery'
-import SourceCreatePageDataProviderOptionsGrid from './components/SourceCreatePageDataProviderOptionsGrid'
-import SourceCreatePageDataProviderOptionsNotFoundMessage from './components/SourceCreatePageDataProviderOptionsNotFoundMessage'
-import SourceCreatePageDataProviderOptionsLoadingMessage from './components/SourceCreatePageDataProviderOptionsLoadingMessage'
-import marchiveIsSetup from '../../layouts/DefaultLayout/functions/marchiveIsSetup'
-import SourceCreatePageLoadingMessage from './components/SourceCreatePageLoadingMessage'
-import SourceCreatePageErrorMessage from './components/SourceCreatePageErrorMessage'
-import { DataProviderSerializedType } from 'common-types'
+import { InputGroup } from '@blueprintjs/core';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import useValidateUrlWithDataProviders from './hooks/useValidateUrlWithDataProviders';
+import useCreateNewSource from './hooks/useCreateNewSource';
+import useCreateNewSchedule from './hooks/useCreateNewSchedule';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import SourceCreatePageExampleSourceGallery from './components/SourceCreatePageExampleSourceGallery';
+import SourceCreatePageDataProviderOptionsGrid from './components/SourceCreatePageDataProviderOptionsGrid';
+import SourceCreatePageDataProviderOptionsNotFoundMessage from './components/SourceCreatePageDataProviderOptionsNotFoundMessage';
+import SourceCreatePageDataProviderOptionsLoadingMessage from './components/SourceCreatePageDataProviderOptionsLoadingMessage';
+import getMarchiveIsSetup from '../../layouts/DefaultLayout/functions/getMarchiveIsSetup';
+import setMarchiveIsSetup from '../../layouts/DefaultLayout/functions/setMarchiveIsSetup';
+import SourceCreatePageLoadingMessage from './components/SourceCreatePageLoadingMessage';
+import SourceCreatePageErrorMessage from './components/SourceCreatePageErrorMessage';
+import { DataProviderSerializedType } from 'common-types';
 
-import './index.scss'
+import './index.scss';
 
 export const sourceCreatePageDataLoader = async () => ({
-  marchiveIsSetup: await marchiveIsSetup(),
-})
+  marchiveIsSetup: await getMarchiveIsSetup(),
+});
 
 const SourceCreatePage = () => {
-  const loaderData = useLoaderData() as { marchiveIsSetup: boolean }
+  const loaderData = useLoaderData() as { marchiveIsSetup: boolean };
 
-  const [urlValue, setUrlValue] = useState<string>('')
+  const [urlValue, setUrlValue] = useState<string>('');
 
-  const {
-    validDataProviders,
-    loadingValidDataProviders,
-    errorMessage
-  } = useValidateUrlWithDataProviders(urlValue)
+  const { validDataProviders, loadingValidDataProviders, errorMessage } =
+    useValidateUrlWithDataProviders(urlValue);
 
   const {
     isCreating: isCreatingSource,
@@ -47,7 +45,7 @@ const SourceCreatePage = () => {
     errorMessage: sourceErrorMessage,
     createNewSource,
     resetSource,
-  } = useCreateNewSource()
+  } = useCreateNewSource();
 
   const {
     isCreating: isCreatingSchedule,
@@ -55,51 +53,87 @@ const SourceCreatePage = () => {
     errorMessage: scheduleErrorMessage,
     createNewSchedule,
     resetSchedule,
-  } = useCreateNewSchedule()
+  } = useCreateNewSchedule();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleDataProviderGridItemClick = useCallback(
     (dataProvider: DataProviderSerializedType) => {
-      if (isCreatingSource !== false || createdSource != null) return
-      if (validDataProviders.includes(dataProvider) === false) return
+      if (isCreatingSource !== false || createdSource != null) return;
+      if (validDataProviders.includes(dataProvider) === false) return;
 
-      createNewSource(urlValue, dataProvider.identifier)
+      createNewSource(urlValue, dataProvider.identifier);
     },
-    [urlValue, validDataProviders]
-  )
+    [urlValue, validDataProviders],
+  );
 
   useEffect(() => {
-    if (createdSource == null) return
+    if (createdSource == null || createdSource?.id == null) return;
 
-    createNewSchedule(createdSource.id, null, null)
-  }, [createdSource])
+    createNewSchedule(createdSource.id, null, null);
+  }, [createdSource]);
 
   useEffect(() => {
-    if (createdSchedule == null || createdSource == null) return
+    if (createdSchedule == null || createdSource == null) return;
 
-    if (loaderData.marchiveIsSetup === false) marchiveIsSetup(true).then(() => { navigate(`/sources`) })
-    else navigate(`/sources`)
-  }, [createdSchedule, createdSource, loaderData.marchiveIsSetup])
+    if (loaderData.marchiveIsSetup !== true)
+      setMarchiveIsSetup(true).then(() => {
+        navigate(`/sources`);
+      });
+    else navigate(`/sources`);
+  }, [createdSchedule, createdSource, loaderData.marchiveIsSetup]);
 
-  const handleOnExampleSourceSelected = useCallback((url: string, dataProviderIdentifier: string) => {
-    if (isCreatingSource !== false || createdSource != null) return
+  const handleOnExampleSourceSelected = useCallback(
+    (url: string, dataProviderIdentifier: string) => {
+      if (isCreatingSource !== false || createdSource != null) return;
 
-    createNewSource(url, dataProviderIdentifier)
-  }, [])
+      createNewSource(url, dataProviderIdentifier);
+    },
+    [],
+  );
 
   const handleReset = useCallback(() => {
-    resetSource()
-    resetSchedule()
-    setUrlValue('')
-  }, [])
+    resetSource();
+    resetSchedule();
+    setUrlValue('');
+  }, []);
 
-  const shouldShowLoading = (isCreatingSchedule || isCreatingSource) && sourceErrorMessage === false && scheduleErrorMessage === false;
-  const shouldShowErrorMessage = sourceErrorMessage !== false || scheduleErrorMessage !== false;
-  const shouldShowDataProviderOptions = urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length > 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
-  const shouldShowDataProviderErrorMessage = urlValue !== '' && loadingValidDataProviders === false && validDataProviders.length === 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
-  const shouldShowDataProviderLoadingMessage = urlValue !== '' && loadingValidDataProviders && validDataProviders.length === 0 && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
-  const shouldShowExampleSourceGallery = urlValue === '' && isCreatingSchedule === false && isCreatingSource === false && sourceErrorMessage === false && scheduleErrorMessage === false;
+  const shouldShowLoading =
+    (isCreatingSchedule || isCreatingSource) &&
+    sourceErrorMessage === false &&
+    scheduleErrorMessage === false;
+  const shouldShowErrorMessage =
+    sourceErrorMessage !== false || scheduleErrorMessage !== false;
+  const shouldShowDataProviderOptions =
+    urlValue !== '' &&
+    loadingValidDataProviders === false &&
+    validDataProviders.length > 0 &&
+    isCreatingSchedule === false &&
+    isCreatingSource === false &&
+    sourceErrorMessage === false &&
+    scheduleErrorMessage === false;
+  const shouldShowDataProviderErrorMessage =
+    urlValue !== '' &&
+    loadingValidDataProviders === false &&
+    validDataProviders.length === 0 &&
+    isCreatingSchedule === false &&
+    isCreatingSource === false &&
+    sourceErrorMessage === false &&
+    scheduleErrorMessage === false;
+  const shouldShowDataProviderLoadingMessage =
+    urlValue !== '' &&
+    loadingValidDataProviders &&
+    validDataProviders.length === 0 &&
+    isCreatingSchedule === false &&
+    isCreatingSource === false &&
+    sourceErrorMessage === false &&
+    scheduleErrorMessage === false;
+  const shouldShowExampleSourceGallery =
+    urlValue === '' &&
+    isCreatingSchedule === false &&
+    isCreatingSource === false &&
+    sourceErrorMessage === false &&
+    scheduleErrorMessage === false;
 
   const createSourceFragment = (
     <>
@@ -120,40 +154,43 @@ const SourceCreatePage = () => {
 
       {shouldShowLoading && <SourceCreatePageLoadingMessage />}
 
-      {shouldShowErrorMessage &&
+      {shouldShowErrorMessage && (
         <SourceCreatePageErrorMessage
-          errorMessages={[sourceErrorMessage, scheduleErrorMessage].filter(message => message !== false) as Error[]}
+          errorMessages={
+            [sourceErrorMessage, scheduleErrorMessage].filter(
+              (message) => message !== false,
+            ) as Error[]
+          }
           onResetUrlValue={() => handleReset()}
         />
-      }
+      )}
 
-      {shouldShowDataProviderOptions &&
+      {shouldShowDataProviderOptions && (
         <SourceCreatePageDataProviderOptionsGrid
           dataProviders={validDataProviders}
           onDataProviderOptionSelected={handleDataProviderGridItemClick}
         />
-      }
+      )}
 
-      {shouldShowDataProviderErrorMessage &&
+      {shouldShowDataProviderErrorMessage && (
         <SourceCreatePageDataProviderOptionsNotFoundMessage
           onResetUrlValue={() => handleReset()}
         />
-      }
+      )}
 
-      {shouldShowDataProviderLoadingMessage &&
+      {shouldShowDataProviderLoadingMessage && (
         <SourceCreatePageDataProviderOptionsLoadingMessage />
-      }
+      )}
 
-      {shouldShowExampleSourceGallery &&
+      {shouldShowExampleSourceGallery && (
         <SourceCreatePageExampleSourceGallery
           onExampleSourceSelected={handleOnExampleSourceSelected}
         />
-      }
-
+      )}
     </>
-  )
+  );
 
-  return createSourceFragment
-}
+  return createSourceFragment;
+};
 
-export default SourceCreatePage
+export default SourceCreatePage;

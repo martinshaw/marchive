@@ -11,12 +11,13 @@ Description: description
 
 import { type StoredSettingEntityType } from 'common-types';
 import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
+import { StoredSettingKeyType } from 'common-types/src/entities/StoredSetting';
 
 /**
  * @throws {Error}
  */
 const StoredSettingSetAction = async (
-  key: string,
+  key: StoredSettingKeyType,
   value: string,
 ): Promise<StoredSettingEntityType> =>
   runImmediateCliCommandUsingIpcPool<StoredSettingEntityType>(
