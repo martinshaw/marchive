@@ -9,15 +9,24 @@ Modified: 2023-08-01T20:25:00.481Z
 Description: description
 */
 
+import { StoredSettingEntityType } from 'common-types';
+
 const getMarchiveIsSetup = async (): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once(
       'stored-settings.get',
-      (getMarchiveIsSetupValue) => {
-        resolve(
-          typeof getMarchiveIsSetupValue !== 'boolean'
-            ? false
-            : getMarchiveIsSetupValue,
+      (response, error) => {
+        if (error) {
+          const errorMessage = (error as Error).message;
+
+          // We will assume that this stored setting hasn't been set before, so just return false quietly
+          return resolve(false);
+        }
+
+        const storedSetting = response as StoredSettingEntityType;
+
+        return resolve(
+          storedSetting.value === 'true' && storedSetting.type === 'boolean',
         );
       },
     );

@@ -20,9 +20,13 @@ const promptForCaptureDeletion = async (
     window.electron.ipcRenderer.once(
       'captures.prompt-for-deletion',
       (deleted, error) => {
-        if (error !== null) return reject(error);
-        if (typeof deleted !== 'boolean') return reject();
-        resolve(deleted);
+        if (error !== null) return reject(error as Error);
+
+        if (typeof deleted !== 'boolean')
+          return reject(
+            new Error('An error occurred when trying to delete this capture.'),
+          );
+        return resolve(deleted);
       },
     );
 

@@ -14,9 +14,10 @@ const isDarkMode = async (): Promise<boolean> => {
     window.electron.ipcRenderer.once(
       'utilities.is-dark-mode',
       (isDarkModeValue) => {
-        if (typeof isDarkModeValue !== 'boolean') return reject();
-        resolve(isDarkModeValue);
-      }
+        return resolve(
+          typeof isDarkModeValue === 'boolean' ? isDarkModeValue : false,
+        );
+      },
     );
 
     window.electron.ipcRenderer.sendMessage('utilities.is-dark-mode');

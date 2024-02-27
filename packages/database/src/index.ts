@@ -34,6 +34,7 @@ import {
 import logger from "logger";
 import { userAppDataDatabaseFilePath, userAppDataDatabasesPath } from "./paths";
 import { retrieveDueSchedules } from "./repositories/ScheduleRepository";
+import { retrieveDueCapturePart } from "./repositories/CapturePartRepository";
 import { getStoredSettingValue } from "./repositories/StoredSettingRepository";
 
 import StoredSetting from "./entities/StoredSetting";
@@ -71,7 +72,7 @@ dataSource
   .initialize()
   .then(async () => {
     logger.info(
-      `DB: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`
+      `DB: Connection has been established successfully. Using database file: ${userAppDataDatabaseFilePath}`,
     );
   })
   .catch((error) => {
@@ -81,6 +82,7 @@ dataSource
 
 export {
   retrieveDueSchedules,
+  retrieveDueCapturePart,
   getStoredSettingValue,
   dataSource,
   BaseEntity,

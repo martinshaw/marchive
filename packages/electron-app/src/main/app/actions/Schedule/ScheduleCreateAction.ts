@@ -22,10 +22,8 @@ const ScheduleCreateAction = async (
 ): Promise<ScheduleEntityType> =>
   runImmediateCliCommandUsingIpcPool<ScheduleEntityType>('schedule:create', [
     sourceId,
-    {
-      intervalInSeconds,
-      downloadLocation,
-    },
+    intervalInSeconds,
+    downloadLocation,
   ]).then((response) => response.getData()[0]);
 
 export default ScheduleCreateAction;

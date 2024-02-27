@@ -25,15 +25,14 @@ const useCreateNewSource = () => {
 
       window.electron.ipcRenderer.once(
         'sources.create',
-        (createdSource, errorMessage) => {
-          if (createdSource == null && errorMessage == null) return;
+        (createdSource, error) => {
+          if (createdSource == null && error == null) return;
 
           setIsCreating(false);
 
-          if (errorMessage != null) {
+          if (error != null) {
             setCreatedSource(null);
-            setErrorMessage(errorMessage as Error);
-            console.error(errorMessage);
+            setErrorMessage(error as Error);
             return;
           }
 

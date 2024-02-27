@@ -55,7 +55,7 @@ ipcMain.on(
   async (
     event,
     sourceId: number,
-    intervalInSeconds: number | null,
+    intervalInSeconds: number | null = null,
     downloadLocation: string | null = null,
   ) => {
     return ScheduleCreateAction(sourceId, intervalInSeconds, downloadLocation)
@@ -73,9 +73,19 @@ ipcMain.on(
   async (
     event,
     scheduleId: number,
-    requestedChanges: Partial<ScheduleAttributes>,
+    // TODO : Need to change this, I suspect that using null and not undefined will cause the interval to be updated to null instead of not being updated as desired
+    intervalInSeconds: number | null = null,
+    downloadLocation: string | null = null,
+    enable: boolean | null = null,
+    disable: boolean | null = null,
   ) => {
-    return ScheduleUpdateAction(scheduleId, requestedChanges)
+    return ScheduleUpdateAction(
+      scheduleId,
+      intervalInSeconds,
+      downloadLocation,
+      enable,
+      disable,
+    )
       .then((schedule) => {
         event.reply('schedules.update', schedule, null);
       })

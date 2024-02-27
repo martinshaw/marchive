@@ -11,30 +11,35 @@ Description: description
 
 import Navbar from './components/Navbar';
 import { useAsyncMemo } from 'use-async-memo';
-import { useCallback, useEffect, createRef } from 'react';
+import { useEffect, createRef } from 'react';
 import isDarkMode from './functions/isDarkMode';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import mainToRendererListeners from './functions/mainToRendererListeners';
-import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
 // import scheduleRunProcessListeners from './functions/scheduleRunProcessListeners';
 // import capturePartRunProcessListeners from './functions/capturePartRunProcessListeners';
+import { BlueprintProvider } from '@blueprintjs/core';
+import useIsMounting from './hooks/useIsMounting';
 import getMarchiveIsSetup from './functions/getMarchiveIsSetup';
+import getSourcesCount from '../../pages/SourceIndexPage/functions/getSourcesCount';
 
 import 'normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
+import '@blueprintjs/popover2/lib/css/blueprint-popover2.css';
 import 'react-virtualized/styles.css';
 import './index.scss';
 
 const DefaultLayout = () => {
+  const isMounting = useIsMounting();
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const layoutRef = createRef<HTMLDivElement>();
 
   const loaderData = useAsyncMemo<{
-    isDarkMode: boolean;
-    marchiveIsSetup: boolean;
+    isDarkMode: boolean | null;
+    marchiveIsSetup: boolean | null;
     sourcesCount: number | null;
     hasHistory: boolean;
     platform: string | null;
@@ -43,31 +48,19 @@ const DefaultLayout = () => {
       isDarkMode: await isDarkMode(),
       marchiveIsSetup: await getMarchiveIsSetup(),
       sourcesCount: await getSourcesCount(),
-      hasHistory: ['/', '/today'].includes(location.pathname) === false,
+      hasHistory:
+        ['/', '/today', '/sources'].includes(location.pathname) === false,
       platform: window.electron.platform,
     }),
     [location.pathname],
     {
-      isDarkMode: false,
-      marchiveIsSetup: false,
+      isDarkMode: null,
+      marchiveIsSetup: null,
       sourcesCount: null,
       hasHistory: false,
       platform: null,
     },
   );
-
-  useEffect(() => {
-    const allowedPaths = ['/onboarding', '/sources'];
-    const currentPathIsAllowedPath = allowedPaths.some((allowedPath) =>
-      location.pathname.startsWith(allowedPath),
-    );
-    const shouldForceOnboarding =
-      loaderData.marchiveIsSetup !== true && currentPathIsAllowedPath === false;
-    if (shouldForceOnboarding) navigate('/onboarding');
-
-    if (location.pathname === '/' && loaderData.sourcesCount != null)
-      navigate('/today');
-  }, [loaderData, location.pathname]);
 
   // const checkIfPageStateShouldRefreshDueToScheduleStatusChangeOrCapturePartStatusChange =
   //   useCallback(
@@ -161,13 +154,17 @@ const DefaultLayout = () => {
   if (loaderData.platform) className += ` platform-${loaderData.platform}`;
 
   return (
-    <div ref={layoutRef} id="layout" className={className}>
-      <Navbar {...loaderData} />
+    <BlueprintProvider>
+      <div ref={layoutRef} id="layout" className={className}>
+        {loaderData.isDarkMode != null && <Navbar {...loaderData} />}
 
-      <div id="page">
-        <Outlet />
+        {(loaderData.isDarkMode != null || location.pathname === '/') && (
+          <div id="page">
+            <Outlet />
+          </div>
+        )}
       </div>
-    </div>
+    </BlueprintProvider>
   );
 };
 

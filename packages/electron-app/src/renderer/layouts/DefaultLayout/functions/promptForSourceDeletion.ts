@@ -20,9 +20,11 @@ const promptForSourceDeletion = async (
     window.electron.ipcRenderer.once(
       'sources.prompt-for-deletion',
       (deleted, error) => {
-        if (error !== null) return reject(error);
-        if (typeof deleted !== 'boolean') return reject();
-        resolve(deleted);
+        if (error !== null) return reject(error as Error);
+
+        if (typeof deleted !== 'boolean')
+          return reject('An error occurred when trying to delete this source.');
+        return resolve(deleted);
       },
     );
 

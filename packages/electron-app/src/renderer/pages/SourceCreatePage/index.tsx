@@ -70,7 +70,7 @@ const SourceCreatePage = () => {
   useEffect(() => {
     if (createdSource == null || createdSource?.id == null) return;
 
-    createNewSchedule(createdSource.id, null, null);
+    createNewSchedule(createdSource.id);
   }, [createdSource]);
 
   useEffect(() => {

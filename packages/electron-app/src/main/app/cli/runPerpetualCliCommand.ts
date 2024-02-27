@@ -9,8 +9,7 @@ Modified: 2024-02-17T16:05:33.827Z
 Description: description
 */
 
-import { ChildProcess, spawn } from 'node:child_process';
-import CliJsonResponse from './CliJsonResponse';
+import { ChildProcess, spawn, fork } from 'node:child_process';
 import { PerpetualCliCommandNames } from './types';
 import {
   readOnlyInternalMarchiveCliExecutable,
@@ -40,18 +39,27 @@ const runPerpetualCliCommand = (
       formatCliCommandOptionsAsCliArguments(options),
     ].filter((s) => s !== ''),
     {
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       windowsHide: true,
+      detached: false,
     },
   );
 
-  childProcess.stdout?.on('data', (data) => onStdout(data.toString()));
+  childProcess.stdout?.on('data', (data) => {
+    onStdout(data.toString());
+  });
 
-  childProcess.stderr?.on('data', (data) => onStderr(data.toString()));
+  childProcess.stderr?.on('data', (data) => {
+    onStderr(data.toString());
+  });
 
-  childProcess.on('message', (message) => onMessage(message));
+  childProcess.on('message', (message) => {
+    onMessage(message);
+  });
 
-  childProcess.on('close', (code) => onClose(code));
+  childProcess.on('close', (code) => {
+    onClose(code);
+  });
 
   onSpawn(childProcess);
 };

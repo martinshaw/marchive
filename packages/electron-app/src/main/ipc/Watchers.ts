@@ -9,7 +9,7 @@ Modified: 2023-09-06T17:02:56.185Z
 Description: description
 */
 
-import { ipcMain } from 'electron';
+import { ipcMain, webContents } from 'electron';
 import runPerpetualCliCommand from '../app/cli/runPerpetualCliCommand';
 
 export type WatchersChannels =
@@ -34,19 +34,29 @@ ipcMain.on('watchers.schedules.start', async (event) => {
     [],
     {},
     (data) => {
-      event.reply('watchers.schedules.ongoing-stdout', data);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.schedules.ongoing-stdout', data);
+      });
     },
     (data) => {
-      event.reply('watchers.schedules.ongoing-stderr', data);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.schedules.ongoing-stderr', data);
+      });
     },
     (message) => {
-      event.reply('watchers.schedules.ongoing-message', message);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.schedules.ongoing-message', message);
+      });
     },
     (code) => {
-      event.reply('watchers.schedules.disconnected', code);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.schedules.disconnected', code);
+      });
     },
     (childProcess) => {
-      event.reply('watchers.schedules.connected', childProcess.pid);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.schedules.connected', childProcess.pid);
+      });
     },
   );
 });
@@ -57,19 +67,29 @@ ipcMain.on('watchers.capture-parts.start', async (event) => {
     [],
     {},
     (data) => {
-      event.reply('watchers.capture-parts.ongoing-stdout', data);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.capture-parts.ongoing-stdout', data);
+      });
     },
     (data) => {
-      event.reply('watchers.capture-parts.ongoing-stderr', data);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.capture-parts.ongoing-stderr', data);
+      });
     },
     (message) => {
-      event.reply('watchers.capture-parts.ongoing-message', message);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.capture-parts.ongoing-message', message);
+      });
     },
     (code) => {
-      event.reply('watchers.capture-parts.disconnected', code);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.capture-parts.disconnected', code);
+      });
     },
     (childProcess) => {
-      event.reply('watchers.capture-parts.connected', childProcess.pid);
+      webContents.getAllWebContents().forEach((webContent) => {
+        webContent.send('watchers.capture-parts.connected', childProcess.pid);
+      });
     },
   );
 });

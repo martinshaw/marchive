@@ -7,6 +7,8 @@ Created:  2024-02-12T04:34:40.919Z
 Modified: 2024-02-12T04:34:40.919Z
 
 Description: description
+
+@see https://www.alexanderlolis.com/node-js-fork-is-slow-deal-with-it
 */
 
 import logger from 'logger';

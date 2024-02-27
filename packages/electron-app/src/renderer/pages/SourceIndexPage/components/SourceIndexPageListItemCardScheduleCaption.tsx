@@ -9,61 +9,74 @@ Modified: 2023-09-05T13:47:27.688Z
 Description: description
 */
 
-import { ReactNode } from "react";
-import { Icon, Spinner, SpinnerSize, Text } from "@blueprintjs/core";
-import scheduleIntervalToCaption from "../functions/scheduleIntervalToCaption";
-import { ScheduleEntityType } from "common-types";
+import { ReactNode } from 'react';
+import { Icon, Spinner, SpinnerSize, Text } from '@blueprintjs/core';
+import scheduleIntervalToCaption from '../functions/scheduleIntervalToCaption';
+import { ScheduleEntityType } from 'common-types';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(localizedFormat);
 
 export type SourceIndexPageListItemCardScheduleCaptionPropsType = {
   schedule: ScheduleEntityType;
 };
 
 const SourceIndexPageListItemCardScheduleCaption = (
-  props: SourceIndexPageListItemCardScheduleCaptionPropsType
+  props: SourceIndexPageListItemCardScheduleCaptionPropsType,
 ) => {
   let scheduleCaption: ReactNode = null;
 
   if (props.schedule == null) return null;
 
+  const scheduleLastRunAtDate =
+    props.schedule.lastRunAt == null ? null : dayjs(props.schedule.lastRunAt);
+  const scheduleNextRunAtDate =
+    props.schedule.nextRunAt == null ? null : dayjs(props.schedule.nextRunAt);
+
   if (props.schedule.status === 'pending') {
     if (props.schedule.interval == null) {
-      if (props.schedule.lastRunAt == null && props.schedule.nextRunAt == null) {
+      if (scheduleLastRunAtDate == null && scheduleNextRunAtDate == null) {
         scheduleCaption = (
           <>
             <Icon icon="time" />
             <Text>Not scheduled to save</Text>
           </>
         );
-      }
-      else if (props.schedule.lastRunAt != null && props.schedule.nextRunAt == null) {
+      } else if (
+        scheduleLastRunAtDate != null &&
+        scheduleNextRunAtDate == null
+      ) {
         scheduleCaption = (
           <>
             <Icon icon="time" />
-            <Text>Saved on {props.schedule.lastRunAt.toDateString()} {props.schedule.lastRunAt.toLocaleTimeString()}</Text>
+            <Text>Saved on {scheduleLastRunAtDate.format('lll')}</Text>
           </>
         );
-      }
-      else if (props.schedule.nextRunAt != null) {
+      } else if (scheduleNextRunAtDate != null) {
         scheduleCaption = (
           <>
             <Icon icon="time" />
-            <Text>Will save on {props.schedule.nextRunAt.toDateString()} {props.schedule.nextRunAt.toLocaleTimeString()}</Text>
+            <Text>Will save on {scheduleNextRunAtDate.format('lll')}</Text>
           </>
         );
       }
-    }
-    else {
+    } else {
       const timeCaption = scheduleIntervalToCaption(props.schedule.interval);
-      const nextCaption = props.schedule.nextRunAt != null ? `(next time on ${props.schedule.nextRunAt.toDateString()} ${props.schedule.nextRunAt.toLocaleTimeString()})` : '';
+      const nextCaption =
+        scheduleNextRunAtDate != null
+          ? `(next time on ${scheduleNextRunAtDate.format('lll')})`
+          : '';
       scheduleCaption = (
         <>
           <Icon icon="time" />
-          <Text>Saves every {timeCaption} {nextCaption}</Text>
+          <Text>
+            Saves every {timeCaption} {nextCaption}
+          </Text>
         </>
       );
     }
-  }
-  else if (props.schedule.status === 'processing') {
+  } else if (props.schedule.status === 'processing') {
     scheduleCaption = (
       <>
         <Spinner size={SpinnerSize.SMALL} />
@@ -73,6 +86,6 @@ const SourceIndexPageListItemCardScheduleCaption = (
   }
 
   return scheduleCaption;
-}
+};
 
 export default SourceIndexPageListItemCardScheduleCaption;

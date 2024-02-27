@@ -21,12 +21,12 @@ export type SourceIndexPageListItemCardPropsType = {
 };
 
 const SourceIndexPageListItemCard = (
-  props: SourceIndexPageListItemCardPropsType
+  props: SourceIndexPageListItemCardPropsType,
 ) => {
   const dataProvider: DataProviderSerializedType | null =
     props.dataProviders.find(
       (dataProvider) =>
-        dataProvider.identifier === props.source.dataProviderIdentifier
+        dataProvider.identifier === props.source.dataProviderIdentifier,
     ) || null;
 
   const hasNotFinishedProcessingFirstCapture: boolean = (() => {
@@ -37,11 +37,20 @@ const SourceIndexPageListItemCard = (
   })();
 
   let nameAndUrlCaption: ReactNode | string = props.source.url;
-  if (props.source.name != null) nameAndUrlCaption = <>{props.source.name} <span>{nameAndUrlCaption}</span></>;
+  if (props.source.name != null)
+    nameAndUrlCaption = (
+      <>
+        {props.source.name} <span>{nameAndUrlCaption}</span>
+      </>
+    );
 
   return (
     <NavLink
-      to={hasNotFinishedProcessingFirstCapture ? '' : `/sources/${props.source.id}`}
+      to={
+        hasNotFinishedProcessingFirstCapture
+          ? ''
+          : `/sources/${props.source.id}`
+      }
       className="sources__list__item__link"
     >
       <Card
@@ -64,11 +73,12 @@ const SourceIndexPageListItemCard = (
               }
             />
             <Text>{dataProvider?.name}</Text>
-            <div className="sources__list__item__provider-row__schedule">
-              {(props.source?.schedules ?? []).length > 0 && <SourceIndexPageListItemCardScheduleCaption
+            <div className="sources__list__item__provider-row__spacer"></div>
+            {(props.source?.schedules ?? []).length > 0 && (
+              <SourceIndexPageListItemCardScheduleCaption
                 schedule={props.source.schedules[0]}
-              />}
-            </div>
+              />
+            )}
           </div>
         )}
       </Card>

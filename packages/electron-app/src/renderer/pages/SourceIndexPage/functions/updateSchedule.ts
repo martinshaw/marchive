@@ -15,13 +15,13 @@ const updateSchedule = async (
   schedule: ScheduleEntityType,
   changes: Partial<ScheduleEntityType>,
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<ScheduleEntityType>((resolve, reject) => {
     window.electron.ipcRenderer.once(
       'schedules.update',
       (updatedSchedule, error) => {
-        if (error != null) return reject(error);
+        if (error != null) return reject(error as Error);
 
-        resolve(updatedSchedule as ScheduleEntityType);
+        return resolve(updatedSchedule as ScheduleEntityType);
       },
     );
 

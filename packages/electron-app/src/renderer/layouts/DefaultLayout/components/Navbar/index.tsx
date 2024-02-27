@@ -14,10 +14,10 @@ import {
   Navbar as BlueprintNavBar,
   NavbarGroup,
   Spinner,
+  ContextMenu,
   SpinnerSize,
   MenuItem,
   Menu,
-  ContextMenu,
   Tooltip,
   Text,
 } from '@blueprintjs/core';
@@ -47,7 +47,7 @@ const Navbar = (props: NavbarPropsType) => {
 
       toggleMaximize();
     },
-    []
+    [],
   );
 
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const Navbar = (props: NavbarPropsType) => {
 
   const openAppMenu = useCallback(() => {
     window.electron.ipcRenderer.sendMessage(
-      'utilities.focused-window.open-application-menu'
+      'utilities.focused-window.open-application-menu',
     );
   }, []);
 
@@ -83,14 +83,17 @@ const Navbar = (props: NavbarPropsType) => {
                 interactionKind="hover"
                 position="bottom-left"
               >
-                <Button type="button" icon="menu" onClick={() => openAppMenu()} />
+                <Button
+                  type="button"
+                  icon="menu"
+                  onClick={() => openAppMenu()}
+                />
               </Tooltip>
             )}
 
             {props.hasHistory && isLoadingPage === false && (
               <Tooltip
                 content={'Go Back'}
-                usePortal
                 interactionKind="hover"
                 position="bottom-left"
               >
@@ -180,7 +183,10 @@ const Navbar = (props: NavbarPropsType) => {
           </NavbarGroup>
         </>
       ) : (
-        <Text className="navbar--draggable" style={{ textAlign: 'center', width: '100%' }}>
+        <Text
+          className="navbar--draggable"
+          style={{ textAlign: 'center', width: '100%' }}
+        >
           {locationCaptions[location.pathname] || ''}
         </Text>
       )}

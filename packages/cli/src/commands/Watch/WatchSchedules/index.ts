@@ -16,7 +16,7 @@ import {
 } from "database";
 import logger from "logger";
 import commander from "commander";
-import performCaptureRun from "./performCaptureRun";
+import performCaptureRun, { cleanup } from "./performCaptureRun";
 
 let lastSchedule: Schedule | null = null;
 
@@ -26,11 +26,24 @@ let WatchSchedules = new commander.Command("watch:schedules")
     async (optionsAndArguments: {
       [key: string]: string | number | boolean;
     }) => {
-      const currentDelayBetweenTicks = 13 * 1000; // 13 seconds
+      process.once("beforeExit", async () => {
+        const schedulesProcessing = await Schedule.find({
+          where: {
+            status: "processing",
+          },
+        });
 
-      // TODO: Keep these or remove them ???
-      logger.info("WatchSchedules started (using Winston)"); // delete me
-      console.log("WatchSchedules started (using console.log)"); // delete me
+        for (let i = 0; i < schedulesProcessing.length; i++) {
+          console.log(
+            "Schedule cleaned up: ",
+            await cleanup(schedulesProcessing[i]),
+          );
+        }
+
+        process.exit(0);
+      });
+
+      const currentDelayBetweenTicks = 13 * 1000; // 13 seconds
 
       while (true) {
         let watchSchedulesProcessIsPaused =
@@ -42,7 +55,7 @@ let WatchSchedules = new commander.Command("watch:schedules")
         } catch (error) {
           if (lastSchedule != null) {
             logger.error(
-              `An error occurred when trying to process Schedule ${lastSchedule.id} ${lastSchedule}`
+              `An error occurred when trying to process Schedule ${lastSchedule.id} ${lastSchedule}`,
             );
             logger.error(error);
 
@@ -59,7 +72,7 @@ let WatchSchedules = new commander.Command("watch:schedules")
           setTimeout(() => resolve(null), currentDelayBetweenTicks);
         });
       }
-    }
+    },
   );
 
 const tick = async (): Promise<void> => {
@@ -74,7 +87,7 @@ const tick = async (): Promise<void> => {
 
     performCaptureRun(schedule).catch((error) => {
       logger.error(
-        `Error running Schedule ID ${schedule.id} in WatchSchedules tick loop`
+        `Error running Schedule ID ${schedule.id} in WatchSchedules tick loop`,
       );
       logger.error(error);
     });

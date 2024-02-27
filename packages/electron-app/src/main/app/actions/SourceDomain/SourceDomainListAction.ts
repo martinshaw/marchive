@@ -13,13 +13,15 @@ import { type SourceDomainEntityType } from 'common-types';
 import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommandUsingIpcPool';
 
 const SourceDomainListAction = async (
-  withSources: boolean,
+  withSources: boolean = false,
+  withSchedules: boolean = false,
 ): Promise<SourceDomainEntityType[]> =>
   runImmediateCliCommandUsingIpcPool<SourceDomainEntityType>(
     'source-domain:list',
     [
       {
         withSources,
+        withSchedules,
       },
     ],
   ).then((response) => response.getData());

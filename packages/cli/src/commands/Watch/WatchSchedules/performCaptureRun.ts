@@ -13,7 +13,7 @@ import fs from "node:fs";
 import logger from "logger";
 import path from "node:path";
 import { v4 as uuidV4 } from "uuid";
-import { Capture, Schedule, Source } from "database";
+import { Capture, Schedule } from "database";
 import { getDataProviderByIdentifier } from "data-providers";
 import {
   safeSanitizeFileName,
@@ -22,7 +22,6 @@ import {
 import dayjs from "dayjs";
 
 const performCaptureRun = async (schedule: Schedule): Promise<void> => {
-  // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
   logger.info("Found Schedule with ID: " + schedule.id);
 
   schedule.status = "processing";
@@ -188,10 +187,10 @@ const generateCaptureDownloadDirectory = (
     : false;
 };
 
-const cleanup = async (
+export const cleanup = async (
   schedule: Schedule | null | undefined,
-): Promise<boolean> => {
-  if (schedule == null) return true;
+): Promise<Schedule | undefined> => {
+  if (schedule == null) return undefined;
 
   schedule.status = "pending";
   schedule.lastRunAt = schedule.nextRunAt;
@@ -207,9 +206,11 @@ const cleanup = async (
       .toDate();
   }
 
-  if (schedule.interval == null) schedule.nextRunAt = null;
+  if (schedule.interval == null) {
+    schedule.nextRunAt = null;
+  }
 
-  return (await schedule.save()) != null;
+  return await schedule.save();
 };
 
 export default performCaptureRun;

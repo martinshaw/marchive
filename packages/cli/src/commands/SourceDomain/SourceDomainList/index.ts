@@ -9,7 +9,7 @@ Modified: 2024-02-01T16:12:37.651Z
 Description: description
 */
 
-import { SourceDomain } from "database";
+import { Source, SourceDomain } from "database";
 import ErrorResponse from "../../../responses/ErrorResponse";
 import TableResponse from "../../../responses/TableResponse";
 import generateTypeormWhereObjectFromCommanderOptions from "../../../options/generateTypeormWhereObjectFromCommanderOptions";
@@ -33,7 +33,18 @@ export const [
   determineTypeormRelationsObjectFromCommanderOptions,
 ] = generateTypeormRelationsObjectFromCommanderOptions<SourceDomain>([
   "sources",
+  // "sources.schedules",
 ]);
+
+/**
+ * TODO: This is a functioning hack, in the future improve it and its usage by electron-app
+ * generateTypeormRelationsObjectFromCommanderOptions should be able to handle nested relations. Presently it doesn't, so I have to shim it in here.
+ * I want to be able to use --withSourcesSchedules and the above commented out line "sources.schedules". But this hack makes available --withSchedules
+ */
+export const [
+  addTypeormRelationsCommanderOptionsForSource,
+  determineTypeormRelationsObjectFromCommanderOptionsForSource,
+] = generateTypeormRelationsObjectFromCommanderOptions<Source>(["schedules"]);
 
 let SourceDomainList = async (optionsAndArguments: {
   [key: string]: string | number | boolean;
@@ -42,10 +53,18 @@ let SourceDomainList = async (optionsAndArguments: {
     const sourceDomains = await SourceDomain.find({
       where:
         determineTypeormWhereObjectFromCommanderOptions(optionsAndArguments),
-      relations:
-        determineTypeormRelationsObjectFromCommanderOptions(
+      relations: [
+        ...(determineTypeormRelationsObjectFromCommanderOptions(
           optionsAndArguments,
-        ),
+        ).sources === true
+          ? ["sources"]
+          : []),
+        ...(determineTypeormRelationsObjectFromCommanderOptionsForSource(
+          optionsAndArguments,
+        ).schedules === true
+          ? ["sources.schedules"]
+          : []),
+      ],
     });
 
     return new TableResponse<SourceDomain>(`Source Domain`, sourceDomains, {

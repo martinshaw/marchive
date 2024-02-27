@@ -16,22 +16,22 @@ import { SourceDomainEntityType } from 'common-types';
  */
 const getSourceDomains = async (
   withSources: boolean = false,
-  withSourceSchedules: boolean = false,
+  withSchedules: boolean = false,
 ): Promise<SourceDomainEntityType[]> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once(
       'source-domains.list',
       (sourceDomains, error) => {
-        if (error != null) return reject(error);
+        if (error != null) return reject(error as Error);
 
-        resolve(sourceDomains as SourceDomainEntityType[]);
+        return resolve(sourceDomains as SourceDomainEntityType[]);
       },
     );
 
     window.electron.ipcRenderer.sendMessage(
       'source-domains.list',
       withSources,
-      withSourceSchedules,
+      withSchedules,
     );
   });
 };

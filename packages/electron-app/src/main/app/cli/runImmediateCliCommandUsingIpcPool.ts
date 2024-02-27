@@ -7,6 +7,8 @@ Created:  2024-02-06T13:42:49.417Z
 Modified: 2024-02-06T13:42:49.417Z
 
 Description: description
+
+@see https://www.alexanderlolis.com/node-js-fork-is-slow-deal-with-it
 */
 
 import CliIpcCommunicableInstancePool from './CliIpcCommunicableInstancePool';
@@ -33,8 +35,10 @@ const runImmediateCliCommandUsingIpcPool = async <TDataType extends any>(
   try {
     const commandProcessorTask: () => Promise<
       CliJsonResponse<TDataType>
-    > = () => {
-      return new Promise((resolve, reject) => {
+    > = () =>
+      new Promise((resolve, reject) => {
+        commandProcessor.removeAllListeners();
+
         // https://nodejs.org/api/child_process.html#child_process_event_error
         commandProcessor.on('error', reject);
 
@@ -46,10 +50,11 @@ const runImmediateCliCommandUsingIpcPool = async <TDataType extends any>(
 
           const response = new CliJsonResponse<TDataType>(messageSerialized);
 
-          commandProcessor.removeAllListeners();
+          if (response.getSuccess() !== true) {
+            return reject(response.toError());
+          }
 
-          if (response.getSuccess() !== true) return reject(response.toError());
-          else return resolve(response);
+          return resolve(response);
         });
 
         commandProcessor.send({
@@ -57,7 +62,6 @@ const runImmediateCliCommandUsingIpcPool = async <TDataType extends any>(
           args: functionArgs,
         });
       });
-    };
 
     const result = await commandProcessorTask();
 

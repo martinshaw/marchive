@@ -14,17 +14,14 @@ Description: description
  */
 const getSourcesCount = async (): Promise<number> => {
   return new Promise((resolve, reject) => {
-    window.electron.ipcRenderer.once(
-      'sources.count',
-      (count, error) => {
-        if (error != null) return reject(error);
+    window.electron.ipcRenderer.once('sources.count', (count, error) => {
+      if (error != null) return reject(error as Error);
 
-        resolve(count as number);
-      }
-    );
+      resolve(count as number);
+    });
 
     window.electron.ipcRenderer.sendMessage('sources.count');
-  })
-}
+  });
+};
 
 export default getSourcesCount;

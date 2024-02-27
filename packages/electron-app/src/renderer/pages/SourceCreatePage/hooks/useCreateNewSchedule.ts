@@ -21,22 +21,21 @@ const useCreateNewSchedule = () => {
   const createNewSchedule = useCallback(
     (
       sourceId: number,
-      intervalInSeconds: number | null,
+      intervalInSeconds: number | null = null,
       downloadLocation: string | null = null,
     ) => {
       setIsCreating(true);
 
       window.electron.ipcRenderer.once(
         'schedules.create',
-        (createdSchedule, errorMessage) => {
-          if (createdSchedule == null && errorMessage == null) return;
+        (createdSchedule, error) => {
+          if (createdSchedule == null && error == null) return;
 
           setIsCreating(false);
 
-          if (errorMessage != null) {
+          if (error != null) {
             setCreatedSchedule(null);
-            setErrorMessage(errorMessage as Error);
-            console.error(errorMessage);
+            setErrorMessage(error as Error);
             return;
           }
 

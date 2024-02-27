@@ -23,7 +23,7 @@ const getCapture = async (
 ): Promise<CaptureEntityType> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once('captures.show', (source, error) => {
-      if (error != null) return reject(error);
+      if (error != null) return reject(error as Error);
 
       resolve(source as CaptureEntityType);
     });

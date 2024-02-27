@@ -76,7 +76,7 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
       format.timestamp({
         format: "YYYY-MM-DD HH:mm:ss",
       }),
-      format.json()
+      format.json(),
     ),
     defaultMeta: { service: serviceName },
     transports: [
@@ -96,7 +96,7 @@ const createWinstonLogger: (serviceName: string) => Logger = (serviceName) => {
     logger.add(
       new transports.Console({
         format: format.combine(format.colorize(), format.simple()),
-      })
+      }),
     );
   }
 

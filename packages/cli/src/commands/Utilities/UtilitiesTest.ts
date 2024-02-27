@@ -67,13 +67,13 @@ UtilitiesTest.description(
     `      ELECTRON_IS_USED: ${await getStoredSettingValue("ELECTRON_IS_USED")}`,
   );
   console.log(
-    `      SCHEDULE_RUN_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
-      "SCHEDULE_RUN_PROCESS_IS_PAUSED",
+    `      WATCH_SCHEDULES_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
+      "WATCH_SCHEDULES_PROCESS_IS_PAUSED",
     )}`,
   );
   console.log(
-    `      CAPTURE_PART_RUN_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
-      "CAPTURE_PART_RUN_PROCESS_IS_PAUSED",
+    `      WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED: ${await getStoredSettingValue(
+      "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED",
     )}`,
   );
 

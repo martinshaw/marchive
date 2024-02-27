@@ -62,8 +62,8 @@ const createTray = async () => {
   if (os.userInfo().username)
     greeting = `Hi ${os.userInfo().username}, this is your Marchive`;
 
-  let scheduleRunProcessIsPaused = false; // (await getStoredSettingValue('SCHEDULE_RUN_PROCESS_IS_PAUSED')) === true;
-  let capturePartRunProcessIsPaused = false; // (await getStoredSettingValue('CAPTURE_PART_RUN_PROCESS_IS_PAUSED')) === true;
+  let scheduleRunProcessIsPaused = false; // (await getStoredSettingValue('WATCH_SCHEDULES_PROCESS_IS_PAUSED')) === true;
+  let capturePartRunProcessIsPaused = false; // (await getStoredSettingValue('WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED')) === true;
 
   nativeTheme.on('updated', () => {
     tray.setImage(
@@ -75,7 +75,7 @@ const createTray = async () => {
 
   const scheduleRunProcessOnClickHandler = async () => {
     // await setStoredSettingValue(
-    //   'SCHEDULE_RUN_PROCESS_IS_PAUSED',
+    //   'WATCH_SCHEDULES_PROCESS_IS_PAUSED',
     //   !scheduleRunProcessIsPaused,
     // );
     // webContents.getAllWebContents().forEach((webContent) => {
@@ -89,7 +89,7 @@ const createTray = async () => {
   };
   const capturePartRunProcessOnClickHandler = async () => {
     // await setStoredSettingValue(
-    //   'CAPTURE_PART_RUN_PROCESS_IS_PAUSED',
+    //   'WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED',
     //   !capturePartRunProcessIsPaused,
     // );
     // webContents.getAllWebContents().forEach((webContent) => {

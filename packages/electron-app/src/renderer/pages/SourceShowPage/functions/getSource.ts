@@ -22,9 +22,9 @@ const getSource = async (
 ): Promise<SourceEntityType> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once('sources.show', (source, error) => {
-      if (error != null) return reject(error);
+      if (error != null) return reject(error as Error);
 
-      resolve(source as SourceEntityType);
+      return resolve(source as SourceEntityType);
     });
 
     window.electron.ipcRenderer.sendMessage(

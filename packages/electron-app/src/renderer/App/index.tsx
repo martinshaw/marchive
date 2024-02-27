@@ -1,7 +1,6 @@
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
-import TodayPage from '../pages/TodayPage';
-import YesterdayPage from '../pages/YesterdayPage';
+import { IndexPageLoader } from '../pages/IndexPage';
 import DefaultLayout from '../layouts/DefaultLayout';
 import OnboardingIndexPage from '../pages/OnboardingIndexPage';
 import SourceShowPage, { SourceShowPageLoader } from '../pages/SourceShowPage';
@@ -14,26 +13,25 @@ import CaptureShowPage, {
 import SourceCreatePage, {
   sourceCreatePageDataLoader,
 } from '../pages/SourceCreatePage';
+import IndexPage from '../pages/IndexPage';
+import ErrorBoundary from '../ErrorBoundary';
 
 const App = () => {
   return (
     <RouterProvider
       router={createMemoryRouter([
         {
-          path: '/',
           element: <DefaultLayout />,
+          errorElement: <ErrorBoundary />,
           children: [
+            {
+              path: '/',
+              loader: IndexPageLoader,
+              element: <IndexPage />,
+            },
             {
               path: '/onboarding',
               element: <OnboardingIndexPage />,
-            },
-            {
-              path: '/yesterday',
-              element: <YesterdayPage />,
-            },
-            {
-              path: '/today',
-              element: <TodayPage />,
             },
             {
               path: '/sources',

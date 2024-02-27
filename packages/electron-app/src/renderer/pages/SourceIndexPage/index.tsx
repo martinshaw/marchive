@@ -15,52 +15,71 @@ import AutoAnimated from '../../components/AutoAnimated';
 import getSourceDomains from './functions/getSourceDomains';
 import getDataProviders from './functions/getDataProviders';
 import { Button, ContextMenu, Menu, MenuItem, Text } from '@blueprintjs/core';
-import { NavLink, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+  NavLink,
+  Navigate,
+  useLoaderData,
+  useNavigate,
+} from 'react-router-dom';
 import SourceIndexPageListItemCard from './components/SourceIndexPageListItemCard';
 import getSourcesWithoutSourceDomains from './functions/getSourcesWithoutSourceDomains';
 import promptForSourceDeletion from '../../layouts/DefaultLayout/functions/promptForSourceDeletion';
 import { CopyableExternalLinkCopyLinkMenuItem } from '../../layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
+import {
+  DataProviderSerializedType,
+  SourceDomainEntityType,
+  SourceEntityType,
+} from 'common-types';
 
 import './index.scss';
-import { DataProviderSerializedType, SourceDomainEntityType, SourceEntityType } from 'common-types';
 
 type SourceIndexPageLoaderReturnType = {
-  sourcesGroupedBySourceDomain: SourceDomainEntityType[],
-  sourcesGroupedBySourceDomainError: Error | false,
-  sourcesWithoutSourceDomain: SourceEntityType[],
-  sourcesWithoutSourceDomainError: Error | false,
-  dataProviders: DataProviderSerializedType[],
-  dataProvidersError: Error | false,
-}
+  sourcesGroupedBySourceDomain: SourceDomainEntityType[];
+  sourcesGroupedBySourceDomainError: Error | false;
+  sourcesWithoutSourceDomain: SourceEntityType[];
+  sourcesWithoutSourceDomainError: Error | false;
+  dataProviders: DataProviderSerializedType[];
+  dataProvidersError: Error | false;
+};
 
-export const SourceIndexPageLoader = async (): Promise<SourceIndexPageLoaderReturnType> => {
-  let sourcesGroupedBySourceDomain: SourceDomainEntityType[] = [];
-  let sourcesGroupedBySourceDomainError: Error | false = false;
+export const SourceIndexPageLoader =
+  async (): Promise<SourceIndexPageLoaderReturnType> => {
+    let sourcesGroupedBySourceDomain: SourceDomainEntityType[] = [];
+    let sourcesGroupedBySourceDomainError: Error | false = false;
 
-  try { sourcesGroupedBySourceDomain = await getSourceDomains(true, true); }
-  catch (error) { sourcesGroupedBySourceDomainError = error as Error; }
+    try {
+      sourcesGroupedBySourceDomain = await getSourceDomains(true, true);
+    } catch (error) {
+      sourcesGroupedBySourceDomainError = error as Error;
+    }
 
-  let sourcesWithoutSourceDomain: SourceEntityType[] = [];
-  let sourcesWithoutSourceDomainError: Error | false = false;
+    let sourcesWithoutSourceDomain: SourceEntityType[] = [];
+    let sourcesWithoutSourceDomainError: Error | false = false;
 
-  try { sourcesWithoutSourceDomain = await getSourcesWithoutSourceDomains(); }
-  catch (error) { sourcesWithoutSourceDomainError = error as Error; }
+    try {
+      sourcesWithoutSourceDomain = await getSourcesWithoutSourceDomains();
+    } catch (error) {
+      sourcesWithoutSourceDomainError = error as Error;
+    }
 
-  let dataProviders: DataProviderSerializedType[] = [];
-  let dataProvidersError: Error | false = false;
+    let dataProviders: DataProviderSerializedType[] = [];
+    let dataProvidersError: Error | false = false;
 
-  try { dataProviders = await getDataProviders(); }
-  catch (error) { dataProvidersError = error as Error; }
+    try {
+      dataProviders = await getDataProviders();
+    } catch (error) {
+      dataProvidersError = error as Error;
+    }
 
-  return {
-    sourcesGroupedBySourceDomain,
-    sourcesGroupedBySourceDomainError,
-    sourcesWithoutSourceDomain,
-    sourcesWithoutSourceDomainError,
-    dataProviders,
-    dataProvidersError,
-  }
-}
+    return {
+      sourcesGroupedBySourceDomain,
+      sourcesGroupedBySourceDomainError,
+      sourcesWithoutSourceDomain,
+      sourcesWithoutSourceDomainError,
+      dataProviders,
+      dataProvidersError,
+    };
+  };
 
 const SourceIndexPage = () => {
   const {
@@ -69,20 +88,24 @@ const SourceIndexPage = () => {
     sourcesWithoutSourceDomain,
     sourcesWithoutSourceDomainError,
     dataProviders,
-    dataProvidersError
-  } = useLoaderData() as SourceIndexPageLoaderReturnType
+    dataProvidersError,
+  } = useLoaderData() as SourceIndexPageLoaderReturnType;
 
   const navigate = useNavigate();
 
   const sourcesCount = useMemo(
-    () => sourcesGroupedBySourceDomain == null ?
-      0 :
-      sourcesGroupedBySourceDomain.reduce((c, sourceDomain) => (c + (sourceDomain.sources ?? []).length), 0)
-    ,
-    [sourcesGroupedBySourceDomain]
-  )
+    () =>
+      sourcesGroupedBySourceDomain == null
+        ? 0
+        : sourcesGroupedBySourceDomain.reduce(
+            (c, sourceDomain) => c + (sourceDomain.sources ?? []).length,
+            0,
+          ),
+    [sourcesGroupedBySourceDomain],
+  );
 
-  if (sourcesCount === 0) return <Navigate to="/sources/create" replace={true} />;
+  if (sourcesCount === 0)
+    return <Navigate to="/sources/create" replace={true} />;
 
   return (
     <>
@@ -94,34 +117,48 @@ const SourceIndexPage = () => {
           </span>
         </Text>
         <NavLink to="/sources/create">
-          {() => (
-            <Button intent="success" icon="add" text="Add a new Source" />
-          )}
+          {() => <Button intent="success" icon="add" text="Add a new Source" />}
         </NavLink>
       </div>
 
       <AutoAnimated additionalClassNames="sources__list">
         {(sourcesGroupedBySourceDomain ?? [])
-          .filter(sourceDomain => sourceDomain.sources != null && sourceDomain.sources.length > 0)
-          .map(sourceDomain =>
+          .filter(
+            (sourceDomain) =>
+              sourceDomain.sources != null && sourceDomain.sources.length > 0,
+          )
+          .map((sourceDomain) => (
             <div key={sourceDomain.id} className="sources__list__source-domain">
               <div className="sources__list__source-domain__title">
-                {sourceDomain.faviconPath != null && sourceDomain.faviconPath !== '' && <img src={sourceDomain.faviconPath ?? undefined} alt={sourceDomain.name} /> }
+                {sourceDomain.faviconPath != null &&
+                  sourceDomain.faviconPath !== '' && (
+                    <img
+                      src={sourceDomain.faviconPath ?? undefined}
+                      alt={sourceDomain.name}
+                    />
+                  )}
                 <Text ellipsize={false}>{sourceDomain.name}</Text>
               </div>
 
-              {(sourceDomain.sources ?? []).map(source => (
-                source == null ? null :
+              {(sourceDomain.sources ?? []).map((source) =>
+                source == null ? null : (
                   <ContextMenu
                     key={source.id}
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     content={
                       <Menu>
-                        {source.name != null && <CopyableExternalLinkCopyLinkMenuItem text={source.name} url={source.url} />}
+                        {source.name != null && (
+                          <CopyableExternalLinkCopyLinkMenuItem
+                            text={source.name}
+                            url={source.url}
+                          />
+                        )}
                         <MenuItem
                           icon="trash"
                           text="Delete Source"
-                          disabled={source.schedules.every(schedule => schedule.status === 'processing')}
+                          disabled={source.schedules.some(
+                            (schedule) => schedule.status === 'processing',
+                          )}
                           onClick={() => {
                             promptForSourceDeletion(source)
                               .then(() => {
@@ -129,9 +166,10 @@ const SourceIndexPage = () => {
                               })
                               .catch(() => {
                                 AppToaster.show({
-                                  message: 'An error occurred while deleting the source.',
+                                  message:
+                                    'An error occurred while deleting the source.',
                                   intent: 'danger',
-                                })
+                                });
                               });
                           }}
                         />
@@ -144,18 +182,20 @@ const SourceIndexPage = () => {
                       dataProviders={dataProviders}
                     />
                   </ContextMenu>
-              ))}
+                ),
+              )}
             </div>
-          )}
+          ))}
 
-        {(sourcesWithoutSourceDomain ?? []).map(source => (
-          source == null ? null :
+        {(sourcesWithoutSourceDomain ?? []).map((source) =>
+          source == null ? null : (
             <SourceIndexPageListItemCard
               key={source.id}
               source={source}
               dataProviders={dataProviders}
             />
-        ))}
+          ),
+        )}
       </AutoAnimated>
     </>
   );

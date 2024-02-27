@@ -17,9 +17,9 @@ import { SourceEntityType } from 'common-types';
 const getSources = async (): Promise<SourceEntityType[]> => {
   return new Promise((resolve, reject) => {
     window.electron.ipcRenderer.once('sources.list', (sources, error) => {
-      if (error != null) return reject(error);
+      if (error != null) return reject(error as Error);
 
-      resolve(sources as SourceEntityType[]);
+      return resolve(sources as SourceEntityType[]);
     });
 
     window.electron.ipcRenderer.sendMessage('sources.list');

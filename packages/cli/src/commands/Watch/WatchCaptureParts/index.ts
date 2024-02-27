@@ -11,7 +11,12 @@ Description: description
 
 import logger from "logger";
 import commander from "commander";
-import { getStoredSettingValue, CapturePart, Schedule } from "database";
+import {
+  getStoredSettingValue,
+  CapturePart,
+  Schedule,
+  retrieveDueCapturePart,
+} from "database";
 import { getDataProviderByIdentifier } from "data-providers";
 import BaseDataProvider from "data-providers/src/BaseDataProvider";
 
@@ -23,9 +28,19 @@ let WatchCaptureParts = new commander.Command("watch:capture-parts")
     async (optionsAndArguments: {
       [key: string]: string | number | boolean;
     }) => {
-      // TODO: Keep these or remove them ???
-      logger.info("WatchCaptureParts started (using Winston)"); // delete me
-      console.log("WatchCaptureParts started (using console.log)"); // delete me
+      process.once("beforeExit", async () => {
+        const capturePartsProcessing = await CapturePart.find({
+          where: {
+            status: "processing",
+          },
+        });
+
+        for (let i = 0; i < capturePartsProcessing.length; i++) {
+          await cleanup(capturePartsProcessing[i]);
+        }
+
+        process.exit(0);
+      });
 
       // Should wait for 6 seconds between ticks when downloading pending files
       // When there are no pending files to download, should wait for 60 seconds between ticks
@@ -36,7 +51,7 @@ let WatchCaptureParts = new commander.Command("watch:capture-parts")
 
         let watchCapturePartsProcessIsPaused =
           (await getStoredSettingValue(
-            "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED"
+            "WATCH_CAPTURE_PARTS_PROCESS_IS_PAUSED",
           )) === true;
 
         try {
@@ -50,7 +65,7 @@ let WatchCaptureParts = new commander.Command("watch:capture-parts")
         } catch (error) {
           if (lastCapturePart != null) {
             logger.error(
-              `An error occurred when trying to process Capture Part ${lastCapturePart.id} ${lastCapturePart.url}`
+              `An error occurred when trying to process Capture Part ${lastCapturePart.id} ${lastCapturePart.url}`,
             );
             logger.error(error);
 
@@ -63,76 +78,26 @@ let WatchCaptureParts = new commander.Command("watch:capture-parts")
           setTimeout(() => resolve(null), currentDelayBetweenTicks);
         });
       }
-    }
+    },
   );
 
 const tick = async (): Promise<{
   processedSuccessfully: boolean;
   hadPendingCapturePart: boolean;
 }> => {
-  // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
   logger.info("Looking for pending Capture Parts...");
 
   let capturePart: CapturePart | null = null;
   try {
-    // TODO: This is the old query from Sequelize, need to remove it once I can confirm that the new code below works
-    // capturePart = await CapturePart.findOne({
-    //   where: {
-    //     status: "pending",
-    //   },
-    //   include: [
-    //     {
-    //       model: Capture,
-    //       include: [
-    //         {
-    //           model: Schedule,
-    //           where: {
-    //             status: {
-    //               [Op.eq]: "pending",
-    //             },
-    //           },
-    //           include: [
-    //             {
-    //               model: Source,
-    //             },
-    //           ],
-    //         },
-    //       ],
-    //       // where: {
-    //       //   allowedRetriesCount: Sequelize.col('currentRetryCount'),
-    //       // },
-    //       // required: true,
-    //     },
-    //   ],
-    // });
-
-    capturePart = await CapturePart.findOne({
-      where: {
-        status: "pending",
-        capture: {
-          schedule: {
-            status: "pending",
-          },
-        },
-      },
-      relations: ["capture", "capture.schedule", "capture.schedule.source"],
-    });
+    capturePart = await retrieveDueCapturePart();
   } catch (error) {
     logger.error(
-      "A DB error occurred when trying to find a pending Capture Part for processing"
+      "A DB error occurred when trying to find a pending Capture Part for processing",
     );
     logger.error(error);
   }
 
   if (capturePart == null) {
-    /**
-     * TODO: I am purposefully misusing .debug instead of .error throughout this file so that an error isn't thrown and the return
-     *   object is handled regardless of whether an error or success occurred
-     *
-     * I need to find a way to handle errors in a way that doesn't cause the process to exit allowing the loop to continue
-     * Maybe use .error, then a use try / catch block around `await this.tick()` in the `run` method
-     */
-    // TODO: REVERT THIS BACK TO .debug WHEN WE HAVE FINISHED TESTING MONOREPO REFACTOR
     logger.info("No pending Capture Parts found");
 
     return {
@@ -142,12 +107,12 @@ const tick = async (): Promise<{
   }
 
   logger.info(
-    `Found a pending Capture Part to be downloaded: ${capturePart?.id} ${capturePart?.url}`
+    `Found a pending Capture Part to be downloaded: ${capturePart?.id} ${capturePart?.url}`,
   );
 
   if (capturePart?.capture?.schedule?.source?.dataProviderIdentifier == null) {
-    logger.info(
-      "No Data Provider Identifier found for pending Capture's Source"
+    logger.error(
+      "No Data Provider Identifier found for pending Capture's Source",
     );
 
     return {
@@ -157,10 +122,10 @@ const tick = async (): Promise<{
   }
 
   const dataProvider = await getDataProviderByIdentifier(
-    capturePart.capture?.schedule?.source?.dataProviderIdentifier
+    capturePart.capture?.schedule?.source?.dataProviderIdentifier,
   );
   if (dataProvider == null) {
-    logger.info("No Data Provider found for pending Capture's Source");
+    logger.error("No Data Provider found for pending Capture's Source");
 
     return {
       processedSuccessfully: false,
@@ -178,44 +143,47 @@ const tick = async (): Promise<{
 
 const processPart = async (
   capturePart: CapturePart,
-  dataProvider: BaseDataProvider
+  dataProvider: BaseDataProvider,
 ): Promise<boolean> => {
   lastCapturePart = capturePart;
 
-  let schedule: Schedule | undefined = capturePart.capture?.schedule;
-  if (schedule != null) {
-    schedule.status = "processing";
-    await schedule.save();
-  }
+  // let schedule: Schedule | undefined = capturePart.capture?.schedule;
+  // if (schedule != null) {
+  //   schedule.status = "processing";
+  //   await schedule.save();
+  // }
 
   capturePart.status = "processing";
   await capturePart.save();
 
   logger.info(
-    `Processing Capture Part ${capturePart.id} ${capturePart.url}...`
+    `Processing Capture Part ${capturePart.id} ${capturePart.url}...`,
   );
 
   let processRanSuccessfully: boolean;
+  let processError: Error | null = null;
   try {
     processRanSuccessfully = await dataProvider.processPart(capturePart);
   } catch (error) {
     processRanSuccessfully = false;
+    processError = error as Error;
   }
 
-  if (!processRanSuccessfully) {
-    logger.info(
-      `Failed to process Capture Part ${capturePart.id} ${capturePart.url}...`
+  if (!processRanSuccessfully || processError != null) {
+    logger.error(
+      `Failed to process Capture Part ${capturePart.id} ${capturePart.url}...`,
     );
+    logger.error(processError);
 
     capturePart.status = "failed";
     capturePart.currentRetryCount += 1;
     await capturePart.save();
 
-    schedule = capturePart.capture?.schedule;
-    if (schedule != null) {
-      schedule.status = "pending";
-      await schedule.save();
-    }
+    // schedule = capturePart.capture?.schedule;
+    // if (schedule != null) {
+    //   schedule.status = "pending";
+    //   await schedule.save();
+    // }
 
     return false;
   }
@@ -226,13 +194,29 @@ const processPart = async (
   capturePart.currentRetryCount += 1;
   await capturePart.save();
 
-  schedule = capturePart.capture?.schedule;
-  if (schedule != null) {
-    schedule.status = "pending";
-    await schedule.save();
-  }
+  // schedule = capturePart.capture?.schedule;
+  // if (schedule != null) {
+  //   schedule.status = "pending";
+  //   await schedule.save();
+  // }
 
   return true;
+};
+
+const cleanup = async (
+  capturePart: CapturePart | null | undefined,
+): Promise<CapturePart | undefined> => {
+  if (capturePart == null) return undefined;
+
+  capturePart.status = "pending";
+
+  await capturePart.save();
+
+  // const schedule = capturePart.capture?.schedule;
+  // if (schedule == null) return undefined;
+
+  // schedule.status = "pending";
+  // await schedule.save();
 };
 
 export default WatchCaptureParts;

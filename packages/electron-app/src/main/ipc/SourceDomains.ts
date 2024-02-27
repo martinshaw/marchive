@@ -20,16 +20,19 @@ export type SourceDomainsChannels =
   | 'source-domains.show'
   | 'source-domains.count';
 
-ipcMain.on('source-domains.list', async (event, withSources: boolean) => {
-  return SourceDomainListAction(withSources)
-    .then((sourceDomains) => {
-      event.reply('source-domains.list', sourceDomains, null);
-    })
-    .catch((error) => {
-      console.error(error);
-      event.reply('source-domains.list', null, error);
-    });
-});
+ipcMain.on(
+  'source-domains.list',
+  async (event, withSources: boolean, withSchedules: boolean) => {
+    return SourceDomainListAction(withSources, withSchedules)
+      .then((sourceDomains) => {
+        event.reply('source-domains.list', sourceDomains, null);
+      })
+      .catch((error) => {
+        console.error(error);
+        event.reply('source-domains.list', null, error);
+      });
+  },
+);
 
 ipcMain.on(
   'source-domains.show',

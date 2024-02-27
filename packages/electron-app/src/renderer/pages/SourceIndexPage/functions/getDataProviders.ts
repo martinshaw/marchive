@@ -19,9 +19,9 @@ const getDataProviders = async (): Promise<DataProviderSerializedType[]> => {
     window.electron.ipcRenderer.once(
       'data-providers.list',
       (dataProviders, error) => {
-        if (error != null) return reject(error);
+        if (error != null) return reject(error as Error);
 
-        resolve(dataProviders as DataProviderSerializedType[]);
+        return resolve(dataProviders as DataProviderSerializedType[]);
       },
     );
 
