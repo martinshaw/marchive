@@ -17,8 +17,10 @@ const SourceListAction = async (
   withSourceDomain = false,
 ): Promise<SourceEntityType[]> =>
   runImmediateCliCommandUsingIpcPool<SourceEntityType>('source:list', [
-    withSchedules,
-    withSourceDomain,
+    {
+      withSchedules,
+      withSourceDomain,
+    },
   ]).then((response) => response.getData());
 
 export default SourceListAction;

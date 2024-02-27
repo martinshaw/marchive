@@ -20,9 +20,7 @@ const CaptureDeleteAction = async (
 ): Promise<void> =>
   runImmediateCliCommandUsingIpcPool<{ id: number }>('capture:delete', [
     captureId,
-    {
-      alsoDeleteFiles,
-    },
+    alsoDeleteFiles,
   ]).then((response) => {});
 
 export default CaptureDeleteAction;

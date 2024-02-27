@@ -20,9 +20,7 @@ const SourceDeleteAction = async (
 ): Promise<void> =>
   runImmediateCliCommandUsingIpcPool<{ id: number }>('source:delete', [
     sourceId,
-    {
-      alsoDeleteFiles,
-    },
+    alsoDeleteFiles,
   ]).then((response) => {});
 
 export default SourceDeleteAction;

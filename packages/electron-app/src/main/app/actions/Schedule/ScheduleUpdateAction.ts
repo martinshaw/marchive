@@ -25,12 +25,10 @@ const ScheduleUpdateAction = async (
 ): Promise<ScheduleEntityType> =>
   runImmediateCliCommandUsingIpcPool<ScheduleEntityType>('schedule:update', [
     scheduleId,
-    {
-      intervalInSeconds,
-      downloadLocation,
-      enable,
-      disable,
-    },
+    intervalInSeconds,
+    downloadLocation,
+    enable,
+    disable,
   ]).then((response) => response.getData()[0]);
 
 export default ScheduleUpdateAction;
