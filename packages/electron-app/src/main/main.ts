@@ -35,9 +35,7 @@ import './ipc/Watchers';
 import './ipc/Renderers';
 import './ipc/StoredSettings';
 
-/**
- * TODO: Add import statement for 'protocols'
- */
+import './protocols';
 
 class AppUpdater {
   constructor() {

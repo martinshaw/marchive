@@ -58,17 +58,6 @@ export const CaptureShowPageLoader: LoaderFunction = async ({
     captureError = error as Error;
   }
 
-  console.log(
-    'capture',
-    capture,
-    'captureError',
-    captureError,
-    'dataProviders',
-    dataProviders,
-    'dataProvidersError',
-    dataProvidersError,
-  );
-
   try {
     dataProviders = await getDataProviders();
   } catch (error) {

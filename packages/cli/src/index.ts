@@ -23,6 +23,10 @@ import CaptureList from "./commands/Capture/CaptureList/command";
 import CaptureShow from "./commands/Capture/CaptureShow/command";
 import CaptureDelete from "./commands/Capture/CaptureDelete/command";
 
+import CapturePartList from "./commands/CapturePart/CapturePartList/command";
+import CapturePartShow from "./commands/CapturePart/CapturePartShow/command";
+import CapturePartDelete from "./commands/CapturePart/CapturePartDelete/command";
+
 import DataProviderList from "./commands/DataProvider/DataProviderList/command";
 import DataProviderShow from "./commands/DataProvider/DataProviderShow/command";
 import DataProviderValidate from "./commands/DataProvider/DataProviderValidate/command";
@@ -77,6 +81,11 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
     .addCommand(CaptureList)
     .addCommand(CaptureShow)
     .addCommand(CaptureDelete)
+
+    // Capture Part related commands
+    .addCommand(CapturePartList)
+    .addCommand(CapturePartShow)
+    .addCommand(CapturePartDelete)
 
     // Data Provider related commands
     .addCommand(DataProviderList)

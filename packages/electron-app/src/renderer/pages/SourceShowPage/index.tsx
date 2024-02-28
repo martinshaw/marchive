@@ -59,17 +59,6 @@ export const SourceShowPageLoader: LoaderFunction = async ({
     sourceError = error as Error;
   }
 
-  console.log(
-    'SOURCE =:> ',
-    source,
-    'SOURCE ERROR =:> ',
-    sourceError,
-    'DATA PROVIDERS =:> ',
-    dataProviders,
-    'DATA PROVIDERS ERROR =:> ',
-    dataProvidersError,
-  );
-
   try {
     dataProviders = await getDataProviders();
   } catch (error) {
@@ -156,13 +145,10 @@ const SourceShowPage = () => {
   >(
     () =>
       source.schedules.reduce<[ScheduleEntityType, CaptureEntityType][]>(
-        (carry, schedule) => {
-          console.log('schedule', schedule, carry);
-
-          return carry.concat(
+        (carry, schedule) =>
+          carry.concat(
             (schedule.captures ?? []).map((capture) => [schedule, capture]),
-          );
-        },
+          ),
         [],
       ),
     [source],
