@@ -26,8 +26,8 @@ const SourcePromptForDeletionAction = async (
       'You can remove the source from your Marchive without deleting all of the saved files from your computer.',
     buttons: [
       'Never Mind',
-      'Just Remove from Your Marchive',
-      'Remove from Your Marchive and Delete All Saved Files',
+      'Just Remove From My Marchive',
+      'Remove From My Marchive and Delete All Saved Files',
     ],
     defaultId: 0,
     cancelId: 0,

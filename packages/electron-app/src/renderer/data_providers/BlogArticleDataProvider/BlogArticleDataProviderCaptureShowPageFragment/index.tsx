@@ -38,11 +38,11 @@ import FocusedCaptureImageContextMenu from '../../components/FocusedCaptureImage
 import './index.scss';
 
 type BlogArticleDataProviderCaptureShowPageFragmentPropsType = {
-  relatedHeadingCaption: string
+  relatedHeadingCaption: string;
 } & DataProvidersRendererComponentCaptureShowPageFragmentPropsType;
 
 const BlogArticleDataProviderCaptureShowPageFragment = (
-  props: BlogArticleDataProviderCaptureShowPageFragmentPropsType
+  props: BlogArticleDataProviderCaptureShowPageFragmentPropsType,
 ) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
@@ -57,28 +57,29 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
     useFocusedCapturePartFromLocation(
       location,
       props.capture,
-      props.capture.captureParts ?? []
+      props.capture.captureParts ?? [],
     );
 
   const captureReadabilityObject = useCaptureReadability(
     props.capture,
-    focusedCapturePart
+    focusedCapturePart,
   );
 
   const { captureImageUrl, imageDimensions } = useCaptureImage(
     props.capture,
-    focusedCapturePart
+    focusedCapturePart,
   );
 
   const captureSnapshotUrl = useCaptureSnapshot(
     props.capture,
-    focusedCapturePart
+    focusedCapturePart,
   );
 
   const mediaIsFocused = location.searchParams?.focused != null;
   const displayedMediaType =
     (location.searchParams
-      ?.displayedMediaType as CaptureStateDisplayedMediaType) ?? (captureReadabilityObject != null ? 'readability' : 'screenshot');
+      ?.displayedMediaType as CaptureStateDisplayedMediaType) ??
+    (captureReadabilityObject != null ? 'readability' : 'screenshot');
 
   const { captureMetadataObject, titleText, descriptionText } =
     useCaptureMetadata(props.capture, focusedCapturePart);
@@ -124,8 +125,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                     ? 'readability'
                     : 'screenshot',
               },
-              location
-            )
+              location,
+            ),
           );
         }}
       >
@@ -139,8 +140,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                     navigate(
                       formatLocationUrlWithChangedSearchParams(
                         { displayedMediaType: 'readability' },
-                        location
-                      )
+                        location,
+                      ),
                     );
                   }}
                   active={displayedMediaType === 'readability'}
@@ -152,8 +153,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                   navigate(
                     formatLocationUrlWithChangedSearchParams(
                       { displayedMediaType: 'screenshot' },
-                      location
-                    )
+                      location,
+                    ),
                   );
                 }}
                 active={displayedMediaType === 'screenshot'}
@@ -164,8 +165,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                   navigate(
                     formatLocationUrlWithChangedSearchParams(
                       { displayedMediaType: 'snapshot' },
-                      location
-                    )
+                      location,
+                    ),
                   );
                 }}
                 active={displayedMediaType === 'snapshot'}
@@ -176,8 +177,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                   navigate(
                     formatLocationUrlWithChangedSearchParams(
                       { displayedMediaType: 'metadata' },
-                      location
-                    )
+                      location,
+                    ),
                   );
                 }}
                 active={displayedMediaType === 'metadata'}
@@ -190,7 +191,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
               onClick={() => {
                 window.electron.ipcRenderer.sendMessage(
                   'utilities.open-internal-path-in-default-program',
-                  focusedCaptureOrCapturePartDownloadLocation
+                  focusedCaptureOrCapturePartDownloadLocation,
                 );
               }}
             />
@@ -231,8 +232,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                           ? 'readability'
                           : 'screenshot',
                     },
-                    location
-                  )
+                    location,
+                  ),
                 );
               }}
             />
@@ -286,7 +287,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                     icon="arrow-up"
                     onClick={() => {
                       const toggleButtons = document.querySelectorAll(
-                        '.blog-article-capture-show-fragment__left__toggle-buttons'
+                        '.blog-article-capture-show-fragment__left__toggle-buttons',
                       );
                       if (Array.from(toggleButtons).length < 1) return;
 
@@ -318,7 +319,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                       onClick={() => {
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
-                          focusedCaptureOrCapturePartDownloadLocation
+                          focusedCaptureOrCapturePartDownloadLocation,
                         );
                       }}
                     />
@@ -339,7 +340,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                   }
                   imagePath="screenshot.jpg"
                   fileBrowserName={fileBrowserName}
-                  toggleButtonsClassName='.blog-article-capture-show-fragment__left__toggle-buttons'
+                  toggleButtonsClassName=".blog-article-capture-show-fragment__left__toggle-buttons"
                 >
                   <img
                     className="blog-article-capture-show-fragment__left__media__image__inner"
@@ -358,7 +359,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                     icon="arrow-up"
                     onClick={() => {
                       const toggleButtons = document.querySelectorAll(
-                        '.blog-article-capture-show-fragment__left__toggle-buttons'
+                        '.blog-article-capture-show-fragment__left__toggle-buttons',
                       );
                       if (Array.from(toggleButtons).length < 1) return;
 
@@ -388,7 +389,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
                           focusedCaptureOrCapturePartDownloadLocation +
-                            '/snapshot.mhtml'
+                            '/snapshot.mhtml',
                         );
                       }}
                     />
@@ -415,7 +416,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                       onClick={() => {
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
-                          focusedCaptureOrCapturePartDownloadLocation
+                          focusedCaptureOrCapturePartDownloadLocation,
                         );
                       }}
                     />
@@ -455,8 +456,8 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
                           ? 'readability'
                           : 'screenshot',
                     },
-                    location
-                  )
+                    location,
+                  ),
                 );
               }}
             >

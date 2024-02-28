@@ -2,28 +2,28 @@
 All Rights Reserved, (c) 2023 CodeAtlas LTD.
 
 Author: Martin Shaw (developer@martinshaw.co)
-File Name: CapturePromptForDeletionAction.ts
+File Name: CapturePartPromptForDeletionAction.ts
 Created:  2023-08-17T09:03:35.766Z
 Modified: 2023-08-17T09:03:35.767Z
 
 Description: description
 */
 
-import CaptureDeleteAction from './CaptureDeleteAction';
+import CapturePartDeleteAction from './CapturePartDeleteAction';
 import { BrowserWindow, MessageBoxOptions, dialog } from 'electron';
 
 /**
  * @throws {Error}
  */
-const CapturePromptForDeletionAction = async (
-  captureId: number,
+const CapturePartPromptForDeletionAction = async (
+  capturePartId: number,
 ): Promise<boolean> => {
   const currentWindow = BrowserWindow.getFocusedWindow();
   const messageBoxOptions: MessageBoxOptions = {
     type: 'warning',
-    message: 'Are you sure you want to delete this saved capture?',
+    message: 'Are you sure you want to delete this saved capture part?',
     detail:
-      'You can remove the capture from your Marchive without deleting the saved files from your computer.',
+      'You can remove the capture part from your Marchive without deleting the saved files from your computer.',
     buttons: [
       'Never Mind',
       'Just Remove From My Marchive',
@@ -41,7 +41,7 @@ const CapturePromptForDeletionAction = async (
     .then(async (result) => {
       if (result.response === 1) {
         try {
-          await CaptureDeleteAction(captureId, false);
+          await CapturePartDeleteAction(capturePartId, false);
         } catch (error) {
           return false;
         }
@@ -49,7 +49,7 @@ const CapturePromptForDeletionAction = async (
       }
       if (result.response === 2) {
         try {
-          await CaptureDeleteAction(captureId, true);
+          await CapturePartDeleteAction(capturePartId, true);
         } catch (error) {
           return false;
         }
@@ -63,4 +63,4 @@ const CapturePromptForDeletionAction = async (
     });
 };
 
-export default CapturePromptForDeletionAction;
+export default CapturePartPromptForDeletionAction;

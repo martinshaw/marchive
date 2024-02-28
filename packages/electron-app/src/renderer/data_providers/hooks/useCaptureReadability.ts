@@ -22,16 +22,15 @@ const useCaptureReadability: (
   const state = useAsyncMemo<GetObjectFromJsonFileReturnType>(
     () =>
       getObjectFromJsonFile({
-        if: capture != null,
-        filePath: () => {
-          return capturePart != null
+        if: capture != null || capturePart != null,
+        filePath: () =>
+          capturePart != null
             ? 'marchive-downloads:///capture-part/' +
-                capturePart.id +
-                '/readability.json'
+              capturePart.id +
+              '/readability.json'
             : 'marchive-downloads:///capture/' +
-                capture.id +
-                '/readability.json';
-        },
+              capture.id +
+              '/readability.json',
       }),
     [capture.id, capturePart?.id],
     null,

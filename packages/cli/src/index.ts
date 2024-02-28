@@ -110,6 +110,10 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
     .addCommand(UtilitiesRetrieveFavicon)
     .addCommand(UtilitiesAddCliToPath)
 
+    /**
+     * When adding new commands, remember to add the `commands` object in UtilitiesIpc command file
+     */
+
     .helpOption("-h, --help", "Display help for command")
     .parse(process.argv);
 })();

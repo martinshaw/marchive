@@ -14,8 +14,8 @@ import runImmediateCliCommandUsingIpcPool from '../../cli/runImmediateCliCommand
 const CapturePartShowAction = async (
   capturePartId: number,
   withCapture: boolean = false,
-): Promise<CapturePartEntityType> =>
-  runImmediateCliCommandUsingIpcPool<CapturePartEntityType>(
+): Promise<CapturePartEntityType> => {
+  return runImmediateCliCommandUsingIpcPool<CapturePartEntityType>(
     'capture-part:show',
     [
       capturePartId,
@@ -24,5 +24,6 @@ const CapturePartShowAction = async (
       },
     ],
   ).then((response) => response.getData()[0]);
+};
 
 export default CapturePartShowAction;

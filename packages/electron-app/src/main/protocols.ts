@@ -9,6 +9,7 @@ Modified: 2023-09-15T11:41:05.822Z
 Description: description
 */
 
+import fs from 'node:fs';
 import url from 'node:url';
 import logger from 'logger';
 import path from 'node:path';
@@ -44,11 +45,9 @@ const parseMarchiveCaptureOrCapturePartDownloadProtocolUrl: (url: string) =>
     if (matches.index === regex.lastIndex) regex.lastIndex++;
 
     if (matches?.length === 5) {
-      let modelClass: 'capture' | 'capture-part' | null = null;
-      if (matches.groups?.MODELTYPE === 'capture') modelClass = 'capture';
-      else if (matches.groups?.MODELTYPE === 'capture-part')
-        modelClass = 'capture-part';
-      else return false;
+      let modelClass: 'capture' | 'capture-part' = matches.groups?.MODELTYPE as
+        | 'capture'
+        | 'capture-part';
 
       return {
         modelClass,
@@ -116,6 +115,15 @@ const joinCaptureOrCapturePartModelDownloadLocationWithRelativePath: (
     return [403, undefined];
   }
 
+  if (!fs.existsSync(absolutePath)) {
+    const errorMessage =
+      'The requested resource does not exist when handling ' +
+      protocol +
+      ' protocol request';
+    logger.error(errorMessage, { modelId, resourcePath });
+    return [404, undefined];
+  }
+
   return [200, absolutePath];
 };
 
@@ -134,8 +142,6 @@ const handleDownloadsProtocolRequest: (
       parsedUrl.protocol,
       parsedUrl.resourcePath,
     );
-
-  console.log('DEFG', statusCode, absolutePath);
 
   return absolutePath == null
     ? new Response(null, { status: statusCode })

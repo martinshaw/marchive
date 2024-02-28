@@ -69,16 +69,16 @@ const galleryExampleSources: GalleryExampleSourceGroupType[] = [
         url: 'https://cbsnews.com',
         dataProviderIdentifier: 'blog-article',
       },
-      {
-        iconInformation: {
-          filePath:
-            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAADBCAMAAABBnCSuAAAAOVBMVEX5nRz5nRz5nRz5oyr8yID+58f/+fL////8zo76qTj92qr+7dX+8+P6r0f7tlX81Jz7wnH94bn7vGPHK7q/AAAAAnRSTlNAEJtdklkAAAABb3JOVAHPoneaAAADiUlEQVR42u2a7baqIBRFu5qIqUi+/8OeJI51ZdOHRGswzpo/27FjJghuPFSFczige0ADGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQGejAb1sVGtanRXqoFufznVJRrUfXtjGAs0uBdoW5XxKmQy0O3/NKUZdO0WU5jBMTA4FWbQBAaqMAMVGLTZ5nIeg1Ag30T4mkG2lflb86DNJZDJYAoE8i0IeQzGwMCmJdQbshtU543AkJjvwZjMZFBv7qepW7vvG1Sj+uAYCncpXzCoutv9KH1zbRAGVTVfJ0OTegFwBhdG85lnmxlm8Cn0nzcw1q0iJtja1MYFrPnUxtMcl3zHIN9Tg7ERmHzS0+2+OOj71PbuWbi/m65WyubjUuh3w2HPQr7JfSPcpNyyOoNgqq87mW7TWB3Xfm7WrH6M/mELfh8gha5/qB3EfE37CP3UwIaPKtfHxVp4ChsTDLpYvkSDSfp8XobdIASG/QajkvLVyQZiV5aOdkqM2L0Gs/ixa5NkYCPNbN3LgX6nwSj/Ie6iphgMkbzteYol3GkwxPKNaQZRVDRi9hlEOb5sUJu5eTHpQ2bXy87M4TDzBsboN/JdGrnFNLxI/lHNVLc1eZQy9PokX2F10tJcWB/+TDxUiZPorM/Sp75J+Pdu1+TI9V3uLbWU2R0ICBP9JQPhavfLfkWYz02iwfVHwyLu9UYt5d1p4Gvz4fhKNfAbuXAcTbF7zk4DHWuUaDBEm/sCYjiMdhr4fPWnDeLNx6fdfM+ger8LiQbPu0kDGtCABjSgAQ1oQAMa/BmDrniDuXiDU/EGd+e78XrRb/OwvuMHYfgi1xQ3WENCPn+sElZF+rhB22tr3Dmjr9kZoSzkDoOkGtt5OY/q5rCIoayLSDW7S2j5ORPPZ4R+6utZaLTO11RP6qYmVujU0azxiPu59t1WbiREqvMFGdTqQcoiDB6mLMOgHuLRMgyqyDFPQQbSYWdhBstB+wODTst04Qtu69mJeTeil2VUv9vq/tWezk7NutKo5bWD9Uy/aGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiA51A8/34Axe6px774YZ8AAAAASUVORK5CYII=',
-          shouldInvertOnDarkMode: false,
-        },
-        caption: 'Mint',
-        url: 'https://livemint.com',
-        dataProviderIdentifier: 'blog-article',
-      },
+      // {
+      //   iconInformation: {
+      //     filePath:
+      //       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAADBCAMAAABBnCSuAAAAOVBMVEX5nRz5nRz5nRz5oyr8yID+58f/+fL////8zo76qTj92qr+7dX+8+P6r0f7tlX81Jz7wnH94bn7vGPHK7q/AAAAAnRSTlNAEJtdklkAAAABb3JOVAHPoneaAAADiUlEQVR42u2a7baqIBRFu5qIqUi+/8OeJI51ZdOHRGswzpo/27FjJghuPFSFczige0ADGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQEeGuChAR4a4KEBHhrgoQGejAb1sVGtanRXqoFufznVJRrUfXtjGAs0uBdoW5XxKmQy0O3/NKUZdO0WU5jBMTA4FWbQBAaqMAMVGLTZ5nIeg1Ag30T4mkG2lflb86DNJZDJYAoE8i0IeQzGwMCmJdQbshtU543AkJjvwZjMZFBv7qepW7vvG1Sj+uAYCncpXzCoutv9KH1zbRAGVTVfJ0OTegFwBhdG85lnmxlm8Cn0nzcw1q0iJtja1MYFrPnUxtMcl3zHIN9Tg7ERmHzS0+2+OOj71PbuWbi/m65WyubjUuh3w2HPQr7JfSPcpNyyOoNgqq87mW7TWB3Xfm7WrH6M/mELfh8gha5/qB3EfE37CP3UwIaPKtfHxVp4ChsTDLpYvkSDSfp8XobdIASG/QajkvLVyQZiV5aOdkqM2L0Gs/ixa5NkYCPNbN3LgX6nwSj/Ie6iphgMkbzteYol3GkwxPKNaQZRVDRi9hlEOb5sUJu5eTHpQ2bXy87M4TDzBsboN/JdGrnFNLxI/lHNVLc1eZQy9PokX2F10tJcWB/+TDxUiZPorM/Sp75J+Pdu1+TI9V3uLbWU2R0ICBP9JQPhavfLfkWYz02iwfVHwyLu9UYt5d1p4Gvz4fhKNfAbuXAcTbF7zk4DHWuUaDBEm/sCYjiMdhr4fPWnDeLNx6fdfM+ger8LiQbPu0kDGtCABjSgAQ1oQAMa/BmDrniDuXiDU/EGd+e78XrRb/OwvuMHYfgi1xQ3WENCPn+sElZF+rhB22tr3Dmjr9kZoSzkDoOkGtt5OY/q5rCIoayLSDW7S2j5ORPPZ4R+6utZaLTO11RP6qYmVujU0azxiPu59t1WbiREqvMFGdTqQcoiDB6mLMOgHuLRMgyqyDFPQQbSYWdhBstB+wODTst04Qtu69mJeTeil2VUv9vq/tWezk7NutKo5bWD9Uy/aGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiAhwZ4aICHBnhogIcGeGiA51A8/34Axe6px774YZ8AAAAASUVORK5CYII=',
+      //     shouldInvertOnDarkMode: false,
+      //   },
+      //   caption: 'Mint',
+      //   url: 'https://livemint.com',
+      //   dataProviderIdentifier: 'blog-article',
+      // },
       // {
       //   iconInformation: {
       //     filePath:

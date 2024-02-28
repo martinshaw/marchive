@@ -22,6 +22,10 @@ import CaptureList from "../Capture/CaptureList";
 import CaptureShow from "../Capture/CaptureShow";
 import CaptureDelete from "../Capture/CaptureDelete";
 
+import CapturePartList from "../CapturePart/CapturePartList";
+import CapturePartShow from "../CapturePart/CapturePartShow";
+import CapturePartDelete from "../CapturePart/CapturePartDelete";
+
 import DataProviderList from "../DataProvider/DataProviderList";
 import DataProviderShow from "../DataProvider/DataProviderShow";
 import DataProviderValidate from "../DataProvider/DataProviderValidate";
@@ -54,6 +58,10 @@ UtilitiesIpc.description(
       "capture:list": () => CaptureList,
       "capture:delete": () => CaptureDelete,
       "capture:show": () => CaptureShow,
+
+      "capture-part:list": () => CapturePartList,
+      "capture-part:delete": () => CapturePartDelete,
+      "capture-part:show": () => CapturePartShow,
 
       "schedule:count": () => ScheduleCount,
       "schedule:create": () => ScheduleCreate,
@@ -96,7 +104,18 @@ UtilitiesIpc.description(
 
             if (process.send == null) return throwSpawnedWithoutIpcError();
             process.send(response.toJson());
+
+            return;
           }
+
+          if (process.send == null) return throwSpawnedWithoutIpcError();
+          process.send(
+            new ErrorResponse(
+              `The command "${message.command}" is not recognized as a valid command for use with the ${"`"}utilities:ipc${"`"} command.`,
+            ).toJson(),
+          );
+
+          return;
         } catch (error) {
           if (process.send == null) return throwSpawnedWithoutIpcError();
           process.send(
