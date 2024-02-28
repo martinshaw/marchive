@@ -9,11 +9,7 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import {
-  LoaderFunction,
-  Navigate,
-  useLoaderData,
-} from 'react-router-dom';
+import { LoaderFunction, Navigate, useLoaderData } from 'react-router-dom';
 import { useMemo } from 'react';
 import AppToaster from '../../toaster';
 import { Text } from '@blueprintjs/core';
@@ -24,7 +20,12 @@ import SourceShowPageGridItemPreview from './components/SourceShowPageGridItemPr
 import CopyableExternalUrlLinkText from '../../../renderer/layouts/DefaultLayout/components/CopyableExternalUrlLinkText';
 import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/components/SourceIndexPageListItemCardScheduleCaption';
 import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
-import { CaptureEntityType, DataProviderSerializedType, ScheduleEntityType, SourceEntityType } from 'common-types';
+import {
+  CaptureEntityType,
+  DataProviderSerializedType,
+  ScheduleEntityType,
+  SourceEntityType,
+} from 'common-types';
 
 import './index.scss';
 
@@ -57,6 +58,17 @@ export const SourceShowPageLoader: LoaderFunction = async ({
   } catch (error) {
     sourceError = error as Error;
   }
+
+  console.log(
+    'SOURCE =:> ',
+    source,
+    'SOURCE ERROR =:> ',
+    sourceError,
+    'DATA PROVIDERS =:> ',
+    dataProviders,
+    'DATA PROVIDERS ERROR =:> ',
+    dataProvidersError,
+  );
 
   try {
     dataProviders = await getDataProviders();
@@ -94,7 +106,7 @@ const SourceShowPage = () => {
   const dataProvider: DataProviderSerializedType | null =
     dataProviders.find(
       (dataProvider) =>
-        dataProvider.identifier === source?.dataProviderIdentifier
+        dataProvider.identifier === source?.dataProviderIdentifier,
     ) || null;
   if (dataProvider == null) {
     let errorMessage =
@@ -131,22 +143,29 @@ const SourceShowPage = () => {
         ? 0
         : (source?.schedules || []).reduce(
             (c, schedule) => c + (schedule.captures ?? []).length,
-            0
+            0,
           ),
-    [source]
+    [source],
   );
 
   let sourceNameText: string = source?.sourceDomain?.name ?? '';
   if (source?.name != null && source?.name !== '') sourceNameText = source.name;
 
-  const amalgamatedCaptures = useMemo<[ScheduleEntityType, CaptureEntityType][]>(
+  const amalgamatedCaptures = useMemo<
+    [ScheduleEntityType, CaptureEntityType][]
+  >(
     () =>
       source.schedules.reduce<[ScheduleEntityType, CaptureEntityType][]>(
-        (carry, schedule) =>
-          carry.concat(schedule.captures.map((capture) => [schedule, capture])),
-        []
+        (carry, schedule) => {
+          console.log('schedule', schedule, carry);
+
+          return carry.concat(
+            (schedule.captures ?? []).map((capture) => [schedule, capture]),
+          );
+        },
+        [],
       ),
-    [source]
+    [source],
   );
   const columnCount = 3;
 
@@ -219,7 +238,7 @@ const SourceShowPage = () => {
               width={width}
               height={height}
               rowCount={Math.ceil(
-                (amalgamatedCaptures ?? []).length / columnCount
+                (amalgamatedCaptures ?? []).length / columnCount,
               )}
               rowHeight={560}
               columnCount={columnCount}

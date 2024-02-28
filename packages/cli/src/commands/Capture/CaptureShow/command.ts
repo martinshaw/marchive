@@ -10,11 +10,17 @@ Description: description
 */
 
 import commander from "commander";
-import action, { addTypeormRelationsCommanderOptions } from ".";
+import action, {
+  addTypeormRelationsCommanderOptions,
+  addTypeormRelationsCommanderOptionsForSchedule,
+  addTypeormRelationsCommanderOptionsForSource,
+} from ".";
 
 let CaptureShow = new commander.Command("capture:show");
 
 CaptureShow = addTypeormRelationsCommanderOptions(CaptureShow);
+CaptureShow = addTypeormRelationsCommanderOptionsForSchedule(CaptureShow);
+CaptureShow = addTypeormRelationsCommanderOptionsForSource(CaptureShow);
 
 CaptureShow.description("Get singular Capture by ID")
   .argument("<capture-id>", "Capture ID")

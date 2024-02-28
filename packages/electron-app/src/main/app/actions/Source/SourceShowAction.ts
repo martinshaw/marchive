@@ -16,12 +16,14 @@ const SourceShowAction = async (
   sourceId: number,
   withSourceDomain: boolean = false,
   withSchedules: boolean = false,
+  withCaptures: boolean = false,
 ): Promise<SourceEntityType> =>
   runImmediateCliCommandUsingIpcPool<SourceEntityType>('source:show', [
     sourceId,
     {
       withSourceDomain,
       withSchedules,
+      withCaptures,
     },
   ]).then((response) => response.getData()[0]);
 

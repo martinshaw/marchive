@@ -9,7 +9,7 @@ Modified: 2024-02-01T16:12:37.651Z
 Description: description
 */
 
-import { Source } from "database";
+import { Schedule, Source } from "database";
 import ErrorResponse from "../../../responses/ErrorResponse";
 import TableResponse from "../../../responses/TableResponse";
 import generateTypeormRelationsObjectFromCommanderOptions from "../../../options/generateTypeormRelationsObjectFromCommanderOptions";
@@ -20,7 +20,18 @@ export const [
 ] = generateTypeormRelationsObjectFromCommanderOptions<Source>([
   "schedules",
   "sourceDomain",
+  // "schedules.captures"
 ]);
+
+/**
+ * TODO: This is a functioning hack, in the future improve it and its usage by electron-app
+ * generateTypeormRelationsObjectFromCommanderOptions should be able to handle nested relations. Presently it doesn't, so I have to shim it in here.
+ * I want to be able to use --withSchedulesCaptures and the above commented out line "schedules.captures". But this hack makes available --withCaptures
+ */
+export const [
+  addTypeormRelationsCommanderOptionsForSchedule,
+  determineTypeormRelationsObjectFromCommanderOptionsForSchedule,
+] = generateTypeormRelationsObjectFromCommanderOptions<Schedule>(["captures"]);
 
 let SourceShow = async (
   sourceId: string,
@@ -33,14 +44,23 @@ let SourceShow = async (
       throw new ErrorResponse("Source ID must be a number");
     }
 
+    const sourceRelations =
+      determineTypeormRelationsObjectFromCommanderOptions(optionsAndArguments);
+
+    const scheduleRelations =
+      determineTypeormRelationsObjectFromCommanderOptionsForSchedule(
+        optionsAndArguments,
+      );
+
     const source = await Source.findOne({
       where: {
         id: parseInt(sourceId),
       },
-      relations:
-        determineTypeormRelationsObjectFromCommanderOptions(
-          optionsAndArguments,
-        ),
+      relations: [
+        ...(sourceRelations.schedules === true ? ["schedules"] : []),
+        ...(sourceRelations.sourceDomain === true ? ["sourceDomain"] : []),
+        ...(scheduleRelations.captures === true ? ["schedules.captures"] : []),
+      ],
     });
 
     if (source == null) {

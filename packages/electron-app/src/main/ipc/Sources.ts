@@ -56,8 +56,14 @@ ipcMain.on(
     sourceId: number,
     withSourceDomain: boolean = false,
     withSchedules: boolean = false,
+    withCaptures: boolean = false,
   ) => {
-    return SourceShowAction(sourceId, withSourceDomain, withSchedules)
+    return SourceShowAction(
+      sourceId,
+      withSourceDomain,
+      withSchedules,
+      withCaptures,
+    )
       .then((response) => {
         event.reply('sources.show', response, null);
       })

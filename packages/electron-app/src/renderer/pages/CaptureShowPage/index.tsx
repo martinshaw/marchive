@@ -9,11 +9,7 @@ Modified: 2023-08-01T19:43:12.647Z
 Description: description
 */
 
-import {
-  Navigate,
-  useLoaderData,
-  LoaderFunction,
-} from 'react-router-dom';
+import { Navigate, useLoaderData, LoaderFunction } from 'react-router-dom';
 import { useMemo } from 'react';
 import AppToaster from '../../toaster';
 import { Text } from '@blueprintjs/core';
@@ -25,7 +21,12 @@ import SourceIndexPageListItemCardScheduleCaption from '../SourceIndexPage/compo
 import SourceIndexPageChangeIntervalDropdownButton from '../SourceIndexPage/components/SourceIndexPageChangeIntervalDropdownButton';
 
 import './index.scss';
-import { CaptureEntityType, DataProviderSerializedType, ScheduleEntityType, SourceEntityType } from 'common-types';
+import {
+  CaptureEntityType,
+  DataProviderSerializedType,
+  ScheduleEntityType,
+  SourceEntityType,
+} from 'common-types';
 
 type CaptureShowPageLoaderReturnType = {
   capture: CaptureEntityType | null;
@@ -56,6 +57,17 @@ export const CaptureShowPageLoader: LoaderFunction = async ({
   } catch (error) {
     captureError = error as Error;
   }
+
+  console.log(
+    'capture',
+    capture,
+    'captureError',
+    captureError,
+    'dataProviders',
+    dataProviders,
+    'dataProvidersError',
+    dataProvidersError,
+  );
 
   try {
     dataProviders = await getDataProviders();
@@ -96,7 +108,7 @@ const CaptureShowPage = () => {
   const dataProvider: DataProviderSerializedType | null =
     dataProviders.find(
       (dataProvider) =>
-        dataProvider.identifier === source?.dataProviderIdentifier
+        dataProvider.identifier === source?.dataProviderIdentifier,
     ) || null;
   if (dataProvider == null) {
     let errorMessage =
@@ -121,9 +133,9 @@ const CaptureShowPage = () => {
         ? 0
         : (source?.schedules || []).reduce(
             (c, schedule) => c + (schedule.captures ?? []).length,
-            0
+            0,
           ),
-    [source]
+    [source],
   );
 
   let sourceNameText: string = source?.sourceDomain?.name ?? '';

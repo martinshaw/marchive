@@ -10,11 +10,15 @@ Description: description
 */
 
 import commander from "commander";
-import action, { addTypeormRelationsCommanderOptions } from ".";
+import action, {
+  addTypeormRelationsCommanderOptions,
+  addTypeormRelationsCommanderOptionsForSchedule,
+} from ".";
 
 let SourceShow = new commander.Command("source:show");
 
 SourceShow = addTypeormRelationsCommanderOptions(SourceShow);
+SourceShow = addTypeormRelationsCommanderOptionsForSchedule(SourceShow);
 
 SourceShow.description("Get singular Source by ID")
   .argument("<source-id>", "Source ID")

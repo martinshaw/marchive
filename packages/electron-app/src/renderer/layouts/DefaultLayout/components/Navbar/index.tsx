@@ -126,38 +126,6 @@ const Navbar = (props: NavbarPropsType) => {
           </NavbarGroup>
 
           <NavbarGroup align="center">
-            <Tooltip
-              content={comingSoonTooltipCaption}
-              usePortal
-              interactionKind="hover"
-            >
-              <div>
-                {/*<NavLink to="/yesterday">*/}
-                {/*{({ isActive }) => (*/}
-                <Button
-                  type="button"
-                  // active={isActive}
-                  disabled
-                  icon="history"
-                  text="Yesterday"
-                />
-                {/*)}*/}
-                {/*</NavLink>*/}
-
-                {/*<NavLink to="/today">*/}
-                {/*{({ isActive }) => (*/}
-                <Button
-                  type="button"
-                  // active={isActive}
-                  disabled
-                  icon="calendar"
-                  text="Today"
-                />
-                {/*)}*/}
-                {/*</NavLink>*/}
-              </div>
-            </Tooltip>
-
             <NavLink to="/sources">
               {({ isActive }) => (
                 <Button

@@ -92,7 +92,7 @@ const ErrorBoundary = () => {
                     <Button
                       rightIcon="arrow-right"
                       text="See all Sources"
-                      onClick={() => navigate('/sources')}
+                      onClick={() => navigate('/sources', { replace: true })}
                     />
                   </div>
                 }
