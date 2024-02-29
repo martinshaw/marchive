@@ -20,10 +20,12 @@ import StoredSettingUnset from "../StoredSetting/StoredSettingUnset";
 
 import CaptureList from "../Capture/CaptureList";
 import CaptureShow from "../Capture/CaptureShow";
+import CaptureShowFiles from "../Capture/CaptureShowFiles";
 import CaptureDelete from "../Capture/CaptureDelete";
 
 import CapturePartList from "../CapturePart/CapturePartList";
 import CapturePartShow from "../CapturePart/CapturePartShow";
+import CapturePartShowFiles from "../CapturePart/CapturePartShowFiles";
 import CapturePartDelete from "../CapturePart/CapturePartDelete";
 
 import DataProviderList from "../DataProvider/DataProviderList";
@@ -58,10 +60,12 @@ UtilitiesIpc.description(
       "capture:list": () => CaptureList,
       "capture:delete": () => CaptureDelete,
       "capture:show": () => CaptureShow,
+      "capture:show-files": () => CaptureShowFiles,
 
       "capture-part:list": () => CapturePartList,
       "capture-part:delete": () => CapturePartDelete,
       "capture-part:show": () => CapturePartShow,
+      "capture-part:show-files": () => CapturePartShowFiles,
 
       "schedule:count": () => ScheduleCount,
       "schedule:create": () => ScheduleCreate,
