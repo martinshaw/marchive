@@ -21,6 +21,15 @@ import userDownloadsSourceDomainFaviconsPath from "./userDownloadsSourceDomainFa
 // @ts-ignore
 import resolveRelative from "resolve-relative-url";
 
+/**
+ * Do not add new exports to this file. Instead, refer to their respective files directly.
+ * It is a potentially bad practice to bundle exports into a single importable
+ *   module because if the chosen bundler doesn't tree-shake, unused exports
+ *   will be included in the final bundle massively increasing its size.
+ *
+ * TODO: Remove this and its references in the future ?
+ */
+
 export {
   retrieveFileAsBase64DataUrlFromAbsolutePath,
   convertCrossPlatformSlashPathToNodePath,

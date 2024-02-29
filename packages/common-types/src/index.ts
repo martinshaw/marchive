@@ -22,6 +22,16 @@ import {
   type BaseDataProviderIconInformationReturnType,
 } from "./data-providers/BaseDataProvider";
 
+/**
+ * Do not add new exports to this file. Instead, refer to their respective files directly.
+ * While this concern doesn't affect 'types', which are not included in compiled code,
+ *   it is a potentially bad practice to bundle exports into a single importable
+ *   module because if the chosen bundler doesn't tree-shake, unused exports
+ *   will be included in the final bundle massively increasing its size.
+ *
+ * TODO: Remove this and its references in the future ?
+ */
+
 export {
   CaptureEntityType,
   CapturePartEntityType,
