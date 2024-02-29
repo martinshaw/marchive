@@ -68,6 +68,7 @@ const BlogArticleDataProviderCaptureShowPageFragment = (
   const { captureImageUrl, imageDimensions } = useCaptureImage(
     props.capture,
     focusedCapturePart,
+    'screenshot.jpg',
   );
 
   const captureSnapshotUrl = useCaptureSnapshot(

@@ -4,12 +4,13 @@
   flex-wrap: nowrap;
   align-content: stretch;
   width: 100%;
-  height: calc(100% - 15px);
-  gap: 2rem;
+  height: 100%;
+  padding-left: 7px;
+  gap: 12px;
 
   .podcast-rss-feed-capture-show-fragment__feed-details__description {
     margin: 0;
-    padding: 0;
+    padding: 26px 0;
     font-size: 1.2rem;
     line-height: 1.85rem;
     opacity: 0.825;

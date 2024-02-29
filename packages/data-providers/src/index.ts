@@ -16,11 +16,12 @@ import retrieveAndStoreFaviconFromUrl, {
 import { performPuppeteerTest } from "./helper_functions/PuppeteerDataProviderHelperFunctions";
 
 import BaseDataProvider from "./BaseDataProvider";
+import ImageFileDownloadDataProvider from "./ImageFileDownloadDataProvider";
+import SimpleWebpageScreenshotDataProvider from "./SimpleWebpageScreenshotDataProvider";
 import BlogArticleDataProvider from "./BlogArticleDataProvider";
 import PodcastRssFeedDataProvider from "./PodcastRssFeedDataProvider";
-import WikipediaArticleDataProvider from "./WikipediaArticleDataProvider";
-import SimpleWebpageScreenshotDataProvider from "./SimpleWebpageScreenshotDataProvider";
 import BehanceGalleryItemImagesDataProvider from "./BehanceGalleryItemImagesDataProvider";
+import WikipediaArticleDataProvider from "./WikipediaArticleDataProvider";
 
 /**
  * These Data Provider Classes should be ordered in increasing order of specificity
@@ -36,6 +37,7 @@ import BehanceGalleryItemImagesDataProvider from "./BehanceGalleryItemImagesData
  *   validateUrlWithDataProviders function
  */
 const dataProvidersClasses: BaseDataProvider[] = [
+  new ImageFileDownloadDataProvider(),
   new SimpleWebpageScreenshotDataProvider(),
   new BlogArticleDataProvider(),
   new PodcastRssFeedDataProvider(),

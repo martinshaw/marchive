@@ -6,14 +6,16 @@
   align-items: stretch;
   align-content: stretch;
   width: 100%;
-  height: calc(100% - 15px);
+  height: 100%;
   gap: 0;
 
   .simple-webpage-screenshot-show-fragment__inner {
     width: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
-    transition: background-color 250ms, filter 250ms;
+    transition:
+      background-color 250ms,
+      filter 250ms;
     border-radius: 7px;
     display: flex;
     flex-direction: column;

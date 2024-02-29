@@ -20,7 +20,12 @@ export type CaptureImageStateReturnType = {
 const useCaptureImage: (
   capture: CaptureEntityType,
   capturePart: CapturePartEntityType | null,
-) => CaptureImageStateReturnType = (capture, capturePart) => {
+  fileName: string | null,
+) => CaptureImageStateReturnType = (
+  capture,
+  capturePart = null,
+  fileName = null,
+) => {
   const state = useAsyncMemo<CaptureImageStateReturnType>(
     () =>
       new Promise((resolve, reject) => {
@@ -29,14 +34,17 @@ const useCaptureImage: (
           imageDimensions: { w: null, h: null },
         };
 
+        if (fileName == null) return resolve(returnValue);
+
         let newImageUrl: string =
-          'marchive-downloads:///capture/' + capture.id + '/screenshot.jpg';
+          'marchive-downloads:///capture/' + capture.id + '/' + fileName;
 
         if (capturePart != null) {
           newImageUrl =
             'marchive-downloads:///capture-part/' +
             capturePart.id +
-            '/screenshot.jpg';
+            '/' +
+            fileName;
         }
 
         const preloadImage = new Image();
@@ -54,7 +62,7 @@ const useCaptureImage: (
           });
         };
       }),
-    [capture.id, capturePart?.id],
+    [capture, capturePart, fileName],
     {
       captureImageUrl: null,
       imageDimensions: { w: null, h: null },

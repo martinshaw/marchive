@@ -1,4 +1,4 @@
-.simple-webpage-screenshot-show-fragment__container {
+.image-file-download-show-fragment__container {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -9,7 +9,7 @@
   height: 100%;
   gap: 0;
 
-  .simple-webpage-screenshot-show-fragment__inner {
+  .image-file-download-show-fragment__inner {
     width: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: column;
 
-    .simple-webpage-screenshot-show-fragment__toggle-buttons {
+    .image-file-download-show-fragment__toggle-buttons {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -29,7 +29,7 @@
       padding: 1rem;
     }
 
-    .simple-webpage-screenshot-show-fragment__media {
+    .image-file-download-show-fragment__media {
       width: 100%;
       height: auto;
       display: flex;
@@ -40,7 +40,7 @@
       padding: 20px 0;
     }
 
-    .simple-webpage-screenshot-show-fragment__media__image {
+    .image-file-download-show-fragment__media__image {
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -48,10 +48,15 @@
 
       .bp5-context-menu {
         margin: auto;
+        width: 100%;
       }
     }
 
-    .simple-webpage-screenshot-show-fragment__media__to-top-button {
+    .image-file-download-show-fragment__media__image__inner {
+      width: 100%;
+    }
+
+    .image-file-download-show-fragment__media__to-top-button {
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -59,29 +64,17 @@
       align-items: center;
       padding: 10px;
     }
-
-    .simple-webpage-screenshot-show-fragment__media .react-json-view {
-      &,
-      & > ul {
-        background-color: transparent !important;
-      }
-    }
-
-    .simple-webpage-screenshot-show-fragment__details {
-      height: 0;
-      overflow: hidden;
-    }
   }
 }
 
 #layout.bp5-dark {
-  .simple-webpage-screenshot-show-fragment__inner {
+  .image-file-download-show-fragment__inner {
     background-color: rgba(255, 255, 255, 0.05) !important;
   }
 }
 
 #layout:not(.bp5-dark) {
-  .simple-webpage-screenshot-show-fragment__inner {
+  .image-file-download-show-fragment__inner {
     background-color: rgba(0, 0, 0, 0.05);
   }
 }

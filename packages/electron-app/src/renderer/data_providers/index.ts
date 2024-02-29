@@ -14,6 +14,7 @@ import BlogArticleDataProviderRendererDetails from './BlogArticleDataProvider';
 import WikipediaArticleDataProviderRendererDetails from './WikipediaArticleDataProvider';
 import PodcastRssFeedDataProviderRendererDetails from './PodcastRssFeedDataProvider';
 import SimpleWebpageScreenshotDataProviderRendererDetails from './SimpleWebpageScreenshotDataProvider';
+import ImageFileDownloadDataProviderRendererDetails from './ImageFileDownloadDataProvider';
 import {
   CaptureEntityType,
   DataProviderSerializedType,
@@ -56,6 +57,7 @@ const dataProvidersRendererDetailsList: {
   'podcast-rss-feed': PodcastRssFeedDataProviderRendererDetails,
   'simple-webpage-screenshot':
     SimpleWebpageScreenshotDataProviderRendererDetails,
+  'image-file-download': ImageFileDownloadDataProviderRendererDetails,
 };
 
 export default dataProvidersRendererDetailsList;

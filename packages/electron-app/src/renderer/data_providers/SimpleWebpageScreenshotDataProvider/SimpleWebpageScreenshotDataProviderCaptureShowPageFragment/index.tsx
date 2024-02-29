@@ -29,7 +29,7 @@ import formatLocationUrlWithChangedSearchParams from '../../../layouts/DefaultLa
 import './index.scss';
 
 const SimpleWebpageDataProviderCaptureShowPageFragment = (
-  props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType
+  props: DataProvidersRendererComponentCaptureShowPageFragmentPropsType,
 ) => {
   const navigate = useNavigate();
   const location = parseLocationWithSearchParams(useLocation());
@@ -42,7 +42,8 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
 
   const { captureImageUrl, imageDimensions } = useCaptureImage(
     props.capture,
-    null
+    null,
+    'screenshot.jpg',
   );
 
   const { captureMetadataObject, titleText, descriptionText } =
@@ -66,8 +67,8 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                 navigate(
                   formatLocationUrlWithChangedSearchParams(
                     { displayedMediaType: 'screenshot' },
-                    location
-                  )
+                    location,
+                  ),
                 );
               }}
               active={displayedMediaType === 'screenshot'}
@@ -78,8 +79,8 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                 navigate(
                   formatLocationUrlWithChangedSearchParams(
                     { displayedMediaType: 'metadata' },
-                    location
-                  )
+                    location,
+                  ),
                 );
               }}
               active={displayedMediaType === 'metadata'}
@@ -92,7 +93,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
             onClick={() => {
               window.electron.ipcRenderer.sendMessage(
                 'utilities.open-internal-path-in-default-program',
-                props.capture.downloadLocation
+                props.capture.downloadLocation,
               );
             }}
           />
@@ -110,7 +111,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
               <div className="simple-webpage-screenshot-show-fragment__media__image-not-found">
                 <NonIdealState
                   icon="diagnosis"
-                  title="The Saved Screenshot File for This Article Cannot Be Found"
+                  title="The Saved Screenshot File for This Page Cannot Be Found"
                   description={
                     'It may have been moved or deleted. Click below to open the saved files in ' +
                     fileBrowserName
@@ -122,7 +123,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                       onClick={() => {
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
-                          props.capture.downloadLocation
+                          props.capture.downloadLocation,
                         );
                       }}
                     />
@@ -140,7 +141,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                   downloadLocation={props.capture.downloadLocation ?? ''}
                   imagePath="screenshot.jpg"
                   fileBrowserName={fileBrowserName}
-                  toggleButtonsClassName='.simple-webpage-screenshot-show-fragment__toggle-buttons'
+                  toggleButtonsClassName=".simple-webpage-screenshot-show-fragment__toggle-buttons"
                 >
                   <img
                     className="simple-webpage-screenshot-show-fragment__media__image__inner"
@@ -159,7 +160,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                     icon="arrow-up"
                     onClick={() => {
                       const toggleButtons = document.querySelectorAll(
-                        '.simple-webpage-screenshot-show-fragment__toggle-buttons'
+                        '.simple-webpage-screenshot-show-fragment__toggle-buttons',
                       );
                       if (Array.from(toggleButtons).length < 1) return;
 
@@ -178,7 +179,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
               <div className="simple-webpage-screenshot-show-fragment__media__metadata-not-found">
                 <NonIdealState
                   icon="diagnosis"
-                  title="The Saved Metadata File for This Article Cannot Be Found"
+                  title="The Saved Metadata File for This Page Cannot Be Found"
                   description={
                     'It may have been moved or deleted. Click below to open the saved files in ' +
                     fileBrowserName
@@ -190,7 +191,7 @@ const SimpleWebpageDataProviderCaptureShowPageFragment = (
                       onClick={() => {
                         window.electron.ipcRenderer.sendMessage(
                           'utilities.open-internal-path-in-default-program',
-                          props.capture.downloadLocation
+                          props.capture.downloadLocation,
                         );
                       }}
                     />

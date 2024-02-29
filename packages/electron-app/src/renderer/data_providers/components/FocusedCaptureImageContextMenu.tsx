@@ -32,7 +32,7 @@ type FocusedCaptureImageContextMenuPropsType = {
 };
 
 const FocusedCaptureImageContextMenu: (
-  props: FocusedCaptureImageContextMenuPropsType
+  props: FocusedCaptureImageContextMenuPropsType,
 ) => ReactNode = (props) => {
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ const FocusedCaptureImageContextMenu: (
         onClick={() => {
           window.electron.ipcRenderer.sendMessage(
             'utilities.open-internal-path-in-default-program',
-            props.downloadLocation + '/' + props.imagePath
+            props.downloadLocation + '/' + props.imagePath,
           );
         }}
       />
@@ -54,7 +54,7 @@ const FocusedCaptureImageContextMenu: (
         onClick={() => {
           window.electron.ipcRenderer.sendMessage(
             'utilities.open-internal-path-in-default-program',
-            props.downloadLocation
+            props.downloadLocation,
           );
         }}
       />
@@ -64,7 +64,7 @@ const FocusedCaptureImageContextMenu: (
         text="Go to Top"
         onClick={() => {
           const toggleButtons = document.querySelectorAll(
-            props.toggleButtonsClassName
+            props.toggleButtonsClassName,
           );
           if (Array.from(toggleButtons).length < 1) return;
 

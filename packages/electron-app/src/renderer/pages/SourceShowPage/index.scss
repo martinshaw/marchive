@@ -1,19 +1,8 @@
-#page {
-  width: 100%;
-  height: calc(100% - 50px);
-  margin: auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: center;
-}
-
 .source-captures__source-domain {
   width: 100%;
   min-height: 35px;
   margin: 10px 0;
-  padding-left: 5px;
+  padding-left: 12px;
   padding-right: 12px;
   display: flex;
   flex-direction: row;
@@ -69,7 +58,7 @@
   width: 100%;
   min-height: 30px;
   margin: 10px 0;
-  padding-left: 5px;
+  padding-left: 12px;
   padding-right: 12px;
   display: flex;
   flex-direction: row;
@@ -115,7 +104,7 @@
   min-height: 30px;
   margin: 10px 0;
   margin-bottom: 1rem;
-  padding-left: 5px;
+  padding-left: 12px;
   padding-right: 12px;
   display: flex;
   flex-direction: row;
