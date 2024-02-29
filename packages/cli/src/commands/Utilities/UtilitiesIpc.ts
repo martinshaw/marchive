@@ -1,7 +1,8 @@
 import commander from "commander";
 import process from "node:process";
 import ErrorResponse from "../../responses/ErrorResponse";
-import MessageResponse from "../../responses/MessageResponse";
+import { ImmediateCliCommandNames } from "common-types/src/cli/commands";
+import BaseResponse from "../../responses/BaseResponse";
 
 import SourceList from "../Source/SourceList";
 import SourceShow from "../Source/SourceShow";
@@ -56,7 +57,10 @@ UtilitiesIpc.description(
 
     if (process.send == null) return throwSpawnedWithoutIpcError();
 
-    const commands = {
+    const commands: Record<
+      ImmediateCliCommandNames,
+      () => (...args: any) => Promise<BaseResponse>
+    > = {
       "capture:list": () => CaptureList,
       "capture:delete": () => CaptureDelete,
       "capture:show": () => CaptureShow,

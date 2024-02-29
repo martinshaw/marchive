@@ -13,7 +13,7 @@ Description: description
 
 import CliIpcCommunicableInstancePool from './CliIpcCommunicableInstancePool';
 import CliJsonResponse from './CliJsonResponse';
-import { ImmediateCliCommandNames } from './types';
+import { ImmediateCliCommandNames } from 'common-types/src/cli/commands';
 import { JSONValue } from 'types-json';
 
 /**

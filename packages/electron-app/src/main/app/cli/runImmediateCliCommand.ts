@@ -11,7 +11,7 @@ Description: description
 
 import { exec } from 'node:child_process';
 import CliJsonResponse from './CliJsonResponse';
-import { ImmediateCliCommandNames } from './types';
+import { ImmediateCliCommandNames } from 'common-types/src/cli/commands';
 import {
   readOnlyInternalMarchiveCliExecutable,
   readOnlyInternalMarchiveCliScriptPath,

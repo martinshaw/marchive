@@ -13,12 +13,14 @@ import { ipcMain } from 'electron';
 
 import CaptureListAction from '../app/actions/Capture/CaptureListAction';
 import CaptureShowAction from '../app/actions/Capture/CaptureShowAction';
+import CaptureShowFilesAction from '../app/actions/Capture/CaptureShowFilesAction';
 import CaptureDeleteAction from '../app/actions/Capture/CaptureDeleteAction';
 import CapturePromptForDeletionAction from '../app/actions/Capture/CapturePromptForDeletionAction';
 
 export type CapturesChannels =
   | 'captures.list'
   | 'captures.show'
+  | 'captures.show-files'
   | 'captures.delete'
   | 'captures.prompt-for-deletion';
 
@@ -54,6 +56,23 @@ ipcMain.on(
       })
       .catch((error) => {
         event.reply('captures.show', null, error);
+      });
+  },
+);
+
+ipcMain.on(
+  'captures.show-files',
+  async (
+    event,
+    captureId: number,
+    filter?: 'image' | 'video' | 'audio' | 'json' | 'directory',
+  ) => {
+    return CaptureShowFilesAction(captureId, filter)
+      .then((files) => {
+        event.reply('captures.show-files', files, null);
+      })
+      .catch((error) => {
+        event.reply('captures.show-files', null, error);
       });
   },
 );

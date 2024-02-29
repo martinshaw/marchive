@@ -1,5 +1,6 @@
 import { SourcesChannels } from './ipc/Sources';
 import { CapturesChannels } from './ipc/Captures';
+import { CapturePartsChannels } from './ipc/CaptureParts';
 import { SchedulesChannels } from './ipc/Schedules';
 import { WatchersChannels } from './ipc/Watchers';
 import { RenderersChannels } from './ipc/Renderers';
@@ -11,6 +12,7 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channels =
   | CapturesChannels
+  | CapturePartsChannels
   | DataProvidersChannels
   | SchedulesChannels
   | SourcesChannels

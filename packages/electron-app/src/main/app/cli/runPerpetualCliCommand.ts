@@ -10,7 +10,7 @@ Description: description
 */
 
 import { ChildProcess, spawn, fork } from 'node:child_process';
-import { PerpetualCliCommandNames } from './types';
+import { PerpetualCliCommandNames } from 'common-types/src/cli/commands';
 import {
   readOnlyInternalMarchiveCliExecutable,
   readOnlyInternalMarchiveCliScriptPath,
