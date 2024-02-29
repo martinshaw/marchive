@@ -41,6 +41,6 @@ const videoExtensions = [
   "f4b",
 ] as const;
 
-type VideoFileExtensionType = (typeof videoExtensions)[number];
+type VideoExtensionType = (typeof videoExtensions)[number];
 
-export { videoExtensions, VideoFileExtensionType };
+export { videoExtensions, VideoExtensionType };

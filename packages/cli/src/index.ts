@@ -21,10 +21,12 @@ import StoredSettingUnset from "./commands/StoredSetting/StoredSettingUnset/comm
 
 import CaptureList from "./commands/Capture/CaptureList/command";
 import CaptureShow from "./commands/Capture/CaptureShow/command";
+import CaptureShowFiles from "./commands/Capture/CaptureShowFiles/command";
 import CaptureDelete from "./commands/Capture/CaptureDelete/command";
 
 import CapturePartList from "./commands/CapturePart/CapturePartList/command";
 import CapturePartShow from "./commands/CapturePart/CapturePartShow/command";
+import CapturePartShowFiles from "./commands/CapturePart/CapturePartShowFiles/command";
 import CapturePartDelete from "./commands/CapturePart/CapturePartDelete/command";
 
 import DataProviderList from "./commands/DataProvider/DataProviderList/command";
@@ -80,11 +82,13 @@ import UtilitiesIpc from "./commands/Utilities/UtilitiesIpc";
     // Capture related commands
     .addCommand(CaptureList)
     .addCommand(CaptureShow)
+    .addCommand(CaptureShowFiles)
     .addCommand(CaptureDelete)
 
     // Capture Part related commands
     .addCommand(CapturePartList)
     .addCommand(CapturePartShow)
+    .addCommand(CapturePartShowFiles)
     .addCommand(CapturePartDelete)
 
     // Data Provider related commands

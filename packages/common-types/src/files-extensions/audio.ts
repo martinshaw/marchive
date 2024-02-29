@@ -25,6 +25,6 @@ const audioExtensions = [
   "3gp",
 ] as const;
 
-type AudioFileExtensionType = (typeof audioExtensions)[number];
+type AudioExtensionType = (typeof audioExtensions)[number];
 
-export { audioExtensions, AudioFileExtensionType };
+export { audioExtensions, AudioExtensionType };

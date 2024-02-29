@@ -25,6 +25,6 @@ const imageExtensions = [
   "apng",
 ] as const;
 
-type ImageFileExtensionType = (typeof imageExtensions)[number];
+type ImageExtensionType = (typeof imageExtensions)[number];
 
-export { imageExtensions, ImageFileExtensionType };
+export { imageExtensions, ImageExtensionType };
