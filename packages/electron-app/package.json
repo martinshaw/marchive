@@ -75,8 +75,6 @@
     }
   },
   "dependencies": {
-    "@types/react-virtualized": "^9.21.29",
-    "@types/sanitize-html": "^2.11.0",
     "@blueprintjs/core": "^5.9.1",
     "@blueprintjs/icons": "^5.7.1",
     "@blueprintjs/popover2": "^2.1.1",
@@ -125,6 +123,8 @@
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@types/react-test-renderer": "^18.0.1",
+    "@types/react-virtualized": "^9.21.29",
+    "@types/sanitize-html": "^2.11.0",
     "@types/terser-webpack-plugin": "^5.0.4",
     "@types/uuid": "^9.0.3",
     "@types/webpack-bundle-analyzer": "^4.6.0",
